@@ -1,3 +1,4 @@
+changes
 /target
 /lib
 /classes
@@ -9,3 +10,4 @@ pom.xml
 .lein-failures
 .lein-plugins
 .lein-env
+.lein-repl-history
