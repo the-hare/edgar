@@ -1,5 +1,5 @@
 (ns edgar.edgar
-  (:import (com.ib.client EWrapper EClientSocket Contract Order OrderState))
+  (:import (com.ib.client EWrapper EClientSocket Contract Order OrderState ContractDetails Execution))
   )
 
 
@@ -41,37 +41,37 @@
 
 
     ;; Contract Details
-    (^void contractDetails [_, ReqId, ContractDetails contractDetails] (println "..."))
-    (^void contractDetailsEnd [_, reqId] (println "..."))
-    (^void bondContractDetails [_, reqId, ContractDetails contractDetails] (println "..."))
+    (^void contractDetails [_, ^int reqId, ^ContractDetails contractDetails] (println "..."))
+    (^void contractDetailsEnd [_, ^int reqId] (println "..."))
+    (^void bondContractDetails [_, ^int reqId ^ContractDetails contractDetails] (println "..."))
 
 
     ;; Executions
-    (^void exectDetails [_, reqId, Contract contract, Execution execution] (println "..."))
+    ;;(^void execDetails [_, ^int reqId, ^Contract contract, ^Execution execution] (println "..."))
 
     ;; Market Depth
-    (^void updateMktDepth [_, tickerId, position, operation, side, price, size] (println "..."))
-    (^void updateMktDepthL2 [_, tickerId, position, marketMaker, operation, side, price, size] (println "..."))
+    (^void updateMktDepth [_, ^int tickerId, ^int position, ^int operation, ^int side, ^double price, ^int size] (println "..."))
+    (^void updateMktDepthL2 [_, ^int tickerId, ^int position, ^String marketMaker, ^int operation, ^int side, ^double price, ^int size] (println "..."))
 
     ;; News Bulletins
-    (^void updateNewsBulletin [_, msgId, msgType, message, origExchange] (println "..."))
+    (^void updateNewsBulletin [_, ^int msgId, ^int msgType, ^String message, ^String origExchange] (println "..."))
 
     ;; Financial Advisors
-    (^void managedAccounts [_, accountsList] (println "..."))
-    (^void receiveFA [_, faDataType, string xml] (println "..."))
+    (^void managedAccounts [_, ^String accountsList] (println "..."))
+    (^void receiveFA [_, ^int faDataType, ^String xml] (println "..."))
 
     ;; Historical Data
-    (^void historicalData [_, reqId, date, open, high, low, close, volume, count, WAP, boolean hasGaps] (println "..."))
+    (^void historicalData [_, ^int reqId, ^String date, ^double open, ^double high, ^double low, ^double close, ^int volume, ^int count, ^double WAP, ^boolean hasGaps] (println "..."))
 
     ;; Market Scanners
-    (^void scannerParameters [_, xml] (println "..."))
-    (^void scannerData [_, reqId, rank, ContractDetails contractDetails, distance, benchmark, projection, legsStr] (println "..."))
+    (^void scannerParameters [_, ^String xml] (println "..."))
+    (^void scannerData [_, ^int reqId, ^int rank, ^ContractDetails contractDetails, ^String distance, ^String benchmark, ^String projection, ^String legsStr] (println "..."))
 
     ;; Real Time Bars
-    (^void realTimeBar [_, reqId, time, open, high, low, close, volume, wap, count] (println "..."))
+    (^void realtimeBar [_, ^int reqId, ^long time, ^double open, ^double high, ^double low, ^double close, ^long volume, ^double wap, ^int count] (println "..."))
 
     ;; Fundamental Data
-    (^void fundamentalData [_, reqId, data] (println "..."))
+    (^void fundamentalData [_, ^int reqId, ^String data] (println "..."))
 
     )
   )
