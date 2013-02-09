@@ -1,5 +1,5 @@
 (ns edgar.edgar
-  (:import (com.ib.client EWrapper EClientSocket))
+  (:import (com.ib.client EWrapper EClientSocket Contract Order OrderState))
   )
 
 
@@ -29,49 +29,49 @@
 
 
     ;; Orders
-    (orderStatus [orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld] (println "..."))
-    (openOrder [orderId, Contract contract, Order order, OrderState orderState] (println "..."))
-    (nextValidId [orderId] (println "..."))
+    (^void orderStatus [_, ^int orderId, ^String status, ^int filled, ^int remaining, ^double avgFillPrice, ^int permId, ^int parentId, ^double lastFillPrice, ^int clientId, ^String whyHeld] (println "..."))
+    (^void openOrder [_, ^int orderId, ^Contract contract, ^Order order, ^OrderState orderState] (println "..."))
+    (^void nextValidId [_, ^int orderId] (println "..."))
 
 
     ;; Account & Portfolio
-    (updateAccountValue [key, value, currency, accountName] (println "..."))
-    (updateAccountTime [contract, position, marketPrice, marketValue, averageCost, unrealizedPNL, realizedPNL, accountName] (println "..."))
-    (updatePortfolio [timeStamp] (println "..."))
+    (^void updateAccountValue [_, ^String key, ^String value, ^String currency, ^String accountName] (println "..."))
+    (^void updatePortfolio [_, ^Contract contract, ^int position, ^double marketPrice, ^double marketValue, ^double averageCost, ^double unrealizedPNL, ^double realizedPNL, ^String accountName] (println "..."))
+    (^void updateAccountTime [_, ^String timeStamp] (println "..."))
 
 
     ;; Contract Details
-    (contractDetails [ReqId, ContractDetails contractDetails] (println "..."))
-    (contractDetailsEnd [reqId] (println "..."))
-    (bondContractDetails [reqId, ContractDetails contractDetails] (println "..."))
+    (^void contractDetails [_, ReqId, ContractDetails contractDetails] (println "..."))
+    (^void contractDetailsEnd [_, reqId] (println "..."))
+    (^void bondContractDetails [_, reqId, ContractDetails contractDetails] (println "..."))
 
 
     ;; Executions
-    (exectDetails [reqId, Contract contract, Execution execution] (println "..."))
+    (^void exectDetails [_, reqId, Contract contract, Execution execution] (println "..."))
 
     ;; Market Depth
-    (updateMktDepth [tickerId, position, operation, side, price, size] (println "..."))
-    (updateMktDepthL2 [tickerId, position, marketMaker, operation, side, price, size] (println "..."))
+    (^void updateMktDepth [_, tickerId, position, operation, side, price, size] (println "..."))
+    (^void updateMktDepthL2 [_, tickerId, position, marketMaker, operation, side, price, size] (println "..."))
 
     ;; News Bulletins
-    (updateNewsBulletin [msgId, msgType, message, origExchange] (println "..."))
+    (^void updateNewsBulletin [_, msgId, msgType, message, origExchange] (println "..."))
 
     ;; Financial Advisors
-    (managedAccounts [accountsList] (println "..."))
-    (receiveFA [faDataType, string xml] (println "..."))
+    (^void managedAccounts [_, accountsList] (println "..."))
+    (^void receiveFA [_, faDataType, string xml] (println "..."))
 
     ;; Historical Data
-    (historicalData [reqId, date, open, high, low, close, volume, count, WAP, boolean hasGaps] (println "..."))
+    (^void historicalData [_, reqId, date, open, high, low, close, volume, count, WAP, boolean hasGaps] (println "..."))
 
     ;; Market Scanners
-    (scannerParameters [xml] (println "..."))
-    (scannerData [reqId, rank, ContractDetails contractDetails, distance, benchmark, projection, legsStr] (println "..."))
+    (^void scannerParameters [_, xml] (println "..."))
+    (^void scannerData [_, reqId, rank, ContractDetails contractDetails, distance, benchmark, projection, legsStr] (println "..."))
 
     ;; Real Time Bars
-    (realTimeBar [reqId, time, open, high, low, close, volume, wap, count] (println "..."))
+    (^void realTimeBar [_, reqId, time, open, high, low, close, volume, wap, count] (println "..."))
 
     ;; Fundamental Data
-    (fundamentalData [reqId, data] (println "..."))
+    (^void fundamentalData [_, reqId, data] (println "..."))
 
     )
   )
