@@ -1,7 +1,7 @@
 (ns edgar.ewrapper
   (:import (com.ib.client EWrapper EClientSocket Contract Order OrderState ContractDetails Execution))
-  )
-
+  (:use [clojure.core.strint])
+)
 
 (defn create-ewrapper
   "When reifying Java interface methods, we need the 'this' arg and I find you need to hint the exact types when reifying java interfaces"
@@ -11,10 +11,13 @@
 
 
     ;; Connection & Server
-    ;;(currentTime [time] (println "..."))
-    ;;(error [id, errorCode, errorString] (println "..."))
-    ;;(error [error] (println "..."))
-    (connectionClosed [_] (println "..."))
+    (^void currentTime [_, ^long time] (println "..."))
+    (^void error [_, ^int id, ^int errorCode, ^String errorString]
+
+      (println (<< "EWrapper.error CALLED > this[~{_}] > id[~{id}] > errorCode[~{errorCode}] > errorString[~{errorString}]")))
+
+    (^void error [_, ^String error] (println "..."))
+    (^void connectionClosed [_] (println "..."))
 
 
     ;; Market Data

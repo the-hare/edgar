@@ -5,7 +5,7 @@
 
 (defn connect-to-tws []
 
-  (let [wrap (wrapper/create-ewrapper)
+  (let [wr (defonce wrap (wrapper/create-ewrapper))
         es (defonce esocket (EClientSocket. wrap))
         ]
     (.eConnect esocket "localhost", 7469, 1)

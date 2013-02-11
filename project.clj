@@ -3,6 +3,7 @@
   :url "http://example.com/FIXME"
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [compojure "1.1.5"]
+                 [org.clojure/core.incubator "0.1.2"]
                  [jtsclient/jtsclient "9.8.3"]]
   :plugins [[lein-ring "0.8.2"]]
   :ring {:handler edgar.handler/app}
