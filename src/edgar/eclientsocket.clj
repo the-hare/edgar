@@ -8,7 +8,8 @@
   (let [wr (defonce wrap (wrapper/create-ewrapper))
         es (defonce esocket (EClientSocket. wrap))
         ]
-    (.eConnect esocket "localhost", 7469, 1)
+    (.eConnect esocket "localhost" 7497 0)
+    esocket
   )
 )
 

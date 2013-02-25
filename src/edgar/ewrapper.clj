@@ -21,7 +21,8 @@
 
 
     ;; Market Data
-    (^void tickPrice [_, ^int tickerId, ^int field, ^double price, ^int canAutoExecute] (println "..."))
+    (^void tickPrice [_, ^int tickerId, ^int field, ^double price, ^int canAutoExecute]
+      (println (<< "EWrapper.tickPrice CALLED > this[~{_}] > tickerId[~{tickerId}] > field[~{field}] > price[~{price}] > canAutoExecute[~{canAutoExecute}]")))
 
 
     (^void tickSize [_, ^int tickerId, ^int field, ^int size] (println "..."))
