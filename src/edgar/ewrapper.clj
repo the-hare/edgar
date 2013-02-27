@@ -73,11 +73,13 @@
     (^void receiveFA [_, ^int faDataType, ^String xml] (println "..."))
 
     ;; Historical Data
-    (^void historicalData [_, ^int reqId, ^String date, ^double open, ^double high, ^double low, ^double close, ^int volume, ^int count, ^double WAP, ^boolean hasGaps] (println "..."))
+    (^void historicalData [_, ^int reqId, ^String date, ^double open, ^double high, ^double low, ^double close, ^int volume, ^int count, ^double WAP, ^boolean hasGaps]
+      (println (<< "EWrapper.historicalData CALLED > this[~{_}] > reqId[~{reqId}], date[~{date}], open[~{open}], high[~{high}], low[~{low}], close[~{close}], volume[~{volume}], count[~{count}], WAP[~{WAP}], hasGaps[~{hasGaps}]")))
 
     ;; Market Scanners
-    (^void scannerParameters [_, ^String xml] (println "..."))
-    (^void scannerData [_, ^int reqId, ^int rank, ^ContractDetails contractDetails, ^String distance, ^String benchmark, ^String projection, ^String legsStr] (println "..."))
+    (^void scannerParameters [_, ^String xml] (println (<< "EWrapper.scannerParameters CALLED > this[~{_}] > xml[~{xml}]")))
+    (^void scannerData [_, ^int reqId, ^int rank, ^ContractDetails contractDetails, ^String distance, ^String benchmark, ^String projection, ^String legsStr]
+      (println (<< "EWrapper.historicalData CALLED > this[~{_}] > reqId[~{reqId}], rank[~{rank}], contractDetails[~{contractDetails}], distance[~{distance}], benchmark[~{benchmark}], projection[~{projection}], legsStr[~{legsStr}]")))
 
     ;; Real Time Bars
     (^void realtimeBar [_, ^int reqId, ^long time, ^double open, ^double high, ^double low, ^double close, ^long volume, ^double wap, ^int count] (println "..."))
