@@ -16,8 +16,8 @@
 
       (println (<< "EWrapper.error CALLED > this[~{_}] > id[~{id}] > errorCode[~{errorCode}] > errorString[~{errorString}]")))
 
-    (^void error [_, ^String error] (println "..."))
-    (^void connectionClosed [_] (println "..."))
+    (^void error [_, ^String error] (println (<< "EWrapper.error CALLED > this[~{_}] > error[~{error}]")))
+    (^void connectionClosed [_] (println (<< "EWrapper.connectionClosed > this[~{_}]")))
 
 
     ;; Market Data
@@ -25,11 +25,16 @@
       (println (<< "EWrapper.tickPrice CALLED > this[~{_}] > tickerId[~{tickerId}] > field[~{field}] > price[~{price}] > canAutoExecute[~{canAutoExecute}]")))
 
 
-    (^void tickSize [_, ^int tickerId, ^int field, ^int size] (println "..."))
-    (^void tickOptionComputation [_, ^int tickerId, ^int field, ^double impliedVol, ^double delta, ^double optPrice, ^double pvDividend, ^double gamma, ^double vega, ^double theta, ^double undPrice] (println "..."))
-    (^void tickGeneric [_, ^int tickerId, ^int tickType, ^double value] (println "..."))
-    (^void tickString[_, ^int tickerId, ^int tickType, ^String value] (println "..."))
-    (^void tickEFP [_, ^int tickerId, ^int tickType, ^double basisPoints, ^String formattedBasisPoints, ^double impliedFuture, ^int holdDays, ^String futureExpiry, ^double dividendImpact, ^double dividendsToExpiry] (println "..."))
+    (^void tickSize [_, ^int tickerId, ^int field, ^int size]
+      (println (<< "EWrapper.tickSize CALLED > this[~{_}] > tickerId[~{tickerId}] > field[~{field}] > size[~{size}]")))
+
+    (^void tickOptionComputation [_, ^int tickerId, ^int field, ^double impliedVol, ^double delta, ^double optPrice, ^double pvDividend, ^double gamma, ^double vega, ^double theta, ^double undPrice]
+      (println (<< "EWrapper.tickOptionComputation CALLED > this[~{_}] > tickerId[~{tickerId}], field[~{field}], impliedVol[~{impliedVol}], delta[~{delta}], optPrice[~{optPrice}], pvDividend[~{pvDividend}], gamma[~{gamma}], vega[~{vega}], theta[~{theta}], undPrice[~{undPrice}]")))
+
+    (^void tickGeneric [_, ^int tickerId, ^int tickType, ^double value] (println (<< "EWrapper.tickGeneric CALLED > this[~{_}] > tickerId[~{tickerId}] > tickType[~{tickType}] > value[~{value}]")))
+    (^void tickString[_, ^int tickerId, ^int tickType, ^String value] (println (<< "EWrapper.tickString CALLED > this[~{_}] > tickerId[~{tickerId}] > tickType[~{tickType}] > value[~{value}]")))
+    (^void tickEFP [_, ^int tickerId, ^int tickType, ^double basisPoints, ^String formattedBasisPoints, ^double impliedFuture, ^int holdDays, ^String futureExpiry, ^double dividendImpact, ^double dividendsToExpiry]
+      (println (<< "EWrapper.tickEFP CALLED > this[~{_}] > tickerId[~{tickerId}], tickType[~{tickType}], basisPoints[~{basisPoints}], formattedBasisPoints[~{formattedBasisPoints}], impliedFuture[~{impliedFuture}], holdDays[~{holdDays}], futureExpiry[~{futureExpiry}], dividendImpact[~{dividendImpact}] > dividendsToExpiry[~{dividendsToExpiry}]")))
 
 
     ;; Orders
@@ -45,9 +50,12 @@
 
 
     ;; Contract Details
-    (^void contractDetails [_, ^int reqId, ^ContractDetails contractDetails] (println "..."))
-    (^void contractDetailsEnd [_, ^int reqId] (println "..."))
-    (^void bondContractDetails [_, ^int reqId ^ContractDetails contractDetails] (println "..."))
+    (^void contractDetails [_, ^int reqId, ^ContractDetails contractDetails]
+      (println (<< "EWrapper.contractDetails CALLED > this[~{_}] > reqId[~{reqId}] > contractDetails[~{contractDetails}]")))
+    (^void contractDetailsEnd [_, ^int reqId]
+      (println (<< "EWrapper.contractDetailsEnd CALLED > this[~{_}] > reqId[~{reqId}]")))
+    (^void bondContractDetails [_, ^int reqId ^ContractDetails contractDetails]
+      (println (<< "EWrapper.bondContractDetails CALLED > this[~{_}] > reqId[~{reqId}] > contractDetails[~{contractDetails}]")))
 
 
     ;; Executions
