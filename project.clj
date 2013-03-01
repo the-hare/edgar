@@ -4,7 +4,8 @@
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [compojure "1.1.5"]
                  [org.clojure/core.incubator "0.1.2"]
-                 [jtsclient/jtsclient "9.8.3"]]
+                 [jtsclient/jtsclient "9.8.3"]
+                 [org.clojure/data.csv "0.1.2"]]
   :plugins [[lein-ring "0.8.2"]]
   :ring {:handler edgar.handler/app}
   :profiles {:dev {:dependencies [[ring-mock "0.1.3"]]}}

@@ -2,12 +2,14 @@
   (:import (com.ib.client EWrapper EClientSocket Contract Order OrderState ContractDetails Execution))
   (:use [clojure.repl])
   (:require [edgar.eclientsocket :as socket]
-            [edgar.ewrapper :as ewrapper])
+            [edgar.ewrapper :as ewrapper]
+            [clojure.java.io :as io]
+            [clojure.data.csv :as csv]
+            )
   )
 
 
 (defn connect []
-
   (def client (socket/connect-to-tws))
 )
 (defn getMarketData []
@@ -32,4 +34,18 @@
   (connect)
   (def contract (Contract. 0 "IBM" "STK" nil 0.0 nil nil "SMART" "USD" nil nil nil false nil nil))
   (def mdata (.reqMktData client 0 contract nil false))
+)
+(defn getStockLists []
+
+  (with-open [amexfile (io/reader "etc/amexlist.csv")
+              nysefile (io/reader "etc/nyselist.csv")
+              nasdaqfile (io/reader "etc/nasdaqlist.csv")
+              ]
+
+    (let [amexlist (csv/read-csv amexfile)
+          nyselist (csv/read-csv nysefile)
+          nasdaqlist (csv/read-csv nasdaqfile)])
+
+    )
+
 )
