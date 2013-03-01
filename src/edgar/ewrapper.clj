@@ -14,19 +14,19 @@
     (^void currentTime [_, ^long time] (println "..."))
     (^void error [_, ^int id, ^int errorCode, ^String errorString]
 
-      (println (<< "EWrapper.error CALLED > this[~{_}] > id[~{id}] > errorCode[~{errorCode}] > errorString[~{errorString}]")))
+      (println (<< "EWrapper.error CALLED > id[~{id}] > errorCode[~{errorCode}] > errorString[~{errorString}]")))
 
-    (^void error [_, ^String error] (println (<< "EWrapper.error CALLED > this[~{_}] > error[~{error}]")))
+    (^void error [_, ^String error] (println (<< "EWrapper.error CALLED > error[~{error}]")))
     (^void connectionClosed [_] (println (<< "EWrapper.connectionClosed > this[~{_}]")))
-
+    (^void tickSnapshotEnd [_, ^int thing] (println (<< "EWrapper.tickSnapshotEnd > thing[~{thing}]")))
 
     ;; Market Data
     (^void tickPrice [_, ^int tickerId, ^int field, ^double price, ^int canAutoExecute]
-      (println (<< "EWrapper.tickPrice CALLED > this[~{_}] > tickerId[~{tickerId}] > field[~{field}] > price[~{price}] > canAutoExecute[~{canAutoExecute}]")))
+      (println (<< "EWrapper.tickPrice CALLED > tickerId[~{tickerId}] > field[~{field}] > price[~{price}] > canAutoExecute[~{canAutoExecute}]")))
 
 
     (^void tickSize [_, ^int tickerId, ^int field, ^int size]
-      (println (<< "EWrapper.tickSize CALLED > this[~{_}] > tickerId[~{tickerId}] > field[~{field}] > size[~{size}]")))
+      (println (<< "EWrapper.tickSize CALLED > tickerId[~{tickerId}] > field[~{field}] > size[~{size}]")))
 
     (^void tickOptionComputation [_, ^int tickerId, ^int field, ^double impliedVol, ^double delta, ^double optPrice, ^double pvDividend, ^double gamma, ^double vega, ^double theta, ^double undPrice]
       (println (<< "EWrapper.tickOptionComputation CALLED > this[~{_}] > tickerId[~{tickerId}], field[~{field}], impliedVol[~{impliedVol}], delta[~{delta}], optPrice[~{optPrice}], pvDividend[~{pvDividend}], gamma[~{gamma}], vega[~{vega}], theta[~{theta}], undPrice[~{undPrice}]")))
