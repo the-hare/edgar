@@ -1,10 +1,12 @@
 (ns edgar.edgar
   (:import (com.ib.client EWrapper EClientSocket Contract Order OrderState ContractDetails Execution))
-  (:use [clojure.repl])
+  (:use [clojure.repl]
+        [clojure.core.strint])
   (:require [edgar.eclientsocket :as socket]
             [edgar.ewrapper :as ewrapper]
             [clojure.java.io :as io]
             [clojure.data.csv :as csv]
+            [clojure.string :as string]
             )
   )
 
@@ -44,8 +46,13 @@
 
     (let [amexlist (csv/read-csv amexfile)
           nyselist (csv/read-csv nysefile)
-          nasdaqlist (csv/read-csv nasdaqfile)])
+          nasdaqlist (csv/read-csv nasdaqfile)]
 
+      #_(println (rest nyselist))
+      (doall (map (fn [entry]
+
+             (println (<< "calling reqMktData on [~{(-> entry first string/trim)}]"))
+             (.reqMktData client 0 (Contract. 0, (-> entry first string/trim), "STK", nil, 0.0, nil, nil, "SMART", "USD", nil, nil, nil, false, nil, nil) nil true))
+           (rest nyselist))))
     )
-
 )
