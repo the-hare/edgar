@@ -44,15 +44,31 @@
               nasdaqfile (io/reader "etc/nasdaqlist.csv")
               ]
 
-    (let [amexlist (csv/read-csv amexfile)
-          nyselist (csv/read-csv nysefile)
+    (let [amexlist   (csv/read-csv amexfile)
+          nyselist   (csv/read-csv nysefile)
           nasdaqlist (csv/read-csv nasdaqfile)]
 
-      #_(println (rest nyselist))
-      (doall (map (fn [entry]
+
+      #_(doall (map (fn [entry]
 
              (println (<< "calling reqMktData on [~{(-> entry first string/trim)}]"))
              (.reqMktData client 0 (Contract. 0, (-> entry first string/trim), "STK", nil, 0.0, nil, nil, "SMART", "USD", nil, nil, nil, false, nil, nil) nil true))
-           (rest nyselist))))
+                    (rest nyselist)))
+
+
+      #_(for [ech (doall (rest nyselist))
+            idx (inc 0)]
+        (println (<< "calling reqMktData on [~{(-> ech first string/trim)}]"))
+        #_(.reqMktData client idx (Contract. idx, (-> ech first string/trim), "STK", nil, 0.0, nil, nil, "SMART", "USD", nil, nil, nil, false, nil, nil) nil true)
+        )
+
+      (reduce (fn [rslt ech]
+
+                (println (<< "calling reqMktData on [~{(-> ech first string/trim)}]"))
+                (.reqMktData client rslt (Contract. rslt, (-> ech first string/trim), "STK", nil, 0.0, nil, nil, "SMART", "USD", nil, nil, nil, false, nil, nil) nil true)
+                (inc rslt))
+              0
+              (doall (take 50 (rest nyselist))))
     )
+  )
 )
