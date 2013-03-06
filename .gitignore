@@ -11,3 +11,5 @@ pom.xml
 .lein-plugins
 .lein-env
 .lein-repl-history
+datomic-free-0.8.3826*
+etc/config.clj

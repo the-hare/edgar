@@ -1,0 +1,146 @@
+[
+  
+  ;; Bid & Ask prices
+  { :db/id #db/id[:db.part/db]
+    :db/ident :stock/bid-price
+    :db/valueType :db.type/double
+    :db/cardinality :db.cardinality/one
+    :db.install/_attribute :db.part/db }
+  
+  { :db/id #db/id[:db.part/db]
+    :db/ident :stock/ask-price
+    :db/valueType :db.type/double
+    :db/cardinality :db.cardinality/one
+    :db.install/_attribute :db.part/db }
+  
+  ;; Bid & Ask sizes
+  { :db/id #db/id[:db.part/db]
+    :db/ident :stock/bid-size
+    :db/valueType :db.type/double
+    :db/cardinality :db.cardinality/one
+    :db.install/_attribute :db.part/db }
+  
+  { :db/id #db/id[:db.part/db]
+    :db/ident :stock/ask-size
+    :db/valueType :db.type/double
+    :db/cardinality :db.cardinality/one
+    :db.install/_attribute :db.part/db }
+  
+  ;; Stock name & symbol
+  { :db/id #db/id[:db.part/db]
+    :db/ident :stock/name
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one
+    :db.install/_attribute :db.part/db }
+  
+  { :db/id #db/id[:db.part/db]
+    :db/ident :stock/symbol
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one
+    :db.install/_attribute :db.part/db }
+
+
+  ;; LAST_PRICE  tickPrice()
+  ;; LAST_SIZE tickSize()
+  { :db/id #db/id[:db.part/db]
+    :db/ident :stock/last-price
+    :db/valueType :db.type/double
+    :db/cardinality :db.cardinality/one
+    :db.install/_attribute :db.part/db }
+  
+  { :db/id #db/id[:db.part/db]
+    :db/ident :stock/last-size
+    :db/valueType :db.type/double
+    :db/cardinality :db.cardinality/one
+    :db.install/_attribute :db.part/db }
+  
+  
+  ;; HIGH  tickPrice()
+  ;; LOW tickPrice()
+  ;; VOLUME  tickSize()
+  { :db/id #db/id[:db.part/db]
+    :db/ident :stock/high
+    :db/valueType :db.type/double
+    :db/cardinality :db.cardinality/one
+    :db.install/_attribute :db.part/db }
+  
+  { :db/id #db/id[:db.part/db]
+    :db/ident :stock/low
+    :db/valueType :db.type/double
+    :db/cardinality :db.cardinality/one
+    :db.install/_attribute :db.part/db }
+  
+  { :db/id #db/id[:db.part/db]
+    :db/ident :stock/volume
+    :db/valueType :db.type/double
+    :db/cardinality :db.cardinality/one
+    :db.install/_attribute :db.part/db }
+
+  
+  ;; LOW_13_WEEK tickPrice()
+  ;; HIGH_13_WEEK  tickPrice()
+  { :db/id #db/id[:db.part/db]
+    :db/ident :stock/low-13-week
+    :db/valueType :db.type/double
+    :db/cardinality :db.cardinality/one
+    :db.install/_attribute :db.part/db }
+  
+  { :db/id #db/id[:db.part/db]
+    :db/ident :stock/high-13-week
+    :db/valueType :db.type/double
+    :db/cardinality :db.cardinality/one
+    :db.install/_attribute :db.part/db }
+
+  
+  ;; LOW_26_WEEK tickPrice()
+  ;; HIGH_26_WEEK  tickPrice()
+  { :db/id #db/id[:db.part/db]
+    :db/ident :stock/low-26-week
+    :db/valueType :db.type/double
+    :db/cardinality :db.cardinality/one
+    :db.install/_attribute :db.part/db }
+  
+  { :db/id #db/id[:db.part/db]
+    :db/ident :stock/high-26-week
+    :db/valueType :db.type/double
+    :db/cardinality :db.cardinality/one
+    :db.install/_attribute :db.part/db }
+
+  
+  ;; LOW_52_WEEK tickPrice()
+  ;; HIGH_52_WEEK  tickPrice()
+  { :db/id #db/id[:db.part/db]
+    :db/ident :stock/low-52-week
+    :db/valueType :db.type/double
+    :db/cardinality :db.cardinality/one
+    :db.install/_attribute :db.part/db }
+  
+  { :db/id #db/id[:db.part/db]
+    :db/ident :stock/high-52-week
+    :db/valueType :db.type/double
+    :db/cardinality :db.cardinality/one
+    :db.install/_attribute :db.part/db }
+
+  
+  ;; AVG_VOLUME  tickSize()
+  ;; OPEN_TICK tickPrice()
+  ;; OPEN_INTEREST tickSize()
+  { :db/id #db/id[:db.part/db]
+    :db/ident :stock/avg-volume
+    :db/valueType :db.type/double
+    :db/cardinality :db.cardinality/one
+    :db.install/_attribute :db.part/db }
+  
+  { :db/id #db/id[:db.part/db]
+    :db/ident :stock/open-tick
+    :db/valueType :db.type/double
+    :db/cardinality :db.cardinality/one
+    :db.install/_attribute :db.part/db }
+  
+  { :db/id #db/id[:db.part/db]
+    :db/ident :stock/open-interest
+    :db/valueType :db.type/double
+    :db/cardinality :db.cardinality/one
+    :db.install/_attribute :db.part/db }
+
+]

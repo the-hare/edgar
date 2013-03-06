@@ -9,5 +9,5 @@
   :plugins [[lein-ring "0.8.2"]]
   :ring {:handler edgar.handler/app}
   :profiles {:dev {:dependencies [[ring-mock "0.1.3"]]}}
-  :repositories {"local" ~(str (.toURI (java.io.File. "/Users/timothyw/.m2/repository/")))}
+  :repositories {"local" ~(str (.toURI (java.io.File. (str (-> (load-file "etc/config.clj") :dev :root-dir) ".m2/repository/"))))}
   )
