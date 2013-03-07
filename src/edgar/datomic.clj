@@ -3,9 +3,8 @@
   (:use [datomic.api :only [q db] :as d])
 )
 
-
+(def uri "datomic:free://localhost:4334/edgar")
 (defn database-create []
-  (def uri "datomic:free://localhost:4334/edgar")
   (d/create-database uri)
 )
 
