@@ -1,6 +1,8 @@
 (ns edgar.ewrapper
   (:import (com.ib.client EWrapper EClientSocket Contract Order OrderState ContractDetails Execution))
-  (:use [clojure.core.strint])
+  (:use [clojure.core.strint]
+        [datomic.api :only [q db] :as d])
+  (:require [edgar.datomic])
 )
 
 (defn create-ewrapper
@@ -13,7 +15,6 @@
     ;; Connection & Server
     (^void currentTime [_, ^long time] (println "..."))
     (^void error [_, ^int id, ^int errorCode, ^String errorString]
-
       (println (<< "EWrapper.error CALLED > id[~{id}] > errorCode[~{errorCode}] > errorString[~{errorString}]")))
 
     (^void error [_, ^String error] (println (<< "EWrapper.error CALLED > error[~{error}]")))
@@ -22,7 +23,16 @@
 
     ;; Market Data
     (^void tickPrice [_, ^int tickerId, ^int field, ^double price, ^int canAutoExecute]
-      (println (<< "EWrapper.tickPrice CALLED > tickerId[~{tickerId}] > field[~{field}] > price[~{price}] > canAutoExecute[~{canAutoExecute}]")))
+
+      (let [stock {:db/id (d/tempid :db.part/db) :stock/symbol "IBM" }
+            mstock (merge stock { (case field 1 :stock/bid-price 2 :stock/ask-price 4 :stock/last-price 6 :stock/high 7 :stock/low 9 :stock/low) price })
+            add-result @(d/transact edgar.datomic/conn [mstock])
+            ]
+
+        ;;(println (<< "EWrapper.tickPrice CALLED > tickerId[~{tickerId}] > field[~{field}] > price[~{price}] > canAutoExecute[~{canAutoExecute}] > db.transact[~{add-result} / ~{mstock}]"))
+        (println (<< "EWrapper.tickPrice CALLED > tickerId[~{tickerId}] > field[~{field}] > price[~{price}] > canAutoExecute[~{canAutoExecute}] > db.transact[/ ~{mstock}]"))
+      )
+    )
 
 
     (^void tickSize [_, ^int tickerId, ^int field, ^int size]

@@ -1,12 +1,14 @@
 (ns edgar.edgar
   (:import (com.ib.client EWrapper EClientSocket Contract Order OrderState ContractDetails Execution))
   (:use [clojure.repl]
-        [clojure.core.strint])
+        [clojure.core.strint]
+        [datomic.api :only [q db] :as d])
   (:require [edgar.eclientsocket :as socket]
             [edgar.ewrapper :as ewrapper]
             [clojure.java.io :as io]
             [clojure.data.csv :as csv]
             [clojure.string :as string]
+            [edgar.datomic :as edatomic]
             )
   )
 
@@ -36,6 +38,9 @@
   (connect)
   (def contract (Contract. 0 "IBM" "STK" nil 0.0 nil nil "SMART" "USD" nil nil nil false nil nil))
   (def mdata (.reqMktData client 0 contract nil false))
+
+  (edgar.datomic/database-connect)
+  @(d/transact edgar.datomic/conn  [{:db/id (d/tempid :db.part/db) :stock/symbol "IBM"}])
 )
 (defn getStockLists []
 
