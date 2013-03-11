@@ -17,7 +17,7 @@
     (^void error [_, ^int id, ^int errorCode, ^String errorString]
       (println (<< "EWrapper.error CALLED > id[~{id}] > errorCode[~{errorCode}] > errorString[~{errorString}]")))
 
-    (^void error [_, ^String error] (println (<< "EWrapper.error CALLED > error[~{error}]")))
+    (^void error [_, ^Exception error] (println (<< "EWrapper.error CALLED > error[~{error}]")))
     (^void connectionClosed [_] (println (<< "EWrapper.connectionClosed > this[~{_}]")))
     (^void tickSnapshotEnd [_, ^int thing] (println (<< "EWrapper.tickSnapshotEnd > thing[~{thing}]")))
 
@@ -25,12 +25,11 @@
     (^void tickPrice [_, ^int tickerId, ^int field, ^double price, ^int canAutoExecute]
 
       (let [stock {:db/id (d/tempid :db.part/db) :stock/symbol "IBM" }
-            mstock (merge stock { (case field 1 :stock/bid-price 2 :stock/ask-price 4 :stock/last-price 6 :stock/high 7 :stock/low 9 :stock/low) price })
+            mstock (merge stock { (case field 1 :stock/bid-price 2 :stock/ask-price 4 :stock/last-price 6 :stock/high 7 :stock/low 9 :stock/close) price })
             add-result @(d/transact edgar.datomic/conn [mstock])
             ]
 
-        ;;(println (<< "EWrapper.tickPrice CALLED > tickerId[~{tickerId}] > field[~{field}] > price[~{price}] > canAutoExecute[~{canAutoExecute}] > db.transact[~{add-result} / ~{mstock}]"))
-        (println (<< "EWrapper.tickPrice CALLED > tickerId[~{tickerId}] > field[~{field}] > price[~{price}] > canAutoExecute[~{canAutoExecute}] > db.transact[/ ~{mstock}]"))
+        (println (<< "EWrapper.tickPrice CALLED > tickerId[~{tickerId}] > field[~{field}] > price[~{price}] > canAutoExecute[~{canAutoExecute}] > db.transact[~{add-result} / ~{mstock}]"))
       )
     )
 

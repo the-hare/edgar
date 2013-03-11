@@ -60,6 +60,7 @@
 
   ;; HIGH  tickPrice()
   ;; LOW tickPrice()
+  ;; CLOSE tickPrice()
   ;; VOLUME  tickSize()
   { :db/id #db/id[:db.part/db]
     :db/ident :stock/high
@@ -69,6 +70,12 @@
 
   { :db/id #db/id[:db.part/db]
     :db/ident :stock/low
+    :db/valueType :db.type/double
+    :db/cardinality :db.cardinality/one
+    :db.install/_attribute :db.part/db }
+
+  { :db/id #db/id[:db.part/db]
+    :db/ident :stock/close
     :db/valueType :db.type/double
     :db/cardinality :db.cardinality/one
     :db.install/_attribute :db.part/db }

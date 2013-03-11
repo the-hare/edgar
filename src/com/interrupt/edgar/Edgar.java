@@ -1,7 +1,19 @@
-(ns edgar.edgar
-  (:import (com.ib.client EWrapper EClientSocket Contract Order OrderState ContractDetails Execution))
-  (:use [clojure.repl]
-        [clojure.core.strint]
+package com.interrupt.edgar;
+
+import com.ib.client.EWrapper;
+import com.ib.client.EClientSocket;
+import com.ib.client.Contract;
+import com.ib.client.Order;
+import com.ib.client.OrderState;
+import com.ib.client.ContractDetails;
+import com.ib.client.Execution;
+
+
+public class Edgar {
+
+  public static void main(String[] args) {}
+}
+  /*
         [datomic.api :only [q db] :as d])
   (:require [edgar.eclientsocket :as socket]
             [edgar.ewrapper :as ewrapper]
@@ -11,8 +23,10 @@
             [edgar.datomic :as edatomic]
             )
   )
+  */
 
 
+/*
 (defn connect []
   (def client (socket/connect-to-tws))
 )
@@ -64,3 +78,5 @@
       )
     )
   )
+*/
+

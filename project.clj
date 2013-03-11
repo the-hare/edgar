@@ -1,6 +1,8 @@
 (defproject edgar "0.1.0-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
+  :source-paths ["src"]
+  :java-source-paths ["src"]
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [compojure "1.1.5"]
                  [org.clojure/core.incubator "0.1.2"]
