@@ -9,10 +9,36 @@ import com.ib.client.ContractDetails;
 import com.ib.client.Execution;
 
 
-public class Edgar {
-
-  public static void main(String[] args) {}
+public class Edgar extends EWrapperImpl {
+  
+  
+  private String symbol = null;
+  private int requestId = 0;
+  private double lastPrice = 0.0;
+  
+  public Edgar(String symbol) {
+    this.symbol = symbol;
+  }
+  
+  public void run() {
+    
+    connectToTWS();
+    Contract contract = createContract(symbol, "STK", "SMART", "USD");
+    client.reqMktData(requestId++, contract, null, true);
+  }
+  public static void main(String[] args) {
+     
+    if (args.length != 1) {
+      System.out.println("Usage: java Edgar <symbol>");
+      System.exit(1);
+    }
+    else {
+      new Edgar(args[0]).start();
+    }
+  }
 }
+
+
   /*
         [datomic.api :only [q db] :as d])
   (:require [edgar.eclientsocket :as socket]

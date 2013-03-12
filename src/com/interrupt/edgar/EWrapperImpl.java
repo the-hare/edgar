@@ -15,26 +15,69 @@ import com.ib.client.UnderComp;
   (:require [edgar.datomic])
 */
 
-public class EWrapperImpl implements com.ib.client.EWrapper {
+public class EWrapperImpl extends Thread implements com.ib.client.EWrapper {
 
+
+  protected EClientSocket client = new EClientSocket(this);
+  protected final static String TWS_HOST = "localhost"; // "192.168.0.17"; //
+  protected final static int TWS_PORT = 7497;  // 4001; //
+  protected final static int TWS_CLIENT_ID = 1;
+  protected final static int MAX_WAIT_COUNT = 15; // 15 secs
+  protected final static int WAIT_TIME = 1000; // 1 sec
+
+
+  protected void connectToTWS() {
+    client.eConnect(TWS_HOST, TWS_PORT, TWS_CLIENT_ID);
+  }
+  protected void disconnectFromTWS() {
+    if (client.isConnected()) client.eDisconnect();
+  }
+  
+  protected Contract createContract(String symbol, String securityType,
+                                    String exchange, String currency) {
+      return createContract(symbol, securityType, exchange, currency, null, null, 0.0);
+  }
+  
+  protected Contract createContract(String symbol, String securityType,
+                                    String exchange, String currency,
+                                    String expiry, String right, double strike) {
+    Contract contract = new Contract();
+
+    contract.m_symbol = symbol;
+    contract.m_secType = securityType;
+    contract.m_exchange = exchange;
+    contract.m_currency = currency;
+
+    if (expiry != null) contract.m_expiry = expiry;
+    if (strike != 0.0) contract.m_strike = strike;
+    if (right != null) contract.m_right = right;
+
+    return contract;
+  }
+  
+
+  /**
+   * EWrapper interface functions
+   */
+  
   // Connection & Server
   public void currentTime (long time) {
-    System.out.println(String.format("EWrapper.currentTime > time[%l]", time));
+    System.out.println("EWrapper.currentTime > time["+ time +"]");
   }
   public void error (int id, int errorCode, String errorString) {
-    System.out.println(String.format("EWrapper.error > id[%i] > errorCode[%i] > errorString[%s]", id, errorCode, errorString));
+    System.out.println("EWrapper.error > id["+ id +"] > errorCode["+ errorCode +"] > errorString["+ errorString +"]");
   }
   public void error (Exception error) {
-    System.out.println(String.format("EWrapper.error(String) > error[%1]", error));
+    System.out.println("EWrapper.error(String) > error["+ error +"]");
   }
   public void error (String error) {
-    System.out.println(String.format("EWrapper.error[Exception] > error[%1]", error));
+    System.out.println("EWrapper.error[Exception] > error["+ error +"]");
   }
   public void connectionClosed () {
     System.out.println("EWrapper.connectionClosed");
   }
   public void tickSnapshotEnd (int arg) {
-    System.out.println(String.format("EWrapper.tickSnapshotEnd > arg[%i]", arg));
+    System.out.println("EWrapper.tickSnapshotEnd > arg["+ arg +"]");
   }
 
   // Market Data
@@ -44,17 +87,17 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
     System.out.println("EWrapper.tickPrice");
     switch(field) {
       case 1:
-        System.out.println(String.format("case 1 > bid-price[%d]", price));
+        System.out.println("case 1 > bid-price["+ price +"]");
       case 2:
-        System.out.println(String.format("case 2 > ask-price[%d]", price));
+        System.out.println("case 2 > ask-price["+ price +"]");
       case 4:
-        System.out.println(String.format("case 4 > last-price[%d]", price));
+        System.out.println("case 4 > last-price["+ price +"]");
       case 6:
-        System.out.println(String.format("case 6 > high[%d]", price));
+        System.out.println("case 6 > high["+ price +"]");
       case 7:
-        System.out.println(String.format("case 7 > low[%d]", price));
+        System.out.println("case 7 > low["+ price +"]");
       case 9:
-        System.out.println(String.format("case 9 > close[%d]", price));
+        System.out.println("case 9 > close["+ price +"]");
       default:
         System.out.println("default > noop");
     }
@@ -70,33 +113,31 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
 
 
   public void tickSize (int tickerId, int field, int size) {
-
-    System.out.println(String.format("EWrapper.tickSize > tickerId[%i] > field[%i] > size[%i]", tickerId, field, size));
+    
+    System.out.println("EWrapper.tickSize > tickerId["+ tickerId +"] > field["+ field +"] > size["+ size +"]");
   }
 
   public void tickOptionComputation (int tickerId, int field, double impliedVol, double delta, double optPrice, double pvDividend, double gamma, double vega, double theta, double undPrice) {
 
-    System.out.println(
-      String.format("EWrapper.tickOptionComputation > tickerId[%i] > field[%i] > impliedVol[%d] > delta[%d] > optPrice[%d] > pvDividend[%d] > gamma[%d] > vega[%d] > theta[%d] > undPrice[%d]",
-        tickerId, field, impliedVol, delta, optPrice, pvDividend, gamma, vega, theta, undPrice));
+    System.out.println( "EWrapper.tickOptionComputation > tickerId["+ tickerId 
+                        +"] > field["+ field +"] > impliedVol["+ impliedVol +"] > delta["+ delta +"] > optPrice["+ optPrice 
+                        +"] > pvDividend["+ pvDividend +"] > gamma["+ gamma +"] > vega["+ vega +"] > theta["+ theta +"] > undPrice["+ undPrice +"]");
   }
 
   public void tickGeneric (int tickerId, int tickType, double value) {
-
-    System.out.println(String.format("EWrapper.tickGeneric > tickerId[%i] > tickType[%i] > value[%d]", tickerId, tickType, value));
+    System.out.println("EWrapper.tickGeneric > tickerId["+ tickerId +"] > tickType["+ tickType +"] > value["+ value +"]");
   }
 
   public void tickString (int tickerId, int tickType, String value) {
-
-    System.out.println(String.format("EWrapper.tickString > tickerId[%i] > tickType[%i] > value[%d]", tickerId, tickType, value));
+    System.out.println("EWrapper.tickString > tickerId["+ tickerId +"] > tickType["+ tickType +"] > value["+ value +"]");
   }
 
   public void tickEFP ( int tickerId, int tickType, double basisPoints, String formattedBasisPoints, double impliedFuture,
                         int holdDays, String futureExpiry, double dividendImpact, double dividendsToExpiry) {
 
-    System.out.println(
-      String.format("EWrapper.tickEFP > tickerId[%i], tickType[%i], basisPoints[%d], formattedBasisPoints[%s], impliedFuture[%d], holdDays[%i], futureExpiry[%s], dividendImpact[%d], dividendsToExpiry[%d]",
-        tickerId, tickType, basisPoints, formattedBasisPoints, impliedFuture, holdDays, futureExpiry, dividendImpact, dividendsToExpiry));
+    System.out.println( "EWrapper.tickEFP > tickerId["+ tickerId +"], tickType["+ tickType +"], basisPoints["+ basisPoints 
+                        +"], formattedBasisPoints["+ formattedBasisPoints +"], impliedFuture["+ impliedFuture +"], holdDays["+ holdDays 
+                        +"], futureExpiry["+ futureExpiry +"], dividendImpact["+ dividendImpact +"], dividendsToExpiry["+ dividendsToExpiry +"]");
   }
 
 
@@ -128,13 +169,13 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
 
   // Contract Details
   public void contractDetails (int reqId, ContractDetails contractDetails) {
-    System.out.println(String.format("EWrapper.contractDetails > reqId[%i] > contractDetails[%2]", reqId, contractDetails));
+    //System.out.println(String.format("EWrapper.contractDetails > reqId[%i] > contractDetails[%2]", reqId, contractDetails));
   }
   public void contractDetailsEnd (int reqId) {
-    System.out.println(String.format("EWrapper.contractDetailsEnd > reqId[%i]", reqId));
+    //System.out.println(String.format("EWrapper.contractDetailsEnd > reqId[%i]", reqId));
   }
   public void bondContractDetails (int reqId, ContractDetails contractDetails) {
-    System.out.println(String.format("EWrapper.bondContractDetails > reqId[%i] > contractDetails[%2]", reqId, contractDetails));
+    //System.out.println(String.format("EWrapper.bondContractDetails > reqId[%i] > contractDetails[%2]", reqId, contractDetails));
   }
 
 
@@ -164,19 +205,21 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
 
   // Historical Data
   public void historicalData (int reqId, String date, double open, double high, double low, double close, int volume, int count, double WAP, boolean hasGaps) {
-    System.out.println(
+    /*System.out.println(
       String.format("EWrapper.historicalData > reqId[%i] > date[%s] > open[%d] > high[%d] > low[%d] > close[%d] > volume[%i] > count[%i] > WAP[%d] > hasGaps[%b]",
         reqId, date, open, high, low, close, volume, count, WAP, hasGaps));
+    */
   }
 
   // Market Scanners
   public void scannerParameters (String xml) {
-    System.out.println(String.format("EWrapper.scannerParameters > xml[%s]", xml));
+    //System.out.println(String.format("EWrapper.scannerParameters > xml[%s]", xml));
   }
   public void scannerData (int reqId, int rank, ContractDetails contractDetails, String distance, String benchmark, String projection, String legsStr) {
-    System.out.println(
+    /*System.out.println(
       String.format("EWrapper.scannerData > reqId[%i] > rank[%i] > contractDetails[%3] > distance[%s] > benchmark[%s] > projection[%s] > legalStr[%s]",
        reqId, rank, contractDetails, distance, benchmark, projection, legsStr));
+    */
   }
 
 
