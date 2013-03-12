@@ -6,6 +6,7 @@ changes
 pom.xml
 *.jar
 *.class
+*.java.swp
 .lein-deps-sum
 .lein-failures
 .lein-plugins
