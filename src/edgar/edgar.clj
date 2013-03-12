@@ -1,5 +1,5 @@
 (ns edgar.edgar
-  (:import (com.ib.client EWrapper EClientSocket Contract Order OrderState ContractDetails Execution))
+  (:import  (com.ib.client EWrapper EClientSocket Contract Order OrderState ContractDetails Execution))
   (:use [clojure.repl]
         [clojure.core.strint]
         [datomic.api :only [q db] :as d])

@@ -10,24 +10,58 @@ import com.ib.client.Execution;
 
 
 public class Edgar extends EWrapperImpl {
-  
-  
+
+
   private String symbol = null;
   private int requestId = 0;
   private double lastPrice = 0.0;
-  
+
   public Edgar(String symbol) {
     this.symbol = symbol;
   }
-  
+
   public void run() {
-    
-    connectToTWS();
-    Contract contract = createContract(symbol, "STK", "SMART", "USD");
-    client.reqMktData(requestId++, contract, null, true);
+
+    try {
+
+      boolean isSuccess = false;
+      int waitCount = 0;
+
+      connectToTWS();
+      Contract contract = createContract(symbol, "STK", "SMART", "USD");
+      client.reqMktData(requestId++, contract, null, true);
+
+      while (!isSuccess && waitCount < MAX_WAIT_COUNT) {
+          
+        // Check if last price loaded
+        if (lastPrice != 0.0) {
+          isSuccess = true;
+        }
+
+        if (!isSuccess) {
+          sleep(WAIT_TIME); // Pause for 1 second
+          waitCount++;
+        }
+      }
+
+      // Display results
+      if (isSuccess) {
+        System.out.println(" [Info] Last price for " + symbol + " was: " + lastPrice);
+      }
+      else {
+        System.out.println(" [Error] Failed to retrieve last price for " + symbol);
+      }
+    }
+    catch (Throwable t) {
+      System.out.println("Example1.run() :: Problem occurred during processing: " + t.getMessage());
+    }
+    finally {
+     disconnectFromTWS();
+    }
+
   }
   public static void main(String[] args) {
-     
+
     if (args.length != 1) {
       System.out.println("Usage: java Edgar <symbol>");
       System.exit(1);
@@ -105,4 +139,3 @@ public class Edgar extends EWrapperImpl {
     )
   )
 */
-

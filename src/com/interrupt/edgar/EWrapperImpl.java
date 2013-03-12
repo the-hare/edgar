@@ -84,22 +84,27 @@ public class EWrapperImpl extends Thread implements com.ib.client.EWrapper {
   public void tickPrice (int tickerId, int field, double price, int canAutoExecute) {
 
     System.out.println("");
-    System.out.println("EWrapper.tickPrice");
-    switch(field) {
-      case 1:
-        System.out.println("case 1 > bid-price["+ price +"]");
-      case 2:
-        System.out.println("case 2 > ask-price["+ price +"]");
-      case 4:
-        System.out.println("case 4 > last-price["+ price +"]");
-      case 6:
-        System.out.println("case 6 > high["+ price +"]");
-      case 7:
-        System.out.println("case 7 > low["+ price +"]");
-      case 9:
-        System.out.println("case 9 > close["+ price +"]");
-      default:
-        System.out.println("default > noop");
+    System.out.println("EWrapper.tickPrice > field["+ field +"]");
+    if (field == 1) {
+      System.out.println("case 1 > bid-price["+ price +"]");
+    }
+    else if (field == 2) {
+      System.out.println("case 2 > ask-price["+ price +"]");
+    }
+    else if (field == 4) {
+      System.out.println("case 4 > last-price["+ price +"]");
+    }
+    else if (field == 6) {
+      System.out.println("case 6 > high["+ price +"]");
+    }
+    else if (field == 7) {
+      System.out.println("case 7 > low["+ price +"]");
+    }
+    else if(field == 9) {
+      System.out.println("case 9 > close["+ price +"]");
+    }
+    else {
+      System.out.println("default > noop");
     }
     /*(let [stock {:db/id (d/tempid :db.part/db) :stock/symbol "IBM" }
           mstock (merge stock { (case field 1 :stock/bid-price 2 :stock/ask-price 4 :stock/last-price 6 :stock/high 7 :stock/low 9 :stock/close) price })
