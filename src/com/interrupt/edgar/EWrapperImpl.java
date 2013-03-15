@@ -1,5 +1,10 @@
 package com.interrupt.edgar;
 
+
+import java.util.Map;
+import backtype.storm.spout.SpoutOutputCollector;
+import backtype.storm.task.TopologyContext;
+
 import com.ib.client.EWrapper;
 import com.ib.client.EClientSocket;
 import com.ib.client.Contract;
@@ -15,7 +20,7 @@ import com.ib.client.UnderComp;
   (:require [edgar.datomic])
 */
 
-public class EWrapperImpl extends Thread implements com.ib.client.EWrapper {
+public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, backtype.storm.spout.ISpout {
 
 
   protected EClientSocket client = new EClientSocket(this);
@@ -55,6 +60,20 @@ public class EWrapperImpl extends Thread implements com.ib.client.EWrapper {
     return contract;
   }
   
+
+  /**
+   * Storm ISpout interface functions
+   */
+
+  public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {}
+  public void close() {}
+  public void activate() {}
+  public void deactivate() {}
+  public void nextTuple() {}
+  public void ack(Object msgId) {}
+  public void fail(Object msgId) {}
+
+
 
   /**
    * EWrapper interface functions
