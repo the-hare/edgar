@@ -2,8 +2,12 @@ package com.interrupt.edgar;
 
 
 import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 import backtype.storm.spout.SpoutOutputCollector;
 import backtype.storm.task.TopologyContext;
+import backtype.storm.topology.OutputFieldsDeclarer;
 
 import com.ib.client.EWrapper;
 import com.ib.client.EClientSocket;
@@ -20,17 +24,49 @@ import com.ib.client.UnderComp;
   (:require [edgar.datomic])
 */
 
-public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, backtype.storm.spout.ISpout {
+//public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, backtype.storm.spout.ISpout {
+public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, backtype.storm.topology.IRichSpout {
 
 
+  /**
+   * Storm spout stuff
+   */
+  private SpoutOutputCollector _collector;
+  private List<Object> _tuple;
+  
+  
+  /**
+   * Storm ISpout interface functions
+   */
+  public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
+    _collector = collector;
+    _tuple = new ArrayList<Object>();
+  }
+  public void close() {}
+  public void activate() {}
+  public void deactivate() {}
+  public void nextTuple() {
+    _collector.emit(_tuple);
+    _tuple.clear();
+  }
+  public void ack(Object msgId) {}
+  public void fail(Object msgId) {}
+
+
+  public void declareOutputFields(OutputFieldsDeclarer declarer) {}
+  public java.util.Map<java.lang.String,java.lang.Object>  getComponentConfiguration() { return null; }
+  
+
+  /**
+   * EWrapper members
+   */
   protected EClientSocket client = new EClientSocket(this);
   protected final static String TWS_HOST = "localhost"; // "192.168.0.17"; //
   protected final static int TWS_PORT = 7497;  // 4001; //
   protected final static int TWS_CLIENT_ID = 1;
   protected final static int MAX_WAIT_COUNT = 15; // 15 secs
   protected final static int WAIT_TIME = 1000; // 1 sec
-
-
+  
   protected void connectToTWS() {
     client.eConnect(TWS_HOST, TWS_PORT, TWS_CLIENT_ID);
   }
@@ -60,19 +96,6 @@ public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, back
     return contract;
   }
   
-
-  /**
-   * Storm ISpout interface functions
-   */
-
-  public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {}
-  public void close() {}
-  public void activate() {}
-  public void deactivate() {}
-  public void nextTuple() {}
-  public void ack(Object msgId) {}
-  public void fail(Object msgId) {}
-
 
 
   /**
@@ -125,14 +148,14 @@ public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, back
     else {
       System.out.println("default > noop");
     }
-    /*(let [stock {:db/id (d/tempid :db.part/db) :stock/symbol "IBM" }
-          mstock (merge stock { (case field 1 :stock/bid-price 2 :stock/ask-price 4 :stock/last-price 6 :stock/high 7 :stock/low 9 :stock/close) price })
-          add-result @(d/transact edgar.datomic/conn [mstock])
-          ]
 
-      (println (<< "EWrapper.tickPrice CALLED > tickerId[~{tickerId}] > field[~{field}] > price[~{price}] > canAutoExecute[~{canAutoExecute}] > db.transact[~{add-result} / ~{mstock}]"))
-    )
-    */
+    Map tentry = new HashMap();
+    tentry.put("tickerId", tickerId);
+    tentry.put("field", field);
+    tentry.put("price", price);
+    tentry.put("canAutoExecute", canAutoExecute);
+    
+    _tuple.add(tentry);
   }
 
 
