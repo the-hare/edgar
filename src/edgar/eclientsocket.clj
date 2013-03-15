@@ -11,7 +11,7 @@
         es (defonce esocket (EClientSocket. wrap))
         ]
     (.eConnect esocket "localhost" 7497 0)
-    esocket
+    { :esocket esocket :ewrapper wrap }
   )
 )
 

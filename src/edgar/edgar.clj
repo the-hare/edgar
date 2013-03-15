@@ -3,18 +3,19 @@
   (:use [clojure.repl]
         [clojure.core.strint]
         [datomic.api :only [q db] :as d])
-  (:require [edgar.eclientsocket :as socket]
-            [edgar.ewrapper :as ewrapper]
-            [clojure.java.io :as io]
+  (:require [clojure.java.io :as io]
             [clojure.data.csv :as csv]
             [clojure.string :as string]
+            [backtype.storm.clojure :as storm]
             [edgar.datomic :as edatomic]
+            [edgar.eclientsocket :as socket]
+            [edgar.ewrapper :as ewrapper]
             )
   )
 
 
 (defn connect []
-  (def client (socket/connect-to-tws))
+  (socket/connect-to-tws)
 )
 (defn getMarketData []
   #_(let [
@@ -31,17 +32,25 @@
                             nil, nil)
 
         ;; request Market Data
-        xxx (.reqMktData client 0 contract nil false)
+
        ]
       )
 
-  (connect)
   (edgar.datomic/database-connect)
-
-  (def contract (Contract. 0 "IBM" "STK" nil 0.0 nil nil "SMART" "USD" nil nil nil false nil nil))
-  (def mdata (.reqMktData client 0 contract nil false))
-
   #_@(d/transact edgar.datomic/conn  [{:db/id (d/tempid :db.part/db) :stock/symbol "IBM"}])
+
+  (def connect-result (connect))
+  (def contract (Contract. 0 "IBM" "STK" nil 0.0 nil nil "SMART" "USD" nil nil nil false nil nil))
+  (def mdata (.reqMktData (:esocket connect-result) 0 contract nil false))
+
+  (storm/topology
+   { "1" (storm/spout-spec (:ewrapper connect-result))
+   }
+   { "3" (storm/bolt-spec  { "1" :shuffle }
+                           println
+         )
+   })
+
 )
 (defn getStockLists []
 
@@ -57,7 +66,7 @@
       (reduce (fn [rslt ech]
 
                 (println (<< "calling reqMktData on [~{(-> ech first string/trim)}]"))
-                (.reqMktData client rslt (Contract. rslt, (-> ech first string/trim), "STK", nil, 0.0, nil, nil, "SMART", "USD", nil, nil, nil, false, nil, nil) nil true)
+                #_(.reqMktData client rslt (Contract. rslt, (-> ech first string/trim), "STK", nil, 0.0, nil, nil, "SMART", "USD", nil, nil, nil, false, nil, nil) nil true)
                 (inc rslt))
               0
               (doall (take 50 (rest nyselist))))
