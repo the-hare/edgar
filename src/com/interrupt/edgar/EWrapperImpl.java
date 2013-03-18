@@ -32,15 +32,15 @@ public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, back
    * Storm spout stuff
    */
   private SpoutOutputCollector _collector;
-  private List<Object> _tuple;
-  
-  
+  private List<Object> _tuple = new ArrayList<Object>();
+
+
   /**
    * Storm ISpout interface functions
    */
   public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
     _collector = collector;
-    _tuple = new ArrayList<Object>();
+    //_tuple = new ArrayList<Object>();
   }
   public void close() {}
   public void activate() {}
@@ -55,7 +55,7 @@ public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, back
 
   public void declareOutputFields(OutputFieldsDeclarer declarer) {}
   public java.util.Map<java.lang.String,java.lang.Object>  getComponentConfiguration() { return null; }
-  
+
 
   /**
    * EWrapper members
@@ -66,19 +66,19 @@ public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, back
   protected final static int TWS_CLIENT_ID = 1;
   protected final static int MAX_WAIT_COUNT = 15; // 15 secs
   protected final static int WAIT_TIME = 1000; // 1 sec
-  
+
   protected void connectToTWS() {
     client.eConnect(TWS_HOST, TWS_PORT, TWS_CLIENT_ID);
   }
   protected void disconnectFromTWS() {
     if (client.isConnected()) client.eDisconnect();
   }
-  
+
   protected Contract createContract(String symbol, String securityType,
                                     String exchange, String currency) {
       return createContract(symbol, securityType, exchange, currency, null, null, 0.0);
   }
-  
+
   protected Contract createContract(String symbol, String securityType,
                                     String exchange, String currency,
                                     String expiry, String right, double strike) {
@@ -95,13 +95,13 @@ public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, back
 
     return contract;
   }
-  
+
 
 
   /**
    * EWrapper interface functions
    */
-  
+
   // Connection & Server
   public void currentTime (long time) {
     System.out.println("EWrapper.currentTime > time["+ time +"]");
@@ -110,10 +110,11 @@ public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, back
     System.out.println("EWrapper.error > id["+ id +"] > errorCode["+ errorCode +"] > errorString["+ errorString +"]");
   }
   public void error (Exception error) {
-    System.out.println("EWrapper.error(String) > error["+ error +"]");
+    System.out.println("EWrapper.error[Exception] > error["+ error +"]");
+    error.printStackTrace();
   }
   public void error (String error) {
-    System.out.println("EWrapper.error[Exception] > error["+ error +"]");
+    System.out.println("EWrapper.error[String] > error["+ error +"]");
   }
   public void connectionClosed () {
     System.out.println("EWrapper.connectionClosed");
@@ -154,20 +155,20 @@ public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, back
     tentry.put("field", field);
     tentry.put("price", price);
     tentry.put("canAutoExecute", canAutoExecute);
-    
+
     _tuple.add(tentry);
   }
 
 
   public void tickSize (int tickerId, int field, int size) {
-    
+
     System.out.println("EWrapper.tickSize > tickerId["+ tickerId +"] > field["+ field +"] > size["+ size +"]");
   }
 
   public void tickOptionComputation (int tickerId, int field, double impliedVol, double delta, double optPrice, double pvDividend, double gamma, double vega, double theta, double undPrice) {
 
-    System.out.println( "EWrapper.tickOptionComputation > tickerId["+ tickerId 
-                        +"] > field["+ field +"] > impliedVol["+ impliedVol +"] > delta["+ delta +"] > optPrice["+ optPrice 
+    System.out.println( "EWrapper.tickOptionComputation > tickerId["+ tickerId
+                        +"] > field["+ field +"] > impliedVol["+ impliedVol +"] > delta["+ delta +"] > optPrice["+ optPrice
                         +"] > pvDividend["+ pvDividend +"] > gamma["+ gamma +"] > vega["+ vega +"] > theta["+ theta +"] > undPrice["+ undPrice +"]");
   }
 
@@ -182,8 +183,8 @@ public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, back
   public void tickEFP ( int tickerId, int tickType, double basisPoints, String formattedBasisPoints, double impliedFuture,
                         int holdDays, String futureExpiry, double dividendImpact, double dividendsToExpiry) {
 
-    System.out.println( "EWrapper.tickEFP > tickerId["+ tickerId +"], tickType["+ tickType +"], basisPoints["+ basisPoints 
-                        +"], formattedBasisPoints["+ formattedBasisPoints +"], impliedFuture["+ impliedFuture +"], holdDays["+ holdDays 
+    System.out.println( "EWrapper.tickEFP > tickerId["+ tickerId +"], tickType["+ tickType +"], basisPoints["+ basisPoints
+                        +"], formattedBasisPoints["+ formattedBasisPoints +"], impliedFuture["+ impliedFuture +"], holdDays["+ holdDays
                         +"], futureExpiry["+ futureExpiry +"], dividendImpact["+ dividendImpact +"], dividendsToExpiry["+ dividendsToExpiry +"]");
   }
 
