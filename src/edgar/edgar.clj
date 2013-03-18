@@ -43,11 +43,14 @@
   (def contract (Contract. 0 "IBM" "STK" nil 0.0 nil nil "SMART" "USD" nil nil nil false nil nil))
   (def mdata (.reqMktData (:esocket connect-result) 0 contract nil false))
 
+  (storm/defbolt printstuff ["word"] [tuple collector]
+    (println tuple)
+    )
   (storm/topology
    { "1" (storm/spout-spec (:ewrapper connect-result))
    }
    { "3" (storm/bolt-spec  { "1" :shuffle }
-                           println
+                           printstuff
          )
    })
 
