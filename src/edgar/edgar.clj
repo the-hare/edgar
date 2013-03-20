@@ -47,7 +47,7 @@
     (println tuple)
     )
   (storm/topology
-   { "1" (storm/spout-spec (:ewrapper connect-result))
+   { "1" (storm/spout-spec socket/wrap)
    }
    { "3" (storm/bolt-spec  { "1" :shuffle }
                            printstuff

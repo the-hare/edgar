@@ -1,6 +1,7 @@
 package com.interrupt.edgar;
 
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +26,7 @@ import com.ib.client.UnderComp;
 */
 
 //public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, backtype.storm.spout.ISpout {
-public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, backtype.storm.topology.IRichSpout {
+public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, backtype.storm.topology.IRichSpout, java.io.Serializable {
 
 
   /**
@@ -54,7 +55,7 @@ public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, back
 
 
   public void declareOutputFields(OutputFieldsDeclarer declarer) {}
-  public java.util.Map<java.lang.String,java.lang.Object>  getComponentConfiguration() { return null; }
+    public java.util.Map<java.lang.String,java.lang.Object>  getComponentConfiguration() { return new HashMap(); }
 
 
   /**
