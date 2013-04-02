@@ -43,14 +43,14 @@
   (def connect-result (connect))
   (def contract (Contract. 0 "IBM" "STK" nil 0.0 nil nil "SMART" "USD" nil nil nil false nil nil))
   (def mdata (.reqMktData (:esocket connect-result) 0 contract nil false))
-  (def ibspout (IBSpout.))
+  (defonce ibspout (IBSpout.))
 
   ;; tie EWrapperImpl to a Spout that I created
   (.setSpout (:ewrapper connect-result) ibspout)
 
   (storm/defbolt printstuff ["word"] [tuple collector]
-    (println tuple)
-    )
+    (println (str "printstuff --> tuple["tuple"] > collector["collector"]"))
+  )
   (storm/topology
    { "1" (storm/spout-spec ibspout)
    }

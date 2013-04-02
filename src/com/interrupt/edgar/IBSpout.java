@@ -14,15 +14,17 @@ import backtype.storm.topology.IRichSpout;
 public class IBSpout implements IRichSpout {
 
 
+  public IBSpout() {}
+
   /**
    * Storm spout stuff
    */
   private SpoutOutputCollector _collector;
-  
+
   private List<Object> _tuple = new ArrayList<Object>();
   public void setTuple(List<Object> tuple) { _tuple = tuple; }
   public List<Object> getTuple() { return _tuple; }
-  
+
   /**
    * Storm ISpout interface functions
    */
@@ -38,9 +40,9 @@ public class IBSpout implements IRichSpout {
   }
   public void ack(Object msgId) {}
   public void fail(Object msgId) {}
-  
-  
+
+
   public void declareOutputFields(OutputFieldsDeclarer declarer) {}
   public java.util.Map<java.lang.String,java.lang.Object>  getComponentConfiguration() { return new HashMap(); }
-  
+
 }
