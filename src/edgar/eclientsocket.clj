@@ -5,8 +5,8 @@
 
 
 (defn connect-to-tws []
-
-  ;;(let [wr (defonce wrap (wrapper/create-ewrapper))
+  
+  ;;let [wr (defonce wrap (wrapper/create-ewrapper))
   (let [wr (defonce wrap (EWrapperImpl.))
         es (defonce esocket (EClientSocket. wrap))
         ]

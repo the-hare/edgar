@@ -1,5 +1,6 @@
 (ns edgar.edgar
-  (:import  (com.ib.client EWrapper EClientSocket Contract Order OrderState ContractDetails Execution))
+  (:import  (com.ib.client EWrapper EClientSocket Contract Order OrderState ContractDetails Execution)
+            (com.interrupt.edgar IBSpout))
   (:use [clojure.repl]
         [clojure.core.strint]
         [datomic.api :only [q db] :as d])
@@ -36,18 +37,22 @@
        ]
       )
 
-  (edgar.datomic/database-connect)
+  #_(edgar.datomic/database-connect)
   #_@(d/transact edgar.datomic/conn  [{:db/id (d/tempid :db.part/db) :stock/symbol "IBM"}])
 
   (def connect-result (connect))
   (def contract (Contract. 0 "IBM" "STK" nil 0.0 nil nil "SMART" "USD" nil nil nil false nil nil))
   (def mdata (.reqMktData (:esocket connect-result) 0 contract nil false))
+  (def ibspout (IBSpout.))
+
+  ;; tie EWrapperImpl to a Spout that I created
+  (.setSpout (:ewrapper connect-result) ibspout)
 
   (storm/defbolt printstuff ["word"] [tuple collector]
     (println tuple)
     )
   (storm/topology
-   { "1" (storm/spout-spec socket/wrap)
+   { "1" (storm/spout-spec ibspout)
    }
    { "3" (storm/bolt-spec  { "1" :shuffle }
                            printstuff

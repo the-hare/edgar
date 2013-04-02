@@ -1,7 +1,6 @@
 package com.interrupt.edgar;
 
 
-import java.io.Serializable;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -25,39 +24,22 @@ import com.ib.client.UnderComp;
   (:require [edgar.datomic])
 */
 
-//public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, backtype.storm.spout.ISpout {
-public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, backtype.storm.topology.IRichSpout, java.io.Serializable {
-
-
-  /**
-   * Storm spout stuff
-   */
-  private SpoutOutputCollector _collector;
-  private List<Object> _tuple = new ArrayList<Object>();
-
-
-  /**
-   * Storm ISpout interface functions
-   */
-  public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
-    _collector = collector;
-    //_tuple = new ArrayList<Object>();
+//public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, backtype.storm.topology.IRichSpout {
+public class EWrapperImpl extends Thread implements com.ib.client.EWrapper {
+  
+  
+  protected List<Object> _tuple = null;
+  protected IBSpout _spout = null;
+  public void setSpout(IBSpout inspout) {
+    
+    _spout = inspout;
+    
+    if(_tuple == null) { _tuple = new ArrayList<Object>(); }
+    _spout.setTuple(_tuple);
   }
-  public void close() {}
-  public void activate() {}
-  public void deactivate() {}
-  public void nextTuple() {
-    _collector.emit(_tuple);
-    _tuple.clear();
-  }
-  public void ack(Object msgId) {}
-  public void fail(Object msgId) {}
-
-
-  public void declareOutputFields(OutputFieldsDeclarer declarer) {}
-    public java.util.Map<java.lang.String,java.lang.Object>  getComponentConfiguration() { return new HashMap(); }
-
-
+  public backtype.storm.topology.IRichSpout getSpout() { return _spout; }
+  
+  
   /**
    * EWrapper members
    */
@@ -84,16 +66,16 @@ public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, back
                                     String exchange, String currency,
                                     String expiry, String right, double strike) {
     Contract contract = new Contract();
-
+    
     contract.m_symbol = symbol;
     contract.m_secType = securityType;
     contract.m_exchange = exchange;
     contract.m_currency = currency;
-
+    
     if (expiry != null) contract.m_expiry = expiry;
     if (strike != 0.0) contract.m_strike = strike;
     if (right != null) contract.m_right = right;
-
+    
     return contract;
   }
 
@@ -102,7 +84,7 @@ public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, back
   /**
    * EWrapper interface functions
    */
-
+  
   // Connection & Server
   public void currentTime (long time) {
     System.out.println("EWrapper.currentTime > time["+ time +"]");
@@ -123,7 +105,7 @@ public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, back
   public void tickSnapshotEnd (int arg) {
     System.out.println("EWrapper.tickSnapshotEnd > arg["+ arg +"]");
   }
-
+  
   // Market Data
   public void tickPrice (int tickerId, int field, double price, int canAutoExecute) {
 
@@ -151,13 +133,18 @@ public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, back
       System.out.println("default > noop");
     }
 
-    Map tentry = new HashMap();
-    tentry.put("tickerId", tickerId);
-    tentry.put("field", field);
-    tentry.put("price", price);
-    tentry.put("canAutoExecute", canAutoExecute);
-
-    _tuple.add(tentry);
+    /**
+     */
+    if(_tuple != null) {
+      
+      Map tentry = new HashMap();
+      tentry.put("tickerId", tickerId);
+      tentry.put("field", field);
+      tentry.put("price", price);
+      tentry.put("canAutoExecute", canAutoExecute);
+      
+      _tuple.add(tentry);
+    }
   }
 
 
