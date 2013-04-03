@@ -9,12 +9,13 @@ import backtype.storm.spout.SpoutOutputCollector;
 import backtype.storm.task.TopologyContext;
 import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.IRichSpout;
+import backtype.storm.tuple.Fields;
 
 
 public class IBSpout implements IRichSpout {
 
 
-  public IBSpout() {}
+	public IBSpout() {}
 
   /**
    * Storm spout stuff
@@ -36,13 +37,14 @@ public class IBSpout implements IRichSpout {
   public void deactivate() {}
   public void nextTuple() {
     _collector.emit(_tuple);
-    _tuple.clear();
   }
   public void ack(Object msgId) {}
   public void fail(Object msgId) {}
 
 
-  public void declareOutputFields(OutputFieldsDeclarer declarer) {}
+  public void declareOutputFields(OutputFieldsDeclarer declarer) {
+		declarer.declare(new Fields("word"));
+	}
   public java.util.Map<java.lang.String,java.lang.Object>  getComponentConfiguration() { return new HashMap(); }
 
 }

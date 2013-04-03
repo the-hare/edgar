@@ -23,7 +23,7 @@ import com.ib.client.UnderComp;
 public class EWrapperImpl extends Thread implements com.ib.client.EWrapper {
 
 
-  protected List<Object> _tuple = null;
+  protected List<Object> _tuple = new ArrayList<Object>();
   public void setTuple(List<Object> tuple) { _tuple = tuple; }
   public List<Object> getTuple() { return _tuple; }
 
