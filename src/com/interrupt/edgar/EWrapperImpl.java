@@ -20,26 +20,14 @@ import com.ib.client.CommissionReport;
 import com.ib.client.UnderComp;
 
 
-/*[datomic.api :only [q db] :as d])
-  (:require [edgar.datomic])
-*/
-
-//public class EWrapperImpl extends Thread implements com.ib.client.EWrapper, backtype.storm.topology.IRichSpout {
 public class EWrapperImpl extends Thread implements com.ib.client.EWrapper {
-  
-  
+
+
   protected List<Object> _tuple = null;
-  protected IBSpout _spout = null;
-  public void setSpout(IBSpout inspout) {
-    
-    _spout = inspout;
-    
-    if(_tuple == null) { _tuple = new ArrayList<Object>(); }
-    _spout.setTuple(_tuple);
-  }
-  public backtype.storm.topology.IRichSpout getSpout() { return _spout; }
-  
-  
+  public void setTuple(List<Object> tuple) { _tuple = tuple; }
+  public List<Object> getTuple() { return _tuple; }
+
+
   /**
    * EWrapper members
    */
@@ -66,16 +54,16 @@ public class EWrapperImpl extends Thread implements com.ib.client.EWrapper {
                                     String exchange, String currency,
                                     String expiry, String right, double strike) {
     Contract contract = new Contract();
-    
+
     contract.m_symbol = symbol;
     contract.m_secType = securityType;
     contract.m_exchange = exchange;
     contract.m_currency = currency;
-    
+
     if (expiry != null) contract.m_expiry = expiry;
     if (strike != 0.0) contract.m_strike = strike;
     if (right != null) contract.m_right = right;
-    
+
     return contract;
   }
 
@@ -84,7 +72,7 @@ public class EWrapperImpl extends Thread implements com.ib.client.EWrapper {
   /**
    * EWrapper interface functions
    */
-  
+
   // Connection & Server
   public void currentTime (long time) {
     System.out.println("EWrapper.currentTime > time["+ time +"]");
@@ -105,7 +93,7 @@ public class EWrapperImpl extends Thread implements com.ib.client.EWrapper {
   public void tickSnapshotEnd (int arg) {
     System.out.println("EWrapper.tickSnapshotEnd > arg["+ arg +"]");
   }
-  
+
   // Market Data
   public void tickPrice (int tickerId, int field, double price, int canAutoExecute) {
 
@@ -136,13 +124,13 @@ public class EWrapperImpl extends Thread implements com.ib.client.EWrapper {
     /**
      */
     if(_tuple != null) {
-      
+
       Map tentry = new HashMap();
       tentry.put("tickerId", tickerId);
       tentry.put("field", field);
       tentry.put("price", price);
       tentry.put("canAutoExecute", canAutoExecute);
-      
+
       _tuple.add(tentry);
     }
   }

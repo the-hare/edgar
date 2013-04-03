@@ -46,7 +46,8 @@
   (defonce ibspout (IBSpout.))
 
   ;; tie EWrapperImpl to a Spout that I created
-  (.setSpout (:ewrapper connect-result) ibspout)
+  (.setTuple ibspout (.getTuple (:ewrapper connect-result)))
+
 
   (storm/defbolt printstuff ["word"] [tuple collector]
     (println (str "printstuff --> tuple["tuple"] > collector["collector"]"))
