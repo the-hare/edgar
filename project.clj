@@ -8,7 +8,7 @@
                  [org.clojure/core.incubator "0.1.2"]
                  [jtsclient/jtsclient "9.8.3"]
                  [org.clojure/data.csv "0.1.2"]
-                 [com.datomic/datomic "0.8.3335"]
+                 #_[com.datomic/datomic "0.8.3335"]
                  [storm "0.9.0-wip16"]]
   :plugins [[lein-ring "0.8.2"]]
   :ring {:handler edgar.handler/app}
