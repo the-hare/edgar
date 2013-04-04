@@ -1,7 +1,9 @@
 (ns edgar.edgar
   (:import  (com.ib.client EWrapper EClientSocket Contract Order OrderState ContractDetails Execution)
-            (com.interrupt.edgar IBSpout))
+            (com.interrupt.edgar IBSpout)
+            (backtype.storm StormSubmitter LocalCluster))
   (:use [clojure.repl]
+        [backtype.storm clojure config]
         [clojure.core.strint]
         [datomic.api :only [q db] :as d])
   (:require [clojure.java.io :as io]
@@ -36,13 +38,22 @@
   (storm/defbolt printstuff ["word"] [tuple collector]
     (println (str "printstuff --> tuple["tuple"] > collector["collector"]"))
   )
-  (storm/topology
-   { "1" (storm/spout-spec ibspout)
-   }
-   { "3" (storm/bolt-spec  { "1" :shuffle }
-                           printstuff
-         )
-   })
+
+  (defn mk-topology []
+    (storm/topology
+     { "1" (storm/spout-spec ibspout)
+     }
+     { "3" (storm/bolt-spec  { "1" :shuffle }
+                             printstuff
+                             )
+     }))
+
+  (defn run-local! []
+    (let [cluster (LocalCluster.)]
+      (.submitTopology cluster "word-count" {TOPOLOGY-DEBUG true} (mk-topology))
+      (Thread/sleep 10000)
+      (.shutdown cluster)))
+
 
 )
 (defn getStockLists []
