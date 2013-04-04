@@ -11,12 +11,34 @@
             [clojure.string :as string]
             [backtype.storm.clojure :as storm]
             #_[edgar.datomic :as edatomic]
-            #_[edgar.eclientsocket :as socket]
-            #_[edgar.ewrapper :as ewrapper]
+            [edgar.eclientsocket :as socket]
             )
   (:gen-class)
   )
 
+
+;; INTERACTIVE BROKERS code
+(defn connect []
+  (socket/connect-to-tws))
+
+(defn getMarketData []
+
+
+  #_(edgar.datomic/database-connect)
+  #_@(d/transact edgar.datomic/conn  [{:db/id (d/tempid :db.part/db) :stock/symbol "IBM"}])
+
+  (def connect-result (connect))
+  (def contract (Contract. 0 "IBM" "STK" nil 0.0 nil nil "SMART" "USD" nil nil nil false nil nil))
+  (def mdata (.reqMktData (:esocket connect-result) 0 contract nil false))
+  #_(defonce ibspout (IBSpout.))
+  #_ (storm/defbolt printstuff ["word"] [tuple collector]
+       (println (str "printstuff --> tuple["tuple "] > collector["collector "]")) )
+
+  ;; tie EWrapperImpl to a Spout that I created
+  #_ (.setTuple ibspout (.getTuple (:ewrapper connect-result))))
+
+
+;; STORM code
 (defspout ibspout ["sentence"]
   [conf context collector]
   (let [sentences ["a little brown dog"
