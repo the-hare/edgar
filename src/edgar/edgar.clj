@@ -30,12 +30,12 @@
   (def connect-result (connect))
   (def contract (Contract. 0 "IBM" "STK" nil 0.0 nil nil "SMART" "USD" nil nil nil false nil nil))
   (def mdata (.reqMktData (:esocket connect-result) 0 contract nil false))
-  #_(defonce ibspout (IBSpout.))
-  #_ (storm/defbolt printstuff ["word"] [tuple collector]
+  (defonce ibspout2 (IBSpout.))
+  (storm/defbolt printstuff ["word"] [tuple collector]
        (println (str "printstuff --> tuple["tuple "] > collector["collector "]")) )
 
   ;; tie EWrapperImpl to a Spout that I created
-  #_ (.setTuple ibspout (.getTuple (:ewrapper connect-result))))
+  (.setTuple ibspout2 (.getTuple (:ewrapper connect-result))))
 
 
 ;; STORM code
@@ -66,9 +66,9 @@
 )
 
 
-(defn mk-topology []
+(defn mk-topology [in-spout]
   (storm/topology
-   { "1" (storm/spout-spec ibspout) }
+   { "1" (storm/spout-spec in-spout) }
    { "3" (storm/bolt-spec  { "1" :shuffle }
                            ibbolt
                            :p 5)
@@ -76,8 +76,14 @@
 
 
 (defn run-local! []
-  (let [cluster (LocalCluster.)]
-    (.submitTopology cluster "ibbolt" {TOPOLOGY-DEBUG true} (mk-topology))
+  (let [connect-result (connect)
+        contract (Contract. 0 "IBM" "STK" nil 0.0 nil nil "SMART" "USD" nil nil nil false nil nil)
+        mdata (.reqMktData (:esocket connect-result) 0 contract nil false)
+        my-spout (IBSpout. (:ewrapper connect-result))
+
+        cluster (LocalCluster.)]
+
+    (.submitTopology cluster "ibbolt" {TOPOLOGY-DEBUG true} (mk-topology my-spout))
     (Thread/sleep 10000)
     (.shutdown cluster)))
 
@@ -85,5 +91,3 @@
 (defn -main
   ([]
      (run-local!)) )
-
-

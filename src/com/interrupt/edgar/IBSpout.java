@@ -10,33 +10,44 @@ import backtype.storm.task.TopologyContext;
 import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.IRichSpout;
 import backtype.storm.tuple.Fields;
+import com.interrupt.edgar.EWrapperImpl;
 
 
 public class IBSpout implements IRichSpout {
 
 
+	private transient EWrapperImpl _wrapper = null;
 	public IBSpout() {}
+	public IBSpout(EWrapperImpl wrapper) {
+		_wrapper = wrapper;
+	}
 
   /**
    * Storm spout stuff
    */
   private SpoutOutputCollector _collector;
 
-  private List<Object> _tuple = new ArrayList<Object>();
+  /*private List<Object> _tuple = new ArrayList<Object>();
   public void setTuple(List<Object> tuple) { _tuple = tuple; }
   public List<Object> getTuple() { return _tuple; }
-
+  */
+  
   /**
    * Storm ISpout interface functions
    */
   public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
+
+    System.out.println("IBSpout.open CALLED > collector ["+ collector +"]");
     _collector = collector;
   }
   public void close() {}
   public void activate() {}
   public void deactivate() {}
   public void nextTuple() {
-    _collector.emit(_tuple);
+    
+    System.out.println("IBSpout.nextTuple CALLED > collector ["+ _collector +"] > wrapper["+ _wrapper +"] > wrapper.getTuple["+ ((_wrapper != null) ? _wrapper.getTuple() : "<null>") +"]");
+    _collector.emit(_wrapper.getTuple());
+    _wrapper.getTuple().clear();
   }
   public void ack(Object msgId) {}
   public void fail(Object msgId) {}
@@ -45,6 +56,6 @@ public class IBSpout implements IRichSpout {
   public void declareOutputFields(OutputFieldsDeclarer declarer) {
 		declarer.declare(new Fields("word"));
 	}
-  public java.util.Map<java.lang.String,java.lang.Object>  getComponentConfiguration() { return new HashMap(); }
+  public java.util.Map<java.lang.String,java.lang.Object>  getComponentConfiguration() { return null; }
 
 }
