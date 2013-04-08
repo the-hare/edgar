@@ -30,7 +30,7 @@
 
   (def connect-result (connect))
   (def contract (Contract. 0 "IBM" "STK" nil 0.0 nil nil "SMART" "USD" nil nil nil false nil nil))
-  (def mdata (.reqMktData (:esocket connect-result) 0 contract nil false))
+  (def mdata (.reqMktData edgar.eclientsocket/esocket 0 contract nil false))
   (defonce ibspout2 (IBSpout.))
   (storm/defbolt printstuff ["word"] [tuple collector]
        (println (str "printstuff --> tuple["tuple "] > collector["collector "]")) )
@@ -40,7 +40,7 @@
 
 
 ;; STORM code
-(defspout ibspout ["sentence"]
+#_(defspout ibspout ["sentence"]
   [conf context collector]
   (let [sentences ["a little brown dog"
                    "the man petted the dog"
@@ -57,7 +57,7 @@
           ))))
 
 
-(defbolt ibbolt ["word"] [tuple collector]
+#_(defbolt ibbolt ["word"] [tuple collector]
 
   (let [words (.split (.getString tuple 0) " ")]
     (doseq [w words]
@@ -67,7 +67,7 @@
 )
 
 
-(defn mk-topology [in-spout]
+#_(defn mk-topology [in-spout]
   (storm/topology
    { "1" (storm/spout-spec in-spout) }
    { "3" (storm/bolt-spec  { "1" :shuffle }
@@ -76,13 +76,13 @@
      }))
 
 
-(defn run-local! []
+#_(defn run-wib! []
   (let [connect-result (connect)
         contract (Contract. 0 "IBM" "STK" nil 0.0 nil nil "SMART" "USD" nil nil nil false nil nil)
-        mdata (.reqMktData (:esocket connect-result) 0 contract nil false)
+        mdata (.reqMktData edgar.eclientsocket/esocket 0 contract nil false)
 
-        xxx (println (str "*** Wrapper CREATION > " (:ewrapper connect-result) " ***"))
-        my-spout (IBSpout. (:ewrapper connect-result))
+        xxx (println (str "*** Wrapper CREATION > " edgar.eclientsocket/wrap " ***"))
+        my-spout (IBSpout. edgar.eclientsocket/wrap)
 
         cluster (LocalCluster.)]
 
@@ -91,7 +91,17 @@
     (.shutdown cluster)))
 
 
+#_(defn run-twitter! []
+  (let [my-spout (TwitterSampleSpout. "twashing@gmail.com" "numd33nut5")
+        cluster (LocalCluster.)]
+
+    (.submitTopology cluster "ibbolt" {TOPOLOGY-DEBUG true} (mk-topology my-spout))
+    (Thread/sleep 10000)
+    (.shutdown cluster)))
+
 
 (defn -main
   ([]
-     (run-local!)) )
+     (run-twitter!))
+  ([ib]
+     (run-wib!)))
