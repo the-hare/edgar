@@ -1,7 +1,8 @@
 (ns edgar.edgar
   (:import  (com.ib.client EWrapper EClientSocket Contract Order OrderState ContractDetails Execution)
             (com.interrupt.edgar IBSpout)
-            (backtype.storm StormSubmitter LocalCluster))
+            (backtype.storm StormSubmitter LocalCluster)
+            (storm.starter.spout TwitterSampleSpout))
   (:use [clojure.repl]
         [backtype.storm clojure config]
         [clojure.core.strint]
@@ -79,6 +80,8 @@
   (let [connect-result (connect)
         contract (Contract. 0 "IBM" "STK" nil 0.0 nil nil "SMART" "USD" nil nil nil false nil nil)
         mdata (.reqMktData (:esocket connect-result) 0 contract nil false)
+
+        xxx (println (str "*** Wrapper CREATION > " (:ewrapper connect-result) " ***"))
         my-spout (IBSpout. (:ewrapper connect-result))
 
         cluster (LocalCluster.)]
@@ -86,6 +89,7 @@
     (.submitTopology cluster "ibbolt" {TOPOLOGY-DEBUG true} (mk-topology my-spout))
     (Thread/sleep 10000)
     (.shutdown cluster)))
+
 
 
 (defn -main

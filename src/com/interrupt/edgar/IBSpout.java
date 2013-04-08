@@ -16,9 +16,12 @@ import com.interrupt.edgar.EWrapperImpl;
 public class IBSpout implements IRichSpout {
 
 
-	private transient EWrapperImpl _wrapper = null;
+	//private transient EWrapperImpl _wrapper = null;
+	private EWrapperImpl _wrapper = null;
 	public IBSpout() {}
 	public IBSpout(EWrapperImpl wrapper) {
+    
+    System.out.println("--> IBSpout <constructor> CALLED > incoming wrapper["+ wrapper +"]");
 		_wrapper = wrapper;
 	}
 
@@ -37,7 +40,7 @@ public class IBSpout implements IRichSpout {
    */
   public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
 
-    System.out.println("IBSpout.open CALLED > collector ["+ collector +"]");
+    System.out.println("--> IBSpout.open CALLED > collector ["+ collector +"] > wrapper["+ _wrapper +"]");
     _collector = collector;
   }
   public void close() {}
@@ -45,7 +48,7 @@ public class IBSpout implements IRichSpout {
   public void deactivate() {}
   public void nextTuple() {
     
-    System.out.println("IBSpout.nextTuple CALLED > collector ["+ _collector +"] > wrapper["+ _wrapper +"] > wrapper.getTuple["+ ((_wrapper != null) ? _wrapper.getTuple() : "<null>") +"]");
+    System.out.println("--> IBSpout.nextTuple CALLED > collector ["+ _collector +"] > wrapper["+ _wrapper +"] > wrapper.getTuple["+ ((_wrapper != null) ? _wrapper.getTuple() : "<null>") +"]");
     _collector.emit(_wrapper.getTuple());
     _wrapper.getTuple().clear();
   }

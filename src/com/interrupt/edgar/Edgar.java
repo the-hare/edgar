@@ -9,7 +9,7 @@ import com.ib.client.ContractDetails;
 import com.ib.client.Execution;
 
 
-public class Edgar extends EWrapperImpl {
+public class Edgar extends EWrapperImpl implements Runnable {
 
 
   private String symbol = null;
@@ -39,7 +39,7 @@ public class Edgar extends EWrapperImpl {
         }
 
         if (!isSuccess) {
-          sleep(WAIT_TIME); // Pause for 1 second
+          //sleep(WAIT_TIME); // Pause for 1 second
           waitCount++;
         }
       }
@@ -67,7 +67,7 @@ public class Edgar extends EWrapperImpl {
       System.exit(1);
     }
     else {
-      new Edgar(args[0]).start();
+      //new Edgar(args[0]).start();
     }
   }
 }

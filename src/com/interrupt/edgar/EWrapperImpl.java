@@ -20,7 +20,7 @@ import com.ib.client.CommissionReport;
 import com.ib.client.UnderComp;
 
 
-public class EWrapperImpl extends Thread implements com.ib.client.EWrapper {
+public class EWrapperImpl implements com.ib.client.EWrapper {
 
 
   protected List<Object> _tuple = new ArrayList<Object>();
