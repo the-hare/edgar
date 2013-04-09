@@ -5,9 +5,10 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
-import backtype.storm.spout.SpoutOutputCollector;
+/*import backtype.storm.spout.SpoutOutputCollector;
 import backtype.storm.task.TopologyContext;
 import backtype.storm.topology.OutputFieldsDeclarer;
+*/
 
 import com.ib.client.EWrapper;
 import com.ib.client.EClientSocket;
@@ -19,14 +20,19 @@ import com.ib.client.Execution;
 import com.ib.client.CommissionReport;
 import com.ib.client.UnderComp;
 
+//import edgar.splitter;
+import clojure.lang.RT;
+import clojure.lang.Var;
+import clojure.lang.IFn;
+
 
 public class EWrapperImpl implements com.ib.client.EWrapper {
 
 
-  protected List<Object> _tuple = new ArrayList<Object>();
+	/* protected List<Object> _tuple = new ArrayList<Object>();
   public void setTuple(List<Object> tuple) { _tuple = tuple; }
   public List<Object> getTuple() { return _tuple; }
-
+	*/
 
   /**
    * EWrapper members
@@ -122,7 +128,7 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
     }
 
     /**
-     */
+     * /
     if(_tuple != null) {
 
       Map tentry = new HashMap();
@@ -133,6 +139,37 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
 
       _tuple.add(tentry);
     }
+		*/
+		Map tentry = new HashMap();
+    tentry.put("tickerId", tickerId);
+    tentry.put("field", field);
+    tentry.put("price", price);
+    tentry.put("canAutoExecute", canAutoExecute);
+
+		//splitter.pushEvent(tentry);
+
+    /*try {
+
+      //RT.loadResourceScript("splitter.clj");
+      //Var pushEvent = RT.var("edgar.splitter", "pushEvent");
+      //Object result = pushEvent.invoke(tentry);
+      //System.out.println(result);
+
+    }
+    catch(java.io.IOException ioe) {
+      ioe.printStackTrace();
+    }
+    */
+
+		//Load the namespace
+		RT.var("clojure.core","eval").invoke(RT.var("clojure.core","read-string").invoke("(use 'edgar.splitter)"));
+
+		//Find a function in namespace
+		IFn fn = (IFn)RT.var("edgar.splitter","pushEvent");
+
+		//Call that function
+		Object result = fn.invoke(tentry);
+		System.out.println(result);
   }
 
 
