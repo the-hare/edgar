@@ -22,7 +22,7 @@
 (defn connect []
   (socket/connect-to-tws))
 
-(defn getMarketData []
+(defn trial-run []
 
 
   #_(edgar.datomic/database-connect)
@@ -47,3 +47,11 @@
 
   ;; tie EWrapperImpl to a Spout that I created
   #_(.setTuple ibspout2 (.getTuple (:ewrapper connect-result))))
+
+
+(defn get-market-data []
+
+  (def contract (Contract. 0 "IBM" "STK" nil 0.0 nil nil "SMART" "USD" nil nil nil false nil nil))
+  (def mdata (.reqMktData edgar.eclientsocket/esocket 0 contract nil false))
+
+  )

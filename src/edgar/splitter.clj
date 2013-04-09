@@ -1,18 +1,15 @@
 (ns edgar.splitter
 
-  (:use [clojure.repl])
+  (:use [clojure.repl]
+        [clojure.core.strint])
   (:require [edgar.eclientsocket :as socket]
+            [edgar.edgar :as edgar]
             [overtone.at-at :as at])
   (:gen-class
    :name edgar.splitter
    :methods [#^{:static true} [pushEvent [java.lang.Object]]])
   )
 
-
-(defn connect []
-  (socket/connect-to-tws))
-
-(def my-pool (at/mk-pool))
 
 (def event-list (ref ()))
 (defn pushEvent
@@ -25,25 +22,52 @@
   (pushEvent event))
 
 
-(defn thing[]
+(defn connect []
+  (socket/connect-to-tws))
+(def my-pool (at/mk-pool))
+(defn process-events[]
 
   (connect)
+  (edgar/get-market-data)
   (at/every
    250
    (fn []
 
-     (let [tuple (.getTuple socket/EWRAPPER)
-           ]
-       (doseq [tpl tuple]
+     (doseq [event @event-list]
 
-         ;; ... check if stock exists in ThreadPool
+       (println (<< "processing event ... ~{event}"))
 
-         ;; ... if not, open a Thread that processes that stock
+       ;; ... check if stock exists in ThreadPool
+       (let [all-jobs (at/scheduled-jobs my-pool)
+             ]
 
-         )
+
+         (if (empty? (filter #(= (:desc %)
+                                 (.get event "tickerId"))
+                             all-jobs))
+
+           ;; launch a new listener iff that stock is not already being listened to
+           (at/every
+            250
+
+            (fn []
+              (println (<< "___ EXEC thread > tickerId[~{}]")))
+
+            my-pool
+            :initial-delay 0
+            :desc (.get event "tickerId"))
+
+           ;; otherwise ...
+           (println "___ list was empty. skip.")
+           ))
+
        )
 
+     ;; flush out the event-list
+     (dosync (alter event-list empty))
      )
-   my-pool)
+   my-pool
+   :initial-delay 0
+   :desc "ib-event-processor")
 
 )
