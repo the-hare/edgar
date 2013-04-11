@@ -25,6 +25,26 @@
 (defn connect []
   (socket/connect-to-tws))
 (def my-pool (at/mk-pool))
+
+
+(defn process-stock [stock-id]
+
+  (binding [remove-predicate #(= (:desc %) stock-id)
+            local-list (ref ())
+            ]
+
+    (fn []
+
+      (let [local-list (filter remove-predicate @event-list)
+            ]
+
+        (dosync (alter local-list conj ))
+        (dosync (alter event-list remove remove-predicate))
+        #_(println (<< "___ EXEC thread > tickerId[~{stock-id}]"))
+
+        )
+      ))
+  )
 (defn process-events[]
 
   (connect)
@@ -35,36 +55,32 @@
 
      (doseq [event @event-list]
 
-       (println (<< "processing event ... ~{event}"))
+       (println (<< "___ processing event[~{event}]"))
 
-       ;; ... check if stock exists in ThreadPool
-       (let [all-jobs (at/scheduled-jobs my-pool)
-             ]
+       ;; check if stock exists in ThreadPool
+       (if (empty? (filter #(= (:desc %)
+                               (.get event "tickerId"))
+                           (at/scheduled-jobs my-pool)))
 
 
-         (if (empty? (filter #(= (:desc %)
-                                 (.get event "tickerId"))
-                             all-jobs))
-
-           ;; launch a new listener iff that stock is not already being listened to
+         ;; ** launch a new listener iff that stock is not already being listened to
+         (do
+           ;;(println (<< "___ processing stock event ... ~{event}"))
            (at/every
             250
-
-            (fn []
-              (println (<< "___ EXEC thread > tickerId[~{}]")))
-
+            (process-stock (.get event "tickerId"))
             my-pool
             :initial-delay 0
-            :desc (.get event "tickerId"))
+            :desc (.get event "tickerId")))
 
-           ;; otherwise ...
-           (println "___ list was empty. skip.")
-           ))
 
+         ;; ** otherwise ...
+         ;;(println "___ stock already monitored. skip.")
+         )
        )
 
      ;; flush out the event-list
-     (dosync (alter event-list empty))
+     ;;(dosync (alter event-list empty))
      )
    my-pool
    :initial-delay 0
