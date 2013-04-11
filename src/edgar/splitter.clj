@@ -2,7 +2,7 @@
 
   (:use [clojure.repl]
         [clojure.core.strint]
-        [clojure.tools.namespace.repl)])
+        [clojure.tools.namespace.repl])
   (:require [edgar.eclientsocket :as socket]
             [edgar.edgar :as edgar]
             [overtone.at-at :as at])
@@ -43,14 +43,10 @@
 
     (fn []
 
-      (let [local-list (filter remove-predicate @event-list)
-            ]
+      (dosync (alter local-list conj (filter remove-predicate @event-list)))
+      (dosync (alter event-list #(remove remove-predicate %)))
+      (println (<< "___ EXEC thread > tickerId[~{stock-id}] > local-list[~{@local-list}]"))
 
-        (dosync (alter local-list conj ))
-        (dosync (alter event-list remove remove-predicate))
-        #_(println (<< "___ EXEC thread > tickerId[~{stock-id}]"))
-
-        )
       ))
   )
 (defn fire-stock-processor [sid]
