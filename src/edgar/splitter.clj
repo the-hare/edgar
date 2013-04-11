@@ -41,15 +41,15 @@
 
 (defn process-stock [stock-id]
 
-  (let [remove-predicate #(= (:tickerId %) stock-id)
+  (let [remove-predicate #(= (% "tickerId") stock-id)
         local-list (ref ())
         ]
 
     (fn []
 
       (dosync (alter local-list concat (filter remove-predicate @event-list)))
-      (dosync (alter event-list #(remove remove-predicate %)))
-      (println (<< "___ EXEC thread > tickerId[~{stock-id}] > local-list[~{@local-list}]"))
+      (dosync (alter event-list (fn [input-list] (remove remove-predicate input-list))))
+      (println (str "___ EXEC thread > tickerId[" stock-id "] > local-list[" (list* @local-list) "]"))
 
       ))
   )
@@ -62,10 +62,14 @@
    :desc sid)
  )
 
-(defn process-events[]
+
+(defn get-market-data []
 
   (connect)
   (edgar/get-market-data)
+  )
+(defn process-events[]
+
   (at/every
    250
    (fn []
@@ -82,12 +86,6 @@
 
          ;; ** launch a new listener iff that stock is not already being listened to
          (fire-stock-processor (.get event "tickerId"))
-         #_(at/every
-          250
-          (process-stock (.get event "tickerId"))
-          my-pool
-          :initial-delay 0
-          :desc (.get event "tickerId"))
 
 
          ;; ** otherwise ...
@@ -99,7 +97,6 @@
      ;;(dosync (alter event-list empty))
      )
    my-pool
-   :initial-delay 0
    :desc "ib-event-processor")
 
 )
