@@ -10,6 +10,8 @@
                  [org.clojure/data.csv "0.1.2"]
                  [overtone/at-at "1.1.1"]
                  [org.clojure/tools.namespace "0.2.3"]
+                 [org.clojure/tools.namespace "0.2.3"]
+
                  #_[com.datomic/datomic "0.8.3335"]
                  #_[storm "0.9.0-wip16"]
                  #_[org.twitter4j/twitter4j-core "2.2.6-SNAPSHOT"]

@@ -1,7 +1,8 @@
 (ns edgar.splitter
 
   (:use [clojure.repl]
-        [clojure.core.strint])
+        [clojure.core.strint]
+        [clojure.tools.namespace.repl)])
   (:require [edgar.eclientsocket :as socket]
             [edgar.edgar :as edgar]
             [overtone.at-at :as at])
@@ -24,14 +25,21 @@
 
 (defn connect []
   (socket/connect-to-tws))
+
 (def my-pool (at/mk-pool))
 
 
+;; -------------
+(defn test-publisher []
+  (at/every 1000 (fn [] (dosync (alter event-list conj { :tickerId 0 :field 1 :price 5.75 :canAutoExecute 1}))) my-pool) )
+
+;; -------------
+
 (defn process-stock [stock-id]
 
-  (binding [remove-predicate #(= (:desc %) stock-id)
-            local-list (ref ())
-            ]
+  (let [remove-predicate #(= (:tickerId %) stock-id)
+        local-list (ref ())
+        ]
 
     (fn []
 
@@ -45,6 +53,14 @@
         )
       ))
   )
+(defn fire-stock-processor [sid]
+
+  (at/every
+   250
+   (process-stock sid)
+   my-pool)
+ )
+
 (defn process-events[]
 
   (connect)
