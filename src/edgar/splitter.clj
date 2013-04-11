@@ -13,10 +13,14 @@
 
 
 (def event-list (ref ()))
+
 (defn pushEvent
   "Push IB event data onto a Clojure list"
   [event]
-  (dosync (alter event-list conj event) ))
+
+  (let [emap (into {} event)]
+    (dosync (alter event-list conj emap) )))
+
 (defn -pushEvent
   "A Java-callable wrapper around the 'pushEvent' function."
   [event]
@@ -43,7 +47,7 @@
 
     (fn []
 
-      (dosync (alter local-list conj (filter remove-predicate @event-list)))
+      (dosync (alter local-list concat (filter remove-predicate @event-list)))
       (dosync (alter event-list #(remove remove-predicate %)))
       (println (<< "___ EXEC thread > tickerId[~{stock-id}] > local-list[~{@local-list}]"))
 
@@ -54,7 +58,8 @@
   (at/every
    250
    (process-stock sid)
-   my-pool)
+   my-pool
+   :desc sid)
  )
 
 (defn process-events[]
@@ -76,18 +81,17 @@
 
 
          ;; ** launch a new listener iff that stock is not already being listened to
-         (do
-           ;;(println (<< "___ processing stock event ... ~{event}"))
-           (at/every
-            250
-            (process-stock (.get event "tickerId"))
-            my-pool
-            :initial-delay 0
-            :desc (.get event "tickerId")))
+         (fire-stock-processor (.get event "tickerId"))
+         #_(at/every
+          250
+          (process-stock (.get event "tickerId"))
+          my-pool
+          :initial-delay 0
+          :desc (.get event "tickerId"))
 
 
          ;; ** otherwise ...
-         ;;(println "___ stock already monitored. skip.")
+
          )
        )
 
