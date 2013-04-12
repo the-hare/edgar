@@ -146,21 +146,7 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
     tentry.put("price", price);
     tentry.put("canAutoExecute", canAutoExecute);
 
-		//splitter.pushEvent(tentry);
-
-    /*try {
-
-      //RT.loadResourceScript("splitter.clj");
-      //Var pushEvent = RT.var("edgar.splitter", "pushEvent");
-      //Object result = pushEvent.invoke(tentry);
-      //System.out.println(result);
-
-    }
-    catch(java.io.IOException ioe) {
-      ioe.printStackTrace();
-    }
-    */
-
+		/*
 		//Load the namespace
 		RT.var("clojure.core","eval").invoke(RT.var("clojure.core","read-string").invoke("(use 'edgar.splitter)"));
 
@@ -170,6 +156,7 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
 		//Call that function
 		Object result = fn.invoke(tentry);
 		System.out.println(result);
+		*/
   }
 
 

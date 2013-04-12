@@ -11,7 +11,7 @@
   (socket/connect-to-tws))
 
 (defn request-market-data
-
+  "Request market information in the form of a feed or data snapshot"
   ([client idx instrm]
      (request-market-data client idx instrm false))
 
