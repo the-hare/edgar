@@ -92,9 +92,6 @@
 
          )
        )
-
-     ;; flush out the event-list
-     ;;(dosync (alter event-list empty))
      )
    my-pool
    :desc "ib-event-processor")
