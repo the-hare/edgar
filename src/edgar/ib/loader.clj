@@ -4,10 +4,11 @@
   (:require [clojure.java.io :as io]
             [clojure.data.csv :as csv]
             [clojure.string :as string]
+            [edgar.ib.market :as market]
             )
   )
 
-(defn get-stock-lists []
+(defn get-stock-lists [client]
 
   (with-open [amexfile (io/reader "etc/amexlist.csv")
               nysefile (io/reader "etc/nyselist.csv")
@@ -21,10 +22,18 @@
       (reduce (fn [rslt ech]
 
                 (println (<< "calling reqMktData on [~{(-> ech first string/trim)}]"))
-                #_(.reqMktData client rslt (Contract. rslt, (-> ech first string/trim), "STK", nil, 0.0, nil, nil, "SMART", "USD", nil, nil, nil, false, nil, nil) nil true)
+                (market/request-market-data client rslt (-> ech first string/trim))
                 (inc rslt))
               0
-              (doall (take 50 (rest nyselist))))
+              (doall (take 100 (rest nyselist))))
       )
+    )
+  )
+
+(defn test-run []
+
+  (let [client (:esocket (market/connect-to-market))
+        ]
+    (get-stock-lists client)
     )
   )
