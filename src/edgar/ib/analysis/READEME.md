@@ -8,7 +8,7 @@ This namespace contains tools for performing technical analysis on stock data. T
 
 Lagging indicators are ones that follow price movements and have less predictive qualities. The most well-known lagging indicators are the moving averages and Bollinger Bands®. The usefulness of these indicators tends to be lower during non-trending periods but highly useful during trending periods. This is due to the fact that lagging indicators tend to focus more on the trend and produce fewer buy-and-sell signals. This allows the trader to capture more of the trend instead of being forced out of their position based on the volatile nature of the leading indicators.
 
-- (MA)[http://www.stock-market-strategy.com/education/technical-analysis/moving-averages-ma/]; See also [here][http://www.youtube.com/watch?v=L3EzXzofRtI] and [here][http://www.youtube.com/watch?v=zRD9Ob9yCvs]
+- [MA](http://www.stock-market-strategy.com/education/technical-analysis/moving-averages-ma); See also [here][http://www.youtube.com/watch?v=L3EzXzofRtI] and [here][http://www.youtube.com/watch?v=zRD9Ob9yCvs]
 - [Bollinger Bands][http://www.stock-market-strategy.com/education/technical-analysis/bollinger-bands/]; See [here][http://www.stock-market-strategy.com/education/technical-analysis/bollinger-bands/] also
 
 ## Leading Indicators
