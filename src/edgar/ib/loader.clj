@@ -46,11 +46,16 @@
   "Run through stocks and filter based on the stocks that have the biggest high / low price movement"
   []
 
+
+  ;; subscribe to EWrapper mkt data events
+
+
   ;; get first 100 stocks
   (let [stock-lists (get-stock-lists)
         first-hundred (take 100 (:nyselist stock-lists))
         after-hundred (nthrest (:nyselist stock-lists) 101)]
 
+    ;; reqMarketData for those
     (reduce (fn [rslt ech]
 
               (println (<< "first-hundred reqMktData on [~{(-> ech first string/trim)}]"))
@@ -58,11 +63,9 @@
               (inc rslt))
               0
               (doall first-hundred))
+
     )
 
-  ;; reqMarketData for those
-
-  ;; subscribe to EWrapper mkt data events;
 
   ;; when results arrive, decide if
   ;; i. it's within the top 100 price ranges
