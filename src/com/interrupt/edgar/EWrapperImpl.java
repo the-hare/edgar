@@ -157,6 +157,16 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
 		Object result = fn.invoke(tentry);
 		System.out.println(result);
 		*/
+
+		//Load the namespace
+		RT.var("clojure.core","eval").invoke(RT.var("clojure.core","read-string").invoke("(use 'edgar.ib.market)"));
+
+		//Find a function in namespace
+		IFn fn = (IFn)RT.var("edgar.ib.market","publish-event");
+
+		//Call that function
+		Object result = fn.invoke(tentry);
+		System.out.println("EWrapperImpl.tickPrice: " + result);
   }
 
 
