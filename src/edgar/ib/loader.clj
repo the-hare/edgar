@@ -66,12 +66,6 @@
     ;; subscribe to EWrapper mkt data events
     (defn- snapshot-handler [rst]
 
-      ;; when getting stock data, when results arrive, decide if
-      ;;
-      ;; i. it's within the top 100 price ranges
-      ;; ii. if not, discard, ii.i) get the next ID ii.ii) get the next stock ii.iii) reqMarketData for that next stock
-      ;; ... TODO
-
       ;; (splitter/pushEvent rst)
 
       ;; bucket-hundred will have a structure of: [ { :id rslt :symbol stock-sym :event-list [] } ]
@@ -89,14 +83,24 @@
       (println "snapshot-handler > event result [" rst "] > bucket-hundred ...")
       (pprint/pprint @bucket-hundred)
 
+      ;; when getting stock data, when results arrive, decide if
+      ;;
+      ;; i. it's within the top 100 price ranges
+      ;; ii. if not, discard, ii.i) get the next ID ii.ii) get the next stock ii.iii) reqMarketData for that next stock
+
+      ;; ... TODO
+      ;; check if bucket-hundred has reached the 100 threadhold
+      ;; if yes... go through and find daily high & lows; calculate the difference
+      ;; keep the largest 100 differences, and discard the rest
+
+
       )
 
     (market/subscribe-to-market snapshot-handler)
 
-    ;; reqMarketData for those
+    ;; reqMarketData for first 100 stocks
     (reduce (fn [rslt ech]
 
-              ;; ... TODO: track tickerId to stock symbol
               (let [stock-sym (-> ech first string/trim)
                     stock-name (-> ech second string/trim)]
 
