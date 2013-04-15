@@ -58,12 +58,12 @@
         ]
 
 
-    (defn- next-bucket-id []
+    #_(defn- next-bucket-id []
       ;; ... TODO
       )
 
     ;; subscribe to EWrapper mkt data events
-    (defn- snapshot-handler [rst]
+    #_(defn- snapshot-handler [rst]
 
       ;; when getting stock data, when results arrive, decide if
       ;;
@@ -72,20 +72,38 @@
       ;; ... TODO
 
       ;; (splitter/pushEvent rst)
-      (dosync (alter bucket-hundred conj rst))
-      (println "snapshot-handler > [" rst "] > bucket-hundred > [" @bucket-hundred "]")
+      ;; (dosync (alter bucket-hundred conj rst))
+
+      (let [lookup-value (first (filter #(= (rst "tickerId") (:id %))
+                                        @bucket-hundred)) ]
+
+        (update-in lookup-value [:event-list] (conj rst))
+
+        ;;(conj (:event-list lookup-value) rst)
+        ;;(println "snapshot-handler > [" rst "] > lookup-value [" lookup-value "] > bucket-hundred > [" @bucket-hundred "]")
+        (println "snapshot-handler [" rst "] > lookup-value [" lookup-value "]")
+        )
       )
 
-    (market/subscribe-to-market snapshot-handler)
+    #_(market/subscribe-to-market snapshot-handler)
 
     ;; reqMarketData for those
     (reduce (fn [rslt ech]
 
-              (println (<< "first-hundred reqMktData on [~{(-> ech first string/trim)}]"))
-              (market/request-market-data client rslt (-> ech first string/trim) true)
-              (inc rslt))
+              ;; ... TODO: track tickerId to stock symbol
+              (let [stock-sym (-> ech first string/trim)]
+
+                (println (<< "first-hundred reqMktData on [~{stock-sym}]"))
+                (dosync (alter bucket-hundred conj { :id rslt :symbol stock-sym :event-list [] } ))
+                (market/request-market-data client rslt stock-sym true)
+
+                (inc rslt)
+                ))
             0
-            (doall first-hundred)))
+            (doall first-hundred))
+
+
+    (println "BUCKET-100 > " @bucket-hundred))
 
   ;; repeat constantly through: NYSE, NASDAQ, AMEX
   ;; ... TODO
