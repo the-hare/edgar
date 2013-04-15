@@ -5,6 +5,7 @@
   (:require [clojure.java.io :as io]
             [clojure.data.csv :as csv]
             [clojure.string :as string]
+            [clojure.pprint :as pprint]
             [edgar.ib.market :as market]
             [edgar.splitter :as splitter]
             )
@@ -72,37 +73,22 @@
       ;; ... TODO
 
       ;; (splitter/pushEvent rst)
-      ;; (dosync (alter bucket-hundred conj rst))
 
-      (let [lookup-value (first (filter #(= (rst "tickerId") (:id %))
-                                        @bucket-hundred)) ]
+      ;; bucket-hundred will have a structure of: [ { :id rslt :symbol stock-sym :event-list [] } ]
+      ;; i) go into the bucket, ii) find the appropriate element and iii) insert event into the :event-list
+      (dosync (alter bucket-hundred
+                     update-in
+                     [ (first (first
+                               (filter (fn [inp] (= (:id (second inp))
+                                                   (rst "tickerId") ))
+                                       (map-indexed vector @bucket-hundred) )))
+                       :event-list ]
 
-        (println "snapshot-handler [" rst "] > lookup-value [" lookup-value "]")
+                     (fn [inp] (conj inp rst))))
 
-        (dosync (alter bucket-hundred
-                       update-in
-                       [ (first (first
-                                  (filter (fn [inp] (= (:id (second inp))
-                                                      (rst "tickerId") ))
-                                          (map-indexed vector @bucket-hundred) )))
-                         :event-list ]
+      (println "snapshot-handler > event result [" rst "] > bucket-hundred ...")
+      (pprint/pprint @bucket-hundred)
 
-                       (fn [inp] (conj inp rst))))
-
-
-        #_(dosync (alter bucket-hundred #(->> @bucket-hundred
-                                            (filter (fn [inp]  (= (rst "tickerId") (:id inp))) )
-                                            first
-                                            (fn [inp] (update-in inp [:event-list] conj rst )))
-                       ))
-
-        ;;(update-in lookup-value [:event-list] (conj rst))
-
-        ;;(conj (:event-list lookup-value) rst)
-        ;;(println "snapshot-handler > [" rst "] > lookup-value [" lookup-value "] > bucket-hundred > [" @bucket-hundred "]")
-
-
-        )
       )
 
     (market/subscribe-to-market snapshot-handler)
@@ -111,10 +97,11 @@
     (reduce (fn [rslt ech]
 
               ;; ... TODO: track tickerId to stock symbol
-              (let [stock-sym (-> ech first string/trim)]
+              (let [stock-sym (-> ech first string/trim)
+                    stock-name (-> ech second string/trim)]
 
                 (println (<< "first-hundred reqMktData on [~{stock-sym}]"))
-                (dosync (alter bucket-hundred conj { :id rslt :symbol stock-sym :event-list [] } ))
+                (dosync (alter bucket-hundred conj { :id rslt :symbol stock-sym :company stock-name :event-list [] } ))
                 (market/request-market-data client rslt stock-sym true)
 
                 (inc rslt)
