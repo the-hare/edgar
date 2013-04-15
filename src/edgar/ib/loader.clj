@@ -54,7 +54,7 @@
         first-hundred (take 100 (:nyselist stock-lists))
         after-hundred (nthrest (:nyselist stock-lists) 101)
 
-        bucket-hundred (ref ())
+        bucket-hundred (ref [])
         ]
 
 
@@ -63,7 +63,7 @@
       )
 
     ;; subscribe to EWrapper mkt data events
-    #_(defn- snapshot-handler [rst]
+    (defn- snapshot-handler [rst]
 
       ;; when getting stock data, when results arrive, decide if
       ;;
@@ -77,15 +77,35 @@
       (let [lookup-value (first (filter #(= (rst "tickerId") (:id %))
                                         @bucket-hundred)) ]
 
-        (update-in lookup-value [:event-list] (conj rst))
+        (println "snapshot-handler [" rst "] > lookup-value [" lookup-value "]")
+
+        (dosync (alter bucket-hundred
+                       update-in
+                       [ (first (first
+                                  (filter (fn [inp] (= (:id (second inp))
+                                                      (rst "tickerId") ))
+                                          (map-indexed vector @bucket-hundred) )))
+                         :event-list ]
+
+                       (fn [inp] (conj inp rst))))
+
+
+        #_(dosync (alter bucket-hundred #(->> @bucket-hundred
+                                            (filter (fn [inp]  (= (rst "tickerId") (:id inp))) )
+                                            first
+                                            (fn [inp] (update-in inp [:event-list] conj rst )))
+                       ))
+
+        ;;(update-in lookup-value [:event-list] (conj rst))
 
         ;;(conj (:event-list lookup-value) rst)
         ;;(println "snapshot-handler > [" rst "] > lookup-value [" lookup-value "] > bucket-hundred > [" @bucket-hundred "]")
-        (println "snapshot-handler [" rst "] > lookup-value [" lookup-value "]")
+
+
         )
       )
 
-    #_(market/subscribe-to-market snapshot-handler)
+    (market/subscribe-to-market snapshot-handler)
 
     ;; reqMarketData for those
     (reduce (fn [rslt ech]
@@ -112,8 +132,7 @@
 
 (defn test-run []
 
-  (let [client (:esocket (market/connect-to-market))
-        ]
+  (let [client (:esocket (market/connect-to-market))]
     (filter-price-movement client)
     )
   )
