@@ -1,6 +1,7 @@
 (ns edgar.ib.loader
 
-  (:use [clojure.core.strint])
+  (:use [clojure.core.strint]
+        [clojure.tools.namespace.repl])
   (:require [clojure.java.io :as io]
             [clojure.data.csv :as csv]
             [clojure.string :as string]
@@ -33,10 +34,10 @@
 
 (defn get-stock-lists []
 
-  (with-open [amexfile (io/reader "etc/amexlist.csv")
-              nysefile (io/reader "etc/nyselist.csv")
-              nasdaqfile (io/reader "etc/nasdaqlist.csv")
-              ]
+  (let [amexfile (io/reader "etc/amexlist.csv")
+        nysefile (io/reader "etc/nyselist.csv")
+        nasdaqfile (io/reader "etc/nasdaqlist.csv")
+        ]
     {:amexlist   (csv/read-csv amexfile)
      :nyselist   (csv/read-csv nysefile)
      :nasdaqlist (csv/read-csv nasdaqfile)
@@ -45,7 +46,7 @@
 
 (defn filter-price-movement
   "Run through stocks and filter based on the stocks that have the biggest high / low price movement"
-  []
+  [client]
 
 
   ;; get first 100 stocks
@@ -53,7 +54,7 @@
         first-hundred (take 100 (:nyselist stock-lists))
         after-hundred (nthrest (:nyselist stock-lists) 101)
 
-        bucket-hundred []
+        bucket-hundred (ref ())
         ]
 
 
@@ -71,14 +72,17 @@
       ;; ... TODO
 
       ;; (splitter/pushEvent rst)
+      (dosync alter @bucket-hundred conj rst)
+      (println "snapshot-handler > [" rst "] > bucket-hundred > [" @bucket-hundred "]")
       )
+
     (market/subscribe-to-market snapshot-handler)
 
     ;; reqMarketData for those
     (reduce (fn [rslt ech]
 
               (println (<< "first-hundred reqMktData on [~{(-> ech first string/trim)}]"))
-              (market/request-market-data client rslt (-> ech first string/trim))
+              (market/request-market-data client rslt (-> ech first string/trim) true)
               (inc rslt))
             0
             (doall first-hundred)))
@@ -92,6 +96,6 @@
 
   (let [client (:esocket (market/connect-to-market))
         ]
-    (get-stock-lists client)
+    (filter-price-movement client)
     )
   )

@@ -29,8 +29,17 @@
 (defn subscribe-to-market [handle-fn]
   (lamina/receive-all @event-channel handle-fn)
   )
-(defn publish-event [event]
-  (lamina/enqueue @event-channel event))
+
+(defn publish-event
+  [^clojure.lang.PersistentHashMap event]
+
+  (lamina/enqueue @event-channel event)
+)
+(defn publish-event-from-java
+  [^java.util.HashMap event]
+
+  (publish-event (merge {} event))  ;; transform java.util.HashMap to a Clojure map
+)
 
 ;; ==========
 (defn test-publisher []
