@@ -72,7 +72,7 @@
       ;; ... TODO
 
       ;; (splitter/pushEvent rst)
-      (dosync alter @bucket-hundred conj rst)
+      (dosync (alter bucket-hundred conj rst))
       (println "snapshot-handler > [" rst "] > bucket-hundred > [" @bucket-hundred "]")
       )
 
