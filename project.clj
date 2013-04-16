@@ -12,6 +12,7 @@
                  [org.clojure/tools.namespace "0.2.3"]
                  [org.clojure/tools.namespace "0.2.3"]
                  [lamina "0.5.0-beta15"]
+                 [clj-time "0.5.0"]
 
                  #_[com.datomic/datomic "0.8.3335"]
                  #_[storm "0.9.0-wip16"]

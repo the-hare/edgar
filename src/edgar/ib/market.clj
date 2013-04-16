@@ -1,8 +1,11 @@
 (ns edgar.ib.market
   (:import [com.ib.client EWrapper EClientSocket Contract Order OrderState ContractDetails Execution])
+  (:use [clojure.core.strint])
   (:require [edgar.eclientsocket :as socket]
             [lamina.core :as lamina]
-            [overtone.at-at :as at])
+            [overtone.at-at :as at]
+            [clj-time.core :as cime]
+            [clj-time.local :as time])
   )
 
 (defn connect-to-market
@@ -22,8 +25,15 @@
        (set! (.m_exchange contract) "SMART")
        (set! (.m_currency contract) "USD")
 
-       (.reqMktData client idx contract "" snapshot)))
-  )
+       (.reqMktData client idx contract "" snapshot)
+
+       (let [nnow (time/local-now)
+             tstring "" #_(str (cime/year nnow) (cime/month nnow) (cime/day nnow) " " (cime/hour nnow) ":" (cime/minute nnow) ":" (cime/sec nnow))
+             ]
+         (.reqHistoricalData client idx contract tstring "1 D" "1 day" "TRADES" 1 1)
+         )
+       )
+  ))
 
 (defonce event-channel (ref (lamina/channel)))
 (defn subscribe-to-market [handle-fn]

@@ -52,8 +52,8 @@
 
   ;; get first 100 stocks
   (let [stock-lists (get-stock-lists)
-        first-hundred (take 100 (:nyselist stock-lists))
-        after-hundred (nthrest (:nyselist stock-lists) 101)
+        first-hundred (take 1 (rest (:nyselist stock-lists)))
+        after-hundred (nthrest (rest (:nyselist stock-lists)) 101)
 
         bucket-hundred (ref [])
         ]

@@ -29,11 +29,6 @@ import clojure.lang.IFn;
 public class EWrapperImpl implements com.ib.client.EWrapper {
 
 
-	/* protected List<Object> _tuple = new ArrayList<Object>();
-  public void setTuple(List<Object> tuple) { _tuple = tuple; }
-  public List<Object> getTuple() { return _tuple; }
-	*/
-
   /**
    * EWrapper members
    */
@@ -43,6 +38,21 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
   protected final static int TWS_CLIENT_ID = 1;
   protected final static int MAX_WAIT_COUNT = 15; // 15 secs
   protected final static int WAIT_TIME = 1000; // 1 sec
+
+
+	protected IFn publishFn = null;
+
+	public EWrapperImpl() {
+
+	  /**
+     * Load the namespace
+	   * and find a function in the namespace
+	   */
+	  RT.var("clojure.core","eval").invoke(RT.var("clojure.core","read-string").invoke("(use 'edgar.ib.market)"));
+	  publishFn = (IFn)RT.var("edgar.ib.market","publish-event-from-java");
+
+	}
+
 
   protected void connectToTWS() {
     client.eConnect(TWS_HOST, TWS_PORT, TWS_CLIENT_ID);
@@ -127,45 +137,15 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
       System.out.println("default > noop");
     }
 
-    /**
-     * /
-    if(_tuple != null) {
 
-      Map tentry = new HashMap();
-      tentry.put("tickerId", tickerId);
-      tentry.put("field", field);
-      tentry.put("price", price);
-      tentry.put("canAutoExecute", canAutoExecute);
-
-      _tuple.add(tentry);
-    }
-		*/
 		Map tentry = new HashMap();
     tentry.put("tickerId", tickerId);
     tentry.put("field", field);
     tentry.put("price", price);
     tentry.put("canAutoExecute", canAutoExecute);
 
-		/*
-		//Load the namespace
-		RT.var("clojure.core","eval").invoke(RT.var("clojure.core","read-string").invoke("(use 'edgar.splitter)"));
-
-		//Find a function in namespace
-		IFn fn = (IFn)RT.var("edgar.splitter","pushEvent");
-
 		//Call that function
-		Object result = fn.invoke(tentry);
-		System.out.println(result);
-		*/
-
-		//Load the namespace
-		RT.var("clojure.core","eval").invoke(RT.var("clojure.core","read-string").invoke("(use 'edgar.ib.market)"));
-
-		//Find a function in namespace
-		IFn fn = (IFn)RT.var("edgar.ib.market","publish-event-from-java");
-
-		//Call that function
-		Object result = fn.invoke(tentry);
+		Object result = publishFn.invoke(tentry);
 		System.out.println("EWrapperImpl.tickPrice: " + result);
   }
 
@@ -261,12 +241,30 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
     System.out.println("...");
   }
 
-  // Historical Data
+  /* Historical Data
+	 */
   public void historicalData (int reqId, String date, double open, double high, double low, double close, int volume, int count, double WAP, boolean hasGaps) {
-    /*System.out.println(
-      String.format("EWrapper.historicalData > reqId[%i] > date[%s] > open[%d] > high[%d] > low[%d] > close[%d] > volume[%i] > count[%i] > WAP[%d] > hasGaps[%b]",
-        reqId, date, open, high, low, close, volume, count, WAP, hasGaps));
-    */
+
+    System.out.println("EWrapper.historicalData > reqId["+ reqId +"] > date["+ date +"] > open["+ open +"] > high["+ high +"] > low["+ low +"] > close["+ close +"] > volume["+ volume +"] > count["+ count +"] > WAP["+ WAP +"] > hasGaps["+ hasGaps +"]");
+
+		Map tentry = new HashMap();
+    tentry.put("tickerId", reqId);
+    tentry.put("field", "historicalData");
+    tentry.put("date", date);
+		tentry.put("open", open);
+    tentry.put("close", close);
+    tentry.put("high", high);
+    tentry.put("low", low);
+    tentry.put("volume", volume);
+    tentry.put("count", count);
+    tentry.put("WAP", WAP);
+		tentry.put("hasGaps", hasGaps);
+
+		/* Call that function
+		 */
+		Object result = publishFn.invoke(tentry);
+		System.out.println("EWrapper.historicalData: " + result);
+
   }
 
   // Market Scanners
