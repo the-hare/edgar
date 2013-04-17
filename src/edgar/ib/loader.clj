@@ -68,19 +68,46 @@
 
       ;; (splitter/pushEvent rst)
 
-      ;; bucket-hundred will have a structure of: [ { :id rslt :symbol stock-sym :event-list [] } ]
-      ;; i) go into the bucket, ii) find the appropriate element and iii) insert event into the :event-list
-      (dosync (alter bucket-hundred
-                     update-in
-                     [ (first (first
+
+      (let [event-index (first (first
                                (filter (fn [inp] (= (:id (second inp))
                                                    (rst "tickerId") ))
                                        (map-indexed vector @bucket-hundred) )))
-                       :event-list ]
+            ]
 
-                     (fn [inp] (conj inp rst))))
+        ;; bucket-hundred will have a structure of: [ { :id rslt :symbol stock-sym :event-list [] } ]
+        ;; i) go into the bucket, ii) find the appropriate element and iii) insert event into the :event-list
+        (dosync (alter bucket-hundred
+                       update-in
+                       [ event-index :event-list ]
 
-      (println "snapshot-handler > event result [" rst "] > bucket-hundred ...")
+                       (fn [inp]
+                         (conj inp rst))))
+
+        (println "snapshot-handler > event result [" rst "] > bucket-hundred ...")
+
+        ;; insert price difference, iff type is "historicalData"
+        (if (and (= "historicalData" (rst "type"))
+                 (-> (rst "high") nil? not)
+                 (-> (rst "low") nil? not))
+
+          ;; find this iteration's price difference
+          (let [price-difference (- (rst "high")
+                                    (rst "low"))
+                prev-difference (:price-difference (nth @bucket-hundred event-index))]
+
+            ;; determine if greater than the existing price-difference
+            (if (and (-> prev-difference nil? not)
+                     (> price-difference prev-difference))
+
+              (dosync (alter bucket-hundred
+                             update-in
+                             [ event-index ]
+                             (fn [inp]
+                               (merge inp { :price-difference price-difference })) ))))))
+
+
+
       (pprint/pprint @bucket-hundred)
 
       ;; when getting stock data, when results arrive, decide if
@@ -105,7 +132,7 @@
                     stock-name (-> ech second string/trim)]
 
                 (println (<< "first-hundred reqMktData on [~{stock-sym}]"))
-                (dosync (alter bucket-hundred conj { :id rslt :symbol stock-sym :company stock-name :event-list [] } ))
+                (dosync (alter bucket-hundred conj { :id rslt :symbol stock-sym :company stock-name :price-difference 0.0 :event-list [] } ))
                 (market/request-market-data client rslt stock-sym true)
 
                 (inc rslt)

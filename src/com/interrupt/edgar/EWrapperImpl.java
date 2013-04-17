@@ -140,6 +140,7 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
 
 		Map tentry = new HashMap();
     tentry.put("tickerId", tickerId);
+		tentry.put("type", "tickPrice");
     tentry.put("field", field);
     tentry.put("price", price);
     tentry.put("canAutoExecute", canAutoExecute);
@@ -249,6 +250,7 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
 
 		Map tentry = new HashMap();
     tentry.put("tickerId", reqId);
+		tentry.put("type", "historicalData");
     tentry.put("field", "historicalData");
     tentry.put("date", date);
 		tentry.put("open", open);
