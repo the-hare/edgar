@@ -113,7 +113,14 @@
       ;; when getting stock data, when results arrive, decide if
       ;;
       ;; i. it's within the top 100 price ranges
-      ;; ii. if not, discard, ii.i) get the next ID ii.ii) get the next stock ii.iii) reqMarketData for that next stock
+      ;; ii. if not, discard,
+
+      ;; ii.i get the next ID
+
+      ;; ii.ii) get the next stock
+
+      ;; ii.iii) reqMarketData for that next stock
+
 
       ;; ... TODO
       ;; check if bucket-hundred has reached the 100 threadhold

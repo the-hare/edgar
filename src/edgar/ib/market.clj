@@ -5,7 +5,8 @@
             [lamina.core :as lamina]
             [overtone.at-at :as at]
             [clj-time.core :as cime]
-            [clj-time.local :as time])
+            [clj-time.local :as time]
+            [clj-time.format :as format])
   )
 
 (defn connect-to-market
@@ -28,7 +29,9 @@
        (.reqMktData client idx contract "" snapshot)
 
        (let [nnow (time/local-now)
-             tstring "" #_(str (cime/year nnow) (cime/month nnow) (cime/day nnow) " " (cime/hour nnow) ":" (cime/minute nnow) ":" (cime/sec nnow))
+             tformat (format/formatter "yyyyMMdd HH:mm:ss z")
+             ;;tstring (str (cime/year nnow) (cime/month nnow) (cime/day nnow) " " (cime/hour nnow) ":" (cime/minute nnow) ":" (cime/sec nnow) " EST")
+             tstring (format/unparse tformat nnow)
              ]
          (.reqHistoricalData client idx contract tstring "1 D" "1 day" "TRADES" 1 1)
          )
