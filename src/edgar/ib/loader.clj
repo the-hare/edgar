@@ -99,6 +99,7 @@
   (let [bucket (:bucket options)
         client (:client options)
         bsize (:bucket-size options)
+        stock-lists (:stock-lists options)
         event-index (first (first
                             (filter (fn [inp] (= (:id (second inp))
                                                 (rst "tickerId") ))
@@ -110,7 +111,7 @@
 
     (if (= "tickSnapshotEnd" (rst "type"))
 
-      ;; **
+      ;; ***
       ;; snapshot END
       (do
 
@@ -121,6 +122,7 @@
         (let [rid (rst "tickerId")
               stock-sym ""
               stock-name ""
+              last-id (-> @bucket last :id)
               ]
 
           ;; remove only if i) we are at 100 and ii) this is the lowest price difference
@@ -129,13 +131,18 @@
             (do
 
               (dosync (alter bucket (fn [inp] (take (- bsize 1) inp))  ))
-              #_(dosync (alter bucket conj { :id rid :symbol stock-sym :company stock-name :price-difference 0.0 :event-list []}))
-
-              (println ">>> bucket")
-              (pprint/pprint @bucket)
 
               ;; ii.iii) ... TODO reqMarketData for that next stock
-              #_(market/request-market-data client rid stock-sym true))))
+              #_(local-request-market-data {:bucket-hundred bucket
+                                          :id last-id
+                                          :stock-symbol stock-sym
+                                          :stock-name stock-name
+                                            :client client})
+
+              (println ">>> bucket")
+              (pprint/pprint @bucket))
+
+            ))
 
 
         ;; ... TODO
@@ -143,7 +150,7 @@
 
         )
 
-      ;; **
+      ;; ***
       ;; otherwise process events
       (do
 
@@ -168,14 +175,14 @@
   ;; get first 100 stocks
   (let [bucket-hundred (ref [])
         stock-lists (get-stock-lists)
-        bsize 3
+        bsize 10
 
         first-hundred (take bsize (rest (:nyselist stock-lists)))
         after-hundred (nthrest (rest (:nyselist stock-lists)) bsize)
         ]
 
 
-    (market/subscribe-to-market (partial snapshot-handler {:bucket bucket-hundred :client client :bucket-size bsize}))
+    (market/subscribe-to-market (partial snapshot-handler {:bucket bucket-hundred :client client :bucket-size bsize :stock-lists stock-lists}))
 
     ;; reqMarketData for first 100 stocks
     (reduce (fn [rslt ech]
@@ -189,7 +196,8 @@
                                             :id rslt
                                             :stock-symbol stock-sym
                                             :stock-name stock-name
-                                            :client client})
+                                            :client client
+                                            })
 
                 (inc rslt)
                 ))
