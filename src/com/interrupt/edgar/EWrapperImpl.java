@@ -107,7 +107,18 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
     System.out.println("EWrapper.connectionClosed");
   }
   public void tickSnapshotEnd (int arg) {
+
     System.out.println("EWrapper.tickSnapshotEnd > arg["+ arg +"]");
+
+		Map tentry = new HashMap();
+    tentry.put("tickerId", arg);
+		tentry.put("type", "tickSnapshotEnd");
+
+
+		/* Call that function
+		 */
+		Object result = publishFn.invoke(tentry);
+
   }
 
   // Market Data

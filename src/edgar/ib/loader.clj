@@ -24,14 +24,11 @@
     ))
 
 
-#_(defn- next-bucket-id []
-    ;; ... TODO
-    )
-
 (defn- insert-into-event-list
   "bucket-hundred will have a structure of: [ { :id rslt :symbol stock-sym :event-list [] } ]
    i) go into the bucket, ii) find the appropriate element and iii) insert event into the :event-list"
   [bucket-hundred event-index rst]
+
 
   ;; weed out historicalData events that are finished
   (if (and (= "historicalData" (rst "type"))
@@ -81,47 +78,66 @@
 
 
 ;; subscribe to EWrapper mkt data events
-(defn- snapshot-handler [bucket-hundred rst]
+(defn- snapshot-handler [options rst]
 
 
   ;; (splitter/pushEvent rst)
 
-  (let [event-index (first (first
+  (let [bucket (:bucket options)
+        client (:client options)
+        bsize (:bucket-size options)
+        event-index (first (first
                             (filter (fn [inp] (= (:id (second inp))
                                                 (rst "tickerId") ))
-                                    (map-indexed vector @bucket-hundred) )))
+                                    (map-indexed vector @bucket) )))
         ]
 
-    (println "snapshot-handler > event index [" event-index "] > result [" rst "] > bucket-hundred [" @bucket-hundred "]")
+    (println "snapshot-handler > event index [" event-index "] > result [" rst "] > bucket-hundred [" @bucket "]")
 
 
-    (insert-into-event-list bucket-hundred event-index rst)
-    (insert-price-difference bucket-hundred event-index rst)
-    (order-by-price-difference bucket-hundred)
+    (if (= "tickSnapshotEnd" (rst "type"))
 
-    (pprint/pprint @bucket-hundred)
+      ;; **
+      ;; snapshot END
+      (do
 
+        ;; ii.i get the next ID - (rst "tickerId")
+        ;; ii.ii) get the next stock
 
-    ;; when getting stock data, when results arrive, decide if
-    ;;
-    ;; i. it's within the top 100 price ranges
-    ;; ii. if not, discard,
+        ;; remove previous stock & mktRequest for next stock
+        (let [rid (rst "tickerId")
+              stock-sym ""
+              stock-name ""
+              ]
 
-    ;; ii.i get the next ID
+          ;; ... TODO - remove only if i) we are at 100 and ii) this is the lowest price difference
+          #_(dosync (alter bucket remove (fn [inp] (= rid (:id inp)))  ))
+          #_(dosync (alter bucket conj { :id rid :symbol stock-sym :company stock-name :price-difference 0.0 :event-list []}))
 
-    ;; ii.ii) get the next stock
-
-    ;; ii.iii) reqMarketData for that next stock
-
-
-    ;; ... TODO
-    ;; check if bucket-hundred has reached the 100 threshold
-    ;; if yes... go through and find daily high & lows; calculate the difference
-    ;; keep the largest 100 differences, and discard the rest
+          ;; ii.iii) ... TODO reqMarketData for that next stock
+          #_(market/request-market-data client rid stock-sym true))
 
 
+        ;; ... TODO
+        ;; repeat constantly through: NYSE, NASDAQ, AMEX
+
+        )
+
+      ;; **
+      ;; otherwise process events
+      (do
+
+        ;; when getting stock data, when results arrive, decide if
+        ;;
+        ;; i. it's within the top 100 price ranges
+        ;; ii. if not, discard,
+
+        (insert-into-event-list bucket event-index rst)
+        (insert-price-difference bucket event-index rst)
+        (order-by-price-difference bucket)
+
+        (pprint/pprint @bucket)))
     )
-
   )
 
 (defn filter-price-movement
@@ -132,12 +148,14 @@
   ;; get first 100 stocks
   (let [bucket-hundred (ref [])
         stock-lists (get-stock-lists)
-        first-hundred (take 1 (rest (:nyselist stock-lists)))
-        after-hundred (nthrest (rest (:nyselist stock-lists)) 101)
+        bsize 10
+
+        first-hundred (take bsize (rest (:nyselist stock-lists)))
+        after-hundred (nthrest (rest (:nyselist stock-lists)) bsize)
         ]
 
 
-    (market/subscribe-to-market (partial snapshot-handler bucket-hundred))
+    (market/subscribe-to-market (partial snapshot-handler {:bucket bucket-hundred :client client :bucket-size bsize}))
 
     ;; reqMarketData for first 100 stocks
     (reduce (fn [rslt ech]
@@ -157,8 +175,6 @@
 
     (println "BUCKET-100 > " @bucket-hundred))
 
-  ;; repeat constantly through: NYSE, NASDAQ, AMEX
-  ;; ... TODO
   )
 
 
