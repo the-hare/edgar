@@ -66,8 +66,8 @@
     ;; subscribe to EWrapper mkt data events
     (defn- snapshot-handler [rst]
 
-      ;; (splitter/pushEvent rst)
 
+      ;; (splitter/pushEvent rst)
 
       (let [event-index (first (first
                                (filter (fn [inp] (= (:id (second inp))
@@ -75,6 +75,10 @@
                                        (map-indexed vector @bucket-hundred) )))
             ]
 
+        (println "snapshot-handler > event result [" rst "] > bucket-hundred ...")
+
+
+        ;; ***
         ;; bucket-hundred will have a structure of: [ { :id rslt :symbol stock-sym :event-list [] } ]
         ;; i) go into the bucket, ii) find the appropriate element and iii) insert event into the :event-list
         (dosync (alter bucket-hundred
@@ -84,8 +88,8 @@
                        (fn [inp]
                          (conj inp rst))))
 
-        (println "snapshot-handler > event result [" rst "] > bucket-hundred ...")
 
+        ;; ***
         ;; insert price difference, iff type is "historicalData"
         (if (and (= "historicalData" (rst "type"))
                  (-> (rst "high") nil? not)
@@ -107,6 +111,12 @@
                                (merge inp { :price-difference price-difference })) ))))))
 
 
+      ;; ***
+      ;; Order list by largest price difference
+      (dosync (alter bucket-hundred
+                     (fn [inp]
+                       (sort-by :price-difference > inp))
+                     ))
 
       (pprint/pprint @bucket-hundred)
 
