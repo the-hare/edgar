@@ -26,11 +26,10 @@
        (set! (.m_exchange contract) "SMART")
        (set! (.m_currency contract) "USD")
 
-       (.reqMktData client idx contract "" snapshot)
+       #_(.reqMktData client idx contract "" snapshot)
 
        (let [nnow (time/local-now)
              tformat (format/formatter "yyyyMMdd HH:mm:ss z")
-             ;;tstring (str (cime/year nnow) (cime/month nnow) (cime/day nnow) " " (cime/hour nnow) ":" (cime/minute nnow) ":" (cime/sec nnow) " EST")
              tstring (format/unparse tformat nnow)
              ]
          (.reqHistoricalData client idx contract tstring "1 D" "1 day" "TRADES" 1 1)

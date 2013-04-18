@@ -45,6 +45,7 @@
      }
     ))
 
+
 (defn filter-price-movement
   "Run through stocks and filter based on the stocks that have the biggest high / low price movement"
   [client]
@@ -52,7 +53,7 @@
 
   ;; get first 100 stocks
   (let [stock-lists (get-stock-lists)
-        first-hundred (take 1 (rest (:nyselist stock-lists)))
+        first-hundred (take 10 (rest (:nyselist stock-lists)))
         after-hundred (nthrest (rest (:nyselist stock-lists)) 101)
 
         bucket-hundred (ref [])
@@ -75,18 +76,18 @@
                                        (map-indexed vector @bucket-hundred) )))
             ]
 
-        (println "snapshot-handler > event result [" rst "] > bucket-hundred ...")
+        (println "snapshot-handler > event index [" event-index "] > result [" rst "] > bucket-hundred [" @bucket-hundred "]")
 
 
         ;; ***
         ;; bucket-hundred will have a structure of: [ { :id rslt :symbol stock-sym :event-list [] } ]
         ;; i) go into the bucket, ii) find the appropriate element and iii) insert event into the :event-list
         (dosync (alter bucket-hundred
-                       update-in
-                       [ event-index :event-list ]
-
-                       (fn [inp]
-                         (conj inp rst))))
+                       (fn [blist]
+                         (update-in blist
+                                    [ event-index :event-list ]
+                                    (fn [inp]
+                                      (conj inp rst))))))
 
 
         ;; ***
@@ -115,7 +116,8 @@
       ;; Order list by largest price difference
       (dosync (alter bucket-hundred
                      (fn [inp]
-                       (sort-by :price-difference > inp))
+                       (into []   ;; put the result into a vector
+                             (sort-by :price-difference > inp)))
                      ))
 
       (pprint/pprint @bucket-hundred)
@@ -133,7 +135,7 @@
 
 
       ;; ... TODO
-      ;; check if bucket-hundred has reached the 100 threadhold
+      ;; check if bucket-hundred has reached the 100 threshold
       ;; if yes... go through and find daily high & lows; calculate the difference
       ;; keep the largest 100 differences, and discard the rest
 
@@ -171,3 +173,5 @@
     (filter-price-movement client)
     )
   )
+(defn xxx []
+  (test-run))
