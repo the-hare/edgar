@@ -33,12 +33,19 @@
    i) go into the bucket, ii) find the appropriate element and iii) insert event into the :event-list"
   [bucket-hundred event-index rst]
 
-  (dosync (alter bucket-hundred
-                 (fn [blist]
-                   (update-in blist
-                              [ event-index :event-list ]
-                              (fn [inp]
-                                (conj inp rst)))))))
+  ;; weed out historicalData events that are finished
+  (if (and (= "historicalData" (rst "type"))
+           (re-find #"finished-" (rst "date")))
+
+    ()  ;; noop
+    (dosync (alter bucket-hundred
+                   (fn [blist]
+                     (update-in blist
+                                [ event-index :event-list ]
+                                (fn [inp]
+                                  (conj inp rst))))))
+    )
+)
 
 (defn- insert-price-difference
   "insert price difference, iff type is 'historicalData'"
@@ -79,28 +86,18 @@
 
   ;; (splitter/pushEvent rst)
 
-  (let [
-        ;;bucket-hundred (ref [])
-        event-index (first (first
-                           (filter (fn [inp] (= (:id (second inp))
-                                               (rst "tickerId") ))
-                                   (map-indexed vector @bucket-hundred) )))
+  (let [event-index (first (first
+                            (filter (fn [inp] (= (:id (second inp))
+                                                (rst "tickerId") ))
+                                    (map-indexed vector @bucket-hundred) )))
         ]
 
     (println "snapshot-handler > event index [" event-index "] > result [" rst "] > bucket-hundred [" @bucket-hundred "]")
 
 
-    ;; ***
     (insert-into-event-list bucket-hundred event-index rst)
-
-
-    ;; ***
     (insert-price-difference bucket-hundred event-index rst)
-
-
-    ;; ***
     (order-by-price-difference bucket-hundred)
-
 
     (pprint/pprint @bucket-hundred)
 
