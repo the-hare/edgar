@@ -77,6 +77,19 @@
                    )))
 
 
+(defn- local-request-market-data [options]
+
+  (let [bucket (:bucket-hundred options)
+        rslt (:id options)
+        stock-sym (:stock-symbol options)
+        stock-name (:stock-name options)
+        client (:client options)]
+
+    (dosync (alter bucket conj { :id rslt :symbol stock-sym :company stock-name :price-difference 0.0 :event-list [] } ))
+    (market/request-market-data client rslt stock-sym true))
+  )
+
+
 ;; subscribe to EWrapper mkt data events
 (defn- snapshot-handler [options rst]
 
@@ -171,8 +184,12 @@
                     stock-name (-> ech second string/trim)]
 
                 (println (<< "first-hundred reqMktData on [~{stock-sym}]"))
-                (dosync (alter bucket-hundred conj { :id rslt :symbol stock-sym :company stock-name :price-difference 0.0 :event-list [] } ))
-                (market/request-market-data client rslt stock-sym true)
+
+                (local-request-market-data {:bucket-hundred bucket-hundred
+                                            :id rslt
+                                            :stock-symbol stock-sym
+                                            :stock-name stock-name
+                                            :client client})
 
                 (inc rslt)
                 ))
