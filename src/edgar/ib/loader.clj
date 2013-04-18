@@ -28,6 +28,51 @@
     ;; ... TODO
     )
 
+(defn- insert-into-event-list
+  "bucket-hundred will have a structure of: [ { :id rslt :symbol stock-sym :event-list [] } ]
+   i) go into the bucket, ii) find the appropriate element and iii) insert event into the :event-list"
+  [bucket-hundred event-index rst]
+
+  (dosync (alter bucket-hundred
+                 (fn [blist]
+                   (update-in blist
+                              [ event-index :event-list ]
+                              (fn [inp]
+                                (conj inp rst)))))))
+
+(defn- insert-price-difference
+  "insert price difference, iff type is 'historicalData'"
+  [bucket-hundred event-index rst]
+
+  (if (and (= "historicalData" (rst "type"))
+             (-> (rst "high") nil? not)
+             (-> (rst "low") nil? not))
+
+      ;; find this iteration's price difference
+      (let [price-difference (- (rst "high")
+                                (rst "low"))
+            prev-difference (:price-difference (nth @bucket-hundred event-index))]
+
+        ;; determine if greater than the existing price-difference
+        (if (and (-> prev-difference nil? not)
+                 (> price-difference prev-difference))
+
+          (dosync (alter bucket-hundred
+                         update-in
+                         [ event-index ]
+                         (fn [inp]
+                           (merge inp { :price-difference price-difference })) ))))))
+
+(defn- order-by-price-difference
+  "Order list by largest price difference"
+  [bucket-hundred]
+  (dosync (alter bucket-hundred
+                   (fn [inp]
+                     (into []   ;; put the result into a vector
+                           (sort-by :price-difference > inp)))
+                   )))
+
+
 ;; subscribe to EWrapper mkt data events
 (defn- snapshot-handler [bucket-hundred rst]
 
@@ -46,49 +91,19 @@
 
 
     ;; ***
-    ;; bucket-hundred will have a structure of: [ { :id rslt :symbol stock-sym :event-list [] } ]
-    ;; i) go into the bucket, ii) find the appropriate element and iii) insert event into the :event-list
-    (dosync (alter bucket-hundred
-                   (fn [blist]
-                     (update-in blist
-                                [ event-index :event-list ]
-                                (fn [inp]
-                                  (conj inp rst))))))
+    (insert-into-event-list bucket-hundred event-index rst)
 
 
     ;; ***
-    ;; insert price difference, iff type is "historicalData"
-    (if (and (= "historicalData" (rst "type"))
-             (-> (rst "high") nil? not)
-             (-> (rst "low") nil? not))
-
-      ;; find this iteration's price difference
-      (let [price-difference (- (rst "high")
-                                (rst "low"))
-            prev-difference (:price-difference (nth @bucket-hundred event-index))]
-
-        ;; determine if greater than the existing price-difference
-        (if (and (-> prev-difference nil? not)
-                 (> price-difference prev-difference))
-
-          (dosync (alter bucket-hundred
-                         update-in
-                         [ event-index ]
-                         (fn [inp]
-                           (merge inp { :price-difference price-difference })) )))))
+    (insert-price-difference bucket-hundred event-index rst)
 
 
     ;; ***
-    ;; Order list by largest price difference
-    (dosync (alter bucket-hundred
-                   (fn [inp]
-                     (into []   ;; put the result into a vector
-                           (sort-by :price-difference > inp)))
-                   ))
-
+    (order-by-price-difference bucket-hundred)
 
 
     (pprint/pprint @bucket-hundred)
+
 
     ;; when getting stock data, when results arrive, decide if
     ;;
