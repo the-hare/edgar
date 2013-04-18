@@ -110,12 +110,19 @@
               stock-name ""
               ]
 
-          ;; ... TODO - remove only if i) we are at 100 and ii) this is the lowest price difference
-          #_(dosync (alter bucket remove (fn [inp] (= rid (:id inp)))  ))
-          #_(dosync (alter bucket conj { :id rid :symbol stock-sym :company stock-name :price-difference 0.0 :event-list []}))
+          ;; remove only if i) we are at 100 and ii) this is the lowest price difference
+          (if (>= (count @bucket) bsize)
 
-          ;; ii.iii) ... TODO reqMarketData for that next stock
-          #_(market/request-market-data client rid stock-sym true))
+            (do
+
+              (dosync (alter bucket (fn [inp] (take (- bsize 1) inp))  ))
+              #_(dosync (alter bucket conj { :id rid :symbol stock-sym :company stock-name :price-difference 0.0 :event-list []}))
+
+              (println ">>> bucket")
+              (pprint/pprint @bucket)
+
+              ;; ii.iii) ... TODO reqMarketData for that next stock
+              #_(market/request-market-data client rid stock-sym true))))
 
 
         ;; ... TODO
@@ -148,7 +155,7 @@
   ;; get first 100 stocks
   (let [bucket-hundred (ref [])
         stock-lists (get-stock-lists)
-        bsize 10
+        bsize 3
 
         first-hundred (take bsize (rest (:nyselist stock-lists)))
         after-hundred (nthrest (rest (:nyselist stock-lists)) bsize)
