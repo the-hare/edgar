@@ -11,7 +11,7 @@
             )
   )
 
-(defn get-stock-lists []
+(defn- get-stock-lists []
 
   (let [amexfile (io/reader "etc/amexlist.csv")
         nysefile (io/reader "etc/nyselist.csv")
@@ -23,6 +23,19 @@
      }
     ))
 
+(defn- get-concatenated-stock-lists []
+
+  (with-open [amexfile (io/reader "etc/amexlist.csv")
+              nysefile (io/reader "etc/nyselist.csv")
+              nasdaqfile (io/reader "etc/nasdaqlist.csv")
+              ]
+
+    (doall (concat
+             (csv/read-csv amexfile)
+             (csv/read-csv nysefile)
+             (csv/read-csv nasdaqfile)))
+    )
+  )
 
 (defn- insert-into-event-list
   "bucket-hundred will have a structure of: [ { :id rslt :symbol stock-sym :event-list [] } ]
@@ -174,11 +187,10 @@
 
   ;; get first 100 stocks
   (let [bucket-hundred (ref [])
-        stock-lists (get-stock-lists)
+        stock-lists (ref (get-concatenated-stock-lists))
         bsize 10
 
-        first-hundred (take bsize (rest (:nyselist stock-lists)))
-        after-hundred (nthrest (rest (:nyselist stock-lists)) bsize)
+        first-hundred (take bsize (rest @stock-lists))
         ]
 
 
@@ -217,4 +229,5 @@
     )
   )
 (defn xxx []
-  (test-run))
+  (test-run)
+  )
