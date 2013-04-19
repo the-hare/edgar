@@ -135,7 +135,14 @@
         (let [rid (rst "tickerId")
               stock-sym (-> @stock-lists first string/trim)
               stock-name (-> @stock-lists second string/trim)
-              last-id (-> @bucket last :id)
+
+              foobar (println "ID sequence: " (sort (for [x @bucket] (:id x))))
+              temp-id (first (for [[a b] (partition 2 (sort (for [x @bucket] (:id x))))    ;; run through list and find first gap in IDs
+                                   :when (not= (+ 1 a) b)]
+                               (+ 1 a)))
+              next-id (if (nil? temp-id)
+                        (+ 1 (last (sort (for [x @bucket] (:id x)))))
+                        temp-id)
               ]
 
           ;; remove only if i) we are at 100 and ii) this is the lowest price difference
@@ -145,18 +152,15 @@
 
               ;; ii.iii) reqMarketData for that next stock; repeat constantly through: NYSE, NASDAQ, AMEX
 
-              (dosync (alter bucket (fn [inp] (take (- bsize 1) inp))  ))
-              (dosync (alter stock-lists rest))
+              (println ">>> 1[" stock-sym "] 2[" stock-name "] || 3[" foobar "] 4[" temp-id "] 5[" next-id "] zzz[" (last foobar) "]" )
+              #_(dosync (alter bucket (fn [inp] (take (- bsize 1) inp))  ))
+              #_(dosync (alter stock-lists rest))
 
-              (local-request-market-data {:bucket-hundred bucket
-                                          :id last-id
+              #_(local-request-market-data {:bucket-hundred bucket
+                                          :id next-id
                                           :stock-symbol stock-sym
                                           :stock-name stock-name
-                                          :client client})
-
-              (println ">>> bucket")
-              (pprint/pprint @bucket))
-
+                                          :client client}))
             ))
 
         )
