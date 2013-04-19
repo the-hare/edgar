@@ -31,9 +31,9 @@
               ]
 
     (doall (concat
-             (csv/read-csv amexfile)
-             (csv/read-csv nysefile)
-             (csv/read-csv nasdaqfile)))
+            (rest (csv/read-csv nysefile))
+            (rest (csv/read-csv nasdaqfile))
+            (rest (csv/read-csv amexfile))))
     )
   )
 
@@ -133,8 +133,8 @@
 
         ;; remove previous stock & mktRequest for next stock
         (let [rid (rst "tickerId")
-              stock-sym ""
-              stock-name ""
+              stock-sym (-> @stock-lists first string/trim)
+              stock-name (-> @stock-lists second string/trim)
               last-id (-> @bucket last :id)
               ]
 
@@ -143,23 +143,21 @@
 
             (do
 
-              (dosync (alter bucket (fn [inp] (take (- bsize 1) inp))  ))
+              ;; ii.iii) reqMarketData for that next stock; repeat constantly through: NYSE, NASDAQ, AMEX
 
-              ;; ii.iii) ... TODO reqMarketData for that next stock
-              #_(local-request-market-data {:bucket-hundred bucket
+              (dosync (alter bucket (fn [inp] (take (- bsize 1) inp))  ))
+              (dosync (alter stock-lists rest))
+
+              (local-request-market-data {:bucket-hundred bucket
                                           :id last-id
                                           :stock-symbol stock-sym
                                           :stock-name stock-name
-                                            :client client})
+                                          :client client})
 
               (println ">>> bucket")
               (pprint/pprint @bucket))
 
             ))
-
-
-        ;; ... TODO
-        ;; repeat constantly through: NYSE, NASDAQ, AMEX
 
         )
 
@@ -187,14 +185,15 @@
 
   ;; get first 100 stocks
   (let [bucket-hundred (ref [])
-        stock-lists (ref (get-concatenated-stock-lists))
-        bsize 10
+        stock-lists (get-concatenated-stock-lists)
+        bsize 3
 
-        first-hundred (take bsize (rest @stock-lists))
+        first-hundred (take bsize (rest stock-lists))
+        remaining (ref (take bsize (nth stock-lists bsize)))
         ]
 
 
-    (market/subscribe-to-market (partial snapshot-handler {:bucket bucket-hundred :client client :bucket-size bsize :stock-lists stock-lists}))
+    (market/subscribe-to-market (partial snapshot-handler {:bucket bucket-hundred :client client :bucket-size bsize :stock-lists remaining}))
 
     ;; reqMarketData for first 100 stocks
     (reduce (fn [rslt ech]
