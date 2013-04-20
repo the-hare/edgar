@@ -45,17 +45,14 @@
 
 
   ;; weed out historicalData events that are finished
-  (if (and (= "historicalData" (rst "type"))
-           (re-find #"finished-" (rst "date")))
+  (dosync (alter bucket-hundred
+                 (fn [blist]
 
-    ()  ;; noop
-    (dosync (alter bucket-hundred
-                   (fn [blist]
-                     (update-in blist
-                                [ event-index :event-list ]
-                                (fn [inp]
-                                  (conj inp rst))))))
-    )
+                   (log/debug "insert-into-event-list > event-index[" event-index "] > blist > type[" (type blist) "] > data[" blist "]")
+                   (update-in blist
+                              [ event-index :event-list ]
+                              (fn [inp]
+                                (conj inp rst))))))
 )
 
 (defn- insert-price-difference
@@ -86,6 +83,8 @@
   [bucket-hundred]
   (dosync (alter bucket-hundred
                    (fn [inp]
+
+                     (log/debug "order-by-price-difference > input data[" inp "]")
                      (into []   ;; put the result into a vector
                            (sort-by :price-difference > inp)))
                    )))
@@ -126,14 +125,13 @@
         ;; ii.i get the next ID - (rst "tickerId")
         ;; ii.ii) get the next stock
 
-        (log/debug "snapshot-handler > SNAPSHOT END result [" rst "] > bucket-hundred [" @bucket "]")
+        (log/debug "snapshot-handler > SNAPSHOT END result [" rst "] > bucket-hundred [" @bucket "] > stock-lists [" @stock-lists "]")
 
         ;; remove previous stock & mktRequest for next stock
         (let [rid (rst "tickerId")
               stock-sym (-> @stock-lists first string/trim)
               stock-name (-> @stock-lists second string/trim)
 
-              foobar (log/debug "ID sequence: " (sort (for [x @bucket] (:id x))))
               temp-id (first (for [[a b] (partition 2 (sort (for [x @bucket] (:id x))))    ;; run through list and find first gap in IDs
                                    :when (not= (+ 1 a) b)]
                                (+ 1 a)))
@@ -149,8 +147,7 @@
 
               ;; ii.iii) reqMarketData for that next stock; repeat constantly through: NYSE, NASDAQ, AMEX
 
-              (log/debug ">>> 1[" stock-sym "] 2[" stock-name "] || 3[" foobar "] 4[" temp-id "] 5[" next-id "] zzz[" (last foobar) "]" )
-              (dosync (alter bucket (fn [inp] (take (- bsize 1) inp))  ))
+              (dosync (alter bucket (fn [inp] (into [] (take (- bsize 1) inp)))  ))
               (dosync (alter stock-lists rest))
 
               (local-request-market-data {:bucket-hundred bucket
@@ -164,34 +161,33 @@
 
       ;; ***
       ;; otherwise process events
-      (do
+      (if (and (= "historicalData" (rst "type"))
+           (re-find #"finished-" (rst "date")))
 
-        ;; when getting stock data, when results arrive, decide if
-        ;;
-        ;; i. it's within the top 100 price ranges
-        ;; ii. if not, discard,
+        () ;; noop
+        (do
 
-        (let [#_event-index #_(first (first
-                                  (filter (fn [inp] (= (:id (second inp))
-                                                      (rst "tickerId") ))
-                                          (map-indexed vector @bucket) )))
-              event-index (-> (filter (fn [inp] (= (:id (second inp))
-                                                  (rst "tickerId") ))
-                                      (map-indexed vector @bucket) )
-                              first
-                              second
-                              :id)
-              try2 "asdf"
+          ;; when getting stock data, when results arrive, decide if
+          ;;
+          ;; i. it's within the top 100 price ranges
+          ;; ii. if not, discard,
 
-              ]
+          (let [temp-index (-> (filter (fn [inp] (= (:id (second inp))
+                                                   (rst "tickerId") ))
+                                       (map-indexed vector @bucket) )
+                               ffirst)
+                event-index (if (nil? temp-index) (count @bucket) temp-index)
+                ]
 
-          (log/debug "snapshot-handler > event index [" event-index "] > try2[" try2 "] > result [" rst "] > bucket-hundred [" @bucket "]")
+            (log/debug "")
+            (log/debug "")
+            (log/debug "snapshot-handler > event index [" event-index "] result [" rst "] > bucket-hundred [" @bucket "]")
 
-          (insert-into-event-list bucket event-index rst)
-          (insert-price-difference bucket event-index rst)
-          (order-by-price-difference bucket))
+            (insert-into-event-list bucket event-index rst)
+            (insert-price-difference bucket event-index rst)
+            (order-by-price-difference bucket))
 
-        ))
+          )))
     )
   )
 
@@ -231,9 +227,7 @@
                 ))
             0
             (doall first-hundred))
-
-
-    (log/debug "BUCKET-100 > " @bucket-hundred))
+    )
 
   )
 
