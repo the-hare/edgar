@@ -114,13 +114,7 @@
         client (:client options)
         bsize (:bucket-size options)
         stock-lists (:stock-lists options)
-        event-index (first (first
-                            (filter (fn [inp] (= (:id (second inp))
-                                                (rst "tickerId") ))
-                                    (map-indexed vector @bucket) )))
         ]
-
-    (log/debug "snapshot-handler > event index [" event-index "] > result [" rst "] > bucket-hundred [" @bucket "]")
 
 
     (if (= "tickSnapshotEnd" (rst "type"))
@@ -131,6 +125,8 @@
 
         ;; ii.i get the next ID - (rst "tickerId")
         ;; ii.ii) get the next stock
+
+        (log/debug "snapshot-handler > SNAPSHOT END result [" rst "] > bucket-hundred [" @bucket "]")
 
         ;; remove previous stock & mktRequest for next stock
         (let [rid (rst "tickerId")
@@ -175,9 +171,25 @@
         ;; i. it's within the top 100 price ranges
         ;; ii. if not, discard,
 
-        (insert-into-event-list bucket event-index rst)
-        (insert-price-difference bucket event-index rst)
-        (order-by-price-difference bucket)
+        (let [#_event-index #_(first (first
+                                  (filter (fn [inp] (= (:id (second inp))
+                                                      (rst "tickerId") ))
+                                          (map-indexed vector @bucket) )))
+              event-index (-> (filter (fn [inp] (= (:id (second inp))
+                                                  (rst "tickerId") ))
+                                      (map-indexed vector @bucket) )
+                              first
+                              second
+                              :id)
+              try2 "asdf"
+
+              ]
+
+          (log/debug "snapshot-handler > event index [" event-index "] > try2[" try2 "] > result [" rst "] > bucket-hundred [" @bucket "]")
+
+          (insert-into-event-list bucket event-index rst)
+          (insert-price-difference bucket event-index rst)
+          (order-by-price-difference bucket))
 
         ))
     )
