@@ -94,21 +94,21 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
     System.out.println("EWrapper.currentTime > time["+ time +"]");
   }
   public void error (int id, int errorCode, String errorString) {
-    System.out.println("EWrapper.error > id["+ id +"] > errorCode["+ errorCode +"] > errorString["+ errorString +"]");
+    //System.out.println("EWrapper.error > id["+ id +"] > errorCode["+ errorCode +"] > errorString["+ errorString +"]");
   }
   public void error (Exception error) {
-    System.out.println("EWrapper.error[Exception] > error["+ error +"]");
+    //System.out.println("EWrapper.error[Exception] > error["+ error +"]");
     error.printStackTrace();
   }
   public void error (String error) {
-    System.out.println("EWrapper.error[String] > error["+ error +"]");
+    //System.out.println("EWrapper.error[String] > error["+ error +"]");
   }
   public void connectionClosed () {
     System.out.println("EWrapper.connectionClosed");
   }
   public void tickSnapshotEnd (int arg) {
 
-    System.out.println("EWrapper.tickSnapshotEnd > arg["+ arg +"]");
+    //System.out.println("EWrapper.tickSnapshotEnd > arg["+ arg +"]");
 
 		Map tentry = new HashMap();
     tentry.put("tickerId", arg);
@@ -124,28 +124,28 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
   // Market Data
   public void tickPrice (int tickerId, int field, double price, int canAutoExecute) {
 
-    System.out.println("");
-    System.out.println("EWrapper.tickPrice > field["+ field +"]");
+    //System.out.println("");
+    //System.out.println("EWrapper.tickPrice > field["+ field +"]");
     if (field == 1) {
-      System.out.println("case 1 > bid-price["+ price +"]");
+      //System.out.println("case 1 > bid-price["+ price +"]");
     }
     else if (field == 2) {
-      System.out.println("case 2 > ask-price["+ price +"]");
+      //System.out.println("case 2 > ask-price["+ price +"]");
     }
     else if (field == 4) {
-      System.out.println("case 4 > last-price["+ price +"]");
+      //System.out.println("case 4 > last-price["+ price +"]");
     }
     else if (field == 6) {
-      System.out.println("case 6 > high["+ price +"]");
+      //System.out.println("case 6 > high["+ price +"]");
     }
     else if (field == 7) {
-      System.out.println("case 7 > low["+ price +"]");
+      //System.out.println("case 7 > low["+ price +"]");
     }
     else if(field == 9) {
-      System.out.println("case 9 > close["+ price +"]");
+      //System.out.println("case 9 > close["+ price +"]");
     }
     else {
-      System.out.println("default > noop");
+      //System.out.println("default > noop");
     }
 
 
@@ -158,13 +158,13 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
 
 		//Call that function
 		Object result = publishFn.invoke(tentry);
-		System.out.println("EWrapperImpl.tickPrice: " + result);
+		//System.out.println("EWrapperImpl.tickPrice: " + result);
   }
 
 
   public void tickSize (int tickerId, int field, int size) {
 
-    System.out.println("EWrapper.tickSize > tickerId["+ tickerId +"] > field["+ field +"] > size["+ size +"]");
+    //System.out.println("EWrapper.tickSize > tickerId["+ tickerId +"] > field["+ field +"] > size["+ size +"]");
   }
 
   public void tickOptionComputation (int tickerId, int field, double impliedVol, double delta, double optPrice, double pvDividend, double gamma, double vega, double theta, double undPrice) {
@@ -257,7 +257,7 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
 	 */
   public void historicalData (int reqId, String date, double open, double high, double low, double close, int volume, int count, double WAP, boolean hasGaps) {
 
-    System.out.println("EWrapper.historicalData > reqId["+ reqId +"] > date["+ date +"] > open["+ open +"] > high["+ high +"] > low["+ low +"] > close["+ close +"] > volume["+ volume +"] > count["+ count +"] > WAP["+ WAP +"] > hasGaps["+ hasGaps +"]");
+    //System.out.println("EWrapper.historicalData > reqId["+ reqId +"] > date["+ date +"] > open["+ open +"] > high["+ high +"] > low["+ low +"] > close["+ close +"] > volume["+ volume +"] > count["+ count +"] > WAP["+ WAP +"] > hasGaps["+ hasGaps +"]");
 
 		Map tentry = new HashMap();
     tentry.put("tickerId", reqId);
@@ -276,7 +276,7 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
 		/* Call that function
 		 */
 		Object result = publishFn.invoke(tentry);
-		System.out.println("EWrapper.historicalData: " + result);
+		//System.out.println("EWrapper.historicalData: " + result);
 
   }
 

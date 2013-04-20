@@ -6,6 +6,7 @@
             [clojure.data.csv :as csv]
             [clojure.string :as string]
             [clojure.pprint :as pprint]
+            [clojure.tools.logging :as log]
             [edgar.ib.market :as market]
             [edgar.splitter :as splitter]
             )
@@ -119,7 +120,7 @@
                                     (map-indexed vector @bucket) )))
         ]
 
-    (println "snapshot-handler > event index [" event-index "] > result [" rst "] > bucket-hundred [" @bucket "]")
+    (log/debug "snapshot-handler > event index [" event-index "] > result [" rst "] > bucket-hundred [" @bucket "]")
 
 
     (if (= "tickSnapshotEnd" (rst "type"))
@@ -136,7 +137,7 @@
               stock-sym (-> @stock-lists first string/trim)
               stock-name (-> @stock-lists second string/trim)
 
-              foobar (println "ID sequence: " (sort (for [x @bucket] (:id x))))
+              foobar (log/debug "ID sequence: " (sort (for [x @bucket] (:id x))))
               temp-id (first (for [[a b] (partition 2 (sort (for [x @bucket] (:id x))))    ;; run through list and find first gap in IDs
                                    :when (not= (+ 1 a) b)]
                                (+ 1 a)))
@@ -152,11 +153,11 @@
 
               ;; ii.iii) reqMarketData for that next stock; repeat constantly through: NYSE, NASDAQ, AMEX
 
-              (println ">>> 1[" stock-sym "] 2[" stock-name "] || 3[" foobar "] 4[" temp-id "] 5[" next-id "] zzz[" (last foobar) "]" )
-              #_(dosync (alter bucket (fn [inp] (take (- bsize 1) inp))  ))
-              #_(dosync (alter stock-lists rest))
+              (log/debug ">>> 1[" stock-sym "] 2[" stock-name "] || 3[" foobar "] 4[" temp-id "] 5[" next-id "] zzz[" (last foobar) "]" )
+              (dosync (alter bucket (fn [inp] (take (- bsize 1) inp))  ))
+              (dosync (alter stock-lists rest))
 
-              #_(local-request-market-data {:bucket-hundred bucket
+              (local-request-market-data {:bucket-hundred bucket
                                           :id next-id
                                           :stock-symbol stock-sym
                                           :stock-name stock-name
@@ -178,7 +179,7 @@
         (insert-price-difference bucket event-index rst)
         (order-by-price-difference bucket)
 
-        (pprint/pprint @bucket)))
+        ))
     )
   )
 
@@ -190,7 +191,7 @@
   ;; get first 100 stocks
   (let [bucket-hundred (ref [])
         stock-lists (get-concatenated-stock-lists)
-        bsize 3
+        bsize 2
 
         first-hundred (take bsize (rest stock-lists))
         remaining (ref (take bsize (nth stock-lists bsize)))
@@ -205,7 +206,7 @@
               (let [stock-sym (-> ech first string/trim)
                     stock-name (-> ech second string/trim)]
 
-                (println (<< "first-hundred reqMktData on [~{stock-sym}]"))
+                (log/debug (<< "first-hundred reqMktData on [~{stock-sym}]"))
 
                 (local-request-market-data {:bucket-hundred bucket-hundred
                                             :id rslt
@@ -220,7 +221,7 @@
             (doall first-hundred))
 
 
-    (println "BUCKET-100 > " @bucket-hundred))
+    (log/debug "BUCKET-100 > " @bucket-hundred))
 
   )
 

@@ -10,7 +10,6 @@
                  [org.clojure/data.csv "0.1.2"]
                  [overtone/at-at "1.1.1"]
                  [org.clojure/tools.namespace "0.2.3"]
-                 [org.clojure/tools.namespace "0.2.3"]
                  [lamina "0.5.0-beta15"]
                  [clj-time "0.5.0"]
 
@@ -21,7 +20,8 @@
                  ]
   :plugins [[lein-ring "0.8.2"]]
   :ring {:handler edgar.handler/app}
-  :profiles {:dev {:dependencies [[ring-mock "0.1.3"]]}}
+  :profiles {:dev {:dependencies [[ring-mock "0.1.3"]
+                                  [log4j "1.2.17"]]}}
   :repositories { "local" ~(str (.toURI (java.io.File. (str (-> (load-file "etc/config.clj") :dev :root-dir) ".m2/repository/"))))
                   "twitter4j" "http://twitter4j.org/maven2"
                 }
