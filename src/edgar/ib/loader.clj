@@ -156,7 +156,13 @@
                                               :id next-id
                                               :stock-symbol stock-sym
                                               :stock-name stock-name
-                                              :client client}))))
+                                              :client client}))
+
+                ;; ** otherwise, we are DONE
+                (do
+                  (log/debug "*** FINISHED Ordering stocks [" @bucket "]"))
+
+                ))
             ))
 
         )
