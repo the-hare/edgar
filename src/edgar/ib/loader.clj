@@ -76,6 +76,7 @@
                          update-in
                          [ event-index ]
                          (fn [inp]
+                           (log/debug "insert-price-difference > event-index[" event-index "] > blist > type[" (type inp) "] > data[" inp "]")
                            (merge inp { :price-difference price-difference })) ))))))
 
 (defn- order-by-price-difference
@@ -149,6 +150,7 @@
 
               (if (< 0 (count @stock-lists))  ;; only go until there are no more stocks to process
 
+                #_()  ;; noop
                 (let [stock-sym (-> @stock-lists first first string/trim)
                       stock-name (-> @stock-lists first second string/trim)]
 
@@ -160,7 +162,8 @@
 
                 ;; ** otherwise, we are DONE
                 (do
-                  (log/debug "*** FINISHED Ordering stocks [" @bucket "]"))
+                  (pprint/pprint "*** FINISHED Ordering stocks")
+                  (pprint/pprint @bucket))
 
                 ))
             ))
@@ -180,20 +183,23 @@
           ;; i. it's within the top 100 price ranges
           ;; ii. if not, discard,
 
-          (let [temp-index (-> (filter (fn [inp] (= (:id (second inp))
+          (let [event-index (-> (filter (fn [inp] (= (:id (second inp))
                                                    (rst "tickerId") ))
                                        (map-indexed vector @bucket) )
                                ffirst)
-                event-index (if (nil? temp-index) (count @bucket) temp-index)
+                ;;event-index (if (nil? temp-index) (count @bucket) temp-index)
                 ]
 
-            (log/debug "")
-            (log/debug "")
-            (log/debug "snapshot-handler > event index [" event-index "] result [" rst "] > bucket-hundred [" @bucket "]")
+            (if (-> event-index nil? not)
 
-            (insert-into-event-list bucket event-index rst)
-            (insert-price-difference bucket event-index rst)
-            (order-by-price-difference bucket))
+              (do
+                (log/debug "")
+                (log/debug "")
+                (log/debug "snapshot-handler > event index [" event-index "] result [" rst "] > bucket-hundred [" @bucket "]")
+
+                (insert-into-event-list bucket event-index rst)
+                (insert-price-difference bucket event-index rst)
+                (order-by-price-difference bucket))))
 
           )))
     )
@@ -207,10 +213,10 @@
   ;; get first 100 stocks
   (let [bucket-hundred (ref [])
         stock-lists (get-concatenated-stock-lists)
-        bsize 2
+        bsize 20
 
         first-hundred (take bsize (rest stock-lists))
-        remaining (ref (take bsize (-> stock-lists rest rest rest)))
+        remaining (ref (take bsize (nthrest (rest stock-lists) bsize)))
         ]
 
 
