@@ -129,9 +129,6 @@
 
         ;; remove previous stock & mktRequest for next stock
         (let [rid (rst "tickerId")
-              stock-sym (-> @stock-lists first string/trim)
-              stock-name (-> @stock-lists second string/trim)
-
               temp-id (first (for [[a b] (partition 2 (sort (for [x @bucket] (:id x))))    ;; run through list and find first gap in IDs
                                    :when (not= (+ 1 a) b)]
                                (+ 1 a)))
@@ -150,11 +147,16 @@
               (dosync (alter bucket (fn [inp] (into [] (take (- bsize 1) inp)))  ))
               (dosync (alter stock-lists rest))
 
-              (local-request-market-data {:bucket-hundred bucket
-                                          :id next-id
-                                          :stock-symbol stock-sym
-                                          :stock-name stock-name
-                                          :client client}))
+              (if (< 0 (count @stock-lists))  ;; only go until there are no more stocks to process
+
+                (let [stock-sym (-> @stock-lists first first string/trim)
+                      stock-name (-> @stock-lists first second string/trim)]
+
+                  (local-request-market-data {:bucket-hundred bucket
+                                              :id next-id
+                                              :stock-symbol stock-sym
+                                              :stock-name stock-name
+                                              :client client}))))
             ))
 
         )
@@ -202,10 +204,11 @@
         bsize 2
 
         first-hundred (take bsize (rest stock-lists))
-        remaining (ref (take bsize (nth stock-lists bsize)))
+        remaining (ref (take bsize (-> stock-lists rest rest rest)))
         ]
 
 
+    (log/debug "filter-price-movement > BUCKET[" bucket-hundred "] > REMAINING[" remaining "]")
     (market/subscribe-to-market (partial snapshot-handler {:bucket bucket-hundred :client client :bucket-size bsize :stock-lists remaining}))
 
     ;; reqMarketData for first 100 stocks
@@ -213,8 +216,6 @@
 
               (let [stock-sym (-> ech first string/trim)
                     stock-name (-> ech second string/trim)]
-
-                (log/debug (<< "first-hundred reqMktData on [~{stock-sym}]"))
 
                 (local-request-market-data {:bucket-hundred bucket-hundred
                                             :id rslt
