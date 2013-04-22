@@ -48,7 +48,7 @@
   (dosync (alter bucket-hundred
                  (fn [blist]
 
-                   (log/debug "insert-into-event-list > event-index[" event-index "] > blist > type[" (type blist) "] > data[" blist "]")
+                   ;;(log/debug "insert-into-event-list > event-index[" event-index "] > blist > type[" (type blist) "] > data[" blist "]")
                    (update-in blist
                               [ event-index :event-list ]
                               (fn [inp]
