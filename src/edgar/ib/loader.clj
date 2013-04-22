@@ -76,7 +76,8 @@
                          update-in
                          [ event-index ]
                          (fn [inp]
-                           (log/debug "insert-price-difference > event-index[" event-index "] > blist > type[" (type inp) "] > data[" inp "]")
+
+                           ;;(log/debug "insert-price-difference > event-index[" event-index "] > blist > type[" (type inp) "] > data[" inp "]")
                            (merge inp { :price-difference price-difference })) ))))))
 
 (defn- order-by-price-difference
@@ -85,7 +86,7 @@
   (dosync (alter bucket-hundred
                    (fn [inp]
 
-                     (log/debug "order-by-price-difference > input data[" inp "]")
+                     ;;(log/debug "order-by-price-difference > input data[" inp "]")
                      (into []   ;; put the result into a vector
                            (sort-by :price-difference > inp)))
                    )))
@@ -104,6 +105,11 @@
   )
 
 
+;;(def sl (get-concatenated-stock-lists))
+;;(def stock-lists2 (ref (nthrest (rest sl) 20)))
+;;(def stock-list-index (ref 20))
+
+
 ;; subscribe to EWrapper mkt data events
 (defn- snapshot-handler [options rst]
 
@@ -114,6 +120,7 @@
         client (:client options)
         bsize (:bucket-size options)
         stock-lists (:stock-lists options)
+        #_stock-list-index #_(:stock-list-index options)
         ]
 
 
@@ -126,7 +133,8 @@
         ;; ii.i get the next ID - (rst "tickerId")
         ;; ii.ii) get the next stock
 
-        (log/debug "snapshot-handler > SNAPSHOT END result [" rst "] > bucket-hundred [" @bucket "] > stock-lists [" @stock-lists "]")
+        (log/debug "snapshot-handler > SNAPSHOT END result [" rst "] > bucket-hundred [" @bucket "] > stock-lists SIZE [" (count @stock-lists) "]")
+        ;;(log/debug "snapshot-handler > SNAPSHOT END result [" rst "] > bucket-hundred [" @bucket "] > stock-list-index[" @stock-list-index "]")
 
         ;; remove previous stock & mktRequest for next stock
         (let [rid (rst "tickerId")
@@ -145,16 +153,21 @@
 
               ;; ii.iii) reqMarketData for that next stock; repeat constantly through: NYSE, NASDAQ, AMEX
 
-              (dosync (alter bucket (fn [inp] (into [] (take (- bsize 1) inp)))  ))
+              (dosync (alter bucket (fn [inp] (into [] (take (- bsize 1) inp))) ))
               (dosync (alter stock-lists rest))
+              #_(dosync (alter stock-list-index inc))
+
 
               (if (< 0 (count @stock-lists))  ;; only go until there are no more stocks to process
 
-                #_()  ;; noop
-                (let [stock-sym (-> @stock-lists first first string/trim)
-                      stock-name (-> @stock-lists first second string/trim)]
+                (let [;;stock-sym (string/trim (first (nth @stock-lists @stock-list-index)))
+                      ;;stock-name (string/trim (second (nth @stock-lists @stock-list-index)))
 
-                  (local-request-market-data {:bucket-hundred bucket
+                      stock-sym (string/trim (first (first @stock-lists )))
+                      stock-name (string/trim (second (first @stock-lists )))
+                      ]
+
+                  #_(local-request-market-data {:bucket-hundred bucket
                                               :id next-id
                                               :stock-symbol stock-sym
                                               :stock-name stock-name
@@ -213,15 +226,18 @@
   ;; get first 100 stocks
   (let [bucket-hundred (ref [])
         stock-lists (get-concatenated-stock-lists)
-        bsize 20
+        bsize 50
 
         first-hundred (take bsize (rest stock-lists))
-        remaining (ref (take bsize (nthrest (rest stock-lists) bsize)))
+        ;;remaining (ref (take bsize (nthrest (rest stock-lists) bsize)))
+        remaining (ref (nthrest (rest stock-lists) bsize))
+        stock-list-index (ref bsize)
         ]
 
 
-    (log/debug "filter-price-movement > BUCKET[" bucket-hundred "] > REMAINING[" remaining "]")
-    (market/subscribe-to-market (partial snapshot-handler {:bucket bucket-hundred :client client :bucket-size bsize :stock-lists remaining}))
+    ;;(log/debug "filter-price-movement > BUCKET[" bucket-hundred "] > REMAINING[" remaining "]")
+    (log/debug "filter-price-movement > BUCKET[" bucket-hundred "]")
+    (market/subscribe-to-market (partial snapshot-handler {:bucket bucket-hundred :client client :bucket-size bsize :stock-lists remaining #_:stock-list-index #_stock-list-index}))
 
     ;; reqMarketData for first 100 stocks
     (reduce (fn [rslt ech]
