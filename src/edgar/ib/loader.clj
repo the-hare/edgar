@@ -105,11 +105,6 @@
   )
 
 
-;;(def sl (get-concatenated-stock-lists))
-;;(def stock-lists2 (ref (nthrest (rest sl) 20)))
-;;(def stock-list-index (ref 20))
-
-
 ;; subscribe to EWrapper mkt data events
 (defn- snapshot-handler [options rst]
 
@@ -120,7 +115,6 @@
         client (:client options)
         bsize (:bucket-size options)
         stock-lists (:stock-lists options)
-        #_stock-list-index #_(:stock-list-index options)
         ]
 
 
@@ -132,9 +126,8 @@
 
         ;; ii.i get the next ID - (rst "tickerId")
         ;; ii.ii) get the next stock
+        (log/debug "snapshot-handler > SNAPSHOT END result [" rst "] > bucket-hundred [" nil #_@bucket "] > stock-lists SIZE [" (count @stock-lists) "]")
 
-        (log/debug "snapshot-handler > SNAPSHOT END result [" rst "] > bucket-hundred [" @bucket "] > stock-lists SIZE [" (count @stock-lists) "]")
-        ;;(log/debug "snapshot-handler > SNAPSHOT END result [" rst "] > bucket-hundred [" @bucket "] > stock-list-index[" @stock-list-index "]")
 
         ;; remove previous stock & mktRequest for next stock
         (let [rid (rst "tickerId")
@@ -155,19 +148,15 @@
 
               (dosync (alter bucket (fn [inp] (into [] (take (- bsize 1) inp))) ))
               (dosync (alter stock-lists rest))
-              #_(dosync (alter stock-list-index inc))
-
 
               (if (< 0 (count @stock-lists))  ;; only go until there are no more stocks to process
 
-                (let [;;stock-sym (string/trim (first (nth @stock-lists @stock-list-index)))
-                      ;;stock-name (string/trim (second (nth @stock-lists @stock-list-index)))
-
-                      stock-sym (string/trim (first (first @stock-lists )))
+                (let [stock-sym (string/trim (first (first @stock-lists )))
                       stock-name (string/trim (second (first @stock-lists )))
                       ]
 
-                  #_(local-request-market-data {:bucket-hundred bucket
+                  (market/cancel-market-data client next-id)
+                  (local-request-market-data {:bucket-hundred bucket
                                               :id next-id
                                               :stock-symbol stock-sym
                                               :stock-name stock-name
@@ -208,7 +197,7 @@
               (do
                 (log/debug "")
                 (log/debug "")
-                (log/debug "snapshot-handler > event index [" event-index "] result [" rst "] > bucket-hundred [" @bucket "]")
+                (log/debug "snapshot-handler > event index [" event-index "] result [" rst "] > bucket-hundred [" nil #_@bucket "]")
 
                 (insert-into-event-list bucket event-index rst)
                 (insert-price-difference bucket event-index rst)
@@ -229,8 +218,8 @@
         bsize 50
 
         first-hundred (take bsize (rest stock-lists))
-        ;;remaining (ref (take bsize (nthrest (rest stock-lists) bsize)))
-        remaining (ref (nthrest (rest stock-lists) bsize))
+        remaining (ref (take 100 (nthrest (rest stock-lists) bsize)))
+        ;;remaining (ref (nthrest (rest stock-lists) bsize))
         stock-list-index (ref bsize)
         ]
 

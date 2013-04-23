@@ -25,5 +25,6 @@
   :resource-paths ["etc/"]
   :repositories { "local" ~(str (.toURI (java.io.File. (str (-> (load-file "etc/config.clj") :dev :root-dir) ".m2/repository/"))))
                   "twitter4j" "http://twitter4j.org/maven2"
-                }
+                  }
+  :jvm-opts ["-Xmx1g" "-Xmn250M"]
   )

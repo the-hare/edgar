@@ -34,7 +34,14 @@
          (.reqHistoricalData client idx contract tstring "1 D" "1 day" "TRADES" 1 1)
          )
        )
-  ))
+     ))
+(defn cancel-market-data
+  "Cancel the request ID, used in 'request-market-data'"
+  [client idx]
+
+  (.cancelMktData client idx)
+  (.cancelHistoricalData client idx)
+  )
 
 (defonce event-channel (ref (lamina/channel)))
 (defn subscribe-to-market [handle-fn]
