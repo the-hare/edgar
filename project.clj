@@ -22,6 +22,7 @@
   :ring {:handler edgar.handler/app}
   :profiles {:dev {:dependencies [[ring-mock "0.1.3"]
                                   [log4j "1.2.17"]]}}
+  :resource-paths ["etc/"]
   :repositories { "local" ~(str (.toURI (java.io.File. (str (-> (load-file "etc/config.clj") :dev :root-dir) ".m2/repository/"))))
                   "twitter4j" "http://twitter4j.org/maven2"
                 }
