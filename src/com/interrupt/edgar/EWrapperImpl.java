@@ -94,14 +94,14 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
     System.out.println("EWrapper.currentTime > time["+ time +"]");
   }
   public void error (int id, int errorCode, String errorString) {
-    //System.out.println("EWrapper.error > id["+ id +"] > errorCode["+ errorCode +"] > errorString["+ errorString +"]");
+    System.out.println("EWrapper.error > id["+ id +"] > errorCode["+ errorCode +"] > errorString["+ errorString +"]");
   }
   public void error (Exception error) {
-    //System.out.println("EWrapper.error[Exception] > error["+ error +"]");
+    System.out.println("EWrapper.error[Exception] > error["+ error +"]");
     error.printStackTrace();
   }
   public void error (String error) {
-    //System.out.println("EWrapper.error[String] > error["+ error +"]");
+    System.out.println("EWrapper.error[String] > error["+ error +"]");
   }
   public void connectionClosed () {
     System.out.println("EWrapper.connectionClosed");
