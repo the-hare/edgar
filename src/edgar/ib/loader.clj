@@ -39,13 +39,13 @@
   )
 
 (defn- insert-into-event-list
-  "bucket-hundred will have a structure of: [ { :id rslt :symbol stock-sym :event-list [] } ]
+  "bucket-tranche will have a structure of: [ { :id rslt :symbol stock-sym :event-list [] } ]
    i) go into the bucket, ii) find the appropriate element and iii) insert event into the :event-list"
-  [bucket-hundred event-index rst]
+  [bucket-tranche event-index rst]
 
 
   ;; weed out historicalData events that are finished
-  (dosync (alter bucket-hundred
+  (dosync (alter bucket-tranche
                  (fn [blist]
 
                    ;;(log/debug "insert-into-event-list > event-index[" event-index "] > blist > type[" (type blist) "] > data[" blist "]")
@@ -57,7 +57,7 @@
 
 (defn- insert-price-difference
   "insert price difference, iff type is 'historicalData'"
-  [bucket-hundred event-index rst]
+  [bucket-tranche event-index rst]
 
   (if (and (= "historicalData" (rst "type"))
              (-> (rst "high") nil? not)
@@ -66,13 +66,13 @@
       ;; find this iteration's price difference
       (let [price-difference (- (rst "high")
                                 (rst "low"))
-            prev-difference (:price-difference (nth @bucket-hundred event-index))]
+            prev-difference (:price-difference (nth @bucket-tranche event-index))]
 
         ;; determine if greater than the existing price-difference
         (if (and (-> prev-difference nil? not)
                  (> price-difference prev-difference))
 
-          (dosync (alter bucket-hundred
+          (dosync (alter bucket-tranche
                          update-in
                          [ event-index ]
                          (fn [inp]
@@ -82,8 +82,8 @@
 
 (defn- order-by-price-difference
   "Order list by largest price difference"
-  [bucket-hundred]
-  (dosync (alter bucket-hundred
+  [bucket-tranche]
+  (dosync (alter bucket-tranche
                    (fn [inp]
 
                      ;;(log/debug "order-by-price-difference > input data[" inp "]")
@@ -94,7 +94,7 @@
 
 (defn- local-request-market-data [options]
 
-  (let [bucket (:bucket-hundred options)
+  (let [bucket (:bucket-tranche options)
         rslt (:id options)
         stock-sym (:stock-symbol options)
         stock-name (:stock-name options)
@@ -106,7 +106,7 @@
 
 (defn- local-request-historical-data [options]
 
-  (let [bucket (:bucket-hundred options)
+  (let [bucket (:bucket-tranche options)
         rslt (:id options)
         stock-sym (:stock-symbol options)
         stock-name (:stock-name options)
@@ -138,7 +138,7 @@
 
         ;; ii.i get the next ID - (rst "tickerId")
         ;; ii.ii) get the next stock
-        (log/debug "snapshot-handler > SNAPSHOT END result [" rst "] > bucket-hundred [" nil #_@bucket "] > stock-lists SIZE [" (count @stock-lists) "]")
+        (log/debug "snapshot-handler > SNAPSHOT END result [" rst "] > bucket-tranche [" nil #_@bucket "] > stock-lists SIZE [" (count @stock-lists) "]")
 
 
         ;; remove previous stock & mktRequest for next stock
@@ -167,7 +167,7 @@
                       ]
 
                   (market/cancel-market-data client next-id)
-                  (local-request-historical-data {:bucket-hundred bucket
+                  (local-request-historical-data {:bucket-tranche bucket
                                               :id next-id
                                               :stock-symbol stock-sym
                                               :stock-name stock-name
@@ -208,7 +208,7 @@
               (do
                 (log/debug "")
                 (log/debug "")
-                (log/debug "snapshot-handler > event index [" event-index "] result [" rst "] > bucket-hundred [" nil #_@bucket "]")
+                (log/debug "snapshot-handler > event index [" event-index "] result [" rst "] > bucket-tranche [" nil #_@bucket "]")
 
                 (insert-into-event-list bucket event-index rst)
                 (insert-price-difference bucket event-index rst)
@@ -223,8 +223,8 @@
   [client]
 
 
-  ;; get first 100 stocks
-  (let [bucket-hundred (ref [])
+  ;; get first tranch of stocks
+  (let [bucket-tranche (ref [])
         stock-lists (get-concatenated-stock-lists)
         bsize 100
 
@@ -233,21 +233,21 @@
         ]
 
 
-    (log/debug "filter-price-movement > BUCKET[" bucket-hundred "] > REMAINING[" remaining "]")
-    (market/subscribe-to-market (partial snapshot-handler {:bucket bucket-hundred :client client :bucket-size bsize :stock-lists remaining}))
+    (log/debug "filter-price-movement > BUCKET[" bucket-tranche "] > REMAINING[" remaining "]")
+    (market/subscribe-to-market (partial snapshot-handler {:bucket bucket-tranche :client client :bucket-size bsize :stock-lists remaining}))
 
-    ;; reqMarketData for first 100 stocks
+    ;; reqHistoricalData for first tranche of stocks
     (reduce (fn [rslt ech]
 
               (let [stock-sym (-> ech first string/trim)
                     stock-name (-> ech second string/trim)]
 
-                (local-request-historical-data {:bucket-hundred bucket-hundred
-                                            :id rslt
-                                            :stock-symbol stock-sym
-                                            :stock-name stock-name
-                                            :client client
-                                            })
+                (local-request-historical-data {:bucket-tranche bucket-tranche
+                                                :id rslt
+                                                :stock-symbol stock-sym
+                                                :stock-name stock-name
+                                                :client client
+                                                })
 
                 (inc rslt)
                 ))
@@ -259,11 +259,8 @@
 
 
 (defn test-run []
-
   (let [client (:esocket (market/connect-to-market))]
     (filter-price-movement client)
-    )
-  )
-(defn xxx []
-  (test-run)
-  )
+    ))
+(defn stub-run []
+  (test-run))
