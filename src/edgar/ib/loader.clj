@@ -104,6 +104,18 @@
     (market/request-market-data client rslt stock-sym true))
   )
 
+(defn- local-request-historical-data [options]
+
+  (let [bucket (:bucket-hundred options)
+        rslt (:id options)
+        stock-sym (:stock-symbol options)
+        stock-name (:stock-name options)
+        client (:client options)]
+
+    (dosync (alter bucket conj { :id rslt :symbol stock-sym :company stock-name :price-difference 0.0 :event-list [] } ))
+    (market/request-historical-data client rslt stock-sym))
+  )
+
 
 ;; subscribe to EWrapper mkt data events
 (defn- snapshot-handler [options rst]
@@ -155,7 +167,7 @@
                       ]
 
                   (market/cancel-market-data client next-id)
-                  #_(local-request-market-data {:bucket-hundred bucket
+                  (local-request-historical-data {:bucket-hundred bucket
                                               :id next-id
                                               :stock-symbol stock-sym
                                               :stock-name stock-name
@@ -214,11 +226,10 @@
   ;; get first 100 stocks
   (let [bucket-hundred (ref [])
         stock-lists (get-concatenated-stock-lists)
-        bsize 20
+        bsize 100
 
         first-hundred (take bsize (rest stock-lists))
-        remaining (ref (take 100 (nthrest (rest stock-lists) bsize)))
-        ;;remaining (ref (nthrest (rest stock-lists) bsize))
+        remaining (ref (nthrest (rest stock-lists) bsize))
         ]
 
 
@@ -231,7 +242,7 @@
               (let [stock-sym (-> ech first string/trim)
                     stock-name (-> ech second string/trim)]
 
-                (local-request-market-data {:bucket-hundred bucket-hundred
+                (local-request-historical-data {:bucket-hundred bucket-hundred
                                             :id rslt
                                             :stock-symbol stock-sym
                                             :stock-name stock-name

@@ -14,34 +14,59 @@
   []
   (socket/connect-to-tws))
 
+
+(defn- create-contract [instrm]
+
+  (let [contract (Contract.)]
+    (set! (.m_symbol contract) instrm)
+    (set! (.m_secType contract) "STK")
+    (set! (.m_exchange contract) "SMART")
+    (set! (.m_currency contract) "USD")
+
+    contract)
+  )
+
+;; ====
+;; HISTORICAL Data
+(defn request-historical-data
+  "Request historical historical information in the form of a feed or data snapshot"
+
+  ([client idx instrm]
+     (let [contract (create-contract instrm)
+           nnow (time/local-now)
+           tformat (format/formatter "yyyyMMdd HH:mm:ss z")
+           tstring (format/unparse tformat nnow)
+           ]
+       (.reqHistoricalData client idx contract tstring "1 D" "1 day" "TRADES" 1 1)
+       )
+     ))
+(defn cancel-historical-data
+  "Cancel the request ID, used in 'request-historical-data'"
+  [client idx]
+
+  (.cancelHistoricalData client idx))
+
+
+
+;; ====
+;; MARKET Data
 (defn request-market-data
-  "Request market information in the form of a feed or data snapshot"
+  "Request historical market information in the form of a feed or data snapshot"
+
   ([client idx instrm]
      (request-market-data client idx instrm false))
 
   ([client idx instrm snapshot]
-     (let [contract (Contract.)]
-       (set! (.m_symbol contract) instrm)
-       (set! (.m_secType contract) "STK")
-       (set! (.m_exchange contract) "SMART")
-       (set! (.m_currency contract) "USD")
+     (let [contract (create-contract instrm)]
 
-       (.reqMktData client idx contract "" snapshot)
-       (let [nnow (time/local-now)
-             tformat (format/formatter "yyyyMMdd HH:mm:ss z")
-             tstring (format/unparse tformat nnow)
-             ]
-         (.reqHistoricalData client idx contract tstring "1 D" "1 day" "TRADES" 1 1)
-         )
-       )
+       (.reqMktData client idx contract "" snapshot))
      ))
 (defn cancel-market-data
   "Cancel the request ID, used in 'request-market-data'"
   [client idx]
 
-  (.cancelMktData client idx)
-  (.cancelHistoricalData client idx)
-  )
+  (.cancelMktData client idx))
+
 
 (defonce event-channel (ref (lamina/channel)))
 (defn subscribe-to-market [handle-fn]
