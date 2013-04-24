@@ -145,7 +145,6 @@
             (do
 
               ;; ii.iii) reqMarketData for that next stock; repeat constantly through: NYSE, NASDAQ, AMEX
-
               (dosync (alter bucket (fn [inp] (into [] (take (- bsize 1) inp))) ))
               (dosync (alter stock-lists rest))
 
@@ -156,7 +155,7 @@
                       ]
 
                   (market/cancel-market-data client next-id)
-                  (local-request-market-data {:bucket-hundred bucket
+                  #_(local-request-market-data {:bucket-hundred bucket
                                               :id next-id
                                               :stock-symbol stock-sym
                                               :stock-name stock-name
@@ -215,7 +214,7 @@
   ;; get first 100 stocks
   (let [bucket-hundred (ref [])
         stock-lists (get-concatenated-stock-lists)
-        bsize 50
+        bsize 20
 
         first-hundred (take bsize (rest stock-lists))
         remaining (ref (take 100 (nthrest (rest stock-lists) bsize)))
