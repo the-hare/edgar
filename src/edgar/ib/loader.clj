@@ -219,13 +219,11 @@
         first-hundred (take bsize (rest stock-lists))
         remaining (ref (take 100 (nthrest (rest stock-lists) bsize)))
         ;;remaining (ref (nthrest (rest stock-lists) bsize))
-        stock-list-index (ref bsize)
         ]
 
 
-    ;;(log/debug "filter-price-movement > BUCKET[" bucket-hundred "] > REMAINING[" remaining "]")
-    (log/debug "filter-price-movement > BUCKET[" bucket-hundred "]")
-    (market/subscribe-to-market (partial snapshot-handler {:bucket bucket-hundred :client client :bucket-size bsize :stock-lists remaining #_:stock-list-index #_stock-list-index}))
+    (log/debug "filter-price-movement > BUCKET[" bucket-hundred "] > REMAINING[" remaining "]")
+    (market/subscribe-to-market (partial snapshot-handler {:bucket bucket-hundred :client client :bucket-size bsize :stock-lists remaining}))
 
     ;; reqMarketData for first 100 stocks
     (reduce (fn [rslt ech]
