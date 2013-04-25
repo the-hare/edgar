@@ -121,31 +121,39 @@
 
 (defn- schedule-historical-data [options]
 
-  (let [tranche-size 10 #_60
-        remaining-list (ref (:stock-lists options))
+  (let [tranche-size 10
+
+        remaining-list (:stock-lists options)
         current-tranche (take tranche-size @remaining-list)
         ]
 
+    (scheduler/initialize-pool)
     (scheduler/schedule-task
-     {:min 1 #_11}
+     {:sec 1}
      (fn []
 
-       (log/debug "schedule-historical-data > RUNNING task > remaining-list count[" (count @remaining-list) "]")
+
+       (log/debug "schedule-historical-data > RUNNING task > remaining-list count[" (count @remaining-list)"] current-tranche[" current-tranche "]")
+
+       ;; A. Iterate through tranche and make a historical data request
        (reduce (fn [rslt ech]
 
-                 ;; A. Iterate through tranche and make a historical data request
+                 ;;(log/debug "... reduce idx[" rslt "] > ech[" ech "]")
                  #_(let [stock-sym (-> ech first string/trim)
-                       stock-name (-> ech second string/trim)]
+                         stock-name (-> ech second string/trim)]
 
-                   (local-request-historical-data (extend {:id rslt :stock-symbol stock-sym :stock-name stock-name} options))
-                   (inc rslt))
-
-                 ;; B. ensure that remaining list is decremented
-                 (dosync (alter remaining-list #(nthrest % tranche-size)))
-               )
+                     (local-request-historical-data (extend {:id rslt :stock-symbol stock-sym :stock-name stock-name} options)))
+                 (inc rslt)
+                 )
                0
                current-tranche
-               ))))
+               )
+
+       ;; B. ensure that remaining list is decremented
+       (dosync (alter remaining-list (fn [inp] (nthrest tranche-size inp))))
+
+       )
+     ))
   )
 
 (defn- handle-snapshot-end [options rst]
@@ -259,12 +267,12 @@
 
   ;; get first tranch of stocks
   (let [bucket-tranche (ref [])
-        stock-lists (get-concatenated-stock-lists)
+        stock-lists (ref (get-concatenated-stock-lists))
         options {:bucket bucket-tranche :client client :stock-lists stock-lists}
         ]
 
 
-    (log/debug "filter-price-movement > bucket[" bucket-tranche "] > stock-list-size[" (count stock-lists) "]")
+    (log/debug "filter-price-movement > bucket[" bucket-tranche "] > stock-list-size[" (count @stock-lists) "]")
 
     (market/subscribe-to-market (partial snapshot-handler options))
     (schedule-historical-data options)
