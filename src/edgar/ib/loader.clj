@@ -122,9 +122,7 @@
 (defn- schedule-historical-data [options]
 
   (let [tranche-size 10
-
         remaining-list (ref (:stock-lists options))
-        current-tranche (ref (take tranche-size @remaining-list))
         ]
 
     (scheduler/initialize-pool)
@@ -132,27 +130,25 @@
      {:sec 1}
      (fn []
 
-       (log/debug "")
-       (log/debug "schedule-historical-data > RUNNING task > remaining-list count[" (count @remaining-list)"] current-tranche[" @current-tranche "]")
+       (let [current-tranche (take tranche-size @remaining-list)]
 
-       ;; A. Iterate through tranche and make a historical data request
-       (reduce (fn [rslt ech]
+         (log/debug "")
+         (log/debug "schedule-historical-data > RUNNING task > remaining-list count[" (count @remaining-list)"] current-tranche[" current-tranche "]")
 
-                 (let [stock-sym (-> ech first string/trim)
-                       stock-name (-> ech second string/trim)]
+         ;; A. Iterate through tranche and make a historical data request
+         (reduce (fn [rslt ech]
 
-                   #_(local-request-historical-data (extend {:id rslt :stock-symbol stock-sym :stock-name stock-name} options)))
-                 (inc rslt))
-               0
-               @current-tranche
-               )
+                   (let [stock-sym (-> ech first string/trim)
+                         stock-name (-> ech second string/trim)]
 
-       ;; B. ensure that remaining list is decremented
-       #_(let [swap-in (take tranche-size @remaining-list)]
-           (dosync (alter current-tranche swap! swap-in)))
-       (dosync (alter current-tranche (take tranche-size @remaining-list)))
-       (dosync (alter remaining-list nthrest tranche-size))
+                     #_(local-request-historical-data (extend {:id rslt :stock-symbol stock-sym :stock-name stock-name} options)))
+                   (inc rslt))
+                 0
+                 current-tranche
+                 )
 
+         ;; B. ensure that remaining list is decremented
+         (dosync (alter remaining-list nthrest tranche-size)))
        )
      ))
   )
