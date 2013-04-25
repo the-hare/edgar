@@ -123,7 +123,7 @@
 
   (let [tranche-size 10
 
-        remaining-list (:stock-lists options)
+        remaining-list (ref (:stock-lists options))
         current-tranche (take tranche-size @remaining-list)
         ]
 
@@ -150,7 +150,10 @@
                )
 
        ;; B. ensure that remaining list is decremented
-       (dosync (alter remaining-list (fn [inp] (nthrest tranche-size inp))))
+       #_(dosync (alter (ref 1) inc))
+       (dosync (alter remaining-list (fn [inp]
+                                       (log/debug "... count [" (count inp) "] > after nthrest[" (count (nthrest tranche-size inp)) "]")
+                                       (nthrest tranche-size inp))))
 
        )
      ))
@@ -267,12 +270,12 @@
 
   ;; get first tranch of stocks
   (let [bucket-tranche (ref [])
-        stock-lists (ref (get-concatenated-stock-lists))
+        stock-lists (get-concatenated-stock-lists)
         options {:bucket bucket-tranche :client client :stock-lists stock-lists}
         ]
 
 
-    (log/debug "filter-price-movement > bucket[" bucket-tranche "] > stock-list-size[" (count @stock-lists) "]")
+    (log/debug "filter-price-movement > bucket[" bucket-tranche "] > stock-list-size[" (count stock-lists) "]")
 
     (market/subscribe-to-market (partial snapshot-handler options))
     (schedule-historical-data options)
@@ -282,7 +285,7 @@
 
 
 (defn test-run []
-  (let [client (:esocket (market/connect-to-market))]
+  (let [client nil #_(:esocket (market/connect-to-market))]
     (filter-price-movement client)
     ))
 (defn stub-run []
