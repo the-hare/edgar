@@ -7,8 +7,11 @@
             [clojure.string :as string]
             [clojure.pprint :as pprint]
             [clojure.tools.logging :as log]
+            [overtone.at-at :as at]
+
             [edgar.ib.market :as market]
             [edgar.splitter :as splitter]
+            [edgar.scheduler :as scheduler]
             )
   )
 
@@ -116,12 +119,36 @@
     (market/request-historical-data client rslt stock-sym))
   )
 
+(defn- schedule-historical-data [options]
 
-;; subscribe to EWrapper mkt data events
-(defn- snapshot-handler [options rst]
+  (let [tranche-size 10 #_60
+        remaining-list (ref (:stock-lists options))
+        current-tranche (take tranche-size @remaining-list)
+        ]
 
+    (scheduler/schedule-task
+     {:min 1 #_11}
+     (fn []
 
-  ;; (splitter/pushEvent rst)
+       (log/debug "schedule-historical-data > RUNNING task > remaining-list count[" (count @remaining-list) "]")
+       (reduce (fn [rslt ech]
+
+                 ;; A. Iterate through tranche and make a historical data request
+                 #_(let [stock-sym (-> ech first string/trim)
+                       stock-name (-> ech second string/trim)]
+
+                   (local-request-historical-data (extend {:id rslt :stock-symbol stock-sym :stock-name stock-name} options))
+                   (inc rslt))
+
+                 ;; B. ensure that remaining list is decremented
+                 (dosync (alter remaining-list #(nthrest % tranche-size)))
+               )
+               0
+               current-tranche
+               ))))
+  )
+
+(defn- handle-snapshot-end [options rst]
 
   (let [bucket (:bucket options)
         client (:client options)
@@ -130,92 +157,99 @@
         ]
 
 
-    (if (= "tickSnapshotEnd" (rst "type"))
-
-      ;; ***
-      ;; snapshot END
-      (do
-
-        ;; ii.i get the next ID - (rst "tickerId")
-        ;; ii.ii) get the next stock
-        (log/debug "snapshot-handler > SNAPSHOT END result [" rst "] > bucket-tranche [" nil #_@bucket "] > stock-lists SIZE [" (count @stock-lists) "]")
+    ;; ii.i get the next ID - (rst "tickerId")
+    ;; ii.ii) get the next stock
+    (log/debug "snapshot-handler > SNAPSHOT END result [" rst "] > bucket-tranche [" nil #_@bucket "] > stock-lists SIZE [" (count @stock-lists) "]")
 
 
-        ;; remove previous stock & mktRequest for next stock
-        (let [rid (rst "tickerId")
-              temp-id (first (for [[a b] (partition 2 (sort (for [x @bucket] (:id x))))    ;; run through list and find first gap in IDs
-                                   :when (not= (+ 1 a) b)]
-                               (+ 1 a)))
-              next-id (if (nil? temp-id)
-                        (+ 1 (last (sort (for [x @bucket] (:id x)))))
-                        temp-id)
-              ]
+    ;; remove previous stock & mktRequest for next stock
+    (let [rid (rst "tickerId")
+          temp-id (first (for [[a b] (partition 2 (sort (for [x @bucket] (:id x))))    ;; run through list and find first gap in IDs
+                               :when (not= (+ 1 a) b)]
+                           (+ 1 a)))
+          next-id (if (nil? temp-id)
+                    (+ 1 (last (sort (for [x @bucket] (:id x)))))
+                    temp-id)
+          ]
 
-          ;; remove only if i) we are at 100 and ii) this is the lowest price difference
-          (if (>= (count @bucket) bsize)
+      ;; remove only if i) we are at 100 and ii) this is the lowest price difference
+      (if (>= (count @bucket) bsize)
 
-            (do
-
-              ;; ii.iii) reqMarketData for that next stock; repeat constantly through: NYSE, NASDAQ, AMEX
-              (dosync (alter bucket (fn [inp] (into [] (take (- bsize 1) inp))) ))
-              (dosync (alter stock-lists rest))
-
-              (if (< 0 (count @stock-lists))  ;; only go until there are no more stocks to process
-
-                (let [stock-sym (string/trim (first (first @stock-lists )))
-                      stock-name (string/trim (second (first @stock-lists )))
-                      ]
-
-                  (market/cancel-market-data client next-id)
-                  (local-request-historical-data {:bucket-tranche bucket
-                                              :id next-id
-                                              :stock-symbol stock-sym
-                                              :stock-name stock-name
-                                              :client client}))
-
-                ;; ** otherwise, we are DONE
-                (do
-                  (pprint/pprint "*** FINISHED Ordering stocks")
-                  (pprint/pprint @bucket))
-
-                ))
-            ))
-
-        )
-
-      ;; ***
-      ;; otherwise process events
-      (if (and (= "historicalData" (rst "type"))
-           (re-find #"finished-" (rst "date")))
-
-        () ;; noop
         (do
 
-          ;; when getting stock data, when results arrive, decide if
-          ;;
-          ;; i. it's within the top 100 price ranges
-          ;; ii. if not, discard,
+          ;; ii.iii) reqMarketData for that next stock; repeat constantly through: NYSE, NASDAQ, AMEX
+          (dosync (alter bucket (fn [inp] (into [] (take (- bsize 1) inp))) ))
+          (dosync (alter stock-lists rest))
 
-          (let [event-index (-> (filter (fn [inp] (= (:id (second inp))
-                                                   (rst "tickerId") ))
-                                       (map-indexed vector @bucket) )
-                               ffirst)
-                ;;event-index (if (nil? temp-index) (count @bucket) temp-index)
-                ]
+          (if (< 0 (count @stock-lists))  ;; only go until there are no more stocks to process
 
-            (if (-> event-index nil? not)
+            (let [stock-sym (string/trim (first (first @stock-lists )))
+                  stock-name (string/trim (second (first @stock-lists )))
+                  ]
 
-              (do
-                (log/debug "")
-                (log/debug "")
-                (log/debug "snapshot-handler > event index [" event-index "] result [" rst "] > bucket-tranche [" nil #_@bucket "]")
+              (market/cancel-market-data client next-id)
+              #_(local-request-historical-data {:bucket-tranche bucket
+                                                :id next-id
+                                                :stock-symbol stock-sym
+                                                :stock-name stock-name
+                                                :client client}))
 
-                (insert-into-event-list bucket event-index rst)
-                (insert-price-difference bucket event-index rst)
-                (order-by-price-difference bucket))))
+            ;; ** otherwise, we are DONE
+            (do
+              (pprint/pprint "*** FINISHED Ordering stocks")
+              (pprint/pprint @bucket))
 
-          )))
+            ))
+        )))
     )
+
+(defn- handle-snapshot-continue [options rst]
+
+  ;; when getting stock data, when results arrive, decide if
+  ;;
+  ;; i. it's within the top 100 price ranges
+  ;; ii. if not, discard,
+
+  (let [bucket (:bucket options)
+        client (:client options)
+        bsize (:bucket-size options)
+        stock-lists (:stock-lists options)
+        event-index (-> (filter (fn [inp] (= (:id (second inp))
+                                            (rst "tickerId") ))
+                                (map-indexed vector @bucket) )
+                        ffirst)
+        ]
+
+    (if (-> event-index nil? not)
+
+      (do
+        (log/debug "")
+        (log/debug "")
+        (log/debug "snapshot-handler > event index [" event-index "] result [" rst "] > bucket-tranche [" nil #_@bucket "]")
+
+        (insert-into-event-list bucket event-index rst)
+        (insert-price-difference bucket event-index rst)
+        (order-by-price-difference bucket))))
+  )
+
+
+;; subscribe to EWrapper mkt data events
+(defn- snapshot-handler [options rst]
+
+
+  ;; (splitter/pushEvent rst)
+
+  (if (and (= "historicalData" (rst "type"))
+           (re-find #"finished-" (rst "date")))
+
+    ;; ***
+    ;; snapshot END
+    (handle-snapshot-end options rst)
+
+    ;; ***
+    ;; otherwise process events
+    (handle-snapshot-continue options rst))
+
   )
 
 (defn filter-price-movement
@@ -226,35 +260,16 @@
   ;; get first tranch of stocks
   (let [bucket-tranche (ref [])
         stock-lists (get-concatenated-stock-lists)
-        bsize 100
-
-        first-hundred (take bsize (rest stock-lists))
-        remaining (ref (nthrest (rest stock-lists) bsize))
+        options {:bucket bucket-tranche :client client :stock-lists stock-lists}
         ]
 
 
-    (log/debug "filter-price-movement > BUCKET[" bucket-tranche "] > REMAINING[" remaining "]")
-    (market/subscribe-to-market (partial snapshot-handler {:bucket bucket-tranche :client client :bucket-size bsize :stock-lists remaining}))
+    (log/debug "filter-price-movement > bucket[" bucket-tranche "] > stock-list-size[" (count stock-lists) "]")
 
-    ;; reqHistoricalData for first tranche of stocks
-    (reduce (fn [rslt ech]
+    (market/subscribe-to-market (partial snapshot-handler options))
+    (schedule-historical-data options)
 
-              (let [stock-sym (-> ech first string/trim)
-                    stock-name (-> ech second string/trim)]
-
-                (local-request-historical-data {:bucket-tranche bucket-tranche
-                                                :id rslt
-                                                :stock-symbol stock-sym
-                                                :stock-name stock-name
-                                                :client client
-                                                })
-
-                (inc rslt)
-                ))
-            0
-            (doall first-hundred))
     )
-
   )
 
 
