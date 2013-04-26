@@ -177,16 +177,18 @@
     (let [rid (rst "tickerId")
           ]
 
+      (market/cancel-market-data client rid)
+
+      ;; push to Tee / Datomic; Data structure looks like:
+      (tdatomic/tee @bucket)
+
       ;; ii.iii) reqMarketData for that next stock; repeat constantly through: NYSE, NASDAQ, AMEX
       (dosync (alter bucket (fn [inp]
 
                               (into []
                                     (remove #(= rid (:id %)) inp)
                                     ))))
-      (market/cancel-market-data client rid)
 
-      ;; push to Tee / Datomic; Data structure looks like:
-      (tdatomic/tee @bucket)
       ))
     )
 

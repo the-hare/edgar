@@ -24,24 +24,33 @@
                  type historicalData}]}]"
  [bucket]
 
+
+ (log/debug "tee.datomic/tee > bucket[" bucket "]")
+
+
  ;; collect all data into a transaction list, then persist
  (let [final-tx (reduce (fn [rslt ech]
+
+
+                          (log/debug "... EACH reduce > rslt[" rslt "] / ech[" ech "] / first example[" (-> ech :event-list first (get "high"))
+                                     "]")
                           (conj rslt
-                                {:historical/symbol (:symbol ech)
+                                {:db/id (d/tempid :db.part/user)
+                                 :historical/symbol (:symbol ech)
                                  :historical/company (:company ech)
                                  :historical/price-difference (:price-difference ech)
 
-                                 :historical/high (-> ech :event-list first "high")
-                                 :historical/low (-> ech :event-list first "low")
-                                 :historical/WAP (-> ech :event-list "WAP")
+                                 :historical/high (-> ech :event-list first (get "high"))
+                                 :historical/low (-> ech :event-list first (get "low"))
+                                 :historical/WAP (-> ech :event-list first (get "WAP"))
 
-                                 :historical/open (-> ech :event-list first "open")
-                                 :historical/close (-> ech :event-list first "close")
+                                 :historical/open (-> ech :event-list first (get "open"))
+                                 :historical/close (-> ech :event-list first (get "close"))
 
-                                 :historical/date (-> ech :event-list first "date")
-                                 :historical/count (-> ech :event-list first "count")
-                                 :historical/hasGaps (-> ech :event-list first "hasGaps")
-                                 :historical/volume (-> ech :event-list first "volume")
+                                 :historical/date (-> ech :event-list first (get "date"))
+                                 :historical/count (-> ech :event-list first (get "count"))
+                                 :historical/hasGaps (-> ech :event-list first (get "hasGaps"))
+                                 :historical/volume (-> ech :event-list first (get "volume"))
                                  })
                           )
                         []
@@ -49,6 +58,6 @@
        ]
 
    (log/debug "tee.datomic/tee > final-tx[" final-tx "]")
-   @(d/transact conn final-tx)
+   (d/transact edatomic/conn final-tx)
    )
  )
