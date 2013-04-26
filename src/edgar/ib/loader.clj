@@ -168,7 +168,7 @@
 
     ;; ii.i get the next ID - (rst "tickerId")
     ;; ii.ii) get the next stock
-    (log/debug "snapshot-handler > SNAPSHOT END result [" rst "] > bucket-tranche [" @bucket "] > stock-lists SIZE [" (count @stock-lists) "]")
+    (log/debug "snapshot-handler > SNAPSHOT END result [" rst "] > bucket-tranche [" bucket "] > stock-lists SIZE [" (count stock-lists) "]")
 
 
     ;; remove previous stock & mktRequest for next stock
@@ -177,8 +177,10 @@
 
       ;; ii.iii) reqMarketData for that next stock; repeat constantly through: NYSE, NASDAQ, AMEX
       (dosync (alter bucket (fn [inp]
+
+                              (log/debug "... in remove > inp[" inp "]")
                               (into []
-                                    (remove #(= rid (:id %) inp))
+                                    (remove #(= rid (:id %)) inp)
                                     ))))
       (market/cancel-market-data client rid)
 
@@ -191,6 +193,8 @@
   ;;
   ;; i. it's within the top 100 price ranges
   ;; ii. if not, discard,
+
+  (log/debug "handle-snapshot-continue > rst[" rst "] > options[" (dissoc options :stock-lists) "]")
 
   (let [bucket (:bucket options)
         client (:client options)
@@ -249,7 +253,7 @@
                  :client client
                  :stock-lists stock-lists
                  :tranche-size 1
-                 :scheduler-options {:sec 10}}
+                 :scheduler-options {:min 1}}
         ]
 
 
