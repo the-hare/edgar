@@ -1,6 +1,8 @@
 (ns edgar.tee.datomic
   (:use [datomic.api :only [q db] :as d])
-  (:require [edgar.tee.tee :as tns]))
+  (:require [clojure.tools.logging :as log]
+            [edgar.tee.tee :as tns]
+            [edgar.datomic :as edatomic]))
 
 (defn tee
  "Process the list of entities. First, flatten out the :event-list, and merge it into the entity
@@ -22,13 +24,31 @@
                  type historicalData}]}]"
  [bucket]
 
- (map (fn [inp]
+ ;; collect all data into a transaction list, then persist
+ (let [final-tx (reduce (fn [rslt ech]
+                          (conj rslt
+                                {:historical/symbol (:symbol ech)
+                                 :historical/company (:company ech)
+                                 :historical/price-difference (:price-difference ech)
 
-        (let [pass-one (merge inp (-> inp :event-list first))
-              pass-two (dissoc pass-one :event-list)]
+                                 :historical/high (-> ech :event-list first "high")
+                                 :historical/low (-> ech :event-list first "low")
+                                 :historical/WAP (-> ech :event-list "WAP")
 
-          ;; submit seed data transaction
-          @(d/transact conn pass-two)
+                                 :historical/open (-> ech :event-list first "open")
+                                 :historical/close (-> ech :event-list first "close")
 
-          )))
+                                 :historical/date (-> ech :event-list first "date")
+                                 :historical/count (-> ech :event-list first "count")
+                                 :historical/hasGaps (-> ech :event-list first "hasGaps")
+                                 :historical/volume (-> ech :event-list first "volume")
+                                 })
+                          )
+                        []
+                        bucket)
+       ]
+
+   (log/debug "tee.datomic/tee > final-tx[" final-tx "]")
+   @(d/transact conn final-tx)
+   )
  )

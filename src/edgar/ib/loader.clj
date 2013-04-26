@@ -12,6 +12,7 @@
             [edgar.ib.market :as market]
             [edgar.splitter :as splitter]
             [edgar.scheduler :as scheduler]
+            [edgar.datomic :as edatomic]
             [edgar.tee.datomic :as tdatomic]
             )
   )
@@ -269,7 +270,11 @@
 
 
 (defn test-run []
-  (let [client (:esocket (market/connect-to-market))]
+
+  ;; TODO: come up with a better way to setup the system & resources
+
+  (let [client (:esocket (market/connect-to-market))
+        conn (edatomic/database-connect)]
     (filter-price-movement client)
     ))
 (defn stub-run []

@@ -4,27 +4,23 @@
   :db/ident :historical/symbol
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity       ;; symbol should be unique for the history data; upsertable for this entity
   :db.install/_attribute :db.part/db
   }
  {:db/id #db/id [:db.part/db]
-  :db/ident :historical/symbol
+  :db/ident :historical/company
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db
   }
  {:db/id #db/id [:db.part/db]
-  :db/ident :historical/company
+  :db/ident :historical/price-difference
   :db/valueType :db.type/double
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db
   }
 
  ;; Event List
- {:db/id #db/id [:db.part/db]
-  :db/ident :historical/event-list/high
-  :db/valueType :db.type/double
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
  {:db/id #db/id [:db.part/db]
   :db/ident :historical/high
   :db/valueType :db.type/double
@@ -35,16 +31,13 @@
   :db/valueType :db.type/double
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
- {:db/id #db/id [:db.part/db]
-  :db/ident :historical/tickerId
-  :db/valueType :db.type/integer
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
+
  {:db/id #db/id [:db.part/db]
   :db/ident :historical/WAP
   :db/valueType :db.type/double
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
+
  {:db/id #db/id [:db.part/db]
   :db/ident :historical/open
   :db/valueType :db.type/double
@@ -55,6 +48,7 @@
   :db/valueType :db.type/double
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
+
  {:db/id #db/id [:db.part/db]
   :db/ident :historical/date
   :db/valueType :db.type/string
@@ -62,7 +56,7 @@
   :db.install/_attribute :db.part/db}
  {:db/id #db/id [:db.part/db]
   :db/ident :historical/count
-  :db/valueType :db.type/integer
+  :db/valueType :db.type/bigint
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
  {:db/id #db/id [:db.part/db]
@@ -72,7 +66,7 @@
   :db.install/_attribute :db.part/db}
  {:db/id #db/id [:db.part/db]
   :db/ident :historical/volume
-  :db/valueType :db.type/integer
+  :db/valueType :db.type/bigint
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
  ]
