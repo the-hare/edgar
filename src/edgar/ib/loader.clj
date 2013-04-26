@@ -109,7 +109,7 @@
 
 (defn- local-request-historical-data [options]
 
-  (let [bucket (:bucket-tranche options)
+  (let [bucket (:bucket options)
         rslt (:id options)
         stock-sym (:stock-symbol options)
         stock-name (:stock-name options)
