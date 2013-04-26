@@ -25,15 +25,9 @@
  [bucket]
 
 
- (log/debug "tee.datomic/tee > bucket[" bucket "]")
-
-
  ;; collect all data into a transaction list, then persist
  (let [final-tx (reduce (fn [rslt ech]
 
-
-                          (log/debug "... EACH reduce > rslt[" rslt "] / ech[" ech "] / first example[" (-> ech :event-list first (get "high"))
-                                     "]")
                           (conj rslt
                                 {:db/id (d/tempid :db.part/user)
                                  :historical/symbol (:symbol ech)

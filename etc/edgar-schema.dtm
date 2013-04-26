@@ -56,17 +56,17 @@
   :db.install/_attribute :db.part/db}
  {:db/id #db/id [:db.part/db]
   :db/ident :historical/count
-  :db/valueType :db.type/bigint
+  :db/valueType :db.type/long
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
  {:db/id #db/id [:db.part/db]
   :db/ident :historical/hasGaps
-  :db/valueType :db.type/string
+  :db/valueType :db.type/boolean
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
  {:db/id #db/id [:db.part/db]
   :db/ident :historical/volume
-  :db/valueType :db.type/bigint
+  :db/valueType :db.type/long
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
  ]
