@@ -1,5 +1,101 @@
 [
 
+ #_[{:id 0,
+   :symbol DDD,
+   :company 3D Systems Corporation,
+   :price-difference 1.3100000000000023,
+   :event-list [{high 35.11,
+                 tickerId 0,
+                 WAP 34.491,
+                 open 35.07,
+                 date 20130426,
+                 count 3403,
+                 low 33.8,
+                 hasGaps false,
+                 close 34.53,
+                 field historicalData,
+                 volume 8667,
+                 type historicalData}]}]
+
+ ;; Historical Data
+ {:db/id #db/id [:db.part/db]
+  :db/ident :historical/symbol
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db
+  }
+ {:db/id #db/id [:db.part/db]
+  :db/ident :historical/symbol
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db
+  }
+ {:db/id #db/id [:db.part/db]
+  :db/ident :historical/company
+  :db/valueType :db.type/double
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db
+  }
+
+ ;; Event List
+ {:db/id #db/id [:db.part/db]
+  :db/ident :historical/event-list/high
+  :db/valueType :db.type/double
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db}
+ {:db/id #db/id [:db.part/db]
+  :db/ident :historical/high
+  :db/valueType :db.type/double
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db}
+ {:db/id #db/id [:db.part/db]
+  :db/ident :historical/low
+  :db/valueType :db.type/double
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db}
+ {:db/id #db/id [:db.part/db]
+  :db/ident :historical/tickerId
+  :db/valueType :db.type/integer
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db}
+ {:db/id #db/id [:db.part/db]
+  :db/ident :historical/WAP
+  :db/valueType :db.type/double
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db}
+ {:db/id #db/id [:db.part/db]
+  :db/ident :historical/open
+  :db/valueType :db.type/double
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db}
+ {:db/id #db/id [:db.part/db]
+  :db/ident :historical/close
+  :db/valueType :db.type/double
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db}
+ {:db/id #db/id [:db.part/db]
+  :db/ident :historical/date
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db}
+ {:db/id #db/id [:db.part/db]
+  :db/ident :historical/count
+  :db/valueType :db.type/integer
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db}
+ {:db/id #db/id [:db.part/db]
+  :db/ident :historical/hasGaps
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db}
+ {:db/id #db/id [:db.part/db]
+  :db/ident :historical/volume
+  :db/valueType :db.type/integer
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db}
+ ]
+
+[
   ;; Bid & Ask prices
   { :db/id #db/id[:db.part/db]
     :db/ident :stock/bid-price
