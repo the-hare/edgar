@@ -179,15 +179,19 @@
 
       (market/cancel-market-data client rid)
 
-      ;; push to Tee / Datomic; Data structure looks like:
-      (tdatomic/tee @bucket)
+      ;; sending to datomic, iff i) tranche is empty AND ii) there is a historical data finished signal
+      (if (and (= 1 (count @bucket))
+               (= rid (:id (first @bucket))))
 
-      ;; ii.iii) reqMarketData for that next stock; repeat constantly through: NYSE, NASDAQ, AMEX
-      (dosync (alter bucket (fn [inp]
+        ;; push to Tee / Datomic; Data structure looks like:
+        (tdatomic/tee @bucket)
 
-                              (into []
-                                    (remove #(= rid (:id %)) inp)
-                                    ))))
+        ;; ii.iii) reqMarketData for that next stock; repeat constantly through: NYSE, NASDAQ, AMEX
+        (dosync (alter bucket (fn [inp]
+
+                                (into []
+                                      (remove #(= rid (:id %)) inp)
+                                      )))))
 
       ))
     )
@@ -257,8 +261,8 @@
         options {:bucket bucket
                  :client client
                  :stock-lists stock-lists
-                 :tranche-size 1
-                 :scheduler-options {:min 1}}
+                 :tranche-size 60
+                 :scheduler-options {:min 10.5}}
         ]
 
 
