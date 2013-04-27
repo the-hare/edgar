@@ -10,7 +10,7 @@ notification :tmux,
   :color_location => 'status-left-bg' # to customize which tmux element will change color
 
 
-guard 'haml', :input => "templ/coffeescript/template/module/", :output => "include" do
+guard 'haml', :input => "templ/haml", :output => "include" do
   watch(%r{.+\.haml})
 end
 

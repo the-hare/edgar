@@ -1,6 +1,6 @@
 # Require any additional compass plugins here.
-require 'ceaser-easing'
-require 'html5-boilerplate'
+#require 'ceaser-easing'
+#require 'html5-boilerplate'
 
 # Set this to the root of your project when deployed:
 http_path = "/"

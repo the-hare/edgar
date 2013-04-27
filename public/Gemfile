@@ -3,8 +3,8 @@ source 'https://rubygems.org'
 group :development do
   gem 'execjs'
   gem 'therubyracer', :platforms => :ruby
+  gem 'guard-bundler'
   gem 'guard'
-  gem 'guard-coffeescript'
   gem 'guard-haml'
   gem 'guard-livereload'
   gem 'libnotify'
