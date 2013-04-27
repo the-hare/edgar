@@ -35,4 +35,5 @@
   :resource-paths ["etc/:public/"]
   :repositories { "local" ~(str (.toURI (java.io.File. (str (-> (load-file "etc/config.clj") :dev :root-dir) ".m2/repository/"))))
                   }
+  :main edgar.handler
   )
