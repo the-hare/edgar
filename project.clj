@@ -15,6 +15,9 @@
                  [com.datomic/datomic "0.8.3335"
                   :exclusions [org.slf4j/slf4j-nop org.slf4j/log4j-over-slf4j]]
                  [org.slf4j/slf4j-log4j12 "1.6.4"]
+
+                 [compojure "1.1.5"]
+                 [ring/ring-jetty-adapter "1.2.0-SNAPSHOT"]
                  [ibdknox/clojurescript "0.0-1534"]
                  ]
   :plugins [[lein-ring "0.8.2"]
@@ -29,7 +32,7 @@
                                    :pretty-print true}}]}
   :ring {:handler edgar.handler/app}
   :profiles {:dev {:dependencies [[ring-mock "0.1.3"]]}}
-  :resource-paths ["etc/"]
+  :resource-paths ["etc/:public/"]
   :repositories { "local" ~(str (.toURI (java.io.File. (str (-> (load-file "etc/config.clj") :dev :root-dir) ".m2/repository/"))))
                   }
   )
