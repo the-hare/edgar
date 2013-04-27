@@ -1,0 +1,18 @@
+source 'https://rubygems.org'
+
+group :development do
+  gem 'execjs'
+  gem 'therubyracer', :platforms => :ruby
+  gem 'guard'
+  gem 'guard-coffeescript'
+  gem 'guard-haml'
+  gem 'guard-livereload'
+  gem 'libnotify'
+  gem 'rb-inotify', :require => false
+  gem 'rb-fsevent', :require => false
+  gem 'rb-fchange', :require => false
+
+  gem 'compass'
+  gem 'ceaser-easing'
+  gem 'html5-boilerplate'
+end
