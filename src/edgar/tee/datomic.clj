@@ -34,17 +34,17 @@
                                  :historical/company (:company ech)
                                  :historical/price-difference (:price-difference ech)
 
-                                 :historical/high (-> ech :event-list first (get "high"))
-                                 :historical/low (-> ech :event-list first (get "low"))
-                                 :historical/WAP (-> ech :event-list first (get "WAP"))
+                                 :historical/high (-> ech :event-list first (get "high" 0.0))
+                                 :historical/low (-> ech :event-list first (get "low" 0.0))
+                                 :historical/WAP (-> ech :event-list first (get "WAP" 0.0))
 
-                                 :historical/open (-> ech :event-list first (get "open"))
-                                 :historical/close (-> ech :event-list first (get "close"))
+                                 :historical/open (-> ech :event-list first (get "open" 0.0))
+                                 :historical/close (-> ech :event-list first (get "close" 0.0))
 
-                                 :historical/date (-> ech :event-list first (get "date"))
-                                 :historical/count (-> ech :event-list first (get "count"))
-                                 :historical/hasGaps (-> ech :event-list first (get "hasGaps"))
-                                 :historical/volume (-> ech :event-list first (get "volume"))
+                                 :historical/date (-> ech :event-list first (get "date" ""))
+                                 :historical/count (-> ech :event-list first (get "count" 0))
+                                 :historical/hasGaps (-> ech :event-list first (get "hasGaps" false))
+                                 :historical/volume (-> ech :event-list first (get "volume" 0))
                                  })
                           )
                         []

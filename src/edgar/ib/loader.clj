@@ -119,7 +119,7 @@
 
     (log/debug "local-request-historical-data > options[" options "]")
 
-    (dosync (alter bucket conj { :id rslt :symbol stock-sym :company stock-name :price-difference 0.0 :event-list [] } ))
+    (dosync (alter bucket conj { :id rslt :symbol stock-sym :company stock-name :price-difference 0.0 :event-list [] :processed? false } ))
     (market/request-historical-data client rslt stock-sym))
   )
 
@@ -181,16 +181,21 @@
     (let [rid (rst "tickerId")
           ]
 
+      ;; a marker to know when this element has been processed
+      (dosync (alter bucket (fn [inp]
+                              (into []
+                                    (for [x inp
+                                          :when #(= rid (:id %))]
+                                      (merge x {:processed? true}))
+                                    )
+                              )))
+
       (market/cancel-market-data client rid)
 
-      ;; sending to datomic, iff i) tranche is empty AND ii) there is a historical data finished signal
-      (if (and (= 1 (count @bucket))
-               (= rid (:id (first @bucket))))
+      ;; push to Tee / Datomic; Data structure looks like:
+      (if (every? #(:processed? %) @bucket)
+        (tdatomic/tee @bucket))
 
-        ;; push to Tee / Datomic; Data structure looks like:
-        (tdatomic/tee @bucket)
-
-        )
       ))
     )
 
@@ -260,7 +265,7 @@
         options {:bucket bucket
                  :client client
                  :stock-lists stock-lists
-                 :tranche-size 60
+                 :tranche-size 5
                  :scheduler-options {:min 10.5}}
         ]
 
