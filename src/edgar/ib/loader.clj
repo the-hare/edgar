@@ -187,11 +187,7 @@
         (tdatomic/tee @bucket)
 
         ;; ii.iii) reqMarketData for that next stock; repeat constantly through: NYSE, NASDAQ, AMEX
-        (dosync (alter bucket (fn [inp]
-
-                                (into []
-                                      (remove #(= rid (:id %)) inp)
-                                      )))))
+        (dosync (alter bucket (fn [inp] [] ))))
 
       ))
     )
