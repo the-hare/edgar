@@ -125,7 +125,8 @@
 
 (defn- schedule-historical-data [options]
 
-  (let [tranche-size (if (:tranche-size options) (:tranche-size options) 10)
+  (let [bucket (:bucket options)
+        tranche-size (if (:tranche-size options) (:tranche-size options) 10)
         remaining-list (ref (:stock-lists options))
         ]
 
@@ -138,6 +139,9 @@
 
          (log/debug "")
          (log/debug "schedule-historical-data > RUNNING task > remaining-list count[" (count @remaining-list)"] current-tranche[" current-tranche "]")
+
+         ;; ii.iii) reqMarketData for that next stock; repeat constantly through: NYSE, NASDAQ, AMEX
+         (dosync (alter bucket (fn [inp] [] )))
 
          ;; A. Iterate through tranche and make a historical data request
          (reduce (fn [rslt ech]
@@ -186,9 +190,7 @@
         ;; push to Tee / Datomic; Data structure looks like:
         (tdatomic/tee @bucket)
 
-        ;; ii.iii) reqMarketData for that next stock; repeat constantly through: NYSE, NASDAQ, AMEX
-        (dosync (alter bucket (fn [inp] [] ))))
-
+        )
       ))
     )
 
@@ -199,7 +201,7 @@
   ;; i. it's within the top 100 price ranges
   ;; ii. if not, discard,
 
-  (log/debug "handle-snapshot-continue > rst[" rst "] > options[" (dissoc options :stock-lists) "]")
+
 
   (let [bucket (:bucket options)
         client (:client options)
@@ -211,6 +213,7 @@
                         ffirst)
         ]
 
+    (log/debug "handle-snapshot-continue > event-index[" event-index "][" (-> event-index nil? not) "]  > rst[" rst "] > options[" (dissoc options :stock-lists) "]")
     (if (-> event-index nil? not)
 
       (do
