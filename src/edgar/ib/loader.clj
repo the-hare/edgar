@@ -117,7 +117,7 @@
         stock-name (:stock-name options)
         client (:client options)]
 
-    (log/debug "local-request-historical-data > options[" options "]")
+    ;;(log/debug "local-request-historical-data > options[" options "]")
 
     (dosync (alter bucket conj { :id rslt :symbol stock-sym :company stock-name :price-difference 0.0 :event-list [] :processed? false } ))
     (market/request-historical-data client rslt stock-sym))
@@ -174,7 +174,7 @@
 
     ;; ii.i get the next ID - (rst "tickerId")
     ;; ii.ii) get the next stock
-    (log/debug "snapshot-handler > SNAPSHOT END result [" rst "] > bucket-tranche [" bucket "] > stock-lists SIZE [" (count stock-lists) "]")
+    ;;(log/debug "snapshot-handler > SNAPSHOT END result [" rst "] > bucket-tranche [" bucket "] > stock-lists SIZE [" (count stock-lists) "]")
 
 
     ;; remove previous stock & mktRequest for next stock
@@ -218,7 +218,7 @@
                         ffirst)
         ]
 
-    (log/debug "handle-snapshot-continue > event-index[" event-index "][" (-> event-index nil? not) "]  > rst[" rst "] > options[" (dissoc options :stock-lists) "]")
+    ;;(log/debug "handle-snapshot-continue > event-index[" event-index "][" (-> event-index nil? not) "]  > rst[" rst "] > options[" (dissoc options :stock-lists) "]")
     (if (-> event-index nil? not)
 
       (do
