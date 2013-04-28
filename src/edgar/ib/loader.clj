@@ -265,7 +265,7 @@
         options {:bucket bucket
                  :client client
                  :stock-lists stock-lists
-                 :tranche-size 5
+                 :tranche-size 60
                  :scheduler-options {:min 10.5}}
         ]
 
