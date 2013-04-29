@@ -194,7 +194,7 @@
 
       ;; push to Tee / Datomic; Data structure looks like:
       (if (every? #(:processed? %) @bucket)
-        (tdatomic/tee @bucket))
+        (tdatomic/tee-historical @bucket))
 
       ))
     )

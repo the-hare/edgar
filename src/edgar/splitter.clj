@@ -4,7 +4,7 @@
         [clojure.core.strint]
         [clojure.tools.namespace.repl])
   (:require [edgar.eclientsocket :as socket]
-            [edgar.edgar :as edgar]
+            #_[edgar.edgar :as edgar]
             [overtone.at-at :as at])
   (:gen-class
    :name edgar.splitter
@@ -63,7 +63,7 @@
  )
 
 
-(defn get-market-data []
+#_(defn get-market-data []
 
   (connect)
   (edgar/get-market-data)

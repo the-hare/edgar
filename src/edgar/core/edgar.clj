@@ -4,8 +4,10 @@
         [clojure.tools.namespace.repl]
         [datomic.api :only [q db] :as d])
   (:require [clojure.tools.logging :as log]
+            [clojure.walk :as walk]
             [edgar.datomic :as edatomic]
-            [edgar.ib.market :as market])
+            [edgar.ib.market :as market]
+            [edgar.tee.datomic :as tdatomic])
   )
 
 
@@ -33,15 +35,29 @@
   {type tickPrice, tickerId 0, price 403.28, canAutoExecute 0, field 7}
   {type tickPrice, tickerId 0, price 406.73, canAutoExecute 0, field 9}
   {type tickPrice, tickerId 0, price 406.56, canAutoExecute 0, field 14}"
-  [evt]
+  [options evt]
 
 
-  (log/debug "edgar.core.edgar/feed-handler [" evt "]")
+  (let [tick-list (:tick-list options)]
+
+    (log/debug "edgar.core.edgar/feed-handler [" evt "] > tick-list size[" (count @tick-list) "] / [" (> (count @tick-list) 20) "]")
+
+    ;; data structure that can contain the last 20 running ticks
+    (dosync (alter tick-list
+                   (fn [inp] (conj inp (walk/keywordize-keys evt)))))
 
 
-  ;; data structure that can contain the last 20 running ticks
+    ;; at the end of our 20 tick window, i. spit the data out to DB and ii. and trim the list list back to 20
+    (if (> (count @tick-list) 20)
 
-  ;; at the end of our 20 tick window, spit the data out to DB
+      (do
+        (tdatomic/tee-market (first @tick-list))
+        (dosync (alter tick-list
+                       (fn [inp] (into []
+                                      (rest inp)))))))
+
+
+    )
 
   ;; the recieving data structure, should allow me to apply a strategy to:
   ;; 1. plot bid / ask data on an x / y graph
@@ -59,9 +75,11 @@
 
   (let [client (:esocket (market/connect-to-market))
         conn (edatomic/database-connect)
-        hdata (load-historical-data edatomic/conn)]
+        hdata (load-historical-data edatomic/conn)
 
-    (market/subscribe-to-market feed-handler)
+        tick-list (ref [])]
+
+    (market/subscribe-to-market (partial feed-handler {:tick-list tick-list}))
     (market/request-market-data client 0 (-> hdata last second) false)
     ))
 

@@ -4,7 +4,7 @@
             [edgar.tee.tee :as tns]
             [edgar.datomic :as edatomic]))
 
-(defn tee
+(defn tee-historical
  "Process the list of entities. First, flatten out the :event-list, and merge it into the entity
  [{:id 0,
    :symbol DDD,
@@ -51,7 +51,14 @@
                         bucket)
        ]
 
-   (log/debug "tee.datomic/tee > final-tx[" final-tx "]")
+   (log/debug "tee.datomic/tee-historical > final-tx[" final-tx "]")
    (d/transact edatomic/conn final-tx)
    )
  )
+
+(defn tee-market
+  ""
+  [tick]
+
+  (log/debug "tee.datomic/tee-market > tick[" tick "]")
+  )
