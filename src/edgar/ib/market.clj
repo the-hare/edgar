@@ -54,12 +54,12 @@
   "Request historical market information in the form of a feed or data snapshot"
 
   ([client idx instrm]
-     (request-market-data client idx instrm false))
+     (request-market-data client idx instrm "" false))
 
-  ([client idx instrm snapshot]
+  ([client idx instrm genericTicklist snapshot]
      (let [contract (create-contract instrm)]
 
-       (.reqMktData client idx contract "" snapshot))
+       (.reqMktData client idx contract genericTicklist snapshot))
      ))
 (defn cancel-market-data
   "Cancel the request ID, used in 'request-market-data'"

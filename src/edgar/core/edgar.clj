@@ -40,7 +40,7 @@
 
   (let [tick-list (:tick-list options)]
 
-    (log/debug "edgar.core.edgar/feed-handler [" evt "] > tick-list size[" (count @tick-list) "] / [" (> (count @tick-list) 20) "]")
+    (log/debug "edgar.core.edgar/feed-handler [" evt "] > tick-list size[" (count @tick-list) "] / [" (> (count @tick-list) 20) "] > options[" options "]")
 
     ;; data structure that can contain the last 20 running ticks
     (dosync (alter tick-list
@@ -80,7 +80,7 @@
         tick-list (ref [])]
 
     (market/subscribe-to-market (partial feed-handler {:tick-list tick-list}))
-    (market/request-market-data client 0 (-> hdata last second) false)
+    (market/request-market-data client 0 (-> hdata last second) "233" false)
     ))
 
 

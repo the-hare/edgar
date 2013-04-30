@@ -160,7 +160,7 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
 
 		//Call that function
 		Object result = publishFn.invoke(tentry);
-		//logger.debug("EWrapperImpl.tickPrice: " + result);
+
   }
 
 
@@ -181,7 +181,19 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
   }
 
   public void tickString (int tickerId, int tickType, String value) {
+
     logger.debug("EWrapper.tickString > tickerId["+ tickerId +"] > tickType["+ tickType +"] > value["+ value +"]");
+
+
+		Map tentry = new HashMap();
+    tentry.put("tickerId", tickerId);
+		tentry.put("type", "tickString");
+    tentry.put("tickType", tickType);
+    tentry.put("value", value);
+
+		//Call that function
+		Object result = publishFn.invoke(tentry);
+
   }
 
   public void tickEFP ( int tickerId, int tickType, double basisPoints, String formattedBasisPoints, double impliedFuture,
