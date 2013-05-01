@@ -5,6 +5,7 @@
         [datomic.api :only [q db] :as d])
   (:require [clojure.tools.logging :as log]
             [clojure.walk :as walk]
+            [clojure.string :as cstring]
             [edgar.datomic :as edatomic]
             [edgar.ib.market :as market]
             [edgar.tee.datomic :as tdatomic])
@@ -42,9 +43,27 @@
 
     (log/debug "edgar.core.edgar/feed-handler [" evt "] > tick-list size[" (count @tick-list) "] / [" (> (count @tick-list) 20) "] > options[" options "]")
 
+    ;; handle tickPrice. Format will look like:
+    ;; {type tickPrice, tickerId 0, timeStamp #<DateTime 2013-05-01T13:29:38.129-04:00>, price 412.14, canAutoExecute 0, field 4}
+    (if (= "tickPrice" (options "type"))
+
+      )
+
+
+    ;; handle tickString. Format will look like:
+    ;; {type tickString, tickerId 0, tickType 48, value 412.14;1;1367429375742;1196;410.39618025;true}
+    (if (= "tickString" (options "type"))
+
+      (let [values (cstring/split (options "value"))  ;; parsing RTVolume data
+            ]
+        )
+      )
+
+
     ;; data structure that can contain the last 20 running ticks
     #_(dosync (alter tick-list
                    (fn [inp] (conj inp (walk/keywordize-keys evt)))))
+
 
 
     ;; TODO: at the end of our 20 tick window...
@@ -88,7 +107,8 @@
     (market/request-market-data client 0 (-> hdata last second) "233" false)
     ))
 
-
+(defn fubar []
+  (test-run))
 
 #_(def historical-ids (q '[:find ?p ?s ?c :where
                          [?h :historical/price-difference ?p]
