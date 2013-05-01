@@ -47,7 +47,12 @@
                    (fn [inp] (conj inp (walk/keywordize-keys evt)))))
 
 
-    ;; at the end of our 20 tick window, i. spit the data out to DB and ii. and trim the list list back to 20
+    ;; TODO: at the end of our 20 tick window...
+    ;;    -- only for RTVolume last ticks
+    ;;    -- wrt a given tickerId
+
+    ;; i. spit the data out to DB and
+    ;; ii. and trim the list list back to 20
     (if (> (count @tick-list) 20)
 
       (do

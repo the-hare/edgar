@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import com.ib.client.EWrapper;
 import com.ib.client.EClientSocket;
@@ -117,7 +119,8 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
 		tentry.put("type", "tickSnapshotEnd");
 
 
-		/* Call that function
+		/**
+		 * Call that function
 		 */
 		Object result = publishFn.invoke(tentry);
 
@@ -157,6 +160,7 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
     tentry.put("field", field);
     tentry.put("price", price);
     tentry.put("canAutoExecute", canAutoExecute);
+	tentry.put("timeStamp", DateTimeZone.forID("America/New_York").getOffset(DateTime.now()));
 
 		//Call that function
 		Object result = publishFn.invoke(tentry);
@@ -185,11 +189,18 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
     logger.debug("EWrapper.tickString > tickerId["+ tickerId +"] > tickType["+ tickType +"] > value["+ value +"]");
 
 
+		/**
+		 * A tickType (field) of 48, is RTVolume, which has a format of:
+		 *
+		 * Last trade price / size / time / Total volume / vwap / single trade flag
+		 * RTVolume=429.85;1;1367266029045;221114;429.05715837;true
+		 */
 		Map tentry = new HashMap();
     tentry.put("tickerId", tickerId);
 		tentry.put("type", "tickString");
     tentry.put("tickType", tickType);
     tentry.put("value", value);
+
 
 		//Call that function
 		Object result = publishFn.invoke(tentry);

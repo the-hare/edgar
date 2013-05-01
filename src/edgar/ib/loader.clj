@@ -226,7 +226,6 @@
         (insert-into-event-list bucket event-index rst)
         (insert-price-difference bucket event-index rst)
 
-        ;; ... TODO - push to DB
         #_(order-by-price-difference bucket))))
   )
 

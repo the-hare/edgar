@@ -15,10 +15,12 @@
                  [com.datomic/datomic "0.8.3335"
                   :exclusions [org.slf4j/slf4j-nop org.slf4j/log4j-over-slf4j]]
                  [org.slf4j/slf4j-log4j12 "1.6.4"]
-
                  [compojure "1.1.5"]
                  [ring/ring-jetty-adapter "1.2.0-SNAPSHOT"]
                  [ibdknox/clojurescript "0.0-1534"]
+
+                 ;; Java Libraries
+                 [joda-time "2.2"]
                  ]
   :plugins [[lein-ring "0.8.2"]
             [lein-cljsbuild "0.3.0"]]
