@@ -9,6 +9,7 @@
                  [jtsclient/jtsclient "9.8.3"]
                  [org.clojure/data.csv "0.1.2"]
                  [overtone/at-at "1.1.1"]
+                 [cljs-uuid "0.0.4"]
                  [org.clojure/tools.namespace "0.2.3"]
                  [lamina "0.5.0-beta15"]
                  [clj-time "0.5.0"]

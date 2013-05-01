@@ -6,6 +6,7 @@
   (:require [clojure.tools.logging :as log]
             [clojure.walk :as walk]
             [clojure.string :as cstring]
+            [cljs-uuid.core :as uuid]
             [edgar.datomic :as edatomic]
             [edgar.ib.market :as market]
             [edgar.tee.datomic :as tdatomic])
@@ -34,7 +35,7 @@
   [options evt]
 
   (dosync (alter (:tick-list options)
-                 (fn [inp] (conj inp (walk/keywordize-keys evt)))))
+                 (fn [inp] (conj inp (walk/keywordize-keys (merge evt {:uuid (str (uuid/make-random))}))))))
   )
 (defn handle-tick-string
   "Format will look like:
@@ -49,8 +50,9 @@
         ]
 
     (dosync (alter (:tick-list options)
-                   (fn [inp] (conj inp (merge result-map { :tickerId (evt "tickerId") :type (evt "type") }) ))))
-
+                   (fn [inp] (conj inp (merge result-map {:tickerId (evt "tickerId")
+                                                         :type (evt "type")
+                                                         :uuid (str (uuid/make-random))}) ))))
     ))
 
 (defn feed-handler
@@ -60,7 +62,7 @@
 
   (let [tick-list (:tick-list options)]
 
-    (log/debug "edgar.core.edgar/feed-handler [" evt "] > tick-list size[" (count @tick-list) "] / [" (> (count @tick-list) 20) "] > options[" options "]")
+    ;;(log/debug "edgar.core.edgar/feed-handler [" evt "] > tick-list size[" (count @tick-list) "] / [" (> (count @tick-list) 20) "] > options[" options "]")
 
     ;; handle tickPrice
     (if (= "tickPrice" (options "type"))
@@ -72,19 +74,26 @@
       (handle-tick-string options evt))
 
 
-    ;; TODO: at the end of our 20 tick window...
-    ;;    -- only for RTVolume last ticks
-    ;;    -- wrt a given tickerId
+    ;; At the end of our 20 tick window
+    ;;  - only for RTVolume last ticks
+    ;;  - wrt a given tickerId
+    (let [trimmed-list (->> @tick-list
+                            (filter #(= "tickString" (% :type)) #_input_here )
+                            (filter #(= (evt "tickerId") (% :tickerId)) #_input_here))
+          tail-evt (first trimmed-list)]
 
-    ;; i. spit the data out to DB and
-    ;; ii. and trim the list list back to 20
-    #_(if (> (count @tick-list) 20)
 
-      (do
-        (tdatomic/tee-market (first @tick-list))
-        (dosync (alter tick-list
-                       (fn [inp] (into []
-                                      (rest inp)))))))
+      (log/debug "edgar.core.edgar/feed-handler VS > trimmed[" (count trimmed-list) "][" trimmed-list "] tick-list[" (count @tick-list) "][" @tick-list "]")
+
+      ;; i. spit the data out to DB and
+      ;; ii. and trim the list list back to 20
+      (if (> (count trimmed-list) 20)
+
+          (do
+            (tdatomic/tee-market tail-evt)
+            (dosync (alter tick-list
+                           (fn [inp] (into []
+                                          (remove #(= (:uuid tail-evt) (% :uuid)) inp))))))))
 
 
     )
