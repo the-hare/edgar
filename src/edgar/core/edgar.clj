@@ -43,7 +43,7 @@
     (log/debug "edgar.core.edgar/feed-handler [" evt "] > tick-list size[" (count @tick-list) "] / [" (> (count @tick-list) 20) "] > options[" options "]")
 
     ;; data structure that can contain the last 20 running ticks
-    (dosync (alter tick-list
+    #_(dosync (alter tick-list
                    (fn [inp] (conj inp (walk/keywordize-keys evt)))))
 
 
@@ -53,7 +53,7 @@
 
     ;; i. spit the data out to DB and
     ;; ii. and trim the list list back to 20
-    (if (> (count @tick-list) 20)
+    #_(if (> (count @tick-list) 20)
 
       (do
         (tdatomic/tee-market (first @tick-list))

@@ -160,7 +160,8 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
     tentry.put("field", field);
     tentry.put("price", price);
     tentry.put("canAutoExecute", canAutoExecute);
-	tentry.put("timeStamp", DateTimeZone.forID("America/New_York").getOffset(DateTime.now()));
+		//tentry.put("timeStamp", DateTimeZone.forID("America/New_York").getOffset(DateTime.now()));
+		tentry.put("timeStamp", DateTime.now());   // IB Systems use GMT (UTC +/-0)
 
 		//Call that function
 		Object result = publishFn.invoke(tentry);
