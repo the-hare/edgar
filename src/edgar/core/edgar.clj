@@ -46,18 +46,14 @@
 
   (log/debug "handle-tick-string > options[" options "] evt[" evt "]")
   (let [tkeys [:last-trade-price :last-trade-size :last-trade-time :total-volume :vwap :single-trade-flag]
-        tvalues (cstring/split (evt "value"))  ;; parsing RTVolume data
+        tvalues (cstring/split (evt "value") #";")  ;; parsing RTVolume data
         result-map (zipmap tkeys tvalues)
         ]
-
 
     (dosync (alter (:tick-list options)
                    (fn [inp] (conj inp (merge result-map {:tickerId (evt "tickerId")
                                                          :type (evt "type")
                                                          :uuid (str (uuid/make-random))}) ))))
-    (log/debug "... in[" (merge result-map {:tickerId (evt "tickerId")
-                                            :type (evt "type")
-                                            :uuid (str (uuid/make-random))}) "] after[" (:tick-list options) "]")
     ))
 
 (defn feed-handler
@@ -70,12 +66,12 @@
     (log/debug "edgar.core.edgar/feed-handler [" evt "] > tick-list size[" (count @tick-list) "] / [" (> (count @tick-list) 20) "] > options[" options "]")
 
     ;; handle tickPrice
-    (if (= "tickPrice" (options "type"))
+    (if (= "tickPrice" (evt "type"))
       (handle-tick-price options evt))
 
 
     ;; handle tickString
-    (if (= "tickString" (options "type"))
+    (if (= "tickString" (evt "type"))
       (handle-tick-string options evt))
 
 
@@ -118,15 +114,15 @@
 (defn test-run []
 
   (let [client (:esocket (market/connect-to-market))
-        ;;conn (edatomic/database-connect)
-        ;;hdata (load-historical-data edatomic/conn)
+        conn (edatomic/database-connect)
+        hdata (load-historical-data edatomic/conn)
 
         tick-list (ref [])]
 
     (log/debug "... ok, at least I got this far :/")
     (market/subscribe-to-market (partial feed-handler {:tick-list tick-list}))
-    ;;(market/request-market-data client 0 (-> hdata last second) "233" false)
-    (market/request-market-data client 0 "IBM" "233" false)
+    (market/request-market-data client 0 (-> hdata last second) "233" false)
+    ;;(market/request-market-data client 0 "IBM" "233" false)
     ))
 
 (defn fubar []
