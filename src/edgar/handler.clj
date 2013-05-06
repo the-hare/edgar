@@ -11,13 +11,15 @@
             [compojure.route :as route]
             [ring.util.response :as ring-response]
             [clojure.java.io :as io]
-            [cemerick.shoreleave.rpc :refer (defremote)]
-            [cemerick.shoreleave.rpc :as rpc]))
+            [shoreleave.middleware.rpc :as rpc]
+            ))
 
 
-(defremote heartbeat [arg1 & remaining]
+(rpc/defremote ^{:remote-name :handler/heartbeat} remote-fn [arg1 & remaining]
 
   (log/debug "REMOTE > heartbeat CALLED > arg1[~{arg1}] remaining[~{remaining}]")
+
+  "thing"
   )
 
 (defroutes app-routes
