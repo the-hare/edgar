@@ -19159,6 +19159,6 @@ shoreleave.remotes.http_rpc.remote_callback = function() {
   return b
 }();
 var edgar = {};
-shoreleave.remotes.http_rpc.remote_callback.call(null, "\ufdd0'handler/heartbeat", cljs.core.PersistentVector.fromArray(["heartbeat"], !0), function(a) {
+shoreleave.remotes.http_rpc.remote_callback.call(null, "\ufdd0'heartbeat", cljs.core.PersistentVector.fromArray(["heartbeat"], !0), function(a) {
   return alert(a)
 });

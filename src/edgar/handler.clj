@@ -15,10 +15,10 @@
             ))
 
 
-(defn remote-fn [arg1 & remaining]
-  (log/debug "REMOTE > heartbeat CALLED > arg1[~{arg1}] remaining[~{remaining}]")
+(rpc/defremote ^{:remote-name :heartbeat} remote-fn [args]
+
+  (log/debug "REMOTE > heartbeat CALLED > args[~{args}]")
   "thing")
-(rpc/defremote ^{:remote-name :handler/heartbeat} remote-fn)
 
 
 (defroutes app-routes
@@ -37,10 +37,11 @@
 (def app
   "Create the Compojure app"
   (-> app-routes
-      rpc/wrap-rpc
       wrap-params
       wrap-multipart-params
-      handler/site))
+      rpc/wrap-rpc
+      handler/site
+      ))
 
 (defn -main []
   (let [port (Integer. (get (System/getenv) "PORT" "8080"))]
