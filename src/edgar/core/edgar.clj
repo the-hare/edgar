@@ -54,7 +54,7 @@
                    (fn [inp] (conj inp (merge result-map {:tickerId (evt "tickerId")
                                                          :type (evt "type")
                                                          :uuid (str (uuid/make-random))}) ))))
-    ))
+     ))
 
 (defn feed-handler
   "Event structures will look like 'tickPrice' or 'tickString'"
@@ -66,8 +66,9 @@
     (log/debug "edgar.core.edgar/feed-handler [" evt "] > tick-list size[" (count @tick-list) "] / [" (> (count @tick-list) 20) "] > options[" options "]")
 
     ;; handle tickPrice
-    (if (= "tickPrice" (evt "type"))
-      (handle-tick-price options evt))
+    #_(if (= "tickPrice" (evt "type"))
+      (handle-tick-price options evt)
+      )
 
 
     ;; handle tickString
@@ -84,7 +85,7 @@
           tail-evt (first trimmed-list)]
 
 
-      (log/debug "edgar.core.edgar/feed-handler VS > trimmed[" (count trimmed-list) "][" trimmed-list "] tick-list[" (count @tick-list) "][" @tick-list "]")
+      (log/debug "edgar.core.edgar/feed-handler VS > trimmed[" (count trimmed-list) "][" #_trimmed-list "] tick-list[" (count @tick-list) "][" #_@tick-list "]")
 
       ;; i. spit the data out to DB and
       ;; ii. and trim the list list back to 20
@@ -119,7 +120,6 @@
 
         tick-list (ref [])]
 
-    (log/debug "... ok, at least I got this far :/")
     (market/subscribe-to-market (partial feed-handler {:tick-list tick-list}))
     (market/request-market-data client 0 (-> hdata last second) "233" false)
     ;;(market/request-market-data client 0 "IBM" "233" false)

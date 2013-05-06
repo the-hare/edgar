@@ -1,14 +1,24 @@
 (ns edgar.handler
   (:gen-class)
   (:import [java.io File])
-  (:use [compojure.core]
+  (:use [clojure.core.strint]
+        [compojure.core]
         [ring.middleware.params]
         [ring.middleware.multipart-params]
         [ring.adapter.jetty])
-  (:require [compojure.handler :as handler]
+  (:require [clojure.tools.logging :as log]
+            [compojure.handler :as handler]
             [compojure.route :as route]
             [ring.util.response :as ring-response]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [cemerick.shoreleave.rpc :refer (defremote)]
+            [cemerick.shoreleave.rpc :as rpc]))
+
+
+(defremote heartbeat [arg1 & remaining]
+
+  (log/debug "REMOTE > heartbeat CALLED > arg1[~{arg1}] remaining[~{remaining}]")
+  )
 
 (defroutes app-routes
   "define the routes that will comprise the application"
@@ -26,6 +36,7 @@
 (def app
   "Create the Compojure app"
   (-> app-routes
+      rpc/wrap-rpc
       wrap-params
       wrap-multipart-params
       handler/site))

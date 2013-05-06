@@ -19,6 +19,8 @@
                  [compojure "1.1.5"]
                  [ring/ring-jetty-adapter "1.2.0-SNAPSHOT"]
                  [ibdknox/clojurescript "0.0-1534"]
+                 [shoreleave/shoreleave-remote "0.3.0"]
+                 [com.cemerick/shoreleave-remote-ring "0.0.2"]
 
                  ;; Java Libraries
                  [joda-time "2.2"]
