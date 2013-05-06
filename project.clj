@@ -18,7 +18,7 @@
                  [org.slf4j/slf4j-log4j12 "1.6.4"]
                  [compojure "1.1.5"]
                  [ring/ring-jetty-adapter "1.2.0-SNAPSHOT"]
-                 [ibdknox/clojurescript "0.0-1534"]
+                 ;;[ibdknox/clojurescript "0.0-1534"]
                  [shoreleave/shoreleave-remote "0.3.0"]
                  [shoreleave/shoreleave-remote-ring "0.3.0"]
 
@@ -34,7 +34,7 @@
                         :compiler {
                                    :output-to "public/javascript/main.js"
                                    :output-dir "public/javascript/"
-                                   :optimizations :whitespace
+                                   :optimizations :simple  ;;:whitespace
                                    :pretty-print true}}]}
   :ring {:handler edgar.handler/app}
   :profiles {:dev {:dependencies [[ring-mock "0.1.3"]]}}

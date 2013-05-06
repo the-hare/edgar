@@ -15,12 +15,11 @@
             ))
 
 
-(rpc/defremote ^{:remote-name :handler/heartbeat} remote-fn [arg1 & remaining]
-
+(defn remote-fn [arg1 & remaining]
   (log/debug "REMOTE > heartbeat CALLED > arg1[~{arg1}] remaining[~{remaining}]")
+  "thing")
+(rpc/defremote ^{:remote-name :handler/heartbeat} remote-fn)
 
-  "thing"
-  )
 
 (defroutes app-routes
   "define the routes that will comprise the application"
