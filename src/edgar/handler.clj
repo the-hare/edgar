@@ -18,7 +18,7 @@
 (rpc/defremote ^{:remote-name :heartbeat} remote-fn [args]
 
   (log/debug "REMOTE > heartbeat CALLED > args[" args "]")
-  "thing")
+  {:resp "thing"})
 
 
 (defroutes app-routes
