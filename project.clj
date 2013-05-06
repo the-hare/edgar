@@ -17,8 +17,6 @@
                   :exclusions [org.slf4j/slf4j-nop org.slf4j/log4j-over-slf4j]]
                  [org.slf4j/slf4j-log4j12 "1.6.4"]
                  [ring/ring-jetty-adapter "1.2.0-SNAPSHOT"]
-                 ;;[ibdknox/clojurescript "0.0-1534"]
-                 [shoreleave "0.3.0"]
                  [shoreleave/shoreleave-remote "0.3.0"]
                  [shoreleave/shoreleave-remote-ring "0.3.0"]
 

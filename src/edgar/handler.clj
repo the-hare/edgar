@@ -17,7 +17,7 @@
 
 (rpc/defremote ^{:remote-name :heartbeat} remote-fn [args]
 
-  (log/debug "REMOTE > heartbeat CALLED > args[~{args}]")
+  (log/debug "REMOTE > heartbeat CALLED > args[" args "]")
   "thing")
 
 
