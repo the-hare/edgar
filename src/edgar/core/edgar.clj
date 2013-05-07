@@ -110,7 +110,8 @@
 
     ;; i. 20 tick structure & ii. strategy should allow me to extrude this to a clojurescript front-end
 
-    (afilter/simple-moving-average 20 @tick-list)
+    (def sma
+      (afilter/simple-moving-average 20 @tick-list))
     )
 
 
