@@ -24,7 +24,6 @@
                                  ] (db conn))]
     (sort-by first historical-entities)
     )
-
   )
 
 

@@ -7,16 +7,25 @@
    where preceding tick-list allows."
   [tick-window tick-list]
 
-  ;; make an accompanying moving-average list
-  (def ma-list '())
+  (let [;; calculate how far back the window can start
+        start-index tick-window
 
-  ;; calculate how far back the window can start
-  (def start-index tick-window)
+        ;; back fill slots with nils, into an accompanying moving-average list
+        ;;ma-list (into '() (repeat (- (count tick-list) tick-window) nil))
+        ma-list (into '() (repeat tick-window nil))
+        ]
 
-  ;; back fill slots with nils
-  (into ma-list (repeat (- tick-window (count tick-list)) nil))
 
+    ;; calculate Simple Moving Average for each slot there's a window
+    (reduce (fn [rslt ech]
 
-  ;; calculate Simple Moving Average for each slot there's a window
+              (let [tsum (reduce #(+ (:last-trade-price %)) ech)   ;; sum it up
+                    taverage (/ tsum (count ech))   ;; get the average
+                    ]
 
-  (take 20 tick-list))
+                (cons sma rslt)) )
+
+            ma-list  ;; begin with a reversed tick-list, over which we can iterate
+            (reverse (partition tick-window tick-list)))
+    )
+)
