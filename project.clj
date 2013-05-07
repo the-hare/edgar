@@ -27,12 +27,12 @@
             [lein-cljsbuild "0.3.0"]]
   :cljsbuild {
               :builds [{
-                        :incremental false
+                        :incremental true
                         :source-path "public/templ/cljs"
                         :compiler {
                                    :output-to "public/javascript/main.js"
                                    :output-dir "public/javascript/"
-                                   :optimizations :simple  ;;:whitespace
+                                   :optimizations :advanced ;; :simple  ;; :whitespace
                                    :pretty-print true}}]}
   :ring {:handler edgar.handler/app}
   :profiles {:dev {:dependencies [[ring-mock "0.1.3"]]}}

@@ -9,7 +9,8 @@
             [cljs-uuid.core :as uuid]
             [edgar.datomic :as edatomic]
             [edgar.ib.market :as market]
-            [edgar.tee.datomic :as tdatomic])
+            [edgar.tee.datomic :as tdatomic]
+            [edgar.core.analysis.filter :as afilter])
   )
 
 
@@ -63,7 +64,7 @@
 
   (let [tick-list (:tick-list options)]
 
-    (log/debug "edgar.core.edgar/feed-handler [" evt "] > tick-list size[" (count @tick-list) "] / [" (> (count @tick-list) 20) "] > options[" options "]")
+    (log/debug "edgar.core.edgar/feed-handler [" evt "] > tick-list size[" (count @tick-list) "] / [" (> (count @tick-list) 40) "] > options[" options "]")
 
     ;; handle tickPrice
     #_(if (= "tickPrice" (evt "type"))
@@ -76,7 +77,7 @@
       (handle-tick-string options evt))
 
 
-    ;; At the end of our 20 tick window
+    ;; At the end of our 40 tick window
     ;;  - only for RTVolume last ticks
     ;;  - wrt a given tickerId
     (let [trimmed-list (->> @tick-list
@@ -88,8 +89,8 @@
       (log/debug "edgar.core.edgar/feed-handler VS > trimmed[" (count trimmed-list) "][" #_trimmed-list "] tick-list[" (count @tick-list) "][" #_@tick-list "]")
 
       ;; i. spit the data out to DB and
-      ;; ii. and trim the list list back to 20
-      (if (> (count trimmed-list) 20)
+      ;; ii. and trim the list list back to 40
+      (if (> (count trimmed-list) 40)
 
           (do
             (tdatomic/tee-market tail-evt)
@@ -98,32 +99,33 @@
                                           (remove #(= (:uuid tail-evt) (% :uuid)) inp))))))))
 
 
+
+
+    ;; the recieving data structure, should allow me to apply a strategy to:
+    ;; 1. plot bid / ask data on an x / y graph
+    ;; 2. overlay SMA on the same graph
+    ;; 3. overlay an EMA on the same graph
+
+    ;; strategy should identify when trend lines cross-over
+
+    ;; i. 20 tick structure & ii. strategy should allow me to extrude this to a clojurescript front-end
+
+    (afilter/simple-moving-average 20 @tick-list)
     )
 
-  ;; the recieving data structure, should allow me to apply a strategy to:
-  ;; 1. plot bid / ask data on an x / y graph
-  ;; 2. overlay SMA on the same graph
-  ;; 3. overlay an EMA on the same graph
 
-  ;; strategy should identify when trend lines cross-over
+  (defn test-run []
 
-  ;; i. 20 tick structure & ii. strategy should allow me to extrude this to a clojurescript front-end
+    (let [client (:esocket (market/connect-to-market))
+          conn (edatomic/database-connect)
+          hdata (load-historical-data edatomic/conn)
 
-  )
+          tick-list (ref [])]
 
-
-(defn test-run []
-
-  (let [client (:esocket (market/connect-to-market))
-        conn (edatomic/database-connect)
-        hdata (load-historical-data edatomic/conn)
-
-        tick-list (ref [])]
-
-    (market/subscribe-to-market (partial feed-handler {:tick-list tick-list}))
-    (market/request-market-data client 0 (-> hdata last second) "233" false)
-    ;;(market/request-market-data client 0 "IBM" "233" false)
-    ))
+      (market/subscribe-to-market (partial feed-handler {:tick-list tick-list}))
+      (market/request-market-data client 0 (-> hdata last second) "233" false)
+      ;;(market/request-market-data client 0 "IBM" "233" false)
+      )))
 
 (defn fubar []
   (test-run))
