@@ -1,4 +1,5 @@
-(ns edgar.core.analysis.filter)
+(ns edgar.core.analysis.filter
+  (:require [clojure.pprint :as pprint]))
 
 (defn simple-moving-average
   "Takes the tick-list, and moves back as far as the tick window will take it.
@@ -56,23 +57,29 @@
 
 
        ;; 2. get the simple-moving-average for a given tick - 1
-       (reduce (fn [rslt inp]
+       (reduce (fn [rslt ech]
 
                  ;; 3. calculate the EMA ( for the first tick, EMA(yesterday) = MA(yesterday) )
 
+                 (println "... ech[" ech "] rslt[" rslt "]")
                  (let [;; price(today)
-                       ltprice (:last-trade-price inp)
+                       ltprice (:last-trade-price ech)
 
                        ;; EMA(yesterday)
-                       ema-last (:last-trade-price-exponential (first rslt))
+                       ema-last (if (:last-trade-price-exponential (first rslt))
+                                  (:last-trade-price-exponential (first rslt))
+                                  (:last-trade-price ech))
 
                        ;; ** EMA now = price(today) * k + EMA(yesterday) * (1 - k)
-                       ema-now (+ (* k ltprice) (* ema-last (- 1 k)))]
+                       ema-now (+ (* k (if (string? ltprice)
+                                         (read-string ltprice)
+                                         ltprice))
+                                  (* ema-last (- 1 k)))]
 
-                   (cons {:last-trade-price (first ech)
-                          :last-trade-time (first ech)
+                   (cons {:last-trade-price (:last-trade-price ech)
+                          :last-trade-time (:last-trade-time ech)
                           :last-trade-price-exponential ema-now} rslt)))
                ema-list
-               (->> sma-list (remove nil?) (partition 2 1) reverse)))
+               (->> sma-list (remove nil?) reverse)))
      )
   )

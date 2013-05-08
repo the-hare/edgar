@@ -73,7 +73,8 @@
 
 
     ;; handle tickString
-    (if (= "tickString" (evt "type"))
+    (if (and (= "tickString" (evt "type"))
+             (= 48 (evt "tickType")))
       (handle-tick-string options evt))
 
 
@@ -86,6 +87,8 @@
           tail-evt (first trimmed-list)]
 
 
+      (log/debug "")
+      (log/debug "")
       (log/debug "edgar.core.edgar/feed-handler VS > trimmed[" (count trimmed-list) "][" #_trimmed-list "] tick-list[" (count @tick-list) "][" #_@tick-list "]")
 
       ;; i. spit the data out to DB and
@@ -111,9 +114,16 @@
     ;; i. 20 tick structure & ii. strategy should allow me to extrude this to a clojurescript front-end
 
     (def sma
-      (afilter/simple-moving-average 20 @tick-list))
-
+      (afilter/simple-moving-average 5 @tick-list))
     (log/debug "**** PRINTING our SMA [" sma "]")
+
+    (def tl [{:uuid "44c63d93-b600-4b2f-afdf-5c0961e896ee" :type "tickString" :tickerId 0, :single-trade-flag true, :vwap 418.34010978, :total-volume 757, :last-trade-time 1368033338841, :last-trade-size 1, :last-trade-price 417.76} {:uuid "46711827-baa1-46d3-95e9-9d5821832ac8" :type "tickString" :tickerId 0, :single-trade-flag false, :vwap 418.3249716, :total-volume 771, :last-trade-time 1368033346313, :last-trade-size 14, :last-trade-price 417.51} {:uuid "5a1d25e5-0565-4a74-bbbb-89add95e51ca" :type "tickString" :tickerId 0, :single-trade-flag false, :vwap 418.32287594, :total-volume 773, :last-trade-time 1368033346544, :last-trade-size 2, :last-trade-price 417.51} {:uuid "c6329f53-05f3-46ae-9492-af772ee4d05f" :type "tickString" :tickerId 0, :single-trade-flag false, :vwap 418.32041047, :total-volume 775, :last-trade-time 1368033348872, :last-trade-size 2, :last-trade-price 417.37} {:uuid "bc7865ff-e2c2-4069-a1bb-768bf4d95e62" :type "tickString" :tickerId 0, :single-trade-flag false, :vwap 418.30192265, :total-volume 787, :last-trade-time 1368033370650, :last-trade-size 12, :last-trade-price 417.11} {:uuid "49b43087-9513-400e-886b-929c75dedfab" :type "tickString" :tickerId 0, :single-trade-flag true, :vwap 418.30038468, :total-volume 788, :last-trade-time 1368033383945, :last-trade-size 1, :last-trade-price 417.09} {:uuid "05b1aef2-c8f6-48ec-9c84-7fc1f6b3fc34" :type "tickString" :tickerId 0, :single-trade-flag false, :vwap 418.29733307, :total-volume 790, :last-trade-time 1368033384976, :last-trade-size 2, :last-trade-price 417.10}])
+
+    (def ema
+      (afilter/exponential-moving-average 5 tl))
+    (log/debug "*** PRINTING our EMA [" #_ema "]")
+    (pprint/pprint ema)
+
     ))
 
 
