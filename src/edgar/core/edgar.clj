@@ -121,6 +121,9 @@
       (afilter/exponential-moving-average 5 @tick-list))
     #_(log/debug "*** PRINTING our EMA [" ema "]")
 
+    (def bollinger
+      (afilter/bollinger-band 5 @tick-list))
+    #_(log/debug "*** PRINTING our Bollinger Band [" bollinger "]")
     ))
 
 

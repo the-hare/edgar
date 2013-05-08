@@ -136,5 +136,4 @@
                bollinger-list
                (->> sma-list (remove nil?) reverse)))
      )
-
   )
