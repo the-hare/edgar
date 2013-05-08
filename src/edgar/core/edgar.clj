@@ -64,7 +64,7 @@
 
   (let [tick-list (:tick-list options)]
 
-    (log/debug "edgar.core.edgar/feed-handler [" evt "] > tick-list size[" (count @tick-list) "] / [" (> (count @tick-list) 40) "] > options[" options "]")
+    (log/debug "edgar.core.edgar/feed-handler [" evt "] > tick-list size[" (count @tick-list) "] > [" @tick-list "] > options[" #_options "]")
 
     ;; handle tickPrice
     #_(if (= "tickPrice" (evt "type"))
@@ -89,7 +89,7 @@
 
       (log/debug "")
       (log/debug "")
-      (log/debug "edgar.core.edgar/feed-handler VS > trimmed[" (count trimmed-list) "][" #_trimmed-list "] tick-list[" (count @tick-list) "][" #_@tick-list "]")
+      #_(log/debug "edgar.core.edgar/feed-handler VS > trimmed[" (count trimmed-list) "][" trimmed-list "] tick-list[" (count @tick-list) "][" @tick-list "]")
 
       ;; i. spit the data out to DB and
       ;; ii. and trim the list list back to 40
@@ -115,11 +115,11 @@
 
     (def sma
       (afilter/simple-moving-average 5 @tick-list))
-    (log/debug "**** PRINTING our SMA [" sma "]")
+    #_(log/debug "**** PRINTING our SMA [" sma "]")
 
     (def ema
       (afilter/exponential-moving-average 5 @tick-list))
-    (log/debug "*** PRINTING our EMA [" ema "]")
+    #_(log/debug "*** PRINTING our EMA [" ema "]")
 
     ))
 

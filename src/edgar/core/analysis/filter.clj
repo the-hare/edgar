@@ -26,7 +26,8 @@
 
                 (cons {:last-trade-price (:last-trade-price (first ech))
                        :last-trade-price-average taverage
-                       :last-trade-time (:last-trade-time (first ech))} rslt)))
+                       :last-trade-time (:last-trade-time (first ech))
+                       :population ech} rslt)))
 
             ma-list  ;; begin with a reversed tick-list, over which we can iterate
             (reverse (partition tick-window 1 tick-list)))
@@ -61,7 +62,6 @@
 
                  ;; 3. calculate the EMA ( for the first tick, EMA(yesterday) = MA(yesterday) )
 
-                 (println "... ech[" ech "] rslt[" rslt "]")
                  (let [;; price(today)
                        ltprice (:last-trade-price ech)
 
@@ -82,4 +82,59 @@
                ema-list
                (->> sma-list (remove nil?) reverse)))
      )
+  )
+
+(defn bollinger-band
+  "From a tick-list, generates an accompanying list with upper-band and lower-band
+
+     Upper Band: K times an N-period standard deviation above the moving average (MA + Kσ)
+     Lower Band: K times an N-period standard deviation below the moving average (MA − Kσ)
+     K: number of standard deviations
+     N: period, or tick-window we are looking at
+
+   Returns a list, equal in length to the tick-list, but only with slots filled,
+   where preceding tick-list allows."
+
+  ([tick-window tick-list]
+     (bollinger-band tick-window tick-list (simple-moving-average tick-window tick-list)))
+
+  ([tick-window tick-list sma-list]
+
+     ;; At each step, the Standard Deviation will be: the square root of the variance (average of the squared differences from the Mean)
+
+     (let [bollinger-list (into '() (repeat tick-window nil))]
+
+       (reduce (fn [rslt ech]
+
+                 (let [;; get the Moving Average
+                       ma (:last-trade-price-average ech)
+
+                       ;; work out the mean
+                       mean (/ (reduce (fn [rslt ech] (+ (:last-trade-price ech) rslt))
+                                       0
+                                       (:population ech))
+                               (count (:population ech)))
+
+                       ;; Then for each number: subtract the mean and square the result (the squared difference)
+                       sq-diff-list (map (fn [ech]
+                                           (let [diff (- mean (:last-trade-price ech))]
+                                             (* diff diff)
+                                             ))
+                                         (:population ech))
+
+                       variance (/ (reduce + sq-diff-list) (count (:population ech)))
+                       standard-deviation (. Math sqrt variance)
+                       ]
+                   (cons {:last-trade-price (:last-trade-price ech)
+                          :last-trade-time (:last-trade-time ech)
+                          :upper-band (+ ma (* 2 standard-deviation))
+                          :lower-band (- ma (* 2 standard-deviation))
+                          }
+                         rslt)
+                   )
+                 )
+               bollinger-list
+               (->> sma-list (remove nil?) reverse)))
+     )
+
   )
