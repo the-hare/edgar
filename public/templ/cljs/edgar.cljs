@@ -5,6 +5,5 @@
 
 ;;(repl/connect "http://localhost:9000/repl")
 
-
 (rpc/remote-callback :heartbeat ["heartbeat"]
                      #(js/alert %))

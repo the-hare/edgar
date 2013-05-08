@@ -6,6 +6,7 @@
   (:require [clojure.tools.logging :as log]
             [clojure.walk :as walk]
             [clojure.string :as cstring]
+            [clojure.pprint :as pprint]
             [cljs-uuid.core :as uuid]
             [edgar.datomic :as edatomic]
             [edgar.ib.market :as market]
@@ -111,21 +112,23 @@
 
     (def sma
       (afilter/simple-moving-average 20 @tick-list))
-    )
+
+    (log/debug "**** PRINTING our SMA [" sma "]")
+    ))
 
 
-  (defn test-run []
+(defn test-run []
 
-    (let [client (:esocket (market/connect-to-market))
-          conn (edatomic/database-connect)
-          hdata (load-historical-data edatomic/conn)
+  (let [client (:esocket (market/connect-to-market))
+        conn (edatomic/database-connect)
+        hdata (load-historical-data edatomic/conn)
 
-          tick-list (ref [])]
+        tick-list (ref [])]
 
-      (market/subscribe-to-market (partial feed-handler {:tick-list tick-list}))
-      (market/request-market-data client 0 (-> hdata last second) "233" false)
-      ;;(market/request-market-data client 0 "IBM" "233" false)
-      )))
+    (market/subscribe-to-market (partial feed-handler {:tick-list tick-list}))
+    (market/request-market-data client 0 (-> hdata last second) "233" false)
+    ;;(market/request-market-data client 0 "IBM" "233" false)
+    ))
 
 (defn fubar []
   (test-run))

@@ -32,7 +32,7 @@
                         :compiler {
                                    :output-to "public/javascript/main.js"
                                    :output-dir "public/javascript/"
-                                   :optimizations :advanced ;; :simple  ;; :whitespace
+                                   :optimizations nil ;; :whitespace ;; :advanced ;; :simple
                                    :pretty-print true}}]}
   :ring {:handler edgar.handler/app}
   :profiles {:dev {:dependencies [[ring-mock "0.1.3"]]}}

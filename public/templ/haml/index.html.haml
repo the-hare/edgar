@@ -5,7 +5,9 @@
 
   %body
     #content
+      %script( type="text/javascript" src="javascript/shoreleave/remotes/http_rpc.js" )
+      %script( type="text/javascript" src="javascript/goog/base.js" )
       %script( type="text/javascript" src="javascript/main.js" )
-      //%script( type="text/javascript" src="javascript/edgar.js" )
+      %script( type="text/javascript" src="javascript/edgar.js" )
       %script( type="text/javascript" )
-        //goog.require("edgar")
+        goog.require("edgar")

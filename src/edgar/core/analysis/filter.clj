@@ -20,8 +20,8 @@
 
               (let [tsum (reduce (fn [rslt inp]
 
-                                   (println "... rslt[" rslt "] / inp[" inp "]")
-                                   (+ (:last-trade-price inp) rslt)) 0 ech)   ;; sum it up
+                                   (let [ltprice (:last-trade-price inp)]
+                                     (+ (if (string? ltprice) (read-string ltprice) ltprice) rslt))) 0 ech)   ;; sum it up
                     taverage (/ tsum (count ech))   ;; get the average
                     ]
 
