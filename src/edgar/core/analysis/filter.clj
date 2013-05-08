@@ -74,7 +74,7 @@
                        ema-now (+ (* k (if (string? ltprice)
                                          (read-string ltprice)
                                          ltprice))
-                                  (* ema-last (- 1 k)))]
+                                  (* (if (string? ema-last) (read-string ema-last) ema-last) (- 1 k)))]
 
                    (cons {:last-trade-price (:last-trade-price ech)
                           :last-trade-time (:last-trade-time ech)
