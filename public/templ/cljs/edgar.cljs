@@ -20,3 +20,6 @@
 (.addClass (.removeClass ($ "#tabs li")
                          "ui-corner-top")
            "ui-corner-left")
+
+;; Scrolling with Lionbars
+(.lionbars ($ ".tab-content"))

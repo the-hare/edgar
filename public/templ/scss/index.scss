@@ -1,5 +1,15 @@
 
-.ui-tabs-nav {
-  width: 32;
-  float: left;
+.ui-tabs {
+
+  height: 150;
+
+  .ui-tabs-nav {
+    width: 32;
+    height: 100%;
+    float: left;
+  }
+  .tab-content {
+    height: 70%;
+    overflow-y: scroll;
+  }
 }
