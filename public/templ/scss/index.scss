@@ -1,7 +1,7 @@
 
 .ui-tabs {
 
-  height: 150;
+  height: 700;
 
   .ui-tabs-nav {
     width: 32;
@@ -9,7 +9,8 @@
     float: left;
   }
   .tab-content {
-    height: 70%;
+    height: 90%;
     overflow-y: scroll;
+    white-space: pre-wrap;
   }
 }
