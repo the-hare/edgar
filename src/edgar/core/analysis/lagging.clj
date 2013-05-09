@@ -1,5 +1,5 @@
 (ns edgar.core.analysis.lagging
-  (:require [clojure.pprint :as pprint]))
+  (:require #_[clojure.pprint :as pprint]))
 
 (defn simple-moving-average
   "Takes the tick-list, and moves back as far as the tick window will take it.

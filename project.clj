@@ -17,8 +17,13 @@
                   :exclusions [org.slf4j/slf4j-nop org.slf4j/log4j-over-slf4j]]
                  [org.slf4j/slf4j-log4j12 "1.6.4"]
                  [ring/ring-jetty-adapter "1.2.0-SNAPSHOT"]
+
+
+                 ;; Clojurescript Libraries
                  [shoreleave/shoreleave-remote "0.3.0"]
                  [shoreleave/shoreleave-remote-ring "0.3.0"]
+                 [jayq "2.3.0"]
+
 
                  ;; Java Libraries
                  [joda-time "2.2"]

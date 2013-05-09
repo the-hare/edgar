@@ -5,10 +5,24 @@
 
   %body
     #content
-      //%script( type="text/javascript" src="javascript/goog/base.js" )
-      //%script( type="text/javascript" src="javascript/goog/dom/dom.js" )
-      //%script( type="text/javascript" src="javascript/shoreleave/remotes/http_rpc.js" )
-      %script( type="text/javascript" src="javascript/main.js" )
-      //%script( type="text/javascript" src="javascript/edgar.js" )
-      %script( type="text/javascript" )
-        goog.require("edgar")
+
+      #tabs
+        %ul
+          %li
+            %a( href="#tab-one" )
+          %li
+            %a( href="#tab-two" )
+
+        #tab-one
+          Tab One: Content
+        #tab-two
+          Tab Two: Content
+
+  %link( rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css")
+  %link( rel="stylesheet" href="css/scss/index.css" )
+
+  %script( type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js" )
+  %script( type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js" )
+  %script( type="text/javascript" src="javascript/main.js" )
+  %script( type="text/javascript" )
+    goog.require("edgar")
