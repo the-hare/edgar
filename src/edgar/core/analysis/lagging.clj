@@ -1,4 +1,4 @@
-(ns edgar.core.analysis.filter
+(ns edgar.core.analysis.lagging
   (:require [clojure.pprint :as pprint]))
 
 (defn simple-moving-average

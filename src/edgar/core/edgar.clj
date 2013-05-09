@@ -11,7 +11,7 @@
             [edgar.datomic :as edatomic]
             [edgar.ib.market :as market]
             [edgar.tee.datomic :as tdatomic]
-            [edgar.core.analysis.filter :as afilter])
+            [edgar.core.analysis.lagging :as lagging])
   )
 
 
@@ -114,15 +114,15 @@
     ;; i. 20 tick structure & ii. strategy should allow me to extrude this to a clojurescript front-end
 
     (def sma
-      (afilter/simple-moving-average 5 @tick-list))
+      (lagging/simple-moving-average 5 @tick-list))
     #_(log/debug "**** PRINTING our SMA [" sma "]")
 
     (def ema
-      (afilter/exponential-moving-average 5 @tick-list))
+      (lagging/exponential-moving-average 5 @tick-list))
     #_(log/debug "*** PRINTING our EMA [" ema "]")
 
     (def bollinger
-      (afilter/bollinger-band 5 @tick-list))
+      (lagging/bollinger-band 5 @tick-list))
     #_(log/debug "*** PRINTING our Bollinger Band [" bollinger "]")
     ))
 
