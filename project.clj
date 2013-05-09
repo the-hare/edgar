@@ -26,6 +26,8 @@
   :plugins [[lein-ring "0.8.2"]
             [lein-cljsbuild "0.3.0"]]
   :cljsbuild {
+              :crossovers [edgar.core.analysis]
+              :crossover-path "public/templ/cljs"
               :builds [{
                         :incremental true
                         :source-path "public/templ/cljs"
