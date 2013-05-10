@@ -12,6 +12,7 @@
                  [cljs-uuid "0.0.4"]
                  [org.clojure/tools.namespace "0.2.3"]
                  [lamina "0.5.0-beta15"]
+                 [aleph "0.3.0-beta15"]
                  [clj-time "0.5.0"]
                  [com.datomic/datomic "0.8.3335"
                   :exclusions [org.slf4j/slf4j-nop org.slf4j/log4j-over-slf4j]]

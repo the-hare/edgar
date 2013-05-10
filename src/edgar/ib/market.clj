@@ -37,13 +37,13 @@
   ([client idx instrm]
      (request-historical-data client idx instrm "1 D" "1 day" "TRADES"))
 
-  ([client idx instrm , duration-str bar-size-setting what-to-show]
+  ([client idx instrm , duration-str bar-size what-to-show]
      (let [contract (create-contract instrm)
            nnow (time/local-now)
            tformat (format/formatter "yyyyMMdd HH:mm:ss z")
            tstring (format/unparse tformat nnow)
            ]
-       (.reqHistoricalData client idx contract tstring duration-str bar-size-setting what-to-show 0 1)
+       (.reqHistoricalData client idx contract tstring duration-str bar-size what-to-show 0 1)
        )
      ))
 (defn cancel-historical-data
