@@ -56,7 +56,6 @@
       wrap-multipart-params
       rpc/wrap-rpc
       handler/site
-      aleph/wrap-ring-handler
       ))
 
 (defn -main []

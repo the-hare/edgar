@@ -136,9 +136,9 @@
         tick-list (ref [])]
 
     (market/subscribe-to-market (partial feed-handler {:tick-list tick-list}))
-    (market/request-market-data client 0 (-> hdata last second) "233" false)
+    ;;(market/request-market-data client 0 (-> hdata last second) "233" false)
 
-    ;;(market/request-market-data client 0 "IBM" "233" false)
+    (market/request-market-data client 0 "IBM" "233" false)
     ))
 
 (defn fubar []
