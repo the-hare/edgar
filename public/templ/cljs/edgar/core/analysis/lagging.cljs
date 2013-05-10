@@ -3,7 +3,7 @@
 ; file:/Users/timothyw/Projects/edgar/src/edgar/core/analysis/lagging.clj
 
 (ns edgar.core.analysis.lagging
-  (:require #_[clojure.pprint :as pprint]))
+  )
 
 (defn simple-moving-average
   "Takes the tick-list, and moves back as far as the tick window will take it.
@@ -114,14 +114,20 @@
                        ma (:last-trade-price-average ech)
 
                        ;; work out the mean
-                       mean (/ (reduce (fn [rslt ech] (+ (:last-trade-price ech) rslt))
+                       mean (/ (reduce (fn [rslt ech]
+                                         (+ (if (string? (:last-trade-price ech))
+                                              (read-string (:last-trade-price ech))
+                                              (:last-trade-price ech))
+                                            rslt))
                                        0
                                        (:population ech))
                                (count (:population ech)))
 
                        ;; Then for each number: subtract the mean and square the result (the squared difference)
                        sq-diff-list (map (fn [ech]
-                                           (let [diff (- mean (:last-trade-price ech))]
+                                           (let [diff (- mean (if (string? (:last-trade-price ech))
+                                                                (read-string (:last-trade-price ech))
+                                                                (:last-trade-price ech)))]
                                              (* diff diff)
                                              ))
                                          (:population ech))

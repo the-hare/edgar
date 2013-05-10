@@ -14,6 +14,7 @@
                  [lamina "0.5.0-beta15"]
                  [aleph "0.3.0-beta15"]
                  [clj-time "0.5.0"]
+                 [org/clojure/data.json "0.1.0"]
                  [com.datomic/datomic "0.8.3335"
                   :exclusions [org.slf4j/slf4j-nop org.slf4j/log4j-over-slf4j]]
                  [org.slf4j/slf4j-log4j12 "1.6.4"]

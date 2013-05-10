@@ -1,0 +1,21 @@
+{
+  "rangeSelector" : { 
+    "selected" : 1,
+  },
+  "title" : { 
+    "text" : "Test Stock Data", 
+  },
+  "series" : [{
+    "name" : "Test Stock Data", 
+    "data" : "data", 
+    "marker" : { 
+      "enabled" : true, 
+      "radius" : 3, 
+    }, 
+    "shadow" : true, 
+    "tooltip" : { 
+      "valueDecimals" : 2, 
+    }, 
+  }] 
+}
+
