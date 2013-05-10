@@ -20,6 +20,9 @@
   (log/debug "REMOTE > heartbeat CALLED > args[" args "]")
   {:resp "thing"})
 
+(rpc/defremote ^{:remote-name :historical-data} historical-data [stock-sym]
+
+  )
 
 (defroutes app-routes
   "define the routes that will comprise the application"

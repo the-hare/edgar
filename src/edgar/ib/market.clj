@@ -29,15 +29,21 @@
 ;; ====
 ;; HISTORICAL Data
 (defn request-historical-data
-  "Request historical historical information in the form of a feed or data snapshot"
+  "Request historical historical information in the form of a feed or data snapshot.
+
+   See function reference here:
+     http://www.interactivebrokers.com/php/apiUsersGuide/apiguide/java/reqhistoricaldata.htm"
 
   ([client idx instrm]
+     (request-historical-data client idx instrm "1 D" "1 day" "TRADES"))
+
+  ([client idx instrm , duration-str bar-size-setting what-to-show]
      (let [contract (create-contract instrm)
            nnow (time/local-now)
            tformat (format/formatter "yyyyMMdd HH:mm:ss z")
            tstring (format/unparse tformat nnow)
            ]
-       (.reqHistoricalData client idx contract tstring "1 D" "1 day" "TRADES" 1 1)
+       (.reqHistoricalData client idx contract tstring duration-str bar-size-setting what-to-show 0 1)
        )
      ))
 (defn cancel-historical-data
