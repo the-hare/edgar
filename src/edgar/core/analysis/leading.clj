@@ -26,12 +26,19 @@
 
      ;; compute the MACD line
      (let [
+           {macd-fast :macd-window-fast
+            macd-slow :macd-window-slow
+            signal-window :signal-window
+            :or {macd-fast 12
+                 macd-slow 26
+                 signal-window 9}} options
+
            ;; 1. compute 12 EMA
-           ema-short (lagging/exponential-moving-average nil 12 tick-list sma-list)
+           ema-short (lagging/exponential-moving-average nil macd-fast tick-list sma-list)
 
 
            ;; 2. compute 26 EMA
-           ema-long (lagging/exponential-moving-average nil 26 tick-list sma-list)
+           ema-long (lagging/exponential-moving-average nil macd-slow tick-list sma-list)
 
 
            ;; 3. for each tick, compute difference between 12 and 26 EMA
@@ -54,13 +61,26 @@
                      ema-long)
 
            ;; Compute 9 EMA of the MACD
-           ema-signal (lagging/exponential-moving-average {:input :last-trade-macd :output :ema-signal :etal [:last-trade-price :last-trade-time]} 9 macd macd)
+           ema-signal (lagging/exponential-moving-average {:input :last-trade-macd :output :ema-signal :etal [:last-trade-price :last-trade-time]} signal-window nil macd)
 
            ]
 
        ;; compute the difference, or divergence
-       ema-signal
+       (let [macd-list (into '() (repeat signal-window nil))]
 
+         (map (fn [e-macd e-ema]
+
+                (if (and (-> e-macd nil? not)
+                         (-> e-ema nil? not))
+
+                  {:last-trade-price (:last-trade-price e-macd)
+                   :last-trade-time (:last-trade-time e-macd)
+                   :histogram (- (:last-trade-macd e-macd) (:ema-signal e-ema))}
+                  ))
+              macd
+              ema-signal
+              )
+         )
        )
      )
 )
