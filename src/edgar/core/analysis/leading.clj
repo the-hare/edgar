@@ -54,12 +54,12 @@
                      ema-long)
 
            ;; Compute 9 EMA of the MACD
-           ;;ema-signal (lagging/exponential-moving-average {:input :last-trade-macd :output :ema-signal :etal [:last-trade-price :last-trade-time]} 9 macd)
+           ema-signal (lagging/exponential-moving-average {:input :last-trade-macd :output :ema-signal :etal [:last-trade-price :last-trade-time]} 9 macd macd)
 
            ]
 
        ;; compute the difference, or divergence
-       macd
+       ema-signal
 
        )
      )

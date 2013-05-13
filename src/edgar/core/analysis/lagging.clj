@@ -87,8 +87,6 @@
                  etal-keys [:last-trade-price :last-trade-time]}} options
            ]
 
-       (println "... input-key[" input-key "] / output-key[" output-key "] / etal-keys[" etal-keys "]")
-
        ;; 2. get the simple-moving-average for a given tick - 1
        (reduce (fn [rslt ech]
 
