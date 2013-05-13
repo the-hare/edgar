@@ -25,16 +25,17 @@
 (rpc/defremote ^{:remote-name :historical-data} historical-data [stock-sym duration-str bar-size]
 
   (log/debug "REMOTE > historical-data CALLED > stock-sym[" stock-sym "] > duration-str[" duration-str "] > bar-size[" bar-size "]")
-
   (defn handler-fn [evt]
 
     ;; ... spit result out to some response channel
     )
 
   ;; ... create an IB client , idx
-  (market/request-historical-data client idx stock-sym duration-str bar-size "TRADES")
+  (market/request-historical-data client idx stock-sym duration-str bar-size "TRADES"))
 
-  )
+
+;; [lamina.core.queue :as q]
+
 
 (defroutes app-routes
   "define the routes that will comprise the application"
