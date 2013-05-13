@@ -1,5 +1,5 @@
 (ns edgar.core.analysis.leading
-  (:require '[edgar.core.analysis.lagging :as lagging]))
+  (:require [edgar.core.analysis.lagging :as lagging]))
 
 
 (defn macd
@@ -27,34 +27,40 @@
      ;; compute the MACD line
      (let [
            ;; 1. compute 12 EMA
-           ema-short (lagging/exponential-moving-average 12 tick-list sma-list)
+           ema-short (lagging/exponential-moving-average nil 12 tick-list sma-list)
 
 
            ;; 2. compute 26 EMA
-           ema-long (lagging/exponential-moving-average 26 tick-list sma-list)
+           ema-long (lagging/exponential-moving-average nil 26 tick-list sma-list)
 
 
            ;; 3. for each tick, compute difference between 12 and 26 EMA
            ;; EMA lists will have a structure like:
-           #_ ({:last-trade-price 203.98,
+           #_({:last-trade-price 203.98,
                 :last-trade-time 1368215573010,
                 :last-trade-price-exponential 204.00119130504845}
-               ...
                )
 
            macd (map (fn [e1 e2]
 
-                       {:last-trade-price (:last-trade-price e1)
-                        :last-trade-time (:last-trade-time e1)
-                        :last-trade-macd (- (:last-trade-price e1) (:last-trade-price e2))})
+                       (if (and (-> e1 nil? not)
+                                (-> e2 nil? not))
+
+                         {:last-trade-price (:last-trade-price e1)
+                          :last-trade-time (:last-trade-time e1)
+                          :last-trade-macd (- (:last-trade-price-exponential e1) (:last-trade-price-exponential e2))
+                          }))
                      ema-short
-                     ema-long)]
+                     ema-long)
 
+           ;; Compute 9 EMA of the MACD
+           ;;ema-signal (lagging/exponential-moving-average {:input :last-trade-macd :output :ema-signal :etal [:last-trade-price :last-trade-time]} 9 macd)
 
-       ;; Compute 9 EMA of the MACD
+           ]
 
        ;; compute the difference, or divergence
+       macd
 
-     )
+       )
      )
 )

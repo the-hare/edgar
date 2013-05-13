@@ -90,7 +90,6 @@
                                          ltprice))
                                   (* (if (string? ema-last) (read-string ema-last) ema-last) (- 1 k)))]
 
-
                    (cons (merge
 
                           ;; will produce a map of etal-keys, with associated values in ech
