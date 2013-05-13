@@ -42,20 +42,34 @@
      N = number of days
 
    Returns a list, equal in length to the tick-list, but only with slots filled,
-   where preceding tick-list allows."
+   where preceding tick-list allows.
 
-  ([tick-window tick-list]
+   Options are:
+   :input - input key function will look for (defaults to :last-trade-price)
+   :output - output key function will emit (defaults to :last-trade-price-exponential)
+   :etal - other keys to emit in each result map"
 
-     (exponential-moving-average tick-window tick-list (simple-moving-average tick-window tick-list)))
+  ([options tick-window tick-list]
 
-  ([tick-window tick-list sma-list]
+     (exponential-moving-average options tick-window tick-list (simple-moving-average tick-window tick-list)))
+
+  ([options tick-window tick-list sma-list]
 
      ;; 1. calculate 'k'
      ;; k = 2 / N + 1
      ;; N = number of days
      (let [k (/ 2 (+ tick-window 1))
-           ema-list (into '() (repeat tick-window nil))]
+           ema-list (into '() (repeat tick-window nil))
 
+           {input-key :input
+            output-key :output
+            etal-keys :etal
+            :or {input-key :last-trade-price
+                 output-key :last-trade-price-exponential
+                 etal-keys [:last-trade-price :last-trade-time]}} options
+           ]
+
+       (println "... input-key[" input-key "] / output-key[" output-key "] / etal-keys[" etal-keys "]")
 
        ;; 2. get the simple-moving-average for a given tick - 1
        (reduce (fn [rslt ech]
