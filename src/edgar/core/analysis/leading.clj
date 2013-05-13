@@ -20,7 +20,7 @@
       :signal-window (default is 9)"
 
   ([options tick-window tick-list]
-     (macd options tick-window tick-list (lagging/simple-moving-average tick-window tick-list)))
+     (macd options tick-window tick-list (lagging/simple-moving-average nil tick-window tick-list)))
 
   ([options tick-window tick-list sma-list]
 
