@@ -77,12 +77,12 @@
                  ;; 3. calculate the EMA ( for the first tick, EMA(yesterday) = MA(yesterday) )
 
                  (let [;; price(today)
-                       ltprice (:last-trade-price ech)
+                       ltprice (input-key ech)
 
                        ;; EMA(yesterday)
-                       ema-last (if (:last-trade-price-exponential (first rslt))
-                                  (:last-trade-price-exponential (first rslt))
-                                  (:last-trade-price ech))
+                       ema-last (if (output-key (first rslt))
+                                  (output-key (first rslt))
+                                  (input-key ech))
 
                        ;; ** EMA now = price(today) * k + EMA(yesterday) * (1 - k)
                        ema-now (+ (* k (if (string? ltprice)
@@ -90,9 +90,19 @@
                                          ltprice))
                                   (* (if (string? ema-last) (read-string ema-last) ema-last) (- 1 k)))]
 
-                   (cons {:last-trade-price (:last-trade-price ech)
-                          :last-trade-time (:last-trade-time ech)
-                          :last-trade-price-exponential ema-now} rslt)))
+
+                   (cons (merge
+
+                          ;; will produce a map of etal-keys, with associated values in ech
+                          (zipmap etal-keys
+                                  (map #(% ech) etal-keys))
+
+                          ;; and merge the output key to the map
+                          {output-key ema-now})
+
+                         ;; and prepend the result to our running list
+                         rslt)
+                   ))
                ema-list
                (->> sma-list (remove nil?) reverse)))
      )
