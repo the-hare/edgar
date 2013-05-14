@@ -119,32 +119,40 @@
   [tick-window trigger-window trigger-line tick-list]
 
 
-  (let [stochastic-list (into '() (repeat tick-window nil))]
+  (let [;; calculate %K
+        stochastic-list (reduce (fn [rslt ech]
 
-    (reduce (fn [rslt ech]
+                                  (let [last-price (:last-trade-price (first ech))
+                                        last-price-list (map #(if (string? (:last-trade-price %))
+                                                                (read-string (:last-trade-price %))
+                                                                (:last-trade-price %)) ech)
+                                        highest-price (apply max last-price-list)
+                                        lowest-price (apply min last-price-list)
 
-              (let [last-price (:last-trade-price (first ech))
-                    last-price-list (map #(if (string? (:last-trade-price %))
-                                            (read-string (:last-trade-price %))
-                                            (:last-trade-price %)) ech)
-                    highest-price (apply max last-price-list)
-                    lowest-price (apply min last-price-list)
-
-                    ;; calculate %K
-                    %K (/ (- last-price lowest-price) (- highest-price lowest-price))
-
-
-                    ;;xxx (println "... last-price-list[" last-price-list "] / high[" highest-price "] low[" lowest-price "] PRICE[" last-price "] ...k[" %K "]")
-                    ;; calculate %D
+                                        ;; calculate %K
+                                        %K (/ (- last-price lowest-price) (- highest-price lowest-price))
 
 
-                    ]
+                                        ;;xxx (println "... last-price-list[" last-price-list "] / high[" highest-price "] low[" lowest-price "] PRICE[" last-price "] ...k[" %K "]")
 
-                (cons {:last-price last-price
-                       :highest-price highest-price
-                       :lowest-price lowest-price
-                       :K %K} rslt)))
-            stochastic-list
-            (partition tick-window 1 tick-list))
+                                        ]
+
+                                    (cons {:last-price last-price
+                                           :highest-price highest-price
+                                           :lowest-price lowest-price
+                                           :K %K} rslt)))
+                                (into '() (repeat tick-window nil))
+                                (reverse (partition tick-window 1 tick-list)))
+
+        ;; calculate %D
+        d-list (reduce (fn [rslt ech]
+
+                         (let [e-list (lagging/exponential-moving-average {:input :K :output :D :etal [:last-price :highest-price :lowest-price :K]} 3 nil ech)]
+                           (cons (first e-list) rslt)))
+                       (into '() (repeat tick-window nil))
+                       (reverse (partition trigger-window 1 (remove nil? stochastic-list)))
+                       )
+        ]
+    d-list
     )
 )
