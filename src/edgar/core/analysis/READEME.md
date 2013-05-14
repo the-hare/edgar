@@ -21,7 +21,7 @@ Leading indicators are those created to proceed the price movements of a securit
 
 ## Confirming Indicators
 
-- [On Balance Volume](http://www.investopedia.com/university/indicator_oscillator/ind_osc2.asp): The On Balance Volume indicator is used to measure the positive and negative flow of volume in a security relative to its price over time. This measure expands on the basic volume measure by combining volume and price movement. The idea behind this indicator is that volume precedes price movement, so if a security is seeing an increasing OBV it is a signal that volume is increasing on upward price moves. Decreases mean that the security is seeing increasing volume on down days.
+- [On Balance Volume](http://www.investopedia.com/university/indicator_oscillator/ind_osc2.asp): The On Balance Volume indicator is used to measure the positive and negative flow of volume in a security relative to its price over time. This measure expands on the basic volume measure by combining volume and price movement. The idea behind this indicator is that volume precedes price movement, so if a security is seeing an increasing OBV it is a signal that volume is increasing on upward price moves. Decreases mean that the security is seeing increasing volume on down days. See also [here](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:on_balance_volume)
 
 
 ### References

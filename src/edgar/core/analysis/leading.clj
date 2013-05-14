@@ -121,15 +121,12 @@
 
   (let [stochastic-list (into '() (repeat tick-window nil))]
 
-
     (reduce (fn [rslt ech]
 
               (let [last-price (:last-trade-price (first ech))
-
                     last-price-list (map #(if (string? (:last-trade-price %))
                                             (read-string (:last-trade-price %))
                                             (:last-trade-price %)) ech)
-
                     highest-price (apply max last-price-list)
                     lowest-price (apply min last-price-list)
 
@@ -138,8 +135,8 @@
 
 
                     ;;xxx (println "... last-price-list[" last-price-list "] / high[" highest-price "] low[" lowest-price "] PRICE[" last-price "] ...k[" %K "]")
-
                     ;; calculate %D
+
 
                     ]
 
