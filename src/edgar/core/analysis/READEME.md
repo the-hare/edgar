@@ -15,7 +15,7 @@ Lagging indicators are ones that follow price movements and have less predictive
 
 Leading indicators are those created to proceed the price movements of a security giving predictive qualities. A leading indicator is thought to be the strongest during periods of sideways or non-trending trading ranges, while the lagging indicators are regarded as more useful during trending periods. Users need to be careful to make sure the indicator is heading in the same direction as the trend.
 
-- [Stochastic Oscillator](http://www.stock-market-strategy.com/education/technical-analysis/stochastic); See also [here](http://www.youtube.com/watch?v=1TBZlB2xKUE) and [here](http://www.youtube.com/watch?v=88n-a3rUmJQ)
+- [Stochastic Oscillator](http://www.stock-market-strategy.com/education/technical-analysis/stochastic); See also [here](http://www.youtube.com/watch?v=1TBZlB2xKUE), [here](http://www.youtube.com/watch?v=88n-a3rUmJQ), and [here](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:stochastic_oscillator)
 - [MACD](http://www.stock-market-strategy.com/education/technical-analysis/moving-average-convergence-divergence-macd/); See also [here](http://www.youtube.com/watch?v=L-cB_zZcpks) and [here](http://www.youtube.com/watch?v=UfQtU4Vl4JQ)
 
 
