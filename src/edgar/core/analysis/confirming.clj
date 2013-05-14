@@ -61,10 +61,15 @@
     ;; calculate OBV for latest tick
     (if latest-tick
 
-      (let [cprice (:last-trade-price latest-tick)
-            pprice (:last-trade-price (first obv-list))
-
-            cvolume (:total-volume latest-tick)
+      (let [cprice (if (string? (:last-trade-price latest-tick))
+                     (read-string (:last-trade-price latest-tick))
+                     (:last-trade-price latest-tick))
+            pprice (if (string? (:last-trade-price (first obv-list)))
+                     (read-string (:last-trade-price (first obv-list)))
+                     (:last-trade-price (first obv-list)))
+            cvolume (if (string? (:total-volume latest-tick))
+                      (read-string (:total-volume latest-tick))
+                      (:total-volume latest-tick))
             pobv (:obv (first obv-list))
 
             cobv (if (= cprice pprice)
