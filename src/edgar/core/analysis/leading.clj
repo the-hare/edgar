@@ -100,7 +100,7 @@
        3-period exponential moving average of %K
 
      iv)  %D-Slow
-       a 3-period exponential moving average of %D
+       3-period exponential moving average of %D
 
      v) low-price:
        the lowest price over the last N periods
@@ -131,10 +131,6 @@
 
                                         ;; calculate %K
                                         %K (/ (- last-price lowest-price) (- highest-price lowest-price))
-
-
-                                        ;;xxx (println "... last-price-list[" last-price-list "] / high[" highest-price "] low[" lowest-price "] PRICE[" last-price "] ...k[" %K "]")
-
                                         ]
 
                                     (cons {:last-price last-price
