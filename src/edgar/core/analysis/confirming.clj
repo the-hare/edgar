@@ -17,4 +17,66 @@
     ** The first OBV value is the first period's positive/negative volume."
   [latest-tick tick-list]
 
-  )
+
+  ;; accumulate OBV on historical tick-list
+  (let [obv-list (reduce (fn [rslt ech]
+
+                           (if-let [prev-obv (:obv (first rslt))]    ;; handling case where first will not have an OBV
+
+                             ;; normal case
+                             (let [current-price (if (string? (:last-trade-price (first ech)))
+                                                   (read-string (:last-trade-price (first ech)))
+                                                   (:last-trade-price (first ech)))
+                                   prev-price (if (string? (:last-trade-price (second ech)))
+                                                (read-string (:last-trade-price (second ech)))
+                                                (:last-trade-price (second ech)))
+                                   current-volume (if (string? (:total-volume (first ech)))
+                                                    (read-string (:total-volume (first ech)))
+                                                    (:total-volume (first ech)))
+
+                                   obv (if (= current-price prev-price)
+                                         prev-obv
+                                         (if (> current-price prev-price)
+                                           (+ prev-obv current-volume)
+                                           (- prev-obv current-volume)))
+                                   ]
+
+                               (cons {:obv obv
+                                      :total-volume (:total-volume (first ech))
+                                      :last-trade-price (:last-trade-price (first ech))
+                                      :last-trade-time (:last-trade-time (first ech))} rslt))
+
+                             ;; otherwise we seed the list with the first entry
+                             (cons {:obv (:total-volume (first ech))
+                                    :total-volume (:total-volume (first ech))
+                                    :last-trade-price (:last-trade-price (first ech))
+                                    :last-trade-time (:last-trade-time (first ech))} rslt)
+                             )
+
+                           )
+                         '(nil)
+                         (->> tick-list (partition 2 1) reverse))
+        ]
+
+    ;; calculate OBV for latest tick
+    (if latest-tick
+
+      (let [cprice (:last-trade-price latest-tick)
+            pprice (:last-trade-price (first obv-list))
+
+            cvolume (:total-volume latest-tick)
+            pobv (:obv (first obv-list))
+
+            cobv (if (= cprice pprice)
+                   pobv
+                   (if (> cprice pprice)
+                     (+ pobv cvolume)
+                     (- pobv cvolume)))]
+
+        (cons {:obv cobv
+               :total-volume (:total-volume latest-tick)
+               :last-trade-price (:last-trade-price latest-tick)
+               :last-trade-time (:last-trade-time latest-tick)} obv-list))
+      obv-list)
+    )
+)
