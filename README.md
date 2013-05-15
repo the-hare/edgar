@@ -1,9 +1,11 @@
 # edgar
 
 A basic tool for performing technical Analysis on financial instruments. So far, the emphasis will be on
-- stock market trading
-- algorthmic, automated trading
-- using the Interactive Brokers (www.interactivebrokers.com) trading platform
+* stock market trading
+* algorthmic, automated trading
+* using the Interactive Brokers (www.interactivebrokers.com) trading platform
+
+This tool uses the Pedestal Webapplication framework. Http service code will be at ***src/edgar/service.clj*** (with tests at ***test/edgar/service_test.clj***). To configure logging see config/logback.xml. By default, the app logs to stdout and logs/. To learn more about configuring Logback, read its [documentation](http://logback.qos.ch/documentation.html). And [other examples](https://github.com/pedestal/samples).
 
 ## Prerequisites
 
@@ -20,3 +22,8 @@ To start a web server for the application, run:
 ## License
 
 Copyright © 2013 FIXME
+
+# edgar
+
+FIXME
+
