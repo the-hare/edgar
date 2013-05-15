@@ -1,9 +1,7 @@
 (ns edgar.eclientsocket
   (:import  [com.ib.client EClientSocket AnyWrapper]
             [com.interrupt.edgar EWrapperImpl])
-  #_(:require [edgar.ewrapper :as wrapper])
   )
-
 
 (defn connect-to-tws []
 
@@ -15,7 +13,7 @@
   )
 )
 
-(defn disconnect-to-tws []
+(defn disconnect-from-tws []
 
   (if (.isConnected esocket)
     (.eDisconnect esocket))
