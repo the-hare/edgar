@@ -144,6 +144,9 @@
 (defn fubar []
   (test-run))
 
+(defn fn-under-test [a b c]
+  (+ a b c))
+
 #_(def historical-ids (q '[:find ?p ?s ?c :where
                          [?h :historical/price-difference ?p]
                          [?h :historical/symbol ?s]

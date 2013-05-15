@@ -15,7 +15,7 @@
                  [org.slf4j/jul-to-slf4j "1.7.2"]
                  [org.slf4j/jcl-over-slf4j "1.7.2"]
                  [org.slf4j/log4j-over-slf4j "1.7.2"]
-                 
+
                  ;; Edgar proper
                  [org.clojure/core.incubator "0.1.2"]
                  [jtsclient/jtsclient "9.8.3"]
@@ -28,7 +28,8 @@
                  [clj-time "0.5.0"]
                  [com.datomic/datomic "0.8.3335"
                   :exclusions [org.slf4j/slf4j-nop org.slf4j/log4j-over-slf4j]]
-                 
+                 [midje "1.5.1"]
+
                  ;; Clojurescript Libraries
                  [shoreleave/shoreleave-remote "0.3.0"]
                  [shoreleave/shoreleave-remote-ring "0.3.0"]
@@ -37,9 +38,10 @@
                  ;; Java Libraries
                  [joda-time "2.2"]
                  ]
-                
+
   :plugins [[lein-ring "0.8.2"]
-            [lein-cljsbuild "0.3.0"]]
+            [lein-cljsbuild "0.3.0"]
+            [lein-midje "3.0.1"]]
   :cljsbuild {
               :crossovers [edgar.core.analysis]
               :crossover-path "public/templ/cljs"
@@ -51,13 +53,11 @@
                                    :output-dir "public/javascript/"
                                    :optimizations :simple ;; :whitespace ;; :advanced ;; :simple
                                    :pretty-print true}}]}
-  :ring {:handler edgar.handler/app}
-  :profiles {:dev {:source-paths ["src", "dev"] 
+  :profiles {:dev {:source-paths ["src", "dev"]
                    :dependencies [[ring-mock "0.1.3"]]}}
   :resource-paths ["etc/:public/"]
   :repositories { "local" ~(str (.toURI (java.io.File. (str (-> (load-file "etc/config.clj") :dev :root-dir) ".m2/repository/"))))
                   }
-  ;;:main edgar.handler
   :min-lein-version "2.0.0"
   :main ^{:skip-aot true} edgar.server
   )
