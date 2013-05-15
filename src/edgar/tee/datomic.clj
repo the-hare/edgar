@@ -22,7 +22,7 @@
                  field historicalData,
                  volume 8667,
                  type historicalData}]}]"
- [bucket]
+ [conn bucket]
 
 
  ;; collect all data into a transaction list, then persist
@@ -52,7 +52,7 @@
        ]
 
    (log/debug "tee.datomic/tee-historical > final-tx[" final-tx "]")
-   (d/transact edatomic/conn final-tx)
+   (d/transact conn final-tx)
    )
  )
 

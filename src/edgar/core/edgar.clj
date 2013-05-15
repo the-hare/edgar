@@ -15,9 +15,12 @@
   )
 
 
-(defn load-historical-data [conn]
+(defn load-historical-data
+  "Find entity.symbol (and entire entity) where price-difference is greatest
 
-  ;; find entity.symbol (and entire entity) where price-difference is greatest
+  "
+  [conn]
+
   (let [historical-entities (q '[:find ?p ?s ?c :where
                                  [?h :historical/price-difference ?p]
                                  [?h :historical/symbol ?s]
@@ -130,8 +133,8 @@
 (defn test-run []
 
   (let [client (:esocket (market/connect-to-market))
-        conn (edatomic/database-connect)
-        hdata (load-historical-data edatomic/conn)
+        conn (edatomic/database-connect nil)
+        hdata (load-historical-data conn)
 
         tick-list (ref [])]
 

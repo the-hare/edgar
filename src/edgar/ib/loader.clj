@@ -194,7 +194,7 @@
 
       ;; push to Tee / Datomic; Data structure looks like:
       (if (every? #(:processed? %) @bucket)
-        (tdatomic/tee-historical @bucket))
+        (tdatomic/tee-historical #_dbconn_goes_here @bucket))
 
       ))
     )
@@ -283,7 +283,7 @@
   ;; TODO: come up with a better way to setup the system & resources
 
   (let [client (:esocket (market/connect-to-market))
-        conn (edatomic/database-connect)]
+        conn (edatomic/database-connect nil)]
     (filter-price-movement client)
     ))
 (defn stub-run []

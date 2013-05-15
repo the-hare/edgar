@@ -17,4 +17,5 @@
   (fact "Testing that there's an actual connection to the Interactive Brokers API Gateway"
 
         (let [result (socket/connect-to-tws)]
-          (.isConnected (:esocket result)) => true )))
+
+          (.isConnected (:esocket result)))))
