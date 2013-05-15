@@ -5,7 +5,7 @@ A basic tool for performing technical Analysis on financial instruments. So far,
 * algorthmic, automated trading
 * using the Interactive Brokers (www.interactivebrokers.com) trading platform
 
-This tool uses the Pedestal Webapplication framework. Http service code will be at ***src/edgar/service.clj*** (with tests at ***test/edgar/service_test.clj***). To configure logging see config/logback.xml. By default, the app logs to stdout and logs/. To learn more about configuring Logback, read its [documentation](http://logback.qos.ch/documentation.html). And [other examples](https://github.com/pedestal/samples).
+This tool uses the [Pedestal](http://pedestal.io/) Webapplication framework. Http service code will be at ***src/edgar/service.clj*** (with tests at ***test/edgar/service_test.clj***). To configure logging see config/logback.xml. By default, the app logs to stdout and logs/. To learn more about configuring Logback, read its [documentation](http://logback.qos.ch/documentation.html). And [other examples](https://github.com/pedestal/samples).
 
 ## Prerequisites
 
