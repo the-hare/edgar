@@ -1,26 +1,27 @@
 (ns edgar.core.edgar-test
   (:use [midje.sweet])
   (:require [edgar.core.edgar :as edgar]
-            [edgar.datomic :as edatomic]))
+            [edgar.datomic :as edatomic]
+            [edgar.tee.datomic :as tee]))
 
 
 ;; setup a local Datomic connection
 (def conn (atom nil))
 
 
-;; ... TODO - create Datomic in memory connection
-;; ... TODO - create database
-;; ... TODO - create schema
+(defn populate-test-data [cxn forms]
+  (tee/tee-historical cxn forms))
 
-;; ... TODO - before each test, populate with about 100 records
-(with-state-changes [(before :facts (do ((edatomic/database-create "datomic:mem://edgar"))
-                                        (reset! conn )))
-                     ]
 
-  #_(fact "Test that we can list high moving stocks"
+(with-state-changes [(before :facts (edatomic/database-create "datomic:mem://edgar"))]
+  (with-state-changes [(before :facts (edatomic/database-schema-create conn))]
+    (with-state-changes [(before :facts (populate-test-data conn (read-string (slurp "etc/test-historical-list.edn"))))])
 
-        (count (edgar/load-historical-data conn 10)) => 10
-        (count (edgar/load-historical-data conn 20)) => 20))
+
+    #_ (fact "Test that we can list high moving stocks"
+
+            (count (edgar/load-historical-data conn 10)) => 10
+            (count (edgar/load-historical-data conn 20)) => 20)))
 
 
 
