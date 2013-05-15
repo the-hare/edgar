@@ -9,9 +9,11 @@ This tool uses the [Pedestal](http://pedestal.io/) Webapplication framework. Htt
 
 ## Prerequisites
 
-You will need [Leiningen][1] 1.7.0 or above installed.
+You will need these tools installed on your machine.
 
-[1]: https://github.com/technomancy/leiningen
+[1]: [Leiningen](https://github.com/technomancy/leiningen), 2.0 or abouve
+[2]: [Datomic](http://www.datomic.com)
+[3]: Interactive Brokers [API Gateway](https://www.interactivebrokers.com/en/?f=%2Fen%2Fsoftware%2Fibapi.php)
 
 ## Running
 
@@ -22,8 +24,3 @@ To start a web server for the application, run:
 ## License
 
 Copyright © 2013 FIXME
-
-# edgar
-
-FIXME
-
