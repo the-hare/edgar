@@ -5,19 +5,44 @@
               [io.pedestal.service.http.route.definition :refer [defroutes]]
               [ring.util.response :as ring-resp]))
 
+;;
 (defn about-page
   [request]
   (ring-resp/response (format "Clojure %s" (clojure-version))))
-
 (defn home-page
   [request]
   (ring-resp/response "Hello World!"))
 
+;;
+(defn list-filtered-input
+  "List high-moving stocks"
+  [])
+(defn get-historical-data
+  "Get historical data for a particular stock"
+  [])
+(defn get-streaming-stock-data
+  "Get streaming stock data for 1 or a list of stocks"
+  [])
+(defn stop-streaming-stock-data
+  "Stops streaming stock data for 1 or a list of stocks"
+  [])
+
+
 (defroutes routes
-  [[["/" {:get home-page}
+  [[
+    ["/" {:get home-page}
+
      ;; Set default interceptors for /about and any other paths under /
      ^:interceptors [(body-params/body-params) bootstrap/html-body]
-     ["/about" {:get about-page}]]]])
+     ["/about" {:get about-page}]]
+
+
+    ["/list-filtered-input" {:get list-filtered-input}]
+    ["/get-historical-data" {:get get-historical-data}]
+    ["/get-streaming-stock-data" {:get get-streaming-stock-data}]
+    ["/stop-streaming-stock-data" {:post stop-streaming-stock-data}]
+    ]])
+
 
 ;; You can use this fn or a per-request fn via io.pedestal.service.http.route/url-for
 (def url-for (route/url-for-routes routes))

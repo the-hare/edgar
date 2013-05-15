@@ -9,20 +9,24 @@
 (def conn (atom nil))
 
 
-(defn populate-test-data [cxn forms]
-  (tee/tee-historical cxn forms))
-
-
 (with-state-changes [(before :facts (edatomic/database-create "datomic:mem://edgar"))]
-  (with-state-changes [(before :facts (edatomic/database-schema-create conn))]
-    (with-state-changes [(before :facts (populate-test-data conn (read-string (slurp "etc/test-historical-list.edn"))))])
 
+  (fact "stub.1" 1 => 1)
+  (with-state-changes [(before :facts (reset! conn (edatomic/database-connect "datomic:mem://edgar")))]
 
-    #_ (fact "Test that we can list high moving stocks"
+    (fact "stub.2" 2 => 2)
+    (with-state-changes [(before :facts (edatomic/database-schema-create @conn))]
 
-            (count (edgar/load-historical-data conn 10)) => 10
-            (count (edgar/load-historical-data conn 20)) => 20)))
+      (fact "stub.3" 3 => 3)
+      (with-state-changes [(before :facts (tee/tee-historical @conn (read-string (slurp "etc/test-historical-list.edn"))))]
 
+        (fact "Test that we can list high moving stocks"
+              (count (edgar/load-historical-data 10 conn)) => 10
+              (count (edgar/load-historical-data 20 conn)) => 20)
+        )))
+  )
+
+;; ... TODO - get a test-historical list, as formatted by IB
 
 
 ;; ... TODO - create Pedestal service tests (see pedestal/app/test/io/pedestal/test/app.clj)
