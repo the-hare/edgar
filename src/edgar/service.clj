@@ -27,18 +27,24 @@
 
 
 ;;
-(defn resume-fn [context result]
-  (iimpl/resume
-
-   (assoc context :response (ring-resp/response (bootstrap/edn-response result)))))
-
-(defn do-async-work [paused-context]
+(defn list-filtered-input
+  "List high-moving stocks"
+  [request]
 
   (let [conn (edatomic/database-connect nil)
         result (edgar/load-historical-data nil conn)]
-    ((:resume-fn paused-context) result)))
+    (ring-resp/response result)))
 
-(defbefore list-filtered-input
+
+
+#_(defn resume-fn [context result]
+  (iimpl/resume
+   (assoc context :response (ring-resp/response (bootstrap/edn-response result)))))
+#_(defn do-async-work [paused-context]
+  (let [conn (edatomic/database-connect nil)
+        result (edgar/load-historical-data nil conn)]
+    ((:resume-fn paused-context) result)))
+#_(defbefore list-filtered-input
   "List high-moving stocks"
   [{req :request :as context}]
 
@@ -103,6 +109,7 @@
 
               ;; Root for resource interceptor that is available by default.
               ::bootstrap/resource-path "/public"
+              ::bootstrap/file-path "/public"
 
               ;; Either :jetty or :tomcat (see comments in project.clj
               ;; to enable Tomcat)
