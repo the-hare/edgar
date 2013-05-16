@@ -1,9 +1,15 @@
 (ns edgar.service
-    (:require [io.pedestal.service.http :as bootstrap]
-              [io.pedestal.service.http.route :as route]
-              [io.pedestal.service.http.body-params :as body-params]
-              [io.pedestal.service.http.route.definition :refer [defroutes]]
-              [ring.util.response :as ring-resp]))
+  (:require [edgar.datomic :as edatomic]
+            [edgar.core.edgar :as edgar]
+            [io.pedestal.service.http :as bootstrap]
+            [io.pedestal.service.http.route :as route]
+            [io.pedestal.service.http.body-params :as body-params]
+            [io.pedestal.service.http.route.definition :refer [defroutes]]
+            [io.pedestal.service.impl.interceptor :as iimpl]
+            [io.pedestal.service.interceptor :as interceptor :refer [defon-response defbefore defafter]]
+            [ring.util.response :as ring-resp]))
+
+
 
 ;;
 (defn about-page
@@ -13,11 +19,29 @@
   [request]
   (ring-resp/response "Hello World!"))
 
+
+
 ;;
-(defn list-filtered-input
+(defn resume-fn [context result]
+  (iimpl/resume
+   (assoc context :response (ring-resp/response result))))
+
+(defn do-async-work [paused-context]
+
+  (let [conn (edatomic/database-connect nil)
+        result (edgar/load-historical-data nil conn)]
+    ((:resume-fn paused-context) result)))
+
+(defbefore list-filtered-input
   "List high-moving stocks"
-  [request]
-  (ring-resp/response "list-filtered-input"))
+  [{req :request :as context}]
+
+  (iimpl/with-pause [paused-context context]
+    (do-async-work
+     (assoc paused-context :resume-fn (partial resume-fn paused-context)))))
+
+
+
 
 (defn get-historical-data
   "Get historical data for a particular stock"
