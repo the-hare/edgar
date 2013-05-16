@@ -24,7 +24,8 @@
 ;;
 (defn resume-fn [context result]
   (iimpl/resume
-   (assoc context :response (ring-resp/response result))))
+
+   (assoc context :response (ring-resp/response (bootstrap/edn-response result)))))
 
 (defn do-async-work [paused-context]
 
