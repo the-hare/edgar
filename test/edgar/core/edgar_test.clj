@@ -5,6 +5,10 @@
             [edgar.tee.datomic :as tee]))
 
 
+
+;; ... TODO
+
+
 ;; setup a local Datomic connection
 #_(def conn (atom nil))
 
@@ -39,12 +43,3 @@
               (count (edgar/load-historical-data 20 conn)) => 20)
         )))
   )
-
-
-;; ... TODO - create Pedestal service tests (see https://github.com/pedestal/pedestal/blob/master/service/test/io/pedestal/service/http_test.clj)
-;;  -- test HTTP method(s)
-;;  -- test request inputs
-;;  -- test pedestal response value
-;;  -- test pedestal response type (edn)
-
-;; ... TODO - create web client tests (see pedestal/app/test/io/pedestal/test/app.clj)

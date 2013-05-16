@@ -16,16 +16,23 @@
 ;;
 (defn list-filtered-input
   "List high-moving stocks"
-  [])
+  [request]
+  (ring-resp/response "list-filtered-input"))
+
 (defn get-historical-data
   "Get historical data for a particular stock"
-  [])
+  [request]
+  (ring-resp/response "get-historical-data"))
+
 (defn get-streaming-stock-data
   "Get streaming stock data for 1 or a list of stocks"
-  [])
+  [request]
+  (ring-resp/response "get-streaming-stock-data"))
+
 (defn stop-streaming-stock-data
   "Stops streaming stock data for 1 or a list of stocks"
-  [])
+  [request]
+  (ring-resp/response "stop-streaming-stock-data"))
 
 
 (defroutes routes
@@ -34,13 +41,13 @@
 
      ;; Set default interceptors for /about and any other paths under /
      ^:interceptors [(body-params/body-params) bootstrap/html-body]
-     ["/about" {:get about-page}]]
 
+     ["/about" {:get about-page}]
 
-    ["/list-filtered-input" {:get list-filtered-input}]
-    ["/get-historical-data" {:get get-historical-data}]
-    ["/get-streaming-stock-data" {:get get-streaming-stock-data}]
-    ["/stop-streaming-stock-data" {:post stop-streaming-stock-data}]
+     ["/list-filtered-input" {:get list-filtered-input}]
+     ["/get-historical-data" {:get get-historical-data}]
+     ["/get-streaming-stock-data" {:get get-streaming-stock-data}]
+     ["/stop-streaming-stock-data" {:post stop-streaming-stock-data}]]
     ]])
 
 

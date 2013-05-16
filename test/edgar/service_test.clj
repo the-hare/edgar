@@ -1,4 +1,5 @@
 (ns edgar.service-test
+  (:use [midje.sweet])
   (:require [clojure.test :refer :all]
             [io.pedestal.service.test :refer :all]
             [io.pedestal.service.http :as bootstrap]
@@ -22,3 +23,19 @@
   (is (=
        (:headers (response-for service :get "/about"))
        {"Content-Type" "text/html"})))
+
+
+(with-state-changes [(before :facts (do 1))]
+
+  (fact ""
+        1 => 1
+        ))
+
+
+;; ... TODO - create Pedestal service tests (see https://github.com/pedestal/pedestal/blob/master/service/test/io/pedestal/service/http_test.clj)
+;;  -- test HTTP method(s)
+;;  -- test request inputs
+;;  -- test pedestal response value
+;;  -- test pedestal response type (edn)
+
+;; ... TODO - create web client tests (see pedestal/app/test/io/pedestal/test/app.clj)
