@@ -192,9 +192,10 @@
 
       (market/cancel-market-data client rid)
 
+
       ;; push to Tee / Datomic; Data structure looks like:
       (if (every? #(:processed? %) @bucket)
-        (tdatomic/tee-historical #_dbconn_goes_here @bucket))
+        (tdatomic/tee-historical (:conn options) @bucket))
 
       ))
     )
@@ -255,7 +256,7 @@
 
 (defn filter-price-movement
   "Run through stocks and filter based on the stocks that have the biggest high / low price movement"
-  [client]
+  [client conn]
 
 
   ;; get first tranch of stocks
@@ -263,6 +264,7 @@
         stock-lists (get-concatenated-stock-lists)
         options {:bucket bucket
                  :client client
+                 :conn conn
                  :stock-lists stock-lists
                  :tranche-size 60
                  :scheduler-options {:min 10.5}}
@@ -284,7 +286,7 @@
 
   (let [client (:esocket (market/connect-to-market))
         conn (edatomic/database-connect nil)]
-    (filter-price-movement client)
+    (filter-price-movement client conn)
     ))
 (defn stub-run []
   (test-run))

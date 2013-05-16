@@ -29,7 +29,7 @@
 ;; ... TODO - get a test-historical list, as formatted by IB
 
 
-;; ... TODO - create Pedestal service tests (see pedestal/app/test/io/pedestal/test/app.clj)
+;; ... TODO - create Pedestal service tests (see https://github.com/pedestal/pedestal/blob/master/service/test/io/pedestal/service/http_test.clj)
 ;;  -- test HTTP method(s)
 ;;  -- test request inputs
 ;;  -- test pedestal response value
