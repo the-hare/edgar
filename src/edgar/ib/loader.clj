@@ -193,6 +193,9 @@
       (market/cancel-market-data client rid)
 
 
+      (def *TEST_DATA* @bucket)
+
+
       ;; push to Tee / Datomic; Data structure looks like:
       (if (every? #(:processed? %) @bucket)
         (tdatomic/tee-historical (:conn options) @bucket))

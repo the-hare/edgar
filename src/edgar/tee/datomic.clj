@@ -51,8 +51,6 @@
                         bucket)
        ]
 
-   (def *TEST_DATA* final-tx)
-
    (log/debug "tee.datomic/tee-historical > final-tx[" final-tx "]")
    (d/transact conn final-tx)
    )
