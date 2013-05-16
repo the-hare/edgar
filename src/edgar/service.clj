@@ -1,6 +1,8 @@
 (ns edgar.service
+  (:use [clojure.tools.namespace.repl])
   (:require [edgar.datomic :as edatomic]
             [edgar.core.edgar :as edgar]
+            [clojure.java.io :as io]
             [io.pedestal.service.http :as bootstrap]
             [io.pedestal.service.http.route :as route]
             [io.pedestal.service.http.body-params :as body-params]
@@ -10,14 +12,17 @@
             [ring.util.response :as ring-resp]))
 
 
-
 ;;
 (defn about-page
   [request]
   (ring-resp/response (format "Clojure %s" (clojure-version))))
+
 (defn home-page
   [request]
-  (ring-resp/response "Hello World!"))
+
+  (->
+   (ring-resp/response (slurp (io/resource "include/index.html")))
+   (ring-resp/content-type "text/html")))
 
 
 
