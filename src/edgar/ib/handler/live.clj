@@ -64,7 +64,10 @@
   [options evt]
 
 
-  (let [tick-list (:tick-list options)]
+  (let [tick-list (:tick-list options)
+        tee-list (if (:tee-list options)
+                   (conj (:tee-list options) tdatomic/tee-market)
+                   '(tdatomic/tee-market))]
 
     (log/debug "edgar.core.edgar/feed-handler [" evt "] > tick-list size[" (count @tick-list) "] > [" @tick-list "] > options[" #_options "]")
 
@@ -98,7 +101,7 @@
       (if (> (count trimmed-list) 40)
 
           (do
-            (tdatomic/tee-market tail-evt)
+            (map #(% tail-evt) tee-list)  ;; iterate over all tee-list, and spit out tail-evt
             (dosync (alter tick-list
                            (fn [inp] (into []
                                           (remove #(= (:uuid tail-evt) (% :uuid)) inp))))))))
