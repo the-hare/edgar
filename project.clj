@@ -55,7 +55,7 @@
                                    :pretty-print true}}]}
   :profiles {:dev {:source-paths ["src", "dev"]
                    :dependencies [[ring-mock "0.1.3"]]}}
-  :resource-paths ["etc/:public/"]
+  :resource-paths [".:etc/:public/"]
   :repositories { "local" ~(str (.toURI (java.io.File. (str (-> (load-file "etc/config.clj") :dev :root-dir) ".m2/repository/"))))
                   }
   :min-lein-version "2.0.0"
