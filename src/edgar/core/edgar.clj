@@ -34,7 +34,7 @@
   (reduce (fn [req-id ech]
 
             (let [tick-list (ref [])
-                  tee-list [(partial tplay/tee-market tick-list)]]
+                  tee-list [(partial tplay/tee-market @tick-list)]]
 
               (market/subscribe-to-market (partial live/feed-handler {:tick-list tick-list :tee-list tee-list :ticker-id-filter [req-id]}))
               (market/request-market-data client req-id ech "233" false)

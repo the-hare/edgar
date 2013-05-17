@@ -71,7 +71,6 @@
 
     (log/debug "edgar.core.edgar/handle-event [" evt "] FILTER[" (:ticker-id-filter options) "] > tick-list size[" (count @tick-list) "] > [" @tick-list "] > options[" #_options "]")
 
-
     ;; handle tickPrice
     #_(if (= "tickPrice" (evt "type")) (handle-tick-price options evt))
 
@@ -93,7 +92,7 @@
 
       (log/debug "")
       (log/debug "")
-      (log/debug "edgar.core.edgar/handle-event VS > trimmed[" (count trimmed-list) "][" "] tick-list[" (count @tick-list) "][" "] > CHECK[" (>= (count trimmed-list) tick-window) "]")
+      (println "edgar.core.edgar/handle-event VS > trimmed[" (count trimmed-list) "][" "] tick-list[" (count @tick-list) "][" "] > CHECK[" (>= (count trimmed-list) tick-window) "]")
 
 
       ;; i. spit the data out to DB and
@@ -102,10 +101,10 @@
 
           (do
 
-            (def *LIVE_TICK_LIST* @tick-list)
-            (println "... tees[" tee-list "] > tail-evt[" tail-evt "]")
-            (map (fn [efn] (efn tail-evt))
-                 tee-list)  ;; iterate over all tee-list, and spit out tail-evt
+            (reduce (fn [rslt efn]
+                      (efn tail-evt))
+                    nil
+                    tee-list)
 
             (dosync (alter tick-list
                            (fn [inp] (into []
@@ -143,7 +142,7 @@
      :ticker-id-filter - a list of tickerIds about which this feed-handler cares"
   [options evt]
 
-  (println "Here 2 > feed-handler > tickerIDs[" (:ticker-id-filter options) "] > tick-list SIZE[" (count @(:tick-list options)) "] > SOME[" (some #{ (evt "tickerId") } (:ticker-id-filter options)) "]")
+  (println "feed-handler > tickerIDs[" (:ticker-id-filter options) "] > tick-list SIZE[" (count (deref (:tick-list options))) "] > SOME[" (some #{ (evt "tickerId") } (:ticker-id-filter options)) "]")
   (if (:ticker-id-filter options)
 
     ;; check if this event passes the filter
