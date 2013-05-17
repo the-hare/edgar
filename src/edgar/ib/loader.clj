@@ -15,15 +15,14 @@
             [edgar.scheduler :as scheduler]
             [edgar.datomic :as edatomic]
             [edgar.tee.datomic :as tdatomic]
-            )
-  )
+            ))
 
 (defn- get-stock-lists []
 
   (let [amexfile (io/reader "etc/amexlist.csv")
         nysefile (io/reader "etc/nyselist.csv")
-        nasdaqfile (io/reader "etc/nasdaqlist.csv")
-        ]
+        nasdaqfile (io/reader "etc/nasdaqlist.csv")]
+
     {:amexlist   (csv/read-csv amexfile)
      :nyselist   (csv/read-csv nysefile)
      :nasdaqlist (csv/read-csv nasdaqfile)
@@ -34,8 +33,7 @@
 
   (with-open [amexfile (io/reader "etc/amexlist.csv")
               nysefile (io/reader "etc/nyselist.csv")
-              nasdaqfile (io/reader "etc/nasdaqlist.csv")
-              ]
+              nasdaqfile (io/reader "etc/nasdaqlist.csv")]
 
     (doall (concat
             (rest (csv/read-csv nysefile))
@@ -65,19 +63,16 @@
     (log/debug "filter-price-movement > bucket[" bucket "] > stock-list-size[" (count stock-lists) "]")
 
     (market/subscribe-to-market (partial historical/snapshot-handler options))
-    (schedule-historical-data options)
-
-    )
-  )
+    (historical/schedule-historical-data options)
+    ))
 
 
 (defn test-run []
-
-  ;; TODO: come up with a better way to setup the system & resources
 
   (let [client (:esocket (market/connect-to-market))
         conn (edatomic/database-connect nil)]
     (filter-price-movement client conn)
     ))
+
 (defn stub-run []
   (test-run))

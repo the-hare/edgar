@@ -90,45 +90,6 @@
     (market/request-historical-data client rslt stock-sym))
   )
 
-(defn schedule-historical-data [options]
-
-  (let [bucket (:bucket options)
-        tranche-size (if (:tranche-size options) (:tranche-size options) 10)
-        remaining-list (ref (:stock-lists options))
-        ]
-
-    (scheduler/initialize-pool)
-    (scheduler/schedule-task
-     (merge {:min 1} (:scheduler-options options))
-     (fn []
-
-       (let [current-tranche (take tranche-size @remaining-list)]
-
-         (log/debug "")
-         (log/debug "schedule-historical-data > RUNNING task > remaining-list count[" (count @remaining-list)"] current-tranche[" current-tranche "]")
-
-         ;; ii.iii) reqMarketData for that next stock; repeat constantly through: NYSE, NASDAQ, AMEX
-         (dosync (alter bucket (fn [inp] [] )))
-
-         ;; A. Iterate through tranche and make a historical data request
-         (reduce (fn [rslt ech]
-
-                   (let [stock-sym (-> ech first string/trim)
-                         stock-name (-> ech second string/trim)]
-
-                     (local-request-historical-data (dissoc
-                                                     (merge {:id rslt :stock-symbol stock-sym :stock-name stock-name} options)
-                                                     :stock-lists)))
-                   (inc rslt))
-                 0
-                 current-tranche
-                 )
-
-         ;; B. ensure that remaining list is decremented
-         (dosync (alter remaining-list nthrest tranche-size)))
-       )
-     ))
-  )
 
 (defn- handle-snapshot-end [options rst]
 
@@ -217,4 +178,52 @@
     ;; otherwise process events
     (handle-snapshot-continue options rst))
 
+  )
+
+(defn schedule-historical-data
+  "Request historical data in configured tranches. Interactive Brokers allows at most, 60 simultaneous requests every 10 minutes
+
+   Options are:
+     :bucket - the container into which result stock events are put
+     :tranche-size - for each 10 minute request, the amount of stocks for which we are requesting historical data
+     :remaining-list - the entire list of stocks for which we are requesting historical data"
+
+  [options]
+
+  (let [bucket (:bucket options)
+        tranche-size (if (:tranche-size options) (:tranche-size options) 10)
+        remaining-list (ref (:stock-lists options))
+        ]
+
+    (scheduler/initialize-pool)
+    (scheduler/schedule-task
+     (merge {:min 1} (:scheduler-options options))
+     (fn []
+
+       (let [current-tranche (take tranche-size @remaining-list)]
+
+         (log/debug "")
+         (log/debug "schedule-historical-data > RUNNING task > remaining-list count[" (count @remaining-list)"] current-tranche[" current-tranche "]")
+
+         ;; ii.iii) reqMarketData for that next stock; repeat constantly through: NYSE, NASDAQ, AMEX
+         (dosync (alter bucket (fn [inp] [] )))
+
+         ;; A. Iterate through tranche and make a historical data request
+         (reduce (fn [rslt ech]
+
+                   (let [stock-sym (-> ech first string/trim)
+                         stock-name (-> ech second string/trim)]
+
+                     (local-request-historical-data (dissoc
+                                                     (merge {:id rslt :stock-symbol stock-sym :stock-name stock-name} options)
+                                                     :stock-lists)))
+                   (inc rslt))
+                 0
+                 current-tranche
+                 )
+
+         ;; B. ensure that remaining list is decremented
+         (dosync (alter remaining-list nthrest tranche-size)))
+       )
+     ))
   )

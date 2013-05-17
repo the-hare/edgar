@@ -19,8 +19,8 @@
 (defn test-run []
 
   (let [client (:esocket (market/connect-to-market))
-        conn (edatomic/database-connect)
-        hdata (live/load-historical-data conn)
+        conn (edatomic/database-connect nil)
+        hdata (live/load-filtered-results nil conn)
 
         tick-list (ref [])]
 

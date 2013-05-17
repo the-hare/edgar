@@ -12,7 +12,7 @@
             [edgar.core.analysis.lagging :as lagging])
   )
 
-(defn load-historical-data
+(defn load-filtered-results
   "Find entity.symbol (and entire entity) where price-difference is greatest"
   [limit conn]
 
@@ -116,11 +116,11 @@
     ;; i. 20 tick structure & ii. strategy should allow me to extrude this to a clojurescript front-end
 
     (def sma
-      (lagging/simple-moving-average 5 @tick-list))
+      (lagging/simple-moving-average nil 5 @tick-list))
     #_(log/debug "**** PRINTING our SMA [" sma "]")
 
     (def ema
-      (lagging/exponential-moving-average 5 @tick-list))
+      (lagging/exponential-moving-average nil 5 @tick-list))
     #_(log/debug "*** PRINTING our EMA [" ema "]")
 
     (def bollinger
