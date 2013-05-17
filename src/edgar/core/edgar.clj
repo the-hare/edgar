@@ -18,12 +18,9 @@
 
 
 
-
 (defn play-historical
   ""
-  [stock-selection]
-
-  )
+  [stock-selection])
 
 (defn play-live
   "1) takes a selection of stock symbols
@@ -49,10 +46,7 @@
   )
 
 (defn initialize-workbench []
-
-  {:interactive-brokers-client (market/connect-to-market)}
-
-  )
+  {:interactive-brokers-client (:esocket (market/connect-to-market))})
 
 (defn test-run []
 
@@ -60,13 +54,25 @@
         conn (edatomic/database-connect nil)
         hdata (live/load-filtered-results nil conn)
 
-        tick-list (ref [])]
+        tick-list (ref [])
+        tid-filter [0]]
 
-    (market/subscribe-to-market (partial live/feed-handler {:tick-list tick-list :ticker-id-filter [0]}))
+    (market/subscribe-to-market (partial live/feed-handler {:tick-list tick-list :ticker-id-filter tid-filter}))
     ;;(market/request-market-data client 0 (-> hdata last second) "233" false)
 
     (market/request-market-data client 0 "IBM" "233" false)
     ))
 
+(defn test-play []
+
+  (let [workbench (initialize-workbench)
+        client (:interactive-brokers-client workbench)]
+
+    (println "Here 1")
+    (play-live client ["IBM" "AAPL"])
+    ))
+
 (defn fubar []
-  (test-run))
+
+  (test-run)
+  (test-play))

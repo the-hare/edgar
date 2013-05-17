@@ -64,14 +64,16 @@
   (let [tick-list (:tick-list options)
         tee-list (if (:tee-list options)
                    (conj (:tee-list options) tdatomic/tee-market)
-                   '(tdatomic/tee-market))]
+                   [tdatomic/tee-market])
+        tick-window (if (:tick-window options)
+                      (:tick-window options)
+                      40)]
 
-    (log/debug "edgar.core.edgar/feed-handler [" evt "] > tick-list size[" (count @tick-list) "] > [" @tick-list "] > options[" #_options "]")
+    (log/debug "edgar.core.edgar/handle-event [" evt "] FILTER[" (:ticker-id-filter options) "] > tick-list size[" (count @tick-list) "] > [" @tick-list "] > options[" #_options "]")
+
 
     ;; handle tickPrice
-    #_(if (= "tickPrice" (evt "type"))
-      (handle-tick-price options evt)
-      )
+    #_(if (= "tickPrice" (evt "type")) (handle-tick-price options evt))
 
 
     ;; handle tickString
@@ -80,7 +82,7 @@
       (handle-tick-string options evt))
 
 
-    ;; At the end of our 40 tick window
+    ;; At the end of our tick window
     ;;  - only for RTVolume last ticks
     ;;  - wrt a given tickerId
     (let [trimmed-list (->> @tick-list
@@ -91,14 +93,20 @@
 
       (log/debug "")
       (log/debug "")
-      #_(log/debug "edgar.core.edgar/feed-handler VS > trimmed[" (count trimmed-list) "][" trimmed-list "] tick-list[" (count @tick-list) "][" @tick-list "]")
+      (log/debug "edgar.core.edgar/handle-event VS > trimmed[" (count trimmed-list) "][" "] tick-list[" (count @tick-list) "][" "] > CHECK[" (>= (count trimmed-list) tick-window) "]")
+
 
       ;; i. spit the data out to DB and
-      ;; ii. and trim the list list back to 40
-      (if (> (count trimmed-list) 40)
+      ;; ii. and trim the list list back to the tick-window size
+      (if (>= (count trimmed-list) tick-window)
 
           (do
-            (map #(% tail-evt) tee-list)  ;; iterate over all tee-list, and spit out tail-evt
+
+            (def *LIVE_TICK_LIST* @tick-list)
+            (println "... tees[" tee-list "] > tail-evt[" tail-evt "]")
+            (map (fn [efn] (efn tail-evt))
+                 tee-list)  ;; iterate over all tee-list, and spit out tail-evt
+
             (dosync (alter tick-list
                            (fn [inp] (into []
                                           (remove #(= (:uuid tail-evt) (% :uuid)) inp))))))))
@@ -116,16 +124,14 @@
     ;; i. 20 tick structure & ii. strategy should allow me to extrude this to a clojurescript front-end
 
     (def sma
-      (lagging/simple-moving-average nil 5 @tick-list))
-    #_(log/debug "**** PRINTING our SMA [" sma "]")
+      (lagging/simple-moving-average nil 5 @tick-list)) #_(log/debug "**** PRINTING our SMA [" sma "]")
 
     (def ema
-      (lagging/exponential-moving-average nil 5 @tick-list))
-    #_(log/debug "*** PRINTING our EMA [" ema "]")
+      (lagging/exponential-moving-average nil 5 @tick-list)) #_(log/debug "*** PRINTING our EMA [" ema "]")
 
     (def bollinger
-      (lagging/bollinger-band 5 @tick-list))
-    #_(log/debug "*** PRINTING our Bollinger Band [" bollinger "]")
+      (lagging/bollinger-band 5 @tick-list)) #_(log/debug "*** PRINTING our Bollinger Band [" bollinger "]")
+
     ))
 
 (defn feed-handler
@@ -137,14 +143,14 @@
      :ticker-id-filter - a list of tickerIds about which this feed-handler cares"
   [options evt]
 
+  (println "Here 2 > feed-handler > tickerIDs[" (:ticker-id-filter options) "] > tick-list SIZE[" (count @(:tick-list options)) "] > SOME[" (some #{ (evt "tickerId") } (:ticker-id-filter options)) "]")
   (if (:ticker-id-filter options)
 
     ;; check if this event passes the filter
-    (if (some #{ #(evt "tickerId") }
+    (if (some #{ (evt "tickerId") }
               (:ticker-id-filter options))
 
-      (handle-event options evt)
-      nil
-      )
-    (handle-event options evt))
+      (handle-event (assoc options :tick-window 40) evt)
+      nil)
+    (handle-event (assoc options :tick-window 40) evt))
   )
