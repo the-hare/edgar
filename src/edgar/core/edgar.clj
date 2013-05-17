@@ -29,19 +29,29 @@
   "1) takes a selection of stock symbols
    2) gets a live market feed
    3) plays back the results in real-time"
-  [stock-selection]
+  [client stock-selection]
 
-  (map (fn [ech]
+  {:pre [(not (nil? client))
+         (not (nil? stock-selection))]}
 
-         (let [tick-list (ref [])
-               tee-list [(partial tplay/tee-market tick-list)]]
+  (reduce (fn [req-id ech]
 
-           (market/subscribe-to-market (partial live/feed-handler {:tick-list tick-list :tee-list tee-list}))
-           ;;(market/request-market-data *client* *req-id* *stock-sym* "233" false)
-           )
-         )
+            (let [tick-list (ref [])
+                  tee-list [(partial tplay/tee-market tick-list)]]
 
-       stock-selection)
+              (market/subscribe-to-market (partial live/feed-handler {:tick-list tick-list :tee-list tee-list :ticker-id-filter [req-id]}))
+              (market/request-market-data client req-id ech "233" false)
+
+              (inc req-id)  ;; increment the request ID for the next stock symbol
+              ))
+          0
+          stock-selection)
+  )
+
+(defn initialize-workbench []
+
+  {:interactive-brokers-client (market/connect-to-market)}
+
   )
 
 (defn test-run []
@@ -52,7 +62,7 @@
 
         tick-list (ref [])]
 
-    (market/subscribe-to-market (partial live/feed-handler {:tick-list tick-list}))
+    (market/subscribe-to-market (partial live/feed-handler {:tick-list tick-list :ticker-id-filter [0]}))
     ;;(market/request-market-data client 0 (-> hdata last second) "233" false)
 
     (market/request-market-data client 0 "IBM" "233" false)

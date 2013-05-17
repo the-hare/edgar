@@ -59,10 +59,7 @@
                                                          :uuid (str (uuid/make-random))}) ))))
      ))
 
-(defn feed-handler
-  "Event structures will look like 'tickPrice' or 'tickString'"
-  [options evt]
-
+(defn handle-event [options evt]
 
   (let [tick-list (:tick-list options)
         tee-list (if (:tee-list options)
@@ -130,3 +127,24 @@
       (lagging/bollinger-band 5 @tick-list))
     #_(log/debug "*** PRINTING our Bollinger Band [" bollinger "]")
     ))
+
+(defn feed-handler
+  "Event structures will look like 'tickPrice' or 'tickString'
+
+   Options are:
+     :tick-list - the list into which result tick events will be put
+     :tee-list - list of pipes to which result events will be pushed
+     :ticker-id-filter - a list of tickerIds about which this feed-handler cares"
+  [options evt]
+
+  (if (:ticker-id-filter options)
+
+    ;; check if this event passes the filter
+    (if (some #{ #(evt "tickerId") }
+              (:ticker-id-filter options))
+
+      (handle-event options evt)
+      nil
+      )
+    (handle-event options evt))
+  )
