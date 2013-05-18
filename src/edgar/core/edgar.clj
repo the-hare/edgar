@@ -84,7 +84,6 @@
 
     (market/subscribe-to-market (partial live/feed-handler {:tick-list tick-list :ticker-id-filter tid-filter}))
     ;;(market/request-market-data client 0 (-> hdata last second) "233" false)
-
     (market/request-market-data client 0 "IBM" "233" false)))
 
 (defn test-play-live []
@@ -97,7 +96,7 @@
         client (:interactive-brokers-client workbench)
         stock-list [["DDD" "3D Systems Corporation" "35.12" "2155763549.68" "n/a" "n/a" "Technology" "Computer Software: Prepackaged Software" "http://www.nasdaq.com/symbol/ddd" ""]
                     ["MMM" "3M Company" "102.31" "70592902989.05" "n/a" "n/a" "Health Care" "Medical/Dental Instruments" "http://www.nasdaq.com/symbol/mmm" ""]]]
-    (play-historical client stock-list "2 D" "1 sec")))
+    (play-historical client stock-list "2 D" "1 hour")))
 
 (defn fubar []
   (test-run)
