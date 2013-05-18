@@ -29,7 +29,7 @@
      }
     ))
 
-(defn- get-concatenated-stock-lists []
+(defn get-concatenated-stock-lists []
 
   (with-open [amexfile (io/reader "etc/amexlist.csv")
               nysefile (io/reader "etc/nyselist.csv")

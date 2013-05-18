@@ -10,12 +10,11 @@
             [cljs-uuid.core :as uuid]
             [edgar.datomic :as edatomic]
             [edgar.ib.market :as market]
+            [edgar.ib.handler.historical :as historical]
             [edgar.tee.datomic :as tdatomic]
             [edgar.tee.play :as tplay]
             [edgar.ib.handler.live :as live]
-            [edgar.core.analysis.lagging :as lagging])
-  )
-
+            [edgar.core.analysis.lagging :as lagging]))
 
 
 (defn play-historical
@@ -27,24 +26,16 @@
   {:pre [(not (nil? client))
          (not (nil? stock-selection))]}
 
-  (reduce (fn [req-id ech]
+  (let [bucket (ref [])
+        options {:bucket bucket
+                 :client client
+                 :tee-list [tplay/tee-historical]
+                 :stock-lists stock-selection
+                 :tranche-size 60
+                 :scheduler-options {:min 10.5}}]
 
-            (let [bucket (ref [])
-                  stock-lists (get-concatenated-stock-lists)
-                  options {:bucket bucket
-                           :client client
-                           ;;:conn conn
-                           :tee-list [tplay/tee-historical]
-                           :stock-lists stock-lists
-                           :tranche-size 60
-                           :scheduler-options {:min 10.5}}
-                  ]
-
-              (market/subscribe-to-market (partial historical/snapshot-handler options))
-              (historical/schedule-historical-data options))
-            )
-          0
-          stock-selection)
+    (market/subscribe-to-market (partial historical/snapshot-handler options))
+    (historical/schedule-historical-data options))
   )
 
 (defn play-live
@@ -94,11 +85,12 @@
 
 (defn test-play-historical []
   (let [workbench (initialize-workbench)
-        client (:interactive-brokers-client workbench)]
-    (play-historical client ["IBM" "AAPL"])))
+        client (:interactive-brokers-client workbench)
+        stock-list [["DDD" "3D Systems Corporation" "35.12" "2155763549.68" "n/a" "n/a" "Technology" "Computer Software: Prepackaged Software" "http://www.nasdaq.com/symbol/ddd" ""]
+                    ["MMM" "3M Company" "102.31" "70592902989.05" "n/a" "n/a" "Health Care" "Medical/Dental Instruments" "http://www.nasdaq.com/symbol/mmm" ""]]]
+    (play-historical client stock-list)))
 
 (defn fubar []
-
   (test-run)
   (test-play-live)
   (test-play-historical))

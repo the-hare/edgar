@@ -84,7 +84,7 @@
         stock-name (:stock-name options)
         client (:client options)]
 
-    ;;(log/debug "local-request-historical-data > options[" options "]")
+    (println "local-request-historical-data > options[" options "]")
 
     (dosync (alter bucket conj { :id rslt :symbol stock-sym :company stock-name :price-difference 0.0 :event-list [] :processed? false } ))
     (market/request-historical-data client rslt stock-sym))
@@ -115,8 +115,7 @@
                                     (for [x inp
                                           :when #(= rid (:id %))]
                                       (merge x {:processed? true}))
-                                    )
-                              )))
+                                    )) ))
 
       (market/cancel-market-data client rid)
 
@@ -167,7 +166,7 @@
 
   (log/debug "")
   (log/debug "")
-  (log/debug "snapshot-handler > event index [" nil #_event-index "] result [" rst "] > bucket [" nil #_@bucket "]")
+  (println "snapshot-handler > event index [" nil #_event-index "] result [" rst "] > bucket [" nil #_@bucket "]")
 
   (if (and (= "historicalData" (rst "type"))
            (re-find #"finished-" (rst "date")))
@@ -178,9 +177,8 @@
 
     ;; ***
     ;; otherwise process events
-    (handle-snapshot-continue options rst))
+    (handle-snapshot-continue options rst)))
 
-  )
 
 (defn schedule-historical-data
   "Request historical data in configured tranches. Interactive Brokers allows at most, 60 simultaneous requests every 10 minutes
@@ -205,7 +203,7 @@
        (let [current-tranche (take tranche-size @remaining-list)]
 
          (log/debug "")
-         (log/debug "schedule-historical-data > RUNNING task > remaining-list count[" (count @remaining-list)"] current-tranche[" current-tranche "]")
+         (println "schedule-historical-data > RUNNING task > remaining-list count[" (count @remaining-list)"] current-tranche[" current-tranche "]")
 
          ;; ii.iii) reqMarketData for that next stock; repeat constantly through: NYSE, NASDAQ, AMEX
          (dosync (alter bucket (fn [inp] [] )))
@@ -221,8 +219,7 @@
                                                      :stock-lists)))
                    (inc rslt))
                  0
-                 current-tranche
-                 )
+                 current-tranche)
 
          ;; B. ensure that remaining list is decremented
          (dosync (alter remaining-list nthrest tranche-size)))

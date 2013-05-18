@@ -5,9 +5,9 @@
 
 (defn tee-historical
   ""
-  [tick-list tick]
+  [tick-list]
 
-  (println "tee.play/tee-historical > tick[" tick "] / tick-list[" (count tick-list) "][" tick-list "]")
+  (println "tee.play/tee-historical > tick-list[" (count tick-list) "][" tick-list "]")
 
   )
 
@@ -21,6 +21,7 @@
 
 
  ;; do historical play
+ ;; ... fix log/debug
 
  ;; create signals for each filter
 

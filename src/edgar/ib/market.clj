@@ -6,8 +6,8 @@
             [overtone.at-at :as at]
             [clj-time.core :as cime]
             [clj-time.local :as time]
-            [clj-time.format :as format])
-  )
+            [clj-time.format :as format]))
+
 
 (defn connect-to-market
   "Connect to the IB marketplace. This should return a 'client' object"
@@ -23,8 +23,8 @@
     (set! (.m_exchange contract) "SMART")
     (set! (.m_currency contract) "USD")
 
-    contract)
-  )
+    contract))
+
 
 ;; ====
 ;; HISTORICAL Data
@@ -46,10 +46,10 @@
        (.reqHistoricalData client idx contract tstring duration-str bar-size what-to-show 0 1)
        )
      ))
+
 (defn cancel-historical-data
   "Cancel the request ID, used in 'request-historical-data'"
   [client idx]
-
   (.cancelHistoricalData client idx))
 
 
@@ -76,19 +76,19 @@
 
 (defonce event-channel (ref (lamina/channel)))
 (defn subscribe-to-market [handle-fn]
-  (lamina/receive-all @event-channel handle-fn)
-  )
+  (lamina/receive-all @event-channel handle-fn))
 
 (defn publish-event
   [^clojure.lang.PersistentHashMap event]
 
-  (lamina/enqueue @event-channel event)
-)
+  (lamina/enqueue @event-channel event))
+
 (defn publish-event-from-java
   [^java.util.HashMap event]
 
-  (publish-event (merge {} event))  ;; transform java.util.HashMap to a Clojure map
-)
+  ;; transform java.util.HashMap to a Clojure map
+  (publish-event (merge {} event)))
+
 
 ;; ==========
 (defn test-publisher []
