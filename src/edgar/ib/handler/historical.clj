@@ -76,18 +76,23 @@
     (market/request-market-data client rslt stock-sym true))
   )
 
-(defn- local-request-historical-data [options]
+(defn- local-request-historical-data
 
-  (let [bucket (:bucket options)
-        rslt (:id options)
-        stock-sym (:stock-symbol options)
-        stock-name (:stock-name options)
-        client (:client options)]
+  ([options]
+     (local-request-historical-data options "1 D" "1 day"))
 
-    (println "local-request-historical-data > options[" options "]")
+  ([options duration-str bar-size]
 
-    (dosync (alter bucket conj { :id rslt :symbol stock-sym :company stock-name :price-difference 0.0 :event-list [] :processed? false } ))
-    (market/request-historical-data client rslt stock-sym))
+     (let [bucket (:bucket options)
+           rslt (:id options)
+           stock-sym (:stock-symbol options)
+           stock-name (:stock-name options)
+           client (:client options)]
+
+       (println "local-request-historical-data > options[" options "]")
+
+       (dosync (alter bucket conj { :id rslt :symbol stock-sym :company stock-name :price-difference 0.0 :event-list [] :processed? false } ))
+       (market/request-historical-data client rslt stock-sym duration-str bar-size "TRADES")))
   )
 
 
@@ -193,7 +198,8 @@
   (let [bucket (:bucket options)
         tranche-size (if (:tranche-size options) (:tranche-size options) 10)
         remaining-list (ref (:stock-lists options))
-        ]
+        time-duration (if (:time-duration options) (:time-duration options) "1 D")
+        time-interval (if (:time-interval options) (:time-interval options) "1 day")]
 
     (scheduler/initialize-pool)
     (scheduler/schedule-task
@@ -216,13 +222,14 @@
 
                      (local-request-historical-data (dissoc
                                                      (merge {:id rslt :stock-symbol stock-sym :stock-name stock-name} options)
-                                                     :stock-lists)))
+                                                     :stock-lists)
+                                                    time-duration
+                                                    time-interval))
                    (inc rslt))
                  0
                  current-tranche)
 
          ;; B. ensure that remaining list is decremented
-         (dosync (alter remaining-list nthrest tranche-size)))
-       )
+         (dosync (alter remaining-list nthrest tranche-size))))
      ))
   )

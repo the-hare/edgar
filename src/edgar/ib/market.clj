@@ -14,6 +14,10 @@
   []
   (socket/connect-to-tws))
 
+(defn disconnect-from-market
+  "Disconnect from the IB marketplace."
+  []
+  (socket/disconnect-from-tws))
 
 (defn- create-contract [instrm]
 

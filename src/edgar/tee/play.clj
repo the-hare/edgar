@@ -20,7 +20,7 @@
  (println "tee.play/tee-market > tick[" tick "] / tick-list[" (count tick-list) "][" tick-list "]")
 
 
- ;; do historical play
+ ;; historical play at sub-second intervals
  ;; ... fix log/debug
 
  ;; create signals for each filter

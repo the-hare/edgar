@@ -21,22 +21,26 @@
   "1) takes a selection of stock symbols
    2) gets historical market data
    3) plays back over the results"
-  [client stock-selection]
 
-  {:pre [(not (nil? client))
-         (not (nil? stock-selection))]}
+  ([client stock-selection]
+     (play-historical client stock-selection "1 D" "1 day"))
+  ([client stock-selection time-duration time-interval]
 
-  (let [bucket (ref [])
-        options {:bucket bucket
-                 :client client
-                 :tee-list [tplay/tee-historical]
-                 :stock-lists stock-selection
-                 :tranche-size 60
-                 :scheduler-options {:min 10.5}}]
+     {:pre [(not (nil? client))
+            (not (nil? stock-selection))]}
 
-    (market/subscribe-to-market (partial historical/snapshot-handler options))
-    (historical/schedule-historical-data options))
-  )
+     (let [bucket (ref [])
+           options {:bucket bucket
+                    :client client
+                    :tee-list [tplay/tee-historical]
+                    :stock-lists stock-selection
+                    :tranche-size 60
+                    :scheduler-options {:min 10.5}
+                    :time-duration time-duration
+                    :time-interval time-interval}]
+
+       (market/subscribe-to-market (partial historical/snapshot-handler options))
+       (historical/schedule-historical-data options))))
 
 (defn play-live
   "1) takes a selection of stock symbols
@@ -88,7 +92,7 @@
         client (:interactive-brokers-client workbench)
         stock-list [["DDD" "3D Systems Corporation" "35.12" "2155763549.68" "n/a" "n/a" "Technology" "Computer Software: Prepackaged Software" "http://www.nasdaq.com/symbol/ddd" ""]
                     ["MMM" "3M Company" "102.31" "70592902989.05" "n/a" "n/a" "Health Care" "Medical/Dental Instruments" "http://www.nasdaq.com/symbol/mmm" ""]]]
-    (play-historical client stock-list)))
+    (play-historical client stock-list "2 D" "1 secs")))
 
 (defn fubar []
   (test-run)
