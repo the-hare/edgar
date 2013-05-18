@@ -5,9 +5,11 @@
 
 (defn tee-historical
   ""
-  [tick]
+  [tick-list tick]
 
-  (log/debug "tee.datomic/tee-market > tick[" tick "]"))
+  (println "tee.play/tee-historical > tick[" tick "] / tick-list[" (count tick-list) "][" tick-list "]")
+
+  )
 
 
 (defn tee-market
@@ -17,8 +19,6 @@
 
  (println "tee.play/tee-market > tick[" tick "] / tick-list[" (count tick-list) "][" tick-list "]")
 
-
- ;; make sure we are recieving time data
 
  ;; do historical play
 

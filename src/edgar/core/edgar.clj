@@ -19,8 +19,33 @@
 
 
 (defn play-historical
-  ""
-  [stock-selection])
+  "1) takes a selection of stock symbols
+   2) gets historical market data
+   3) plays back over the results"
+  [client stock-selection]
+
+  {:pre [(not (nil? client))
+         (not (nil? stock-selection))]}
+
+  (reduce (fn [req-id ech]
+
+            (let [bucket (ref [])
+                  stock-lists (get-concatenated-stock-lists)
+                  options {:bucket bucket
+                           :client client
+                           ;;:conn conn
+                           :tee-list [tplay/tee-historical]
+                           :stock-lists stock-lists
+                           :tranche-size 60
+                           :scheduler-options {:min 10.5}}
+                  ]
+
+              (market/subscribe-to-market (partial historical/snapshot-handler options))
+              (historical/schedule-historical-data options))
+            )
+          0
+          stock-selection)
+  )
 
 (defn play-live
   "1) takes a selection of stock symbols
@@ -34,16 +59,16 @@
   (reduce (fn [req-id ech]
 
             (let [tick-list (ref [])
-                  tee-list [(partial tplay/tee-market @tick-list)]]
+                  tee-list [(partial tplay/tee-market @tick-list)]
+                  options {:tick-list tick-list :tee-list tee-list :ticker-id-filter [req-id]}]
 
-              (market/subscribe-to-market (partial live/feed-handler {:tick-list tick-list :tee-list tee-list :ticker-id-filter [req-id]}))
+              (market/subscribe-to-market (partial live/feed-handler options))
               (market/request-market-data client req-id ech "233" false)
 
               (inc req-id)  ;; increment the request ID for the next stock symbol
               ))
           0
-          stock-selection)
-  )
+          stock-selection))
 
 (defn initialize-workbench []
   {:interactive-brokers-client (:esocket (market/connect-to-market))})
@@ -60,19 +85,20 @@
     (market/subscribe-to-market (partial live/feed-handler {:tick-list tick-list :ticker-id-filter tid-filter}))
     ;;(market/request-market-data client 0 (-> hdata last second) "233" false)
 
-    (market/request-market-data client 0 "IBM" "233" false)
-    ))
+    (market/request-market-data client 0 "IBM" "233" false)))
 
-(defn test-play []
-
+(defn test-play-live []
   (let [workbench (initialize-workbench)
         client (:interactive-brokers-client workbench)]
+    (play-live client ["IBM" "AAPL"])))
 
-    (println "Here 1")
-    (play-live client ["IBM" "AAPL"])
-    ))
+(defn test-play-historical []
+  (let [workbench (initialize-workbench)
+        client (:interactive-brokers-client workbench)]
+    (play-historical client ["IBM" "AAPL"])))
 
 (defn fubar []
 
   (test-run)
-  (test-play))
+  (test-play-live)
+  (test-play-historical))

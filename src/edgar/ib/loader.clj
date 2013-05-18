@@ -53,7 +53,7 @@
         stock-lists (get-concatenated-stock-lists)
         options {:bucket bucket
                  :client client
-                 :conn conn
+                 :tee-list [(partial tdatomic/tee-historical conn)]
                  :stock-lists stock-lists
                  :tranche-size 60
                  :scheduler-options {:min 10.5}}

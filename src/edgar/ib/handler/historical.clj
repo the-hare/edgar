@@ -97,6 +97,7 @@
         client (:client options)
         bsize (:bucket-size options)
         stock-lists (:stock-lists options)
+        tee-list (:tee-list options)
         ]
 
 
@@ -106,8 +107,7 @@
 
 
     ;; remove previous stock & mktRequest for next stock
-    (let [rid (rst "tickerId")
-          ]
+    (let [rid (rst "tickerId")]
 
       ;; a marker to know when this element has been processed
       (dosync (alter bucket (fn [inp]
@@ -121,11 +121,13 @@
       (market/cancel-market-data client rid)
 
 
-      ;; push to Tee / Datomic; Data structure looks like:
+      ;; push to Tee(s) (Datomic, Play, etc)
       (if (every? #(:processed? %) @bucket)
-        (tdatomic/tee-historical (:conn options) @bucket))
 
-      ))
+        (reduce (fn [rslt ech]
+                  (ech @bucket))
+                nil
+                tee-list))))
     )
 
 (defn- handle-snapshot-continue [options rst]
