@@ -89,7 +89,7 @@
            stock-name (:stock-name options)
            client (:client options)]
 
-       (println "local-request-historical-data > options[" options "]")
+       (log/debug "local-request-historical-data > options[" options "]")
 
        (dosync (alter bucket conj { :id rslt :symbol stock-sym :company stock-name :price-difference 0.0 :event-list [] :processed? false } ))
        (market/request-historical-data client rslt stock-sym duration-str bar-size "TRADES")))
@@ -169,9 +169,9 @@
 (defn snapshot-handler [options rst]
 
 
-  (log/debug "")
-  (log/debug "")
-  (println "snapshot-handler > event index [" nil #_event-index "] result [" rst "] > bucket [" nil #_@bucket "]")
+  (log/info "")
+  (log/info "")
+  (log/info "snapshot-handler > event index [" nil #_event-index "] result [" rst "] > bucket [" nil #_@bucket "]")
 
   (if (and (= "historicalData" (rst "type"))
            (re-find #"finished-" (rst "date")))
@@ -208,8 +208,8 @@
 
        (let [current-tranche (take tranche-size @remaining-list)]
 
-         (log/debug "")
-         (println "schedule-historical-data > RUNNING task > remaining-list count[" (count @remaining-list)"] current-tranche[" current-tranche "]")
+         (log/info "")
+         (log/info "schedule-historical-data > RUNNING task > remaining-list count[" (count @remaining-list)"] current-tranche[" current-tranche "]")
 
          ;; ii.iii) reqMarketData for that next stock; repeat constantly through: NYSE, NASDAQ, AMEX
          (dosync (alter bucket (fn [inp] [] )))

@@ -92,7 +92,7 @@
 
       (log/debug "")
       (log/debug "")
-      (println "edgar.core.edgar/handle-event VS > trimmed[" (count trimmed-list) "][" "] tick-list[" (count @tick-list) "][" "] > CHECK[" (>= (count trimmed-list) tick-window) "]")
+      (log/debug "edgar.core.edgar/handle-event VS > trimmed[" (count trimmed-list) "][" "] tick-list[" (count @tick-list) "][" "] > CHECK[" (>= (count trimmed-list) tick-window) "]")
 
 
       ;; i. spit the data out to DB and
@@ -142,7 +142,7 @@
      :ticker-id-filter - a list of tickerIds about which this feed-handler cares"
   [options evt]
 
-  (println "feed-handler > tickerIDs[" (:ticker-id-filter options) "] > tick-list SIZE[" (count (deref (:tick-list options))) "] > SOME[" (some #{ (evt "tickerId") } (:ticker-id-filter options)) "]")
+  (log/info "feed-handler > tickerIDs[" (:ticker-id-filter options) "] > tick-list SIZE[" (count (deref (:tick-list options))) "] > SOME[" (some #{ (evt "tickerId") } (:ticker-id-filter options)) "]")
   (if (:ticker-id-filter options)
 
     ;; check if this event passes the filter

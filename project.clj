@@ -7,7 +7,6 @@
                  ;; Pedestal libraries
                  [org.clojure/clojure "1.5.0"]
                  [io.pedestal/pedestal.service "0.1.6"]
-
                  [io.pedestal/pedestal.jetty "0.1.6"]
 
                  ;; Logging
