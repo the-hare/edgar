@@ -59,7 +59,7 @@
                         :source-path "public/templ/cljs"
                         :compiler {
                                    :output-to "public/javascript/main.js"
-                                   :output-dir "public/javascript/"
+                                   :output-dir "public/include/javascript/"
                                    :optimizations :simple ;; :whitespace ;; :advanced ;; :simple
                                    :pretty-print true}}]}
 

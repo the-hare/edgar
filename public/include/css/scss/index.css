@@ -1,0 +1,20 @@
+/* line 2, ../../templ/scss/index.scss */
+.ui-tabs {
+  height: 700;
+  border: none;
+}
+/* line 6, ../../templ/scss/index.scss */
+.ui-tabs .ui-tabs-nav {
+  width: 32;
+  height: 100%;
+  float: left;
+  background: none;
+  border: none;
+}
+/* line 13, ../../templ/scss/index.scss */
+.ui-tabs .tab-content {
+  height: 90%;
+  overflow-y: scroll;
+  white-space: pre-wrap;
+  border: 1px #aaa solid;
+}

@@ -4,7 +4,7 @@
 
 # Set this to the root of your project when deployed:
 http_path = "/"
-css_dir = "css"
+css_dir = "include/css"
 #sass_dir = "templ/scss"
 sass_dir = "templ"
 images_dir = "images"
