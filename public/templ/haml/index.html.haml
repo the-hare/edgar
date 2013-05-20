@@ -33,6 +33,13 @@
                       %a( href="#historical-data" )
                         Historical Data
 
+                  %select.multiselect( multiple="multiple" )
+                    %option 1
+                    %option 2
+                    %option 3
+                    %option 4
+                    %option 5
+
             #live-stream
               #main-stock-graph
 
@@ -73,12 +80,15 @@
   %link( rel="stylesheet" href="/include/vendor/lionbars/lionbars.css")
   %link( rel="stylesheet" href="/include/vendor/bootstrap/css/bootstrap.min.css" )
   %link( rel="stylesheet" href="/include/vendor/bootstrap/css/bootstrap-responsive.min.css" )
+  %link( rel="stylesheet" href="/include/vendor/bootstrap-multiselect/css/bootstrap-multiselect.css" )
 
   %link( rel="stylesheet" href="/include/css/scss/index.css" )
 
   %script( type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js" )
   /%script( type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js" )
   %script( type="text/javascript" src="/include/vendor/bootstrap/js/bootstrap.min.js")
+  %script( type="text/javascript" src="/include/vendor/bootstrap-multiselect/js/bootstrap-multiselect.js")
+
   %script( type="text/javascript" src="/include/vendor/lionbars/jquery.lionbars.0.3.min.js")
   %script( type="text/javascript" src="/include/vendor/Highstock-1.3.1/js/highstock.js")
 

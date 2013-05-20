@@ -14283,6 +14283,7 @@ edgar.tick_list = cljs.core.clj__GT_js.call(null, cljs.core.PersistentVector.fro
 203.94], !0), cljs.core.PersistentVector.fromArray([1368215638328, 203.93], !0)], !0));
 jayq.core.$.call(null, "#main-stock-graph").highcharts("StockChart", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'rangeSelector", "\ufdd0'title", "\ufdd0'series"], {"\ufdd0'rangeSelector":cljs.core.ObjMap.fromObject(["\ufdd0'selected"], {"\ufdd0'selected":1}), "\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"Test Stock Data"}), "\ufdd0'series":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'name", "\ufdd0'data", "\ufdd0'marker", 
 "\ufdd0'shadow", "\ufdd0'tooltip"], {"\ufdd0'name":"Test Stock Data", "\ufdd0'data":edgar.tick_list, "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled", "\ufdd0'radius"], {"\ufdd0'enabled":!0, "\ufdd0'radius":3}), "\ufdd0'shadow":!0, "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], {"\ufdd0'valueDecimals":2})})], !0)})));
+jayq.core.$.call(null, ".multiselect").multiselect(cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'enableFiltering"], {"\ufdd0'enableFiltering":!0})));
 edgar.core = {};
 edgar.core.analysis = {};
 edgar.core.analysis.lagging = {};

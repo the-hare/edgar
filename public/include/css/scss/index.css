@@ -10,6 +10,11 @@
   white-space: pre-wrap;
   border: 1px #aaa solid;
 }
+/* line 16, ../../../templ/scss/index.scss */
+#tabs .tab-content .tab-pane .navbar .navbar-inner .container {
+  /* capture multi-select control, right-justify
+   */
+}
 /* line 17, ../../../templ/scss/index.scss */
 #tabs .tab-content .tab-pane .navbar .navbar-inner .container .nav {
   white-space: initial;
@@ -22,7 +27,22 @@
 #tabs .tab-content .tab-pane .navbar .navbar-inner .container .nav a {
   white-space: initial;
 }
-/* line 30, ../../../templ/scss/index.scss */
-#tabs .tab-content .tab-pane #live-stream, #tabs .tab-content .tab-pane #historical-data {
+/* line 29, ../../../templ/scss/index.scss */
+#tabs .tab-content .tab-pane .navbar .navbar-inner .container .btn-group {
+  float: right;
+  margin-right: 100;
+}
+/* line 33, ../../../templ/scss/index.scss */
+#tabs .tab-content .tab-pane .navbar .navbar-inner .container .btn-group .multiselect-container > .input-prepend > .multiselect-search {
+  /* fixing a bad height in default text entry
+   */
+  height: 30;
+}
+/* line 39, ../../../templ/scss/index.scss */
+#tabs .tab-content .tab-pane .navbar .navbar-inner .container .btn-group ul > li > a > label {
+  text-decoration: none;
+}
+/* line 49, ../../../templ/scss/index.scss */
+#tabs .tab-content #live-stream, #tabs .tab-content #historical-data {
   height: 700;
 }

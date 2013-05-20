@@ -17,3 +17,6 @@
                                           :shadow true,
                                           :tooltip {:valueDecimals 2}}]})
                  ))
+
+(-> ($ ".multiselect")
+    (.multiselect (clj->js {:enableFiltering true})))
