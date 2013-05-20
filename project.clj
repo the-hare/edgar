@@ -28,11 +28,15 @@
                  [com.datomic/datomic "0.8.3335"
                   :exclusions [org.slf4j/slf4j-nop org.slf4j/log4j-over-slf4j]]
                  [midje "1.5.1"]
+                 [ring/ring-core "1.2.0-beta1"
+                  :exclusions [javax.servlet/servlet-api]]
+
 
                  ;; Clojurescript Libraries
                  [shoreleave/shoreleave-remote "0.3.0"]
                  [shoreleave/shoreleave-remote-ring "0.3.0"]
                  [jayq "2.3.0"]
+
 
                  ;; Java Libraries
                  [joda-time "2.2"]

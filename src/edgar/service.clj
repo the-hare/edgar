@@ -9,17 +9,17 @@
             [io.pedestal.service.http.route :as route]
             [io.pedestal.service.http.body-params :as body-params]
             [io.pedestal.service.http.route.definition :refer [defroutes]]
+            [io.pedestal.service.http.ring-middlewares :as middlewares]
+            [io.pedestal.service.interceptor :refer [defhandler definterceptor]]
             [io.pedestal.service.impl.interceptor :as iimpl]
             [io.pedestal.service.interceptor :as interceptor :refer [defon-response defbefore defafter]]
+            [ring.middleware.session :as rsession]
+            [ring.middleware.session.memory :as rmemory]
             [ring.util.response :as ring-resp]))
 
 
 ;;
-(defn about-page
-  [request]
-  (ring-resp/response (format "Clojure %s" (clojure-version))))
-
-(defn home-page
+(defhandler home-page
   [request]
 
   (->
@@ -27,9 +27,8 @@
    (ring-resp/content-type "text/html")))
 
 
-
 ;;
-(defn list-filtered-input
+(defhandler list-filtered-input
   "List high-moving stocks"
   [request]
 
@@ -37,7 +36,7 @@
         result (live/load-filtered-results nil conn)]
     (ring-resp/response result)))
 
-(defn get-historical-data
+(defhandler get-historical-data
   "Get historical data for a particular stock"
   [request]
 
@@ -45,8 +44,17 @@
   ;; ... TODO: Pass in: i) stock selection, ii) time-duration, iii) itme-interval
   ;; ... TODO: make asynchronous
 
-  (edgar/play-historical client stock-selection time-duration time-interval)
-  (ring-resp/response "get-historical-data"))
+  (let [client (or (-> request :session :ib-client)
+                   (:interactive-brokers-client (edgar/initialize-workbench)))
+        stock-selection ["IBM" "APPL"]
+        time-duration "300 S"
+        time-interval "1 secs"]
+
+    (println "... client[" client "]")
+    (edgar/play-historical client stock-selection time-duration time-interval)
+
+    (-> (ring-resp/response "get-historical-data")
+        (assoc :session {:ib-client client}))))
 
 (defn get-streaming-stock-data
   "Get streaming stock data for 1 or a list of stocks"
@@ -59,14 +67,18 @@
   (ring-resp/response "stop-streaming-stock-data"))
 
 
+(definterceptor session-interceptor
+  (middlewares/session {:store (rmemory/memory-store)}))
+
 (defroutes routes
   [[
     ["/" {:get home-page}
 
      ;; Set default interceptors for /about and any other paths under /
-     ^:interceptors [(body-params/body-params) bootstrap/html-body]
-
-     ["/about" {:get about-page}]
+     ;; ^:interceptors [(body-params/body-params) bootstrap/html-body]
+     ^:interceptors [middlewares/params
+                     middlewares/keyword-params
+                     session-interceptor]
 
      ["/list-filtered-input" {:get list-filtered-input}]
      ["/get-historical-data" {:get get-historical-data}]
