@@ -1,5 +1,7 @@
 (ns edgar
-  (:use [jayq.core :only [$ css inner]]))
+  (:use [jayq.core :only [$ css inner]])
+  (:use-macros [jayq.macros :only [let-ajax let-deferred]])
+  (:require [jayq.core :as jq]))
 
 
 ;; Scrolling with Lionbars
@@ -18,5 +20,21 @@
                                           :tooltip {:valueDecimals 2}}]})
                  ))
 
-(-> ($ ".multiselect")
-    (.multiselect (clj->js {:enableFiltering true})))
+(let-deferred
+ [filtered-input ($/ajax "/list-filtered-input")]
+
+ (let [multiselect ($ ".multiselect")]
+
+   (reduce (fn [rslt inp]
+
+             (let [option-value (second inp)
+                   option-label (nth inp 2)
+                   price-difference (.toFixed (first inp) 4)]
+
+               (-> multiselect
+                   (.append (str "<option value='" option-value "'>[" price-difference "] " option-label "</option>")))))
+           nil
+           (into-array filtered-input))
+
+   (-> ($ ".multiselect")
+       (.multiselect (clj->js {:enableFiltering true})))))

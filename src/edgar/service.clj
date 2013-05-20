@@ -33,7 +33,7 @@
   [request]
 
   (let [conn (edatomic/database-connect nil)
-        result (live/load-filtered-results nil conn)]
+        result (live/load-filtered-results 20 conn)]
     (ring-resp/response result)))
 
 (defhandler get-historical-data

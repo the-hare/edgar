@@ -21,7 +21,7 @@
                                  [?h :historical/symbol ?s]
                                  [?h :historical/company ?c]
                                  ] (db conn))
-        sorted-entities (sort-by first historical-entities)]
+        sorted-entities (reverse (sort-by first historical-entities))]
 
     (if limit
       (take limit sorted-entities)
