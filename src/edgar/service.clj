@@ -40,14 +40,14 @@
   "Get historical data for a particular stock"
   [request]
 
-  ;; ... TODO: setup IB-client
+
   ;; ... TODO: Pass in: i) stock selection, ii) time-duration, iii) itme-interval
   ;; ... TODO: make asynchronous
 
   (let [client (or (-> request :session :ib-client)
                    (:interactive-brokers-client (edgar/initialize-workbench)))
         stock-selection ["IBM" "APPL"]
-        time-duration "300 S"
+        time-duration "60 S"
         time-interval "1 secs"]
 
     (println "... client[" client "]")
