@@ -6,6 +6,7 @@
 
 (defn tee-historical
  "Process the list of entities. First, flatten out the :event-list, and merge it into the entity
+
  [{:id 0,
    :symbol DDD,
    :company 3D Systems Corporation,

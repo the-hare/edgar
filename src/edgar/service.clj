@@ -2,6 +2,8 @@
   (:use [clojure.tools.namespace.repl])
   (:require [edgar.datomic :as edatomic]
             [edgar.core.edgar :as edgar]
+            [edgar.ib.handler.historical :as historical]
+            [edgar.ib.handler.live :as live]
             [clojure.java.io :as io]
             [io.pedestal.service.http :as bootstrap]
             [io.pedestal.service.http.route :as route]
@@ -32,32 +34,18 @@
   [request]
 
   (let [conn (edatomic/database-connect nil)
-        result (edgar/load-historical-data nil conn)]
+        result (live/load-filtered-results nil conn)]
     (ring-resp/response result)))
-
-
-
-#_(defn resume-fn [context result]
-  (iimpl/resume
-   (assoc context :response (ring-resp/response (bootstrap/edn-response result)))))
-#_(defn do-async-work [paused-context]
-  (let [conn (edatomic/database-connect nil)
-        result (edgar/load-historical-data nil conn)]
-    ((:resume-fn paused-context) result)))
-#_(defbefore list-filtered-input
-  "List high-moving stocks"
-  [{req :request :as context}]
-
-  (iimpl/with-pause [paused-context context]
-    (do-async-work
-     (assoc paused-context :resume-fn (partial resume-fn paused-context)))))
-
-
-
 
 (defn get-historical-data
   "Get historical data for a particular stock"
   [request]
+
+  ;; ... TODO: setup IB-client
+  ;; ... TODO: Pass in: i) stock selection, ii) time-duration, iii) itme-interval
+  ;; ... TODO: make asynchronous
+
+  (edgar/play-historical client stock-selection time-duration time-interval)
   (ring-resp/response "get-historical-data"))
 
 (defn get-streaming-stock-data

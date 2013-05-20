@@ -1,0 +1,14 @@
+.ui-tabs {
+  height: 700;
+  border: none; }
+  .ui-tabs .ui-tabs-nav {
+    width: 32;
+    height: 100%;
+    float: left;
+    background: none;
+    border: none; }
+  .ui-tabs .tab-content {
+    height: 90%;
+    overflow-y: scroll;
+    white-space: pre-wrap;
+    border: 1px #aaa solid; }

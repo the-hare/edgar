@@ -14291,42 +14291,47 @@ jayq.core.$.call(null, "#tab-one-graph").highcharts("StockChart", cljs.core.clj_
 edgar.core = {};
 edgar.core.analysis = {};
 edgar.core.analysis.lagging = {};
-edgar.core.analysis.lagging.simple_moving_average = function(a, b) {
-  var c = cljs.core.into.call(null, cljs.core.List.EMPTY, cljs.core.repeat.call(null, a, null));
+edgar.core.analysis.lagging.simple_moving_average = function(a, b, c) {
+  var d = cljs.core.into.call(null, cljs.core.List.EMPTY, cljs.core.repeat.call(null, b, null)), a = cljs.core.seq_QMARK_.call(null, a) ? cljs.core.apply.call(null, cljs.core.hash_map, a) : a, e = cljs.core._lookup.call(null, a, "\ufdd0'input", "\ufdd0'last-trade-price"), f = cljs.core._lookup.call(null, a, "\ufdd0'output", "\ufdd0'last-trade-price-average"), g = cljs.core._lookup.call(null, a, "\ufdd0'etal", cljs.core.PersistentVector.fromArray(["\ufdd0'last-trade-price", "\ufdd0'last-trade-time"], 
+  !0));
   return cljs.core.reduce.call(null, function(a, b) {
     var c = cljs.core.reduce.call(null, function(a, b) {
-      var c = (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, b);
+      var c = e.call(null, b);
       return(cljs.core.string_QMARK_.call(null, c) ? edgar.core.analysis.lagging.read_string.call(null, c) : c) + a
     }, 0, b) / cljs.core.count.call(null, b);
-    return cljs.core.cons.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'last-trade-price", "\ufdd0'last-trade-price-average", "\ufdd0'last-trade-time", "\ufdd0'population"], {"\ufdd0'last-trade-price":(new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, cljs.core.first.call(null, b)), "\ufdd0'last-trade-price-average":c, "\ufdd0'last-trade-time":(new cljs.core.Keyword("\ufdd0'last-trade-time")).call(null, cljs.core.first.call(null, b)), "\ufdd0'population":b}), a)
-  }, c, cljs.core.reverse.call(null, cljs.core.partition.call(null, a, 1, b)))
+    return cljs.core.cons.call(null, cljs.core.merge.call(null, cljs.core.zipmap.call(null, g, cljs.core.map.call(null, function(a) {
+      return a.call(null, cljs.core.first.call(null, b))
+    }, g)), cljs.core.PersistentArrayMap.fromArrays([f, "\ufdd0'population"], [c, b])), a)
+  }, d, cljs.core.reverse.call(null, cljs.core.partition.call(null, b, 1, c)))
 };
 edgar.core.analysis.lagging.exponential_moving_average = function() {
-  var a = null, b = function(b, c) {
-    return a.call(null, b, c, edgar.core.analysis.lagging.simple_moving_average.call(null, b, c))
-  }, c = function(a, b, c) {
-    var g = 2 / (a + 1), a = cljs.core.into.call(null, cljs.core.List.EMPTY, cljs.core.repeat.call(null, a, null));
+  var a = null, b = function(b, c, f) {
+    return a.call(null, b, c, f, edgar.core.analysis.lagging.simple_moving_average.call(null, null, c, f))
+  }, c = function(a, b, c, g) {
+    var h = 2 / (b + 1), b = cljs.core.into.call(null, cljs.core.List.EMPTY, cljs.core.repeat.call(null, b, null)), a = cljs.core.seq_QMARK_.call(null, a) ? cljs.core.apply.call(null, cljs.core.hash_map, a) : a, i = cljs.core._lookup.call(null, a, "\ufdd0'input", "\ufdd0'last-trade-price"), j = cljs.core._lookup.call(null, a, "\ufdd0'output", "\ufdd0'last-trade-price-exponential"), l = cljs.core._lookup.call(null, a, "\ufdd0'etal", cljs.core.PersistentVector.fromArray(["\ufdd0'last-trade-price", 
+    "\ufdd0'last-trade-time"], !0));
     return cljs.core.reduce.call(null, function(a, b) {
-      var c = (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, b), d = cljs.core.truth_((new cljs.core.Keyword("\ufdd0'last-trade-price-exponential")).call(null, cljs.core.first.call(null, a))) ? (new cljs.core.Keyword("\ufdd0'last-trade-price-exponential")).call(null, cljs.core.first.call(null, a)) : (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, b), c = g * (cljs.core.string_QMARK_.call(null, c) ? edgar.core.analysis.lagging.read_string.call(null, c) : c) + (cljs.core.string_QMARK_.call(null, 
-      d) ? edgar.core.analysis.lagging.read_string.call(null, d) : d) * (1 - g);
-      return cljs.core.cons.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'last-trade-price", "\ufdd0'last-trade-time", "\ufdd0'last-trade-price-exponential"], {"\ufdd0'last-trade-price":(new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, b), "\ufdd0'last-trade-time":(new cljs.core.Keyword("\ufdd0'last-trade-time")).call(null, b), "\ufdd0'last-trade-price-exponential":c}), a)
-    }, a, cljs.core.reverse.call(null, cljs.core.remove.call(null, cljs.core.nil_QMARK_, c)))
-  }, a = function(a, e, f) {
+      var c = i.call(null, b), d = cljs.core.truth_(j.call(null, cljs.core.first.call(null, a))) ? j.call(null, cljs.core.first.call(null, a)) : i.call(null, b), c = h * (cljs.core.string_QMARK_.call(null, c) ? edgar.core.analysis.lagging.read_string.call(null, c) : c) + (cljs.core.string_QMARK_.call(null, d) ? edgar.core.analysis.lagging.read_string.call(null, d) : d) * (1 - h);
+      return cljs.core.cons.call(null, cljs.core.merge.call(null, cljs.core.zipmap.call(null, l, cljs.core.map.call(null, function(a) {
+        return a.call(null, b)
+      }, l)), cljs.core.PersistentArrayMap.fromArrays([j], [c])), a)
+    }, b, cljs.core.reverse.call(null, cljs.core.remove.call(null, cljs.core.nil_QMARK_, g)))
+  }, a = function(a, e, f, g) {
     switch(arguments.length) {
-      case 2:
-        return b.call(this, a, e);
       case 3:
-        return c.call(this, a, e, f)
+        return b.call(this, a, e, f);
+      case 4:
+        return c.call(this, a, e, f, g)
     }
     throw Error("Invalid arity: " + arguments.length);
   };
-  a.cljs$lang$arity$2 = b;
-  a.cljs$lang$arity$3 = c;
+  a.cljs$lang$arity$3 = b;
+  a.cljs$lang$arity$4 = c;
   return a
 }();
 edgar.core.analysis.lagging.bollinger_band = function() {
   var a = null, b = function(b, c) {
-    return a.call(null, b, c, edgar.core.analysis.lagging.simple_moving_average.call(null, b, c))
+    return a.call(null, b, c, edgar.core.analysis.lagging.simple_moving_average.call(null, null, b, c))
   }, c = function(a, b, c) {
     a = cljs.core.into.call(null, cljs.core.List.EMPTY, cljs.core.repeat.call(null, a, null));
     return cljs.core.reduce.call(null, function(a, b) {
@@ -14351,3 +14356,65 @@ edgar.core.analysis.lagging.bollinger_band = function() {
   a.cljs$lang$arity$3 = c;
   return a
 }();
+edgar.core.analysis.leading = {};
+edgar.core.analysis.leading.macd = function() {
+  var a = null, b = function(b, c, f) {
+    return a.call(null, b, c, f, edgar.core.analysis.lagging.simple_moving_average.call(null, null, c, f))
+  }, c = function(a, b, c, g) {
+    var a = cljs.core.seq_QMARK_.call(null, a) ? cljs.core.apply.call(null, cljs.core.hash_map, a) : a, h = cljs.core._lookup.call(null, a, "\ufdd0'macd-window-fast", 12), b = cljs.core._lookup.call(null, a, "\ufdd0'macd-window-slow", 26), a = cljs.core._lookup.call(null, a, "\ufdd0'signal-window", 9), h = edgar.core.analysis.lagging.exponential_moving_average.call(null, null, h, c, g), c = edgar.core.analysis.lagging.exponential_moving_average.call(null, null, b, c, g), c = cljs.core.map.call(null, 
+    function(a, b) {
+      var c = null != a;
+      return(c ? null != b : c) ? cljs.core.ObjMap.fromObject(["\ufdd0'last-trade-price", "\ufdd0'last-trade-time", "\ufdd0'last-trade-macd"], {"\ufdd0'last-trade-price":(new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, a), "\ufdd0'last-trade-time":(new cljs.core.Keyword("\ufdd0'last-trade-time")).call(null, a), "\ufdd0'last-trade-macd":(new cljs.core.Keyword("\ufdd0'last-trade-price-exponential")).call(null, a) - (new cljs.core.Keyword("\ufdd0'last-trade-price-exponential")).call(null, 
+      b)}) : null
+    }, h, c), g = edgar.core.analysis.lagging.exponential_moving_average.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'input", "\ufdd0'output", "\ufdd0'etal"], {"\ufdd0'input":"\ufdd0'last-trade-macd", "\ufdd0'output":"\ufdd0'ema-signal", "\ufdd0'etal":cljs.core.PersistentVector.fromArray(["\ufdd0'last-trade-price", "\ufdd0'last-trade-time"], !0)}), a, null, c), a = cljs.core.into.call(null, cljs.core.List.EMPTY, cljs.core.repeat.call(null, a, null));
+    return cljs.core.cons.call(null, cljs.core.map.call(null, function(a, b) {
+      var c = null != a;
+      return(c ? null != b : c) ? cljs.core.ObjMap.fromObject(["\ufdd0'last-trade-price", "\ufdd0'last-trade-time", "\ufdd0'histogram"], {"\ufdd0'last-trade-price":(new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, a), "\ufdd0'last-trade-time":(new cljs.core.Keyword("\ufdd0'last-trade-time")).call(null, a), "\ufdd0'histogram":(new cljs.core.Keyword("\ufdd0'last-trade-macd")).call(null, a) - (new cljs.core.Keyword("\ufdd0'ema-signal")).call(null, b)}) : null
+    }, c, g), a)
+  }, a = function(a, e, f, g) {
+    switch(arguments.length) {
+      case 3:
+        return b.call(this, a, e, f);
+      case 4:
+        return c.call(this, a, e, f, g)
+    }
+    throw Error("Invalid arity: " + arguments.length);
+  };
+  a.cljs$lang$arity$3 = b;
+  a.cljs$lang$arity$4 = c;
+  return a
+}();
+edgar.core.analysis.leading.stochastic_oscillator = function(a, b, c, d) {
+  c = cljs.core.reduce.call(null, function(a, b) {
+    var c = (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, cljs.core.first.call(null, b)), d = cljs.core.map.call(null, function(a) {
+      return cljs.core.string_QMARK_.call(null, (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, a)) ? edgar.core.analysis.leading.read_string.call(null, (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, a)) : (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, a)
+    }, b), i = cljs.core.apply.call(null, cljs.core.max, d), d = cljs.core.apply.call(null, cljs.core.min, d);
+    return cljs.core.cons.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'last-price", "\ufdd0'highest-price", "\ufdd0'lowest-price", "\ufdd0'K"], {"\ufdd0'last-price":c, "\ufdd0'highest-price":i, "\ufdd0'lowest-price":d, "\ufdd0'K":(c - d) / (i - d)}), a)
+  }, cljs.core.into.call(null, cljs.core.List.EMPTY, cljs.core.repeat.call(null, a, null)), cljs.core.reverse.call(null, cljs.core.partition.call(null, a, 1, d)));
+  return cljs.core.reduce.call(null, function(a, b) {
+    var c = edgar.core.analysis.lagging.exponential_moving_average.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'input", "\ufdd0'output", "\ufdd0'etal"], {"\ufdd0'input":"\ufdd0'K", "\ufdd0'output":"\ufdd0'D", "\ufdd0'etal":cljs.core.PersistentVector.fromArray(["\ufdd0'last-price", "\ufdd0'highest-price", "\ufdd0'lowest-price", "\ufdd0'K"], !0)}), 3, null, b);
+    return cljs.core.cons.call(null, cljs.core.first.call(null, c), a)
+  }, cljs.core.into.call(null, cljs.core.List.EMPTY, cljs.core.repeat.call(null, a, null)), cljs.core.reverse.call(null, cljs.core.partition.call(null, b, 1, cljs.core.remove.call(null, cljs.core.nil_QMARK_, c))))
+};
+edgar.core.analysis.confirming = {};
+edgar.core.analysis.confirming.on_balance_volume = function(a, b) {
+  var c = cljs.core.reduce.call(null, function(a, b) {
+    var c = (new cljs.core.Keyword("\ufdd0'obv")).call(null, cljs.core.first.call(null, a));
+    if(cljs.core.truth_(c)) {
+      var d = cljs.core.string_QMARK_.call(null, (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, cljs.core.first.call(null, b))) ? edgar.core.analysis.confirming.read_string.call(null, (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, cljs.core.first.call(null, b))) : (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, cljs.core.first.call(null, b)), e = cljs.core.string_QMARK_.call(null, (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, cljs.core.second.call(null, 
+      b))) ? edgar.core.analysis.confirming.read_string.call(null, (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, cljs.core.second.call(null, b))) : (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, cljs.core.second.call(null, b)), f = cljs.core.string_QMARK_.call(null, (new cljs.core.Keyword("\ufdd0'total-volume")).call(null, cljs.core.first.call(null, b))) ? edgar.core.analysis.confirming.read_string.call(null, (new cljs.core.Keyword("\ufdd0'total-volume")).call(null, 
+      cljs.core.first.call(null, b))) : (new cljs.core.Keyword("\ufdd0'total-volume")).call(null, cljs.core.first.call(null, b)), c = cljs.core._EQ_.call(null, d, e) ? c : d > e ? c + f : c - f;
+      return cljs.core.cons.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'obv", "\ufdd0'total-volume", "\ufdd0'last-trade-price", "\ufdd0'last-trade-time"], {"\ufdd0'obv":c, "\ufdd0'total-volume":(new cljs.core.Keyword("\ufdd0'total-volume")).call(null, cljs.core.first.call(null, b)), "\ufdd0'last-trade-price":(new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, cljs.core.first.call(null, b)), "\ufdd0'last-trade-time":(new cljs.core.Keyword("\ufdd0'last-trade-time")).call(null, cljs.core.first.call(null, 
+      b))}), a)
+    }
+    return cljs.core.cons.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'obv", "\ufdd0'total-volume", "\ufdd0'last-trade-price", "\ufdd0'last-trade-time"], {"\ufdd0'obv":(new cljs.core.Keyword("\ufdd0'total-volume")).call(null, cljs.core.first.call(null, b)), "\ufdd0'total-volume":(new cljs.core.Keyword("\ufdd0'total-volume")).call(null, cljs.core.first.call(null, b)), "\ufdd0'last-trade-price":(new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, cljs.core.first.call(null, b)), "\ufdd0'last-trade-time":(new cljs.core.Keyword("\ufdd0'last-trade-time")).call(null, 
+    cljs.core.first.call(null, b))}), a)
+  }, cljs.core.with_meta(cljs.core.list(null), cljs.core.hash_map("\ufdd0'line", 61, "\ufdd0'column", 27)), cljs.core.reverse.call(null, cljs.core.partition.call(null, 2, 1, b)));
+  if(cljs.core.truth_(a)) {
+    var d = cljs.core.string_QMARK_.call(null, (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, a)) ? edgar.core.analysis.confirming.read_string.call(null, (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, a)) : (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, a), e = cljs.core.string_QMARK_.call(null, (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, cljs.core.first.call(null, c))) ? edgar.core.analysis.confirming.read_string.call(null, (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, 
+    cljs.core.first.call(null, c))) : (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, cljs.core.first.call(null, c)), f = cljs.core.string_QMARK_.call(null, (new cljs.core.Keyword("\ufdd0'total-volume")).call(null, a)) ? edgar.core.analysis.confirming.read_string.call(null, (new cljs.core.Keyword("\ufdd0'total-volume")).call(null, a)) : (new cljs.core.Keyword("\ufdd0'total-volume")).call(null, a), g = (new cljs.core.Keyword("\ufdd0'obv")).call(null, cljs.core.first.call(null, c)), d = 
+    cljs.core._EQ_.call(null, d, e) ? g : d > e ? g + f : g - f;
+    return cljs.core.cons.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'obv", "\ufdd0'total-volume", "\ufdd0'last-trade-price", "\ufdd0'last-trade-time"], {"\ufdd0'obv":d, "\ufdd0'total-volume":(new cljs.core.Keyword("\ufdd0'total-volume")).call(null, a), "\ufdd0'last-trade-price":(new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, a), "\ufdd0'last-trade-time":(new cljs.core.Keyword("\ufdd0'last-trade-time")).call(null, a)}), c)
+  }
+  return c
+};

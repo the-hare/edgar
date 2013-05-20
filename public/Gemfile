@@ -7,6 +7,7 @@ group :development do
   gem 'guard'
   gem 'guard-haml'
   gem 'guard-livereload'
+  # gem 'listen'
   gem 'libnotify'
   gem 'rb-inotify', :require => false
   gem 'rb-fsevent', :require => false

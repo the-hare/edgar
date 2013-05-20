@@ -53,7 +53,7 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
 	  publishFn = (IFn)RT.var("edgar.ib.market","publish-event-from-java");
 
 		client = new EClientSocket(this);
-		logger = Logger.getLogger("rootLogger");
+		logger = Logger.getLogger("user");
 
 	}
 
@@ -98,14 +98,14 @@ public class EWrapperImpl implements com.ib.client.EWrapper {
     logger.debug("EWrapper.currentTime > time["+ time +"]");
   }
   public void error (int id, int errorCode, String errorString) {
-    logger.debug("EWrapper.error > id["+ id +"] > errorCode["+ errorCode +"] > errorString["+ errorString +"]");
+    logger.error("EWrapper.error > id["+ id +"] > errorCode["+ errorCode +"] > errorString["+ errorString +"]");
   }
   public void error (Exception error) {
-    logger.debug("EWrapper.error[Exception] > error["+ error +"]");
+    logger.error("EWrapper.error[Exception] > error["+ error +"]");
     error.printStackTrace();
   }
   public void error (String error) {
-    logger.debug("EWrapper.error[String] > error["+ error +"]");
+    logger.error("EWrapper.error[String] > error["+ error +"]");
   }
   public void connectionClosed () {
     logger.debug("EWrapper.connectionClosed");

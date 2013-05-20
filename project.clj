@@ -40,7 +40,13 @@
 
   :plugins [[lein-ring "0.8.2"]
             [lein-cljsbuild "0.3.0"]
-            [lein-midje "3.0.1"]]
+            [lein-midje "3.0.1"]
+            #_[lein-haml-sass "0.2.5"]
+            ]
+
+  #_:haml #_{:src "public/templ/haml"
+             :output-directory "public/include"}
+
   :cljsbuild {
               :crossovers [edgar.core.analysis]
               :crossover-path "public/templ/cljs"
@@ -52,11 +58,11 @@
                                    :output-dir "public/javascript/"
                                    :optimizations :simple ;; :whitespace ;; :advanced ;; :simple
                                    :pretty-print true}}]}
+
   :profiles {:dev {:source-paths ["src", "dev"]
                    :dependencies [[ring-mock "0.1.3"]]}}
   :resource-paths [".:etc/:public/"]
   :repositories { "local" ~(str (.toURI (java.io.File. (str (-> (load-file "etc/config.clj") :dev :root-dir) ".m2/repository/"))))
                   }
   :min-lein-version "2.0.0"
-  :main ^{:skip-aot true} edgar.server
-  )
+  :main ^{:skip-aot true} edgar.server)

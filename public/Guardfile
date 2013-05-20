@@ -1,4 +1,6 @@
 # Guardfile
+
+
 notification :tmux,
   :display_message => true,
   :timeout => 5, # in seconds
@@ -11,7 +13,8 @@ notification :tmux,
 
 
 guard 'haml', :input => "templ/haml", :output => "include" do
-  watch(%r{.+\.haml})
+  #watch(%r{.+\.haml})
+  watch(%r{templ/haml/(.+)\.html\.haml}) 
 end
 
 guard 'livereload' do
