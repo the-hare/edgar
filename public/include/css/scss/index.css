@@ -1,18 +1,19 @@
-/* line 2, ../../templ/scss/index.scss */
-.ui-tabs {
+/* line 2, ../../../templ/scss/index.scss */
+#tabs {
   height: 700;
   border: none;
 }
-/* line 6, ../../templ/scss/index.scss */
-.ui-tabs .ui-tabs-nav {
-  width: 32;
-  height: 100%;
-  float: left;
-  background: none;
-  border: none;
+/* line 7, ../../../templ/scss/index.scss */
+#tabs .tab-content {
+  /*.ui-tabs-nav {
+      width: 32;
+      height: 100%;
+      float: left;
+      background: none;
+      border: none;}*/
 }
-/* line 13, ../../templ/scss/index.scss */
-.ui-tabs .tab-content {
+/* line 14, ../../../templ/scss/index.scss */
+#tabs .tab-content .tab-pane {
   height: 90%;
   overflow-y: scroll;
   white-space: pre-wrap;

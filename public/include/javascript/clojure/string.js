@@ -112,17 +112,17 @@ while(true){
 if(cljs.core._EQ_.call(null,limit__$1,1))
 {return cljs.core.conj.call(null,parts,s__$1);
 } else
-{var temp__3971__auto__ = cljs.core.re_find.call(null,re,s__$1);
-if(cljs.core.truth_(temp__3971__auto__))
-{var m = temp__3971__auto__;
+{var temp__4098__auto__ = cljs.core.re_find.call(null,re,s__$1);
+if(cljs.core.truth_(temp__4098__auto__))
+{var m = temp__4098__auto__;
 var index = s__$1.indexOf(m);
 {
-var G__3937 = s__$1.substring((index + cljs.core.count.call(null,m)));
-var G__3938 = (limit__$1 - 1);
-var G__3939 = cljs.core.conj.call(null,parts,s__$1.substring(0,index));
-s__$1 = G__3937;
-limit__$1 = G__3938;
-parts = G__3939;
+var G__5032 = s__$1.substring((index + cljs.core.count.call(null,m)));
+var G__5033 = (limit__$1 - 1);
+var G__5034 = cljs.core.conj.call(null,parts,s__$1.substring(0,index));
+s__$1 = G__5032;
+limit__$1 = G__5033;
+parts = G__5034;
 continue;
 }
 } else
@@ -184,16 +184,16 @@ if((index === 0))
 {return "";
 } else
 {var ch = cljs.core._lookup.call(null,s,(index - 1),null);
-if((function (){var or__3824__auto__ = cljs.core._EQ_.call(null,ch,"\n");
-if(or__3824__auto__)
-{return or__3824__auto__;
+if((function (){var or__3951__auto__ = cljs.core._EQ_.call(null,ch,"\n");
+if(or__3951__auto__)
+{return or__3951__auto__;
 } else
 {return cljs.core._EQ_.call(null,ch,"\r");
 }
 })())
 {{
-var G__3940 = (index - 1);
-index = G__3940;
+var G__5035 = (index - 1);
+index = G__5035;
 continue;
 }
 } else
@@ -225,16 +225,16 @@ if(cljs.core._EQ_.call(null,length,index))
 {return buffer.toString();
 } else
 {var ch = s.charAt(index);
-var temp__3971__auto___3941 = cljs.core._lookup.call(null,cmap,ch,null);
-if(cljs.core.truth_(temp__3971__auto___3941))
-{var replacement_3942 = temp__3971__auto___3941;
-buffer.append([cljs.core.str(replacement_3942)].join(''));
+var temp__4098__auto___5036 = cljs.core._lookup.call(null,cmap,ch,null);
+if(cljs.core.truth_(temp__4098__auto___5036))
+{var replacement_5037 = temp__4098__auto___5036;
+buffer.append([cljs.core.str(replacement_5037)].join(''));
 } else
 {buffer.append(ch);
 }
 {
-var G__3943 = (index + 1);
-index = G__3943;
+var G__5038 = (index + 1);
+index = G__5038;
 continue;
 }
 }

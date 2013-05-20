@@ -2730,23 +2730,23 @@ cljs.core._hash["boolean"] = function(a) {
 cljs.core.IWithMeta["function"] = !0;
 cljs.core._with_meta["function"] = function(a, b) {
   return cljs.core.with_meta.call(null, function() {
-    if(void 0 === cljs.core.t2871) {
-      cljs.core.t2871 = {};
-      cljs.core.t2871 = function(a, b, c) {
+    if(void 0 === cljs.core.t4293) {
+      cljs.core.t4293 = {};
+      cljs.core.t4293 = function(a, b, c) {
         this.meta = a;
         this.f = b;
-        this.meta2872 = c;
+        this.meta4294 = c;
         this.cljs$lang$protocol_mask$partition1$ = 0;
         this.cljs$lang$protocol_mask$partition0$ = 393217
       };
-      cljs.core.t2871.cljs$lang$type = !0;
-      cljs.core.t2871.cljs$lang$ctorPrSeq = function() {
-        return cljs.core.list.call(null, "cljs.core/t2871")
+      cljs.core.t4293.cljs$lang$type = !0;
+      cljs.core.t4293.cljs$lang$ctorPrSeq = function() {
+        return cljs.core.list.call(null, "cljs.core/t4293")
       };
-      cljs.core.t2871.cljs$lang$ctorPrWriter = function(a, b) {
-        return cljs.core._write.call(null, b, "cljs.core/t2871")
+      cljs.core.t4293.cljs$lang$ctorPrWriter = function(a, b) {
+        return cljs.core._write.call(null, b, "cljs.core/t4293")
       };
-      var c = cljs.core.t2871.prototype, d = function(a, b) {
+      var c = cljs.core.t4293.prototype, d = function(a, b) {
         return cljs.core.apply.call(null, a.f, b)
       }, e = function(a, b) {
         var a = this, c = null;
@@ -2760,19 +2760,19 @@ cljs.core._with_meta["function"] = function(a, b) {
       };
       e.cljs$lang$arity$variadic = d;
       c.call = e;
-      cljs.core.t2871.prototype.apply = function(a, b) {
+      cljs.core.t4293.prototype.apply = function(a, b) {
         a = this;
         return a.call.apply(a, [a].concat(b.slice()))
       };
-      cljs.core.t2871.prototype.cljs$core$Fn$ = !0;
-      cljs.core.t2871.prototype.cljs$core$IMeta$_meta$arity$1 = function() {
-        return this.meta2872
+      cljs.core.t4293.prototype.cljs$core$Fn$ = !0;
+      cljs.core.t4293.prototype.cljs$core$IMeta$_meta$arity$1 = function() {
+        return this.meta4294
       };
-      cljs.core.t2871.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = function(a, b) {
-        return new cljs.core.t2871(this.meta, this.f, b)
+      cljs.core.t4293.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = function(a, b) {
+        return new cljs.core.t4293(this.meta, this.f, b)
       }
     }
-    return new cljs.core.t2871(b, a, null)
+    return new cljs.core.t4293(b, a, null)
   }(), b)
 };
 cljs.core.IMeta["function"] = !0;
@@ -11846,7 +11846,7 @@ cljs.core.atom = function() {
 cljs.core.reset_BANG_ = function(a, b) {
   var c = a.validator;
   if(cljs.core.truth_(c) && !cljs.core.truth_(c.call(null, b))) {
-    throw Error([cljs.core.str("Assert failed: "), cljs.core.str("Validator rejected reference state"), cljs.core.str("\n"), cljs.core.str(cljs.core.pr_str.call(null, cljs.core.with_meta(cljs.core.list("\ufdd1'validate", "\ufdd1'new-value"), cljs.core.hash_map("\ufdd0'line", 6751))))].join(""));
+    throw Error([cljs.core.str("Assert failed: "), cljs.core.str("Validator rejected reference state"), cljs.core.str("\n"), cljs.core.str(cljs.core.pr_str.call(null, cljs.core.with_meta(cljs.core.list("\ufdd1'validate", "\ufdd1'new-value"), cljs.core.hash_map("\ufdd0'line", 6751, "\ufdd0'column", 13))))].join(""));
   }
   c = a.state;
   a.state = b;
@@ -12100,11 +12100,8 @@ cljs.core._js__GT_clj._ = function() {
           return cljs.core.seq_QMARK_.call(null, a) ? cljs.core.doall.call(null, cljs.core.map.call(null, g, a)) : cljs.core.coll_QMARK_.call(null, a) ? cljs.core.into.call(null, cljs.core.empty.call(null, a), cljs.core.map.call(null, g, a)) : cljs.core.truth_(goog.isArray(a)) ? cljs.core.vec.call(null, cljs.core.map.call(null, g, a)) : cljs.core.type.call(null, a) === Object ? cljs.core.into.call(null, cljs.core.ObjMap.EMPTY, function j(b) {
             return new cljs.core.LazySeq(null, !1, function() {
               for(;;) {
-                if(cljs.core.seq.call(null, b)) {
-                  var c = cljs.core.first.call(null, b);
-                  return cljs.core.cons.call(null, cljs.core.PersistentVector.fromArray([e.call(null, c), g.call(null, a[c])], !0), j.call(null, cljs.core.rest.call(null, b)))
-                }
-                return null
+                var c = cljs.core.seq.call(null, b);
+                return c ? (c = cljs.core.first.call(null, c), cljs.core.cons.call(null, cljs.core.PersistentVector.fromArray([e.call(null, c), g.call(null, a[c])], !0), j.call(null, cljs.core.rest.call(null, b)))) : null
               }
             }, null)
           }.call(null, cljs.core.js_keys.call(null, a))) : a
@@ -12318,13 +12315,13 @@ cljs.core.descendants = function() {
 cljs.core.derive = function() {
   var a = null, b = function(b, c) {
     if(!cljs.core.truth_(cljs.core.namespace.call(null, c))) {
-      throw Error([cljs.core.str("Assert failed: "), cljs.core.str(cljs.core.pr_str.call(null, cljs.core.with_meta(cljs.core.list("\ufdd1'namespace", "\ufdd1'parent"), cljs.core.hash_map("\ufdd0'line", 7081))))].join(""));
+      throw Error([cljs.core.str("Assert failed: "), cljs.core.str(cljs.core.pr_str.call(null, cljs.core.with_meta(cljs.core.list("\ufdd1'namespace", "\ufdd1'parent"), cljs.core.hash_map("\ufdd0'line", 7081, "\ufdd0'column", 12))))].join(""));
     }
     cljs.core.swap_BANG_.call(null, cljs.core.global_hierarchy, a, b, c);
     return null
   }, c = function(a, b, c) {
     if(!cljs.core.not_EQ_.call(null, b, c)) {
-      throw Error([cljs.core.str("Assert failed: "), cljs.core.str(cljs.core.pr_str.call(null, cljs.core.with_meta(cljs.core.list("\ufdd1'not=", "\ufdd1'tag", "\ufdd1'parent"), cljs.core.hash_map("\ufdd0'line", 7085))))].join(""));
+      throw Error([cljs.core.str("Assert failed: "), cljs.core.str(cljs.core.pr_str.call(null, cljs.core.with_meta(cljs.core.list("\ufdd1'not=", "\ufdd1'tag", "\ufdd1'parent"), cljs.core.hash_map("\ufdd0'line", 7085, "\ufdd0'column", 12))))].join(""));
     }
     var g = (new cljs.core.Keyword("\ufdd0'parents")).call(null, a), h = (new cljs.core.Keyword("\ufdd0'descendants")).call(null, a), i = (new cljs.core.Keyword("\ufdd0'ancestors")).call(null, a), j = function(a, b, c, d, e) {
       return cljs.core.reduce.call(null, function(a, b) {
@@ -13056,7 +13053,7 @@ cljs.reader.parse_and_validate_timestamp = function() {
   var a = /(\d\d\d\d)(?:-(\d\d)(?:-(\d\d)(?:[T](\d\d)(?::(\d\d)(?::(\d\d)(?:[.](\d+))?)?)?)?)?)?(?:[Z]|([-+])(\d\d):(\d\d))?/, b = function(a, b, e, f) {
     var g = a <= b;
     if(!(g ? b <= e : g)) {
-      throw Error([cljs.core.str("Assert failed: "), cljs.core.str([cljs.core.str(f), cljs.core.str(" Failed:  "), cljs.core.str(a), cljs.core.str("<="), cljs.core.str(b), cljs.core.str("<="), cljs.core.str(e)].join("")), cljs.core.str("\n"), cljs.core.str(cljs.core.pr_str.call(null, cljs.core.with_meta(cljs.core.list("\ufdd1'<=", "\ufdd1'low", "\ufdd1'n", "\ufdd1'high"), cljs.core.hash_map("\ufdd0'line", 474))))].join(""));
+      throw Error([cljs.core.str("Assert failed: "), cljs.core.str([cljs.core.str(f), cljs.core.str(" Failed:  "), cljs.core.str(a), cljs.core.str("<="), cljs.core.str(b), cljs.core.str("<="), cljs.core.str(e)].join("")), cljs.core.str("\n"), cljs.core.str(cljs.core.pr_str.call(null, cljs.core.with_meta(cljs.core.list("\ufdd1'<=", "\ufdd1'low", "\ufdd1'n", "\ufdd1'high"), cljs.core.hash_map("\ufdd0'line", 474, "\ufdd0'column", 25))))].join(""));
     }
     return b
   };
@@ -14277,15 +14274,7 @@ jayq.core.ajax_m = cljs.core.ObjMap.fromObject(["\ufdd0'return", "\ufdd0'bind", 
   return jayq.core.done.call(null, jayq.core.ajax.call(null, a), b)
 }, "\ufdd0'zero":cljs.core.identity});
 var edgar = {};
-jayq.core.$.call(null, "#tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
-jayq.core.$.call(null, "#tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
 jayq.core.$.call(null, ".tab-content").lionbars();
-edgar.tick_list = cljs.core.clj__GT_js.call(null, cljs.core.PersistentVector.fromArray([cljs.core.PersistentVector.fromArray([1368215573010, 203.98], !0), cljs.core.PersistentVector.fromArray([1368215576331, 203.99], !0), cljs.core.PersistentVector.fromArray([1368215576857, 203.99], !0), cljs.core.PersistentVector.fromArray([1368215577765, 203.99], !0), cljs.core.PersistentVector.fromArray([1368215578769, 204], !0), cljs.core.PersistentVector.fromArray([1368215579272, 204.01], !0), cljs.core.PersistentVector.fromArray([1368215579517, 
-204.02], !0), cljs.core.PersistentVector.fromArray([1368215581769, 204.02], !0), cljs.core.PersistentVector.fromArray([1368215583602, 204.01], !0), cljs.core.PersistentVector.fromArray([1368215585650, 204.02], !0), cljs.core.PersistentVector.fromArray([1368215586060, 204.02], !0), cljs.core.PersistentVector.fromArray([1368215587029, 204.01], !0), cljs.core.PersistentVector.fromArray([1368215588318, 204.02], !0), cljs.core.PersistentVector.fromArray([1368215589335, 204.01], !0), cljs.core.PersistentVector.fromArray([1368215589536, 
-204.01], !0), cljs.core.PersistentVector.fromArray([1368215589846, 204], !0), cljs.core.PersistentVector.fromArray([1368215591079, 203.99], !0), cljs.core.PersistentVector.fromArray([1368215591789, 203.99], !0), cljs.core.PersistentVector.fromArray([1368215592104, 203.98], !0), cljs.core.PersistentVector.fromArray([1368215592615, 203.98], !0), cljs.core.PersistentVector.fromArray([1368215592758, 203.99], !0), cljs.core.PersistentVector.fromArray([1368215594039, 203.97], !0), cljs.core.PersistentVector.fromArray([1368215597119, 
-203.98], !0), cljs.core.PersistentVector.fromArray([1368215597632, 203.97], !0), cljs.core.PersistentVector.fromArray([1368215599396, 203.97], !0), cljs.core.PersistentVector.fromArray([1368215603876, 203.96], !0), cljs.core.PersistentVector.fromArray([1368215606059, 203.96], !0), cljs.core.PersistentVector.fromArray([1368215610316, 203.95], !0), cljs.core.PersistentVector.fromArray([1368215610634, 203.95], !0), cljs.core.PersistentVector.fromArray([1368215610813, 203.93], !0), cljs.core.PersistentVector.fromArray([1368215612886, 
-203.95], !0), cljs.core.PersistentVector.fromArray([1368215615858, 203.94], !0), cljs.core.PersistentVector.fromArray([1368215618621, 203.94], !0), cljs.core.PersistentVector.fromArray([1368215619138, 203.96], !0), cljs.core.PersistentVector.fromArray([1368215623846, 203.94], !0), cljs.core.PersistentVector.fromArray([1368215632669, 203.94], !0), cljs.core.PersistentVector.fromArray([1368215634709, 203.92], !0), cljs.core.PersistentVector.fromArray([1368215636587, 203.93], !0), cljs.core.PersistentVector.fromArray([1368215636952, 
-203.94], !0), cljs.core.PersistentVector.fromArray([1368215638328, 203.93], !0)], !0));
 jayq.core.$.call(null, "#tab-one-graph").highcharts("StockChart", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'rangeSelector", "\ufdd0'title", "\ufdd0'series"], {"\ufdd0'rangeSelector":cljs.core.ObjMap.fromObject(["\ufdd0'selected"], {"\ufdd0'selected":1}), "\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"Test Stock Data"}), "\ufdd0'series":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'name", "\ufdd0'data", "\ufdd0'marker", 
 "\ufdd0'shadow", "\ufdd0'tooltip"], {"\ufdd0'name":"Test Stock Data", "\ufdd0'data":edgar.tick_list, "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled", "\ufdd0'radius"], {"\ufdd0'enabled":!0, "\ufdd0'radius":3}), "\ufdd0'shadow":!0, "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], {"\ufdd0'valueDecimals":2})})], !0)})));
 edgar.core = {};

@@ -5,36 +5,44 @@
   </head>
   <body>
     <div id='content'>
-      <div id='tabs'>
-        <ul>
-          <li>
-            <a href='#tab-one'></a>
+      <div class='tabbable tabs-left' id='tabs'>
+        <ul class='nav nav-tabs'>
+          <li class='active'>
+            <a data-toggle='tab' href='#tab-one'>
+              Main Deck
+            </a>
           </li>
           <li>
-            <a href='#tab-two'></a>
+            <a data-toggle='tab' href='#tab-two'>
+              Filter Deck
+            </a>
           </li>
         </ul>
-        <div class='tab-content' id='tab-one'>
-          <div id='tab-one-graph'></div>
-        </div>
-        <div class='tab-content' id='tab-two'>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque odio felis, ultrices eu hendrerit et, auctor id massa. Sed laoreet, ligula ac mattis condimentum, mauris lectus fringilla sem, at bibendum est augue eget purus. Aenean ac rhoncus nunc. Duis ullamcorper, dolor a iaculis malesuada, leo magna vulputate ipsum, id malesuada massa nisl id eros. Etiam porta eros at lorem consequat tincidunt. Mauris metus nisl, condimentum id lacinia a, hendrerit eget justo. Proin mollis magna id nibh vehicula posuere. Nulla vulputate aliquam sapien, at euismod risus tincidunt nec. Mauris consectetur ultricies lorem a sagittis. Nulla facilisi. Fusce suscipit, augue a commodo blandit, augue mauris luctus ligula, id eleifend ante elit ut ante. Integer quis rutrum dui.
-          Proin sit amet erat ipsum, a aliquam orci. Pellentesque euismod lectus vel turpis sodales at consequat quam molestie. Mauris vehicula, tortor eu sollicitudin congue, arcu dui sollicitudin purus, mollis dictum odio nisl in purus. Aliquam id leo in arcu consectetur eleifend et in purus. Donec condimentum augue ut nisi euismod adipiscing. Suspendisse euismod sem sit amet ligula adipiscing in eleifend nisi auctor. Sed tincidunt hendrerit ornare. Cras dolor neque, porta at interdum quis, interdum quis orci.
-          Nullam at dignissim libero. Maecenas ut nisi sapien. In aliquam, augue eget eleifend tincidunt, enim justo semper nibh, at sollicitudin dolor justo nec lorem. Pellentesque commodo, odio in iaculis accumsan, tortor orci lacinia neque, sed ultrices arcu felis at neque. Nullam eros orci, sollicitudin vel venenatis non, varius eget dolor. Donec placerat nunc eget tortor egestas vehicula. Curabitur id ipsum arcu, at convallis mauris. Praesent consectetur pellentesque metus, eget egestas justo dapibus sed. Donec viverra pellentesque nunc, vitae facilisis leo cursus at. Morbi vulputate ultrices neque, et malesuada leo molestie eu. Suspendisse libero nisi, luctus a venenatis ut, aliquam ac massa. Aenean semper, odio et suscipit suscipit, libero sapien accumsan dui, volutpat sodales ipsum mauris eget sapien. Maecenas sodales pulvinar tortor. Nam eu eros eget augue congue sollicitudin. Morbi laoreet commodo risus eget elementum.
-          Donec eget purus eu nulla interdum pretium. Cras eu vestibulum purus. Mauris vehicula, neque non laoreet sollicitudin, lorem sem scelerisque metus, quis aliquet urna lectus eget nibh. Duis pellentesque hendrerit turpis, in ullamcorper nisl ultrices ut. Quisque tristique, odio id eleifend viverra, purus nibh auctor ante, id sollicitudin mi nibh et felis. Praesent mauris sapien, consequat vel tincidunt nec, dapibus id metus. Integer elit ligula, feugiat id porttitor vel, cursus eu felis. Vivamus augue augue, suscipit vel luctus id, cursus vel enim. Nam nec urna a eros pharetra adipiscing. Duis magna velit, scelerisque quis lacinia ac, convallis dictum diam. Morbi lacinia ullamcorper mi, id bibendum mauris congue at. Aliquam feugiat suscipit nibh vel euismod. In hac habitasse platea dictumst. Cras viverra sapien eu libero posuere sit amet sagittis odio gravida.
-          Nam rutrum tellus vel ligula scelerisque bibendum. Sed vel metus mi, ut volutpat sapien. Sed laoreet eros porta lorem fermentum sit amet vehicula massa porta. Etiam faucibus lectus sit amet felis semper ut semper lectus pretium. Nullam elit eros, euismod vel adipiscing ut, tincidunt nec dui. Aliquam vel ante vitae sapien pretium rutrum. Maecenas id eros nibh. Nam cursus ultrices vulputate. Morbi sit amet mauris vitae nibh porta mollis eget non lacus. Quisque euismod rutrum iaculis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In pharetra, elit eget auctor pellentesque, ipsum lorem scelerisque urna, sit amet euismod magna purus sed massa. Nullam aliquet vulputate nunc id commodo. Aenean ut posuere urna.
-          Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+        <div class='tab-content'>
+          <div class='tab-pane active' id='tab-one'>
+            <div id='tab-one-graph'></div>
+          </div>
+          <div class='tab-pane' id='tab-two'>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque odio felis, ultrices eu hendrerit et, auctor id massa. Sed laoreet, ligula ac mattis condimentum, mauris lectus fringilla sem, at bibendum est augue eget purus. Aenean ac rhoncus nunc. Duis ullamcorper, dolor a iaculis malesuada, leo magna vulputate ipsum, id malesuada massa nisl id eros. Etiam porta eros at lorem consequat tincidunt. Mauris metus nisl, condimentum id lacinia a, hendrerit eget justo. Proin mollis magna id nibh vehicula posuere. Nulla vulputate aliquam sapien, at euismod risus tincidunt nec. Mauris consectetur ultricies lorem a sagittis. Nulla facilisi. Fusce suscipit, augue a commodo blandit, augue mauris luctus ligula, id eleifend ante elit ut ante. Integer quis rutrum dui.
+            Proin sit amet erat ipsum, a aliquam orci. Pellentesque euismod lectus vel turpis sodales at consequat quam molestie. Mauris vehicula, tortor eu sollicitudin congue, arcu dui sollicitudin purus, mollis dictum odio nisl in purus. Aliquam id leo in arcu consectetur eleifend et in purus. Donec condimentum augue ut nisi euismod adipiscing. Suspendisse euismod sem sit amet ligula adipiscing in eleifend nisi auctor. Sed tincidunt hendrerit ornare. Cras dolor neque, porta at interdum quis, interdum quis orci.
+            Nullam at dignissim libero. Maecenas ut nisi sapien. In aliquam, augue eget eleifend tincidunt, enim justo semper nibh, at sollicitudin dolor justo nec lorem. Pellentesque commodo, odio in iaculis accumsan, tortor orci lacinia neque, sed ultrices arcu felis at neque. Nullam eros orci, sollicitudin vel venenatis non, varius eget dolor. Donec placerat nunc eget tortor egestas vehicula. Curabitur id ipsum arcu, at convallis mauris. Praesent consectetur pellentesque metus, eget egestas justo dapibus sed. Donec viverra pellentesque nunc, vitae facilisis leo cursus at. Morbi vulputate ultrices neque, et malesuada leo molestie eu. Suspendisse libero nisi, luctus a venenatis ut, aliquam ac massa. Aenean semper, odio et suscipit suscipit, libero sapien accumsan dui, volutpat sodales ipsum mauris eget sapien. Maecenas sodales pulvinar tortor. Nam eu eros eget augue congue sollicitudin. Morbi laoreet commodo risus eget elementum.
+            Donec eget purus eu nulla interdum pretium. Cras eu vestibulum purus. Mauris vehicula, neque non laoreet sollicitudin, lorem sem scelerisque metus, quis aliquet urna lectus eget nibh. Duis pellentesque hendrerit turpis, in ullamcorper nisl ultrices ut. Quisque tristique, odio id eleifend viverra, purus nibh auctor ante, id sollicitudin mi nibh et felis. Praesent mauris sapien, consequat vel tincidunt nec, dapibus id metus. Integer elit ligula, feugiat id porttitor vel, cursus eu felis. Vivamus augue augue, suscipit vel luctus id, cursus vel enim. Nam nec urna a eros pharetra adipiscing. Duis magna velit, scelerisque quis lacinia ac, convallis dictum diam. Morbi lacinia ullamcorper mi, id bibendum mauris congue at. Aliquam feugiat suscipit nibh vel euismod. In hac habitasse platea dictumst. Cras viverra sapien eu libero posuere sit amet sagittis odio gravida.
+            Nam rutrum tellus vel ligula scelerisque bibendum. Sed vel metus mi, ut volutpat sapien. Sed laoreet eros porta lorem fermentum sit amet vehicula massa porta. Etiam faucibus lectus sit amet felis semper ut semper lectus pretium. Nullam elit eros, euismod vel adipiscing ut, tincidunt nec dui. Aliquam vel ante vitae sapien pretium rutrum. Maecenas id eros nibh. Nam cursus ultrices vulputate. Morbi sit amet mauris vitae nibh porta mollis eget non lacus. Quisque euismod rutrum iaculis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In pharetra, elit eget auctor pellentesque, ipsum lorem scelerisque urna, sit amet euismod magna purus sed massa. Nullam aliquet vulputate nunc id commodo. Aenean ut posuere urna.
+            Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+          </div>
         </div>
       </div>
     </div>
   </body>
-  <link href='http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css' rel='stylesheet'>
-  <link href='/include/css/lib/lionbars.css' rel='stylesheet'>
+  <!-- %link( rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css") -->
+  <link href='/include/vendor/lionbars/lionbars.css' rel='stylesheet'>
   <link href='/include/css/scss/index.css' rel='stylesheet'>
+  <link href='/include/vendor/bootstrap/css/bootstrap.min.css' rel='stylesheet'>
   <script src='http://code.jquery.com/jquery-2.0.0.min.js' type='text/javascript'></script>
-  <script src='http://code.jquery.com/ui/1.10.3/jquery-ui.js' type='text/javascript'></script>
-  <script src='/include/javascript/lib/jquery.lionbars.0.3.min.js' type='text/javascript'></script>
-  <script src='/include/javascript/lib/highstock.js' type='text/javascript'></script>
+  <!-- %script( type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js" ) -->
+  <script src='/include/vendor/bootstrap/js/bootstrap.min.js' type='text/javascript'></script>
+  <script src='/include/vendor/lionbars/jquery.lionbars.0.3.min.js' type='text/javascript'></script>
+  <script src='/include/vendor/Highstock-1.3.1/js/highstock.js' type='text/javascript'></script>
   <script src='/include/javascript/main.js' type='text/javascript'></script>
   <script type='text/javascript'>
     goog.require("edgar")
