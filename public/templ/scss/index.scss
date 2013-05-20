@@ -16,7 +16,23 @@
         overflow-y: scroll;
         white-space: pre-wrap;
         border: 1px #aaa solid;
+        .navbar{
+          .navbar-inner {
+            .container {
+              .nav {
+                white-space: initial;
+                li {
+                    white-space: initial;
+                }
+                a {
+                    white-space: initial;
+                }
+              }
+            }
+          }
+        }
       }
     }
-}
+  }
+
 

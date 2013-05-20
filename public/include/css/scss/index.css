@@ -19,3 +19,15 @@
   white-space: pre-wrap;
   border: 1px #aaa solid;
 }
+/* line 22, ../../../templ/scss/index.scss */
+#tabs .tab-content .tab-pane .navbar .navbar-inner .container .nav {
+  white-space: initial;
+}
+/* line 24, ../../../templ/scss/index.scss */
+#tabs .tab-content .tab-pane .navbar .navbar-inner .container .nav li {
+  white-space: initial;
+}
+/* line 27, ../../../templ/scss/index.scss */
+#tabs .tab-content .tab-pane .navbar .navbar-inner .container .nav a {
+  white-space: initial;
+}
