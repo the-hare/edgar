@@ -13,3 +13,7 @@ pom.xml
 .lein-env
 .lein-repl-history
 etc/config.clj
+.repl
+logs/
+out/
+public/Gemfile.lock
