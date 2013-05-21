@@ -42,9 +42,11 @@
 
 ;;
 (defn resume-historical [context result-map]
+
+  (log/info "... resume-historical > result-map[" result-map "] / context[" #_context "]")
   (iimpl/resume
    (-> context
-       (assoc :response (ring-resp/response (bootstrap/edn-response (:result result-map))))
+       (assoc :response (ring-resp/response (:result result-map)))
        (assoc :session {:ib-client (:client result-map)}))))
 
 (defn async-historical [paused-context]
@@ -55,7 +57,9 @@
            time-duration (-> paused-context :query-params :time-duration)
            time-interval (-> paused-context :query-params :time-interval)
            result (edgar/play-historical client stock-selection time-duration time-interval)]
-       (:resume-fn paused-context {:result result :client client})))
+
+       (log/info (str "... async-historical > client[" client "] / result[" result "] / paused-context[" #_paused-context "]"))
+       ((:resume-fn paused-context) {:result result :client client})))
 
 (defbefore get-historical-data
   "Get historical data for a particular stock"
