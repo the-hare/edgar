@@ -43,28 +43,43 @@
 ;;
 (defn resume-historical [context result-map]
 
-  (log/info "... resume-historical > result-map[" result-map "] / context[" #_context "]")
+  (log/info "... resume-historical > result-map[" #_result-map "] / context[" context "]")
   (iimpl/resume
+
+   ;;(assoc :session {:ib-client (:client result-map)})
    (-> context
-       (assoc :response (ring-resp/response (:result result-map)))
-       (assoc :session {:ib-client (:client result-map)}))))
+       (assoc :request (merge (:request context) {:session {:ib-client (:client result-map)}}))  ;; put a session in the request
+       (assoc :response (ring-resp/response (:result result-map))))))
 
 (defn async-historical [paused-context]
 
-     (let [client (or (-> paused-context :session :ib-client)
+     (let [client (or (-> paused-context :request :session :ib-client)
                    (:interactive-brokers-client (edgar/initialize-workbench)))
-           stock-selection [ (-> paused-context :query-params :stock-selection) ]
-           time-duration (-> paused-context :query-params :time-duration)
-           time-interval (-> paused-context :query-params :time-interval)
-           result (edgar/play-historical client stock-selection time-duration time-interval)]
+           stock-selection [ (-> paused-context :request :query-params :stock-selection) ]
+           time-duration (-> paused-context :request :query-params :time-duration)
+           time-interval (-> paused-context :request :query-params :time-interval)
+           ]
 
-       (log/info (str "... async-historical > client[" client "] / result[" result "] / paused-context[" #_paused-context "]"))
-       ((:resume-fn paused-context) {:result result :client client})))
+       (log/info (str "... async-historical 1 > stock-selection[" stock-selection "] > time-duration[" time-duration "] > time-interval[" time-interval "] > client-from-session[" (nil? (:interactive-brokers-client (edgar/initialize-workbench))) "]"))
+
+       (edgar/play-historical
+        client
+        stock-selection
+        time-duration
+        time-interval
+        [(fn [tick-list]
+
+           (log/info (str "... async-historical 2 > result[" tick-list "] / resume-fn[" (:resume-fn paused-context) "]"))
+           ((:resume-fn paused-context) {:result tick-list :client client}))])
+       ))
 
 (defbefore get-historical-data
   "Get historical data for a particular stock"
   [{request :request :as context}]
 
+  ;;(def *BIG_CONTEXT* context)
+  ;;(log/info (str "... get-historical-data > REQUEST[" request "]"))
+  ;;(log/info (str "... get-historical-data > CONTEXT[" context "]"))
   (iimpl/with-pause [paused-context context]
     (async-historical
         (assoc paused-context :resume-fn (partial resume-historical paused-context)))))

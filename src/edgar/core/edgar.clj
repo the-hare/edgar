@@ -31,8 +31,8 @@
    B) There are also Historical Data Limitations: http://www.interactivebrokers.com/php/apiUsersGuide/apiguide/api/historical_data_limitations.htm"
 
   ([client stock-selection]
-     (play-historical client stock-selection "1 D" "1 day"))
-  ([client stock-selection time-duration time-interval]
+     (play-historical client stock-selection "1 D" "1 day" nil))
+  ([client stock-selection time-duration time-interval tee-fn-list]
 
      {:pre [(not (nil? client))
             (not (nil? stock-selection))]}
@@ -40,7 +40,7 @@
      (let [bucket (ref [])
            options {:bucket bucket
                     :client client
-                    :tee-list [tplay/tee-historical]
+                    :tee-list (if tee-fn-list tee-fn-list [tplay/tee-historical])
                     :stock-lists stock-selection
                     :tranche-size 60
                     :scheduler-options {:min 10.5}

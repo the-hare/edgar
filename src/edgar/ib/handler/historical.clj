@@ -210,6 +210,7 @@
 
          (log/info "")
          (log/info "schedule-historical-data > RUNNING task > remaining-list count[" (count @remaining-list)"] current-tranche[" current-tranche "]")
+         (log/info "schedule-historical-data > remaining-list[" @remaining-list "]")
 
          ;; ii.iii) reqMarketData for that next stock; repeat constantly through: NYSE, NASDAQ, AMEX
          (dosync (alter bucket (fn [inp] [] )))
