@@ -14297,10 +14297,9 @@ edgar.populate_multiselect = function() {
         return b.append([cljs.core.str("<option value='"), cljs.core.str(g), cljs.core.str("'>"), cljs.core.str(h), cljs.core.str(" ("), cljs.core.str(i), cljs.core.str(")</option>")].join(""))
       }, null, cljs.core.into_array.call(null, a));
       return jayq.core.$.call(null, ".multiselect").multiselect(cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'enableFiltering", "\ufdd0'onChange"], {"\ufdd0'enableFiltering":!0, "\ufdd0'onChange":function(a, b) {
-        console.log([cljs.core.str("element["), cljs.core.str(a), cljs.core.str("] / checked["), cljs.core.str(b), cljs.core.str("]")].join(""));
-        return $.ajax.call(null, "/get-historical-data", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'complete"], {"\ufdd0'complete":function() {
-          return null
-        }})))
+        return cljs.core.truth_(b) ? $.ajax.call(null, "/get-historical-data", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'data", "\ufdd0'complete"], {"\ufdd0'data":cljs.core.ObjMap.fromObject(["\ufdd0'stock-selection", "\ufdd0'time-duration", "\ufdd0'time-interval"], {"\ufdd0'stock-selection":a.val(), "\ufdd0'time-duration":"60 S", "\ufdd0'time-interval":"1 secs"}), "\ufdd0'complete":function(a, b) {
+          return console.log([cljs.core.str("jqXHR["), cljs.core.str(a), cljs.core.str("] / status["), cljs.core.str(b), cljs.core.str("]")].join(""))
+        }}))) : null
       }})))
     }())
   })

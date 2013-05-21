@@ -5,6 +5,7 @@
             [edgar.ib.handler.historical :as historical]
             [edgar.ib.handler.live :as live]
             [clojure.java.io :as io]
+            [clojure.tools.logging :as log]
             [io.pedestal.service.http :as bootstrap]
             [io.pedestal.service.http.route :as route]
             [io.pedestal.service.http.body-params :as body-params]
@@ -46,11 +47,11 @@
 
   (let [client (or (-> request :session :ib-client)
                    (:interactive-brokers-client (edgar/initialize-workbench)))
-        stock-selection ["IBM" "APPL"]
-        time-duration "60 S"
-        time-interval "1 secs"]
+        stock-selection [ (-> request :query-params :stock-selection) ]
+        time-duration (-> request :query-params :time-duration)
+        time-interval (-> request :query-params :time-interval)]
 
-    (println "... client[" client "]")
+    (log/info "... request[" request "] / stock-selection[" stock-selection "]")
     (edgar/play-historical client stock-selection time-duration time-interval)
 
     (-> (ring-resp/response "get-historical-data")

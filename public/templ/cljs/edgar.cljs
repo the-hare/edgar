@@ -48,10 +48,16 @@
          (.multiselect (clj->js {:enableFiltering true
                                  :onChange (fn [element checked]
 
-                                             (.log js/console (str "element[" element "] / checked[" checked "]"))
-                                             ($/ajax "/get-historical-data"
-                                                     (clj->js {:complete (fn [jqXHR status]
-                                                                           )}))
+                                             (if checked
+
+                                               ($/ajax "/get-historical-data"
+                                                       (clj->js {:data {:stock-selection (.val element)
+                                                                        :time-duration "60 S"
+                                                                        :time-interval "1 secs"}
+                                                                 :complete (fn [jqXHR status]
+
+                                                                             (.log js/console (str "jqXHR[" jqXHR "] / status[" status "]"))
+                                                                             )})))
                                              )})))))
 
   )
