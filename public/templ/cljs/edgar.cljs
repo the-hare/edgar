@@ -29,10 +29,10 @@
 
              (let [option-value (second inp)
                    option-label (nth inp 2)
-                   price-difference (.toFixed (first inp) 4)]
+                   price-difference (.toFixed (first inp) 2)]
 
                (-> multiselect
-                   (.append (str "<option value='" option-value "'>[" price-difference "] " option-label "</option>")))))
+                   (.append (str "<option value='" option-value "'>" option-label " (" price-difference ")</option>")))))
            nil
            (into-array filtered-input))
 
