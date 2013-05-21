@@ -28,6 +28,7 @@
    (ring-resp/content-type "text/html")))
 
 
+
 ;;
 (defhandler list-filtered-input
   "List high-moving stocks"
@@ -37,40 +38,49 @@
         result (live/load-filtered-results 20 conn)]
     (ring-resp/response result)))
 
-(defhandler get-historical-data
-  "Get historical data for a particular stock"
-  [request]
 
 
-  ;; ... TODO: Pass in: i) stock selection, ii) time-duration, iii) itme-interval
-  ;; ... TODO: make asynchronous
+;;
+(defn resume-historical [context result-map]
+  (iimpl/resume
+   (-> context
+       (assoc :response (ring-resp/response (bootstrap/edn-response (:result result-map))))
+       (assoc :session {:ib-client (:client result-map)}))))
 
-  (let [client (or (-> request :session :ib-client)
+(defn async-historical [paused-context]
+
+     (let [client (or (-> paused-context :session :ib-client)
                    (:interactive-brokers-client (edgar/initialize-workbench)))
-        stock-selection [ (-> request :query-params :stock-selection) ]
-        time-duration (-> request :query-params :time-duration)
-        time-interval (-> request :query-params :time-interval)]
+           stock-selection [ (-> paused-context :query-params :stock-selection) ]
+           time-duration (-> paused-context :query-params :time-duration)
+           time-interval (-> paused-context :query-params :time-interval)
+           result (edgar/play-historical client stock-selection time-duration time-interval)]
+       (:resume-fn paused-context {:result result :client client})))
 
-    (log/info "... request[" request "] / stock-selection[" stock-selection "]")
-    (edgar/play-historical client stock-selection time-duration time-interval)
+(defbefore get-historical-data
+  "Get historical data for a particular stock"
+  [{request :request :as context}]
 
-    (-> (ring-resp/response "get-historical-data")
-        (assoc :session {:ib-client client}))))
+  (iimpl/with-pause [paused-context context]
+    (async-historical
+        (assoc paused-context :resume-fn (partial resume-historical paused-context)))))
 
+
+
+;;
 (defn get-streaming-stock-data
   "Get streaming stock data for 1 or a list of stocks"
   [request]
   (ring-resp/response "get-streaming-stock-data"))
-
 (defn stop-streaming-stock-data
   "Stops streaming stock data for 1 or a list of stocks"
   [request]
   (ring-resp/response "stop-streaming-stock-data"))
 
 
+
 (definterceptor session-interceptor
   (middlewares/session {:store (rmemory/memory-store)}))
-
 (defroutes routes
   [[
     ["/" {:get home-page}
