@@ -14275,25 +14275,37 @@ jayq.core.ajax_m = cljs.core.ObjMap.fromObject(["\ufdd0'return", "\ufdd0'bind", 
 }, "\ufdd0'zero":cljs.core.identity});
 var edgar = {};
 jayq.core.$.call(null, ".tab-content").lionbars();
+edgar.render_main_stock_graph = function(a) {
+  return jayq.core.$.call(null, "#main-stock-graph").highcharts("StockChart", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'rangeSelector", "\ufdd0'title", "\ufdd0'series"], {"\ufdd0'rangeSelector":cljs.core.ObjMap.fromObject(["\ufdd0'selected"], {"\ufdd0'selected":1}), "\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"Test Stock Data"}), "\ufdd0'series":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'name", "\ufdd0'data", 
+  "\ufdd0'marker", "\ufdd0'shadow", "\ufdd0'tooltip"], {"\ufdd0'name":"Test Stock Data", "\ufdd0'data":a, "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled", "\ufdd0'radius"], {"\ufdd0'enabled":!0, "\ufdd0'radius":3}), "\ufdd0'shadow":!0, "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], {"\ufdd0'valueDecimals":2})})], !0)})))
+};
 edgar.tick_list = cljs.core.clj__GT_js.call(null, cljs.core.PersistentVector.fromArray([cljs.core.PersistentVector.fromArray([1368215573010, 203.98], !0), cljs.core.PersistentVector.fromArray([1368215576331, 203.99], !0), cljs.core.PersistentVector.fromArray([1368215576857, 203.99], !0), cljs.core.PersistentVector.fromArray([1368215577765, 203.99], !0), cljs.core.PersistentVector.fromArray([1368215578769, 204], !0), cljs.core.PersistentVector.fromArray([1368215579272, 204.01], !0), cljs.core.PersistentVector.fromArray([1368215579517, 
 204.02], !0), cljs.core.PersistentVector.fromArray([1368215581769, 204.02], !0), cljs.core.PersistentVector.fromArray([1368215583602, 204.01], !0), cljs.core.PersistentVector.fromArray([1368215585650, 204.02], !0), cljs.core.PersistentVector.fromArray([1368215586060, 204.02], !0), cljs.core.PersistentVector.fromArray([1368215587029, 204.01], !0), cljs.core.PersistentVector.fromArray([1368215588318, 204.02], !0), cljs.core.PersistentVector.fromArray([1368215589335, 204.01], !0), cljs.core.PersistentVector.fromArray([1368215589536, 
 204.01], !0), cljs.core.PersistentVector.fromArray([1368215589846, 204], !0), cljs.core.PersistentVector.fromArray([1368215591079, 203.99], !0), cljs.core.PersistentVector.fromArray([1368215591789, 203.99], !0), cljs.core.PersistentVector.fromArray([1368215592104, 203.98], !0), cljs.core.PersistentVector.fromArray([1368215592615, 203.98], !0), cljs.core.PersistentVector.fromArray([1368215592758, 203.99], !0), cljs.core.PersistentVector.fromArray([1368215594039, 203.97], !0), cljs.core.PersistentVector.fromArray([1368215597119, 
 203.98], !0), cljs.core.PersistentVector.fromArray([1368215597632, 203.97], !0), cljs.core.PersistentVector.fromArray([1368215599396, 203.97], !0), cljs.core.PersistentVector.fromArray([1368215603876, 203.96], !0), cljs.core.PersistentVector.fromArray([1368215606059, 203.96], !0), cljs.core.PersistentVector.fromArray([1368215610316, 203.95], !0), cljs.core.PersistentVector.fromArray([1368215610634, 203.95], !0), cljs.core.PersistentVector.fromArray([1368215610813, 203.93], !0), cljs.core.PersistentVector.fromArray([1368215612886, 
 203.95], !0), cljs.core.PersistentVector.fromArray([1368215615858, 203.94], !0), cljs.core.PersistentVector.fromArray([1368215618621, 203.94], !0), cljs.core.PersistentVector.fromArray([1368215619138, 203.96], !0), cljs.core.PersistentVector.fromArray([1368215623846, 203.94], !0), cljs.core.PersistentVector.fromArray([1368215632669, 203.94], !0), cljs.core.PersistentVector.fromArray([1368215634709, 203.92], !0), cljs.core.PersistentVector.fromArray([1368215636587, 203.93], !0), cljs.core.PersistentVector.fromArray([1368215636952, 
 203.94], !0), cljs.core.PersistentVector.fromArray([1368215638328, 203.93], !0)], !0));
-jayq.core.$.call(null, "#main-stock-graph").highcharts("StockChart", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'rangeSelector", "\ufdd0'title", "\ufdd0'series"], {"\ufdd0'rangeSelector":cljs.core.ObjMap.fromObject(["\ufdd0'selected"], {"\ufdd0'selected":1}), "\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"Test Stock Data"}), "\ufdd0'series":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'name", "\ufdd0'data", "\ufdd0'marker", 
-"\ufdd0'shadow", "\ufdd0'tooltip"], {"\ufdd0'name":"Test Stock Data", "\ufdd0'data":edgar.tick_list, "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled", "\ufdd0'radius"], {"\ufdd0'enabled":!0, "\ufdd0'radius":3}), "\ufdd0'shadow":!0, "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], {"\ufdd0'valueDecimals":2})})], !0)})));
-var G__23627_23630 = (new cljs.core.Keyword("\ufdd0'bind")).call(null, jayq.core.deferred_m), G__23628_23631 = (new cljs.core.Keyword("\ufdd0'return")).call(null, jayq.core.deferred_m), G__23629_23632 = (new cljs.core.Keyword("\ufdd0'zero")).call(null, jayq.core.deferred_m);
-G__23627_23630.call(null, $.ajax.call(null, "/list-filtered-input"), function(a) {
-  return G__23628_23631.call(null, function() {
-    var b = jayq.core.$.call(null, ".multiselect");
-    cljs.core.reduce.call(null, function(a, d) {
-      var e = cljs.core.second.call(null, d), f = cljs.core.nth.call(null, d, 2), g = cljs.core.first.call(null, d).toFixed(2);
-      return b.append([cljs.core.str("<option value='"), cljs.core.str(e), cljs.core.str("'>"), cljs.core.str(f), cljs.core.str(" ("), cljs.core.str(g), cljs.core.str(")</option>")].join(""))
-    }, null, cljs.core.into_array.call(null, a));
-    return jayq.core.$.call(null, ".multiselect").multiselect(cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'enableFiltering"], {"\ufdd0'enableFiltering":!0})))
-  }())
-});
+edgar.render_main_stock_graph.call(null, edgar.tick_list);
+edgar.populate_multiselect = function() {
+  var a = (new cljs.core.Keyword("\ufdd0'bind")).call(null, jayq.core.deferred_m), b = (new cljs.core.Keyword("\ufdd0'return")).call(null, jayq.core.deferred_m);
+  (new cljs.core.Keyword("\ufdd0'zero")).call(null, jayq.core.deferred_m);
+  return a.call(null, $.ajax.call(null, "/list-filtered-input"), function(a) {
+    return b.call(null, function() {
+      var b = jayq.core.$.call(null, ".multiselect");
+      cljs.core.reduce.call(null, function(a, c) {
+        var g = cljs.core.second.call(null, c), h = cljs.core.nth.call(null, c, 2), i = cljs.core.first.call(null, c).toFixed(2);
+        return b.append([cljs.core.str("<option value='"), cljs.core.str(g), cljs.core.str("'>"), cljs.core.str(h), cljs.core.str(" ("), cljs.core.str(i), cljs.core.str(")</option>")].join(""))
+      }, null, cljs.core.into_array.call(null, a));
+      return jayq.core.$.call(null, ".multiselect").multiselect(cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'enableFiltering", "\ufdd0'onChange"], {"\ufdd0'enableFiltering":!0, "\ufdd0'onChange":function(a, b) {
+        console.log([cljs.core.str("element["), cljs.core.str(a), cljs.core.str("] / checked["), cljs.core.str(b), cljs.core.str("]")].join(""));
+        return $.ajax.call(null, "/get-historical-data", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'complete"], {"\ufdd0'complete":function() {
+          return null
+        }})))
+      }})))
+    }())
+  })
+};
+edgar.populate_multiselect.call(null);
 edgar.core = {};
 edgar.core.analysis = {};
 edgar.core.analysis.lagging = {};
