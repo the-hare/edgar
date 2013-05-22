@@ -14299,7 +14299,7 @@ edgar.populate_multiselect = function(a, b) {
   })
 };
 edgar.populate_multiselect.call(null, ".multiselect-live", cljs.core.ObjMap.fromObject(["\ufdd0'onChange"], {"\ufdd0'onChange":function(a, b) {
-  return cljs.core.truth_(b) ? $.ajax.call(null, "/get-historical-data", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'data", "\ufdd0'complete"], {"\ufdd0'data":cljs.core.ObjMap.fromObject(["\ufdd0'stock-selection", "\ufdd0'time-duration", "\ufdd0'time-interval"], {"\ufdd0'stock-selection":a.val(), "\ufdd0'time-duration":"60 S", "\ufdd0'time-interval":"1 secs"}), "\ufdd0'complete":function(a, b) {
+  return cljs.core.truth_(b) ? $.ajax.call(null, "/get-streaming-stock-data", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'data", "\ufdd0'complete"], {"\ufdd0'data":cljs.core.ObjMap.fromObject(["\ufdd0'stock-selection"], {"\ufdd0'stock-selection":a.val()}), "\ufdd0'complete":function(a, b) {
     return console.log([cljs.core.str("jqXHR["), cljs.core.str(a), cljs.core.str("] / status["), cljs.core.str(b), cljs.core.str("]")].join(""))
   }}))) : null
 }}));

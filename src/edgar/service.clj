@@ -83,59 +83,22 @@
 
 
 ;; LIVE Data
-(defn resume-live [context result-map]
+(defn stream-live [context result-map]
 
-  (let [response-result (ring-resp/response (:result result-map))
-        response-final (if (-> response-result :request :session :ib-client) ;; conditionally put the IB client into session
-                         response-result
-                         (merge response-result {:session {:ib-client (:client result-map)}}))]
+  (log/info (str "... stream-live > context class[" (class context) "] > response[" (:result result-map) "]"))
+  (sse/send-event context (:result result-map)))
 
-    (log/info (str "... resume-historical > paused-context class[" (class context) "] > response [" (class response-final) "] [" response-final "]"))
-    (iimpl/resume
-     (-> context
-         (assoc :response response-final)))))
-(defn async-live [paused-context]
 
-  (let [client (or (-> paused-context :request :session :ib-client)
+(defn get-streaming-stock-data
+  "Get streaming stock data for 1 or a list of stocks"
+  [streaming-context]
+
+  (let [client (or (-> streaming-context :request :session :ib-client)
                    (:interactive-brokers-client (edgar/initialize-workbench)))
-        stock-selection [ (-> paused-context :request :query-params :stock-selection)]]
+        stock-selection [ (-> streaming-context :request :query-params :stock-selection)]]
 
     (edgar/play-live client stock-selection [(fn [tick-list]
-                                               ((:resume-fn paused-context) {:result tick-list :client client}))])))
-(defbefore get-streaming-stock-data
-  "Get streaming stock data for 1 or a list of stocks"
-  [{request :request :as context}]
-
-  (iimpl/with-pause [paused-context context]
-    (async-live
-     (assoc paused-context :resume-fn (partial resume-live paused-context)))))
-
-
-
-
-
-(def a-stored-streaming-context (atom nil))
-
-(defn clean-up []
-  (when-let [streaming-context @a-stored-streaming-context]
-    (reset! a-stored-streaming-context nil)
-    (end-event-stream streaming-context)))
-
-(defn notify [event-name event-data]
-  (when-let [streaming-context @a-stored-streaming-context]
-    (try
-      (send-event streaming-context event-name event-data)
-      (catch java.io.IOException ioe
-        (clean-up)))))
-
-(defn store-streaming-context [streaming-context]
-  (reset! a-stored-stream-context streaming-context))
-
-(defroutes route-table
-    [[["/events" {:get [::events (start-event-stream store-streaming-context)]}]]])
-
-
-
+                                               (stream-live {:result tick-list :client client}))])))
 
 
 

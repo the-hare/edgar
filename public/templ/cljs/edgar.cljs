@@ -52,6 +52,18 @@
   )
 
 (populate-multiselect ".multiselect-live" {#_:buttonText #_(fn [options]
+                                                               (if (= 0 (.length options))
+                                                                 "Historical Selections"))
+                                                 :onChange (fn [element checked]
+                                                             (if checked
+                                                               ($/ajax "/get-streaming-stock-data"
+                                                                       (clj->js {:data {:stock-selection (.val element)}
+                                                                                 :complete (fn [jqXHR status]
+                                                                                             (.log js/console (str "jqXHR[" jqXHR "] / status[" status "]"))
+                                                                                             )})))
+                                                             )})
+
+(populate-multiselect ".multiselect-historical" {#_:buttonText #_(fn [options]
                                                          (if (= 0 (.length options))
                                                            "Live Selections"))
                                            :onChange (fn [element checked]
@@ -64,22 +76,6 @@
                                                                                        (.log js/console (str "jqXHR[" jqXHR "] / status[" status "]"))
                                                                                        )})))
                                                        )})
-
-
-(populate-multiselect ".multiselect-historical" {#_:buttonText #_(fn [options]
-                                                               (if (= 0 (.length options))
-                                                                 "Historical Selections"))
-                                                 :onChange (fn [element checked]
-                                                             (if checked
-                                                               ($/ajax "/get-historical-data"
-                                                                       (clj->js {:data {:stock-selection (.val element)
-                                                                                        :time-duration "60 S"
-                                                                                        :time-interval "1 secs"}
-                                                                                 :complete (fn [jqXHR status]
-                                                                                             (.log js/console (str "jqXHR[" jqXHR "] / status[" status "]"))
-                                                                                             )})))
-                                                             )})
-
 
 #_(->
  ($ ".body-summary")
