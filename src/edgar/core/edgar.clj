@@ -54,24 +54,26 @@
   "1) takes a selection of stock symbols
    2) gets a live market feed
    3) plays back the results in real-time"
-  [client stock-selection]
+  ([client stock-selection]
+     (play-live client stock-selection nil))
+  ([client stock-selection tee-fn-list]
 
-  {:pre [(not (nil? client))
-         (not (nil? stock-selection))]}
+     {:pre [(not (nil? client))
+            (not (nil? stock-selection))]}
 
-  (reduce (fn [req-id ech]
+     (reduce (fn [req-id ech]
 
-            (let [tick-list (ref [])
-                  tee-list [(partial tplay/tee-market @tick-list)]
-                  options {:tick-list tick-list :tee-list tee-list :ticker-id-filter [req-id]}]
+               (let [tick-list (ref [])
+                     tee-list (if tee-fn-list tee-fn-list [(partial tplay/tee-market @tick-list)])
+                     options {:tick-list tick-list :tee-list tee-list :ticker-id-filter [req-id]}]
 
-              (market/subscribe-to-market (partial live/feed-handler options))
-              (market/request-market-data client req-id ech "233" false)
+                 (market/subscribe-to-market (partial live/feed-handler options))
+                 (market/request-market-data client req-id ech "233" false)
 
-              (inc req-id)  ;; increment the request ID for the next stock symbol
-              ))
-          0
-          stock-selection))
+                 (inc req-id)  ;; increment the request ID for the next stock symbol
+                 ))
+             0
+             stock-selection)))
 
 (defn initialize-workbench []
   {:interactive-brokers-client (:esocket (market/connect-to-market))})
