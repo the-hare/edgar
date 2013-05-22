@@ -10,39 +10,19 @@
   overflow: hidden;
   border: 1px #aaa solid;
 }
-/* line 16, ../../../templ/scss/index.scss */
-#tabs .tab-content .tab-pane .navbar .navbar-inner .container {
-  /* capture multi-select control, right-justify
-   */
-}
-/* line 17, ../../../templ/scss/index.scss */
+/* line 18, ../../../templ/scss/index.scss */
 #tabs .tab-content .tab-pane .navbar .navbar-inner .container .nav {
   white-space: initial;
 }
-/* line 19, ../../../templ/scss/index.scss */
+/* line 20, ../../../templ/scss/index.scss */
 #tabs .tab-content .tab-pane .navbar .navbar-inner .container .nav li {
   white-space: initial;
 }
-/* line 22, ../../../templ/scss/index.scss */
+/* line 23, ../../../templ/scss/index.scss */
 #tabs .tab-content .tab-pane .navbar .navbar-inner .container .nav a {
   white-space: initial;
 }
-/* line 29, ../../../templ/scss/index.scss */
-#tabs .tab-content .tab-pane .navbar .navbar-inner .container .btn-group {
-  float: right;
-  margin-right: 100;
-}
-/* line 33, ../../../templ/scss/index.scss */
-#tabs .tab-content .tab-pane .navbar .navbar-inner .container .btn-group .multiselect-container > .input-prepend > .multiselect-search {
-  /* fixing a bad height in default text entry
-   */
-  height: 30;
-}
-/* line 39, ../../../templ/scss/index.scss */
-#tabs .tab-content .tab-pane .navbar .navbar-inner .container .btn-group ul > li > a > label {
-  text-decoration: none;
-}
-/* line 49, ../../../templ/scss/index.scss */
+/* line 31, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-container {
   width: 70%;
   height: 566;
@@ -50,15 +30,36 @@
   overflow-y: scroll;
   border: 1px red solid;
 }
-/* line 56, ../../../templ/scss/index.scss */
+/* line 38, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-container #live-stream, #tabs .tab-content .body-container #historical-data {
   border: 1px black solid;
   height: 700;
 }
-/* line 61, ../../../templ/scss/index.scss */
+/* line 42, ../../../templ/scss/index.scss */
+#tabs .tab-content .body-container #live-stream .graph-group-header, #tabs .tab-content .body-container #historical-data .graph-group-header {
+  background: lightgray;
+  /* capture multi-select control, right-justify
+   */
+}
+/* line 48, ../../../templ/scss/index.scss */
+#tabs .tab-content .body-container #live-stream .graph-group-header .btn-group, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-group {
+  float: left;
+  white-space: initial;
+  margin: 5 0 0 5;
+}
+/* line 52, ../../../templ/scss/index.scss */
+#tabs .tab-content .body-container #live-stream .graph-group-header .btn-group .multiselect-container > .input-prepend > .multiselect-search, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-group .multiselect-container > .input-prepend > .multiselect-search {
+  /* fixing a bad height in default text entry
+   */
+  height: 30;
+}
+/* line 58, ../../../templ/scss/index.scss */
+#tabs .tab-content .body-container #live-stream .graph-group-header .btn-group ul > li > a > label, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-group ul > li > a > label {
+  text-decoration: none;
+}
+/* line 66, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-summary {
-  border: 1px black solid;
-  background: gray;
+  background: lightgray;
   float: left;
   width: 25%;
   height: 500;

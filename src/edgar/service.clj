@@ -20,7 +20,7 @@
             [ring.util.response :as ring-resp]))
 
 
-;;
+;; HOME Page
 (defhandler home-page
   [request]
 
@@ -30,7 +30,7 @@
 
 
 
-;;
+;; Listing Filtered Stocks
 (defhandler list-filtered-input
   "List high-moving stocks"
   [request]
@@ -41,7 +41,7 @@
 
 
 
-;;
+;; HISTORICAL Data
 (defn resume-historical [context result-map]
 
   (let [response-result (ring-resp/response (:result result-map))
@@ -53,7 +53,6 @@
     (iimpl/resume
      (-> context
          (assoc :response response-final)))))
-
 (defn async-historical [paused-context]
 
      (let [client (or (-> paused-context :request :session :ib-client)
@@ -73,7 +72,6 @@
        (edgar/play-historical client stock-selection time-duration time-interval [(fn [tick-list]
                                                                                     ((:resume-fn paused-context) {:result tick-list :client client}))])
        ))
-
 (defbefore get-historical-data
   "Get historical data for a particular stock"
   [{request :request :as context}]
@@ -84,11 +82,12 @@
 
 
 
-;;
+;; LIVE Data
 (defn get-streaming-stock-data
   "Get streaming stock data for 1 or a list of stocks"
   [request]
   (ring-resp/response "get-streaming-stock-data"))
+
 (defn stop-streaming-stock-data
   "Stops streaming stock data for 1 or a list of stocks"
   [request]
@@ -97,8 +96,7 @@
 
 
 (definterceptor session-interceptor
-  (middlewares/session {:store (rmemory/memory-store)})
-  )
+  (middlewares/session {:store (rmemory/memory-store)}))
 (defroutes routes
   [[
     ["/" {:get home-page}

@@ -28,12 +28,12 @@
 
 
 ;; Populate the live multi-select
-(defn populate-multiselect []
+(defn populate-multiselect [selector options]
 
   (let-deferred
    [filtered-input ($/ajax "/list-filtered-input")]
 
-   (let [multiselect ($ ".multiselect")]
+   (let [multiselect ($ selector)]
 
      (reduce (fn [rslt inp]
 
@@ -46,25 +46,39 @@
              nil
              (into-array filtered-input))
 
-     (-> ($ ".multiselect")
-         (.multiselect (clj->js {:enableFiltering true
-                                 :onChange (fn [element checked]
-
-                                             (if checked
-
-                                               ($/ajax "/get-historical-data"
-                                                       (clj->js {:data {:stock-selection (.val element)
-                                                                        :time-duration "60 S"
-                                                                        :time-interval "1 secs"}
-                                                                 :complete (fn [jqXHR status]
-
-                                                                             (.log js/console (str "jqXHR[" jqXHR "] / status[" status "]"))
-                                                                             )})))
-                                             )})))))
+     (-> ($ selector)
+         (.multiselect (clj->js (merge {:enableFiltering true} options))))))
 
   )
 
-(populate-multiselect)
+(populate-multiselect ".multiselect-live" {#_:buttonText #_(fn [options]
+                                                         (if (= 0 (.length options))
+                                                           "Live Selections"))
+                                           :onChange (fn [element checked]
+                                                       (if checked
+                                                         ($/ajax "/get-historical-data"
+                                                                 (clj->js {:data {:stock-selection (.val element)
+                                                                                  :time-duration "60 S"
+                                                                                  :time-interval "1 secs"}
+                                                                           :complete (fn [jqXHR status]
+                                                                                       (.log js/console (str "jqXHR[" jqXHR "] / status[" status "]"))
+                                                                                       )})))
+                                                       )})
+
+
+(populate-multiselect ".multiselect-historical" {#_:buttonText #_(fn [options]
+                                                               (if (= 0 (.length options))
+                                                                 "Historical Selections"))
+                                                 :onChange (fn [element checked]
+                                                             (if checked
+                                                               ($/ajax "/get-historical-data"
+                                                                       (clj->js {:data {:stock-selection (.val element)
+                                                                                        :time-duration "60 S"
+                                                                                        :time-interval "1 secs"}
+                                                                                 :complete (fn [jqXHR status]
+                                                                                             (.log js/console (str "jqXHR[" jqXHR "] / status[" status "]"))
+                                                                                             )})))
+                                                             )})
 
 
 #_(->

@@ -14,6 +14,7 @@
       .navbar {
         .navbar-inner {
           .container {
+            
             .nav {
               white-space: initial;
               li {
@@ -23,49 +24,52 @@
                   white-space: initial;
               }
             }
+          }
+        }
+      }
+    }
+    .body-container {
+       
+      width: 70%;
+      height: 566;
+      float: left;
+      overflow-y: scroll;
+      border: 1px red solid;
+      #live-stream , #historical-data {
+        border: 1px black solid;
+        height: 700;
 
-            /* capture multi-select control, right-justify
-             */
-            .btn-group {
-              float: right;
-              margin-right: 100;
-
-              .multiselect-container > .input-prepend > .multiselect-search {
-                  
-                  /* fixing a bad height in default text entry
-                   */
-                  height: 30;
-                }
-                ul > li > a > label {
-                  // ... TODO turn off underline on hover
-                  text-decoration: none;
-                }
-              }
+        .graph-group-header {
+          
+          background: lightgray;
+          
+          /* capture multi-select control, right-justify
+           */
+          .btn-group {
+            float: left;
+            white-space: initial;
+            margin: 5 0 0 5;
+            .multiselect-container > .input-prepend > .multiselect-search {
+                
+              /* fixing a bad height in default text entry
+               */
+              height: 30;
+            }
+            ul > li > a > label {
+              // ... TODO turn off underline on hover
+              text-decoration: none;
             }
           }
         }
       }
-
-      .body-container {
-         
-        width: 70%;
-        height: 566;
-        float: left;
-        overflow-y: scroll;
-        border: 1px red solid;
-        #live-stream , #historical-data {
-          border: 1px black solid;
-          height: 700;
-        }
-      }
-      .body-summary {
-        border: 1px black solid;
-        background: gray;
-        float: left;
-        width: 25%;
-        height: 500;
-        margin-left: 20;
-      }
+    }
+    .body-summary {
+      background: lightgray;
+      float: left;
+      width: 25%;
+      height: 500;
+      margin-left: 20;
+    }
   }
 }
 

@@ -33,13 +33,15 @@
                       %a( href="#historical-data" )
                         Historical Data
 
-                  %select.multiselect( multiple="multiple" )
-
             .body-container
               #live-stream
+                .graph-group-header
+                  %select.multiselect-live( multiple="multiple" )
                 #main-stock-graph
 
               #historical-data
+                .graph-group-header
+                  %select.multiselect-historical( multiple="multiple" )
                 Historical Data Here
 
             .body-summary
