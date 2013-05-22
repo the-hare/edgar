@@ -43,6 +43,20 @@
   text-decoration: none;
 }
 /* line 49, ../../../templ/scss/index.scss */
-#tabs .tab-content #live-stream, #tabs .tab-content #historical-data {
+#tabs .tab-content .body-container {
+  width: 70%;
+  float: left;
+}
+/* line 53, ../../../templ/scss/index.scss */
+#tabs .tab-content .body-container #live-stream, #tabs .tab-content .body-container #historical-data {
   height: 700;
+}
+/* line 57, ../../../templ/scss/index.scss */
+#tabs .tab-content .body-summary {
+  border: 1px black solid;
+  background: gray;
+  float: left;
+  width: 25%;
+  height: 500;
+  margin-left: 20;
 }

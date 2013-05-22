@@ -169,9 +169,9 @@
 (defn snapshot-handler [options rst]
 
 
-  (log/info "")
-  (log/info "")
-  (log/info "snapshot-handler > event index [" nil #_event-index "] result [" rst "] > bucket [" nil #_@bucket "]")
+  (log/debug "")
+  (log/debug "")
+  (log/debug "snapshot-handler > event index [" nil #_event-index "] result [" rst "] > bucket [" nil #_@bucket "]")
 
   (if (and (= "historicalData" (rst "type"))
            (re-find #"finished-" (rst "date")))
@@ -208,9 +208,9 @@
 
        (let [current-tranche (take tranche-size @remaining-list)]
 
-         (log/info "")
-         (log/info "schedule-historical-data > RUNNING task > remaining-list count[" (count @remaining-list)"] current-tranche[" current-tranche "]")
-         (log/info "schedule-historical-data > remaining-list[" @remaining-list "]")
+         (log/debug "")
+         (log/debug "schedule-historical-data > RUNNING task > remaining-list count[" (count @remaining-list)"] current-tranche[" current-tranche "]")
+         (log/debug "schedule-historical-data > remaining-list[" @remaining-list "]")
 
          ;; ii.iii) reqMarketData for that next stock; repeat constantly through: NYSE, NASDAQ, AMEX
          (dosync (alter bucket (fn [inp] [] )))

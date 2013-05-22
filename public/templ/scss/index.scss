@@ -46,8 +46,21 @@
         }
       }
 
-      #live-stream , #historical-data {
-        height: 700;
+      .body-container {
+         
+        width: 70%;
+        float: left;
+        #live-stream , #historical-data {
+          height: 700;
+        }
+      }
+      .body-summary {
+        border: 1px black solid;
+        background: gray;
+        float: left;
+        width: 25%;
+        height: 500;
+        margin-left: 20;
       }
   }
 }
