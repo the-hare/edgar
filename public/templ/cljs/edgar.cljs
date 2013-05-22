@@ -5,9 +5,10 @@
 
 
 ;; Scrolling with Lionbars
-(.lionbars ($ ".tab-content"))
+#_(.lionbars ($ ".body-container"))
 
 
+;; Render the Live stock graph
 (defn render-main-stock-graph [tlist]
 
   (-> ($ "#main-stock-graph")
@@ -26,6 +27,7 @@
 (render-main-stock-graph tick-list)
 
 
+;; Populate the live multi-select
 (defn populate-multiselect []
 
   (let-deferred
@@ -63,3 +65,8 @@
   )
 
 (populate-multiselect)
+
+
+#_(->
+ ($ ".body-summary")
+ (.affix))

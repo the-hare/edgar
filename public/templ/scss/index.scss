@@ -7,8 +7,8 @@
   .tab-content {
     .tab-pane {
       height: 90%;
-      overflow-y: scroll;
       white-space: pre-wrap;
+      overflow: hidden;
       border: 1px #aaa solid;
 
       .navbar {
@@ -49,8 +49,12 @@
       .body-container {
          
         width: 70%;
+        height: 566;
         float: left;
+        overflow-y: scroll;
+        border: 1px red solid;
         #live-stream , #historical-data {
+          border: 1px black solid;
           height: 700;
         }
       }

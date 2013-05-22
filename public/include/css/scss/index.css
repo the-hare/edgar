@@ -6,8 +6,8 @@
 /* line 8, ../../../templ/scss/index.scss */
 #tabs .tab-content .tab-pane {
   height: 90%;
-  overflow-y: scroll;
   white-space: pre-wrap;
+  overflow: hidden;
   border: 1px #aaa solid;
 }
 /* line 16, ../../../templ/scss/index.scss */
@@ -45,13 +45,17 @@
 /* line 49, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-container {
   width: 70%;
+  height: 566;
   float: left;
+  overflow-y: scroll;
+  border: 1px red solid;
 }
-/* line 53, ../../../templ/scss/index.scss */
+/* line 56, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-container #live-stream, #tabs .tab-content .body-container #historical-data {
+  border: 1px black solid;
   height: 700;
 }
-/* line 57, ../../../templ/scss/index.scss */
+/* line 61, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-summary {
   border: 1px black solid;
   background: gray;
