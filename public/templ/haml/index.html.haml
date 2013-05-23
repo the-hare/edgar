@@ -36,6 +36,10 @@
             .body-container
               #live-stream
                 .graph-group-header
+                  %button#live-initialize.btn.btn-success( type="button" )
+                    Initialize
+                  %button#live-stop.btn.btn-danger( type="button" )
+                    Stop
                   %select.multiselect-live( multiple="multiple" )
                 #main-stock-graph
 

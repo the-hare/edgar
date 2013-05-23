@@ -42,24 +42,25 @@
         .graph-group-header {
           
           background: lightgray;
-          
-          /* capture multi-select control, right-justify
-           */
-          .btn-group {
+          height: 40;
+          /* capture multi-select control, right-justify */
+          .btn-success , .btn-danger , .btn-group {
+            
             float: left;
-            white-space: initial;
+            position: relative;
+            white-space: nowrap;
             margin: 5 0 0 5;
             .multiselect-container > .input-prepend > .multiselect-search {
                 
-              /* fixing a bad height in default text entry
-               */
+              /* fixing a bad height in default text entry */
               height: 30;
             }
             ul > li > a > label {
-              // ... TODO turn off underline on hover
-              text-decoration: none;
+              text-decoration: none;  // ... TODO turn off underline on hover
             }
           }
+          #live-stop { top: -20; }
+          .btn-group { top: -40; }
         }
       }
     }

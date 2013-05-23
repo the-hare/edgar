@@ -59,7 +59,7 @@
                                                                ($/ajax "/get-streaming-stock-data"
                                                                        (clj->js {:data {:stock-selection (.val element)}
                                                                                  :complete (fn [jqXHR status]
-                                                                                             (.log js/console (str "jqXHR[" jqXHR "] / status[" status "]"))
+                                                                                             (.log js/console (str ".multiselect-live > jqXHR[" jqXHR "] / status[" status "]"))
                                                                                              )})))
                                                              )})
 
@@ -73,9 +73,16 @@
                                                                                   :time-duration "60 S"
                                                                                   :time-interval "1 secs"}
                                                                            :complete (fn [jqXHR status]
-                                                                                       (.log js/console (str "jqXHR[" jqXHR "] / status[" status "]"))
+                                                                                       (.log js/console (str ".multiselect-historical > jqXHR[" jqXHR "] / status[" status "]"))
                                                                                        )})))
                                                        )})
+
+(->
+ ($ "#live-initialize")
+ (.click (fn [arg1 arg2]
+           ($/ajax "/init-streaming-stock-data"
+                   (clj->js {:complete (fn [jqXHR status] (.log js/console (str "#live-initialize > jqXHR[" jqXHR "] / status[" status "]")))})))))
+
 
 #_(->
  ($ ".body-summary")

@@ -69,8 +69,9 @@
                       time-interval "] > client-from-session["
                       (:session (:request paused-context)) "]"))
 
-       (edgar/play-historical client stock-selection time-duration time-interval [(fn [tick-list]
-                                                                                    ((:resume-fn paused-context) {:result tick-list :client client}))])
+       #_(edgar/play-historical client stock-selection time-duration time-interval [(fn [tick-list]
+                                                                                      ((:resume-fn paused-context) {:result tick-list :client client}))])
+       ((:resume-fn paused-context) {:result [1 2 3 4] :client client})
        ))
 (defbefore get-historical-data
   "Get historical data for a particular stock"
@@ -83,31 +84,46 @@
 
 
 ;; LIVE Data
-(defn stream-live [context result-map]
+(def stored-streaming-context (atom nil))
+(defn store-streaming-context [streaming-context]
+  (reset! stored-streaming-context streaming-context))
+(defn stop-streaming-stock-data
+  "Stops streaming stock data for 1 or a list of stocks"
+  []
+  (when-let [streaming-context @stored-streaming-context]
+    (reset! stored-streaming-context nil)
+    (sse/end-event-stream streaming-context)))
 
-  (log/info (str "... stream-live > context class[" (class context) "] > response[" (:result result-map) "]"))
-  (sse/send-event context (:result result-map)))
 
+(defn stream-live
+  [event-name result-map]
 
-(defn get-streaming-stock-data
+  (log/info (str "... stream-live > response[" (:result result-map) "]"))
+  (when-let [streaming-context @stored-streaming-context]
+    (try
+      (sse/send-event streaming-context event-name result-map)
+      (catch java.io.IOException ioe
+        (stop-streaming-stock-data)))))
+#_(defn get-streaming-stock-data
   "Get streaming stock data for 1 or a list of stocks"
   [streaming-context]
 
-  (let [client (or (-> streaming-context :request :session :ib-client)
+  (let [client (or (-> streaming-context :session :ib-client)
                    (:interactive-brokers-client (edgar/initialize-workbench)))
-        stock-selection [ (-> streaming-context :request :query-params :stock-selection)]]
+        stock-selection [ (-> streaming-context :query-params :stock-selection)]]
 
+    (log/info (str "... get-streaming-stock-data > client[" client "] > stock-selection[" stock-selection "] > streaming-context[" streaming-context "]"))
     (edgar/play-live client stock-selection [(fn [tick-list]
-                                               (stream-live {:result tick-list :client client}))])))
+                                               (stream-live "stream-live" {:result tick-list :client client}))])))
 
+(defn get-streaming-stock-data
+  [streaming-context]
 
-
-
-(defn stop-streaming-stock-data
-  "Stops streaming stock data for 1 or a list of stocks"
-  [request]
-  (ring-resp/response "stop-streaming-stock-data"))
-
+  (when-let [streaming-context @stored-streaming-context]
+    (try
+      (sse/send-event streaming-context "stream-live" "qwerty")
+      (catch java.io.IOException ioe
+        (stop-streaming-stock-data)))))
 
 
 (definterceptor session-interceptor
@@ -124,7 +140,9 @@
 
      ["/list-filtered-input" {:get list-filtered-input}]
      ["/get-historical-data" {:get get-historical-data}]
-     ["/get-streaming-stock-data" {:get [::events (sse/start-event-stream get-streaming-stock-data)]}]
+
+     ["/init-streaming-stock-data" {:get [::edgar (sse/start-event-stream store-streaming-context)]}]
+     ["/get-streaming-stock-data" {:get get-streaming-stock-data}]
      ["/stop-streaming-stock-data" {:post stop-streaming-stock-data}]]
     ]])
 
