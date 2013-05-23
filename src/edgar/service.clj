@@ -97,12 +97,12 @@
 
 
 (defn stream-live
-  [result]
+  [event-name result]
 
   (log/info (str "... stream-live > response[" (:result result) "]"))
   (when-let [streaming-context @stored-streaming-context]
     (try
-      (sse/send-event streaming-context "stream-live" result)
+      (sse/send-event streaming-context event-name (str result))
       (catch java.io.IOException ioe
         (stop-streaming-stock-data)))))
 (defn get-streaming-stock-data
@@ -111,26 +111,14 @@
 
   (let [client (or (-> streaming-context :session :ib-client)
                    (:interactive-brokers-client (edgar/initialize-workbench)))
-        stock-selection [ (-> streaming-context :query-params :stock-selection)]
-
-        event-channel (ref (lamina/channel))
-        subscribe-fn (fn [handle-fn]
-                       (lamina/receive-all @event-channel handle-fn))
-        publish-fn (fn [event]
-                     (lamina/enqueue @event-channel event))
-        ]
+        stock-selection [ (-> streaming-context :query-params :stock-selection)]]
 
     (log/info (str "... get-streaming-stock-data > client[" client "] > stock-selection[" stock-selection "] > streaming-context[" streaming-context "]"))
-
-    (subscribe-fn stream-live)
     (edgar/play-live client stock-selection [(fn [tick-list]
-
-                                               (publish-fn tick-list)
-                                               #_(stream-live "stream-live" {:result tick-list :client client}))])))
+                                               (stream-live "stream-live" {:result tick-list :client client}))])))
 
 #_(defn get-streaming-stock-data
   [streaming-context]
-
   (when-let [streaming-context @stored-streaming-context]
     (try
       (sse/send-event streaming-context "stream-live" "qwerty")
