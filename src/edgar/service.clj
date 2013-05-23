@@ -70,10 +70,13 @@
                       time-interval "] > client-from-session["
                       (:session (:request paused-context)) "]"))
 
-       #_(edgar/play-historical client stock-selection time-duration time-interval [(fn [tick-list]
-                                                                                      ((:resume-fn paused-context) {:result tick-list :client client}))])
-       ((:resume-fn paused-context) {:result [1 2 3 4] :client client})
-       ))
+       (-> paused-context :request :servlet-request (.setTimeout 10000))
+       (edgar/play-historical client stock-selection time-duration time-interval [(fn [tick-list]
+                                                                                    ((:resume-fn paused-context) {:result tick-list :client client}))])
+
+       #_(Thread/sleep 10000)
+       #_((:resume-fn paused-context) {:result [1 2 3 4] :client client})
+    ))
 (defbefore get-historical-data
   "Get historical data for a particular stock"
   [{request :request :as context}]
@@ -113,17 +116,8 @@
                    (:interactive-brokers-client (edgar/initialize-workbench)))
         stock-selection [ (-> streaming-context :query-params :stock-selection)]]
 
-    (log/info (str "... get-streaming-stock-data > client[" client "] > stock-selection[" stock-selection "] > streaming-context[" streaming-context "]"))
     (edgar/play-live client stock-selection [(fn [tick-list]
                                                (stream-live "stream-live" {:result tick-list :client client}))])))
-
-#_(defn get-streaming-stock-data
-  [streaming-context]
-  (when-let [streaming-context @stored-streaming-context]
-    (try
-      (sse/send-event streaming-context "stream-live" "qwerty")
-      (catch java.io.IOException ioe
-        (stop-streaming-stock-data)))))
 
 
 (definterceptor session-interceptor
