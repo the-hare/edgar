@@ -4,11 +4,12 @@
   (:require [jayq.core :as jq]))
 
 
-;; Scrolling with Lionbars
+;; === SCROLLING  with Lionbars
 #_(.lionbars ($ ".body-container"))
 
 
-;; Render the Live stock graph
+
+;; === RENDER the Live stock graph
 (defn render-main-stock-graph [tlist]
 
   (-> ($ "#main-stock-graph")
@@ -27,7 +28,8 @@
 (render-main-stock-graph tick-list)
 
 
-;; Populate the live multi-select
+
+;; === POPULATE the live multi-select
 (defn populate-multiselect [selector options]
 
   (let-deferred
@@ -56,12 +58,37 @@
                                                                  "Historical Selections"))
                                                  :onChange (fn [element checked]
                                                              (if checked
-                                                               ($/ajax "/get-streaming-stock-data"
+
+
+                                                               (def livesource (js/window.EventSource. (str "/get-streaming-stock-data?stock-selection=" (.val element))))
+
+                                                               (.addEventListener livesource
+                                                                                  "stream-live"
+                                                                                  (fn [e]
+                                                                                    (let [data (r/read-string (.-data e))]
+                                                                                      (.log js/console (str ">> stream-live[" e "]"))))
+                                                                                  false)
+
+
+                                                               #_(def livesource (EventSource. ))
+                                                               #_(.addEventListener livesource "stream-live" (fn [e] (.log js/console ">> live-source > event[" e "]")) false)
+
+
+                                                               #_($/ajax "/get-streaming-stock-data"
                                                                        (clj->js {:data {:stock-selection (.val element)}
                                                                                  :complete (fn [jqXHR status]
                                                                                              (.log js/console (str ".multiselect-live > jqXHR[" jqXHR "] / status[" status "]"))
-                                                                                             )})))
+                                                                                             )}))
+                                                               #_($/eventsource (clj->js {:label "edn-event-source"
+                                                                                        :url "/get-streaming-stock-data"
+                                                                                        :data {:stock-selection (.val element)}
+                                                                                        :dataType "text"
+                                                                                        :open (fn []
+                                                                                                (.log js/console (str "edn-event-source > open CALLED")))
+                                                                                        :message (fn [data]
+                                                                                                   (.log js/console (str "edn-event-source > message CALLED > data[" data "]")))})))
                                                              )})
+
 
 (populate-multiselect ".multiselect-historical" {#_:buttonText #_(fn [options]
                                                          (if (= 0 (.length options))

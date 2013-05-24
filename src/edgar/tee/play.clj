@@ -24,9 +24,7 @@
                    type historicalData}]}]"
   [tick-list]
 
-  (log/info "tee.play/tee-historical > tick-list[" (count tick-list) "][" tick-list "]")
-
-  )
+  (log/info "tee.play/tee-historical > tick-list[" (count tick-list) "][" tick-list "]"))
 
 
 (defn tee-market
@@ -34,13 +32,4 @@
  [tick-list tick]
 
 
- (log/info "tee.play/tee-market > tick[" tick "] / tick-list[" (count tick-list) "][" tick-list "]")
-
-
- ;; create signals for each filter
-
- ;; create strategy, which invokes a signal, based on:
- ;;   the price against a filter
- ;;   wrap a publish / subscribe model around signals
-
- )
+ (log/info "tee.play/tee-market > tick[" tick "] / tick-list[" (count tick-list) "][" tick-list "]"))

@@ -108,7 +108,7 @@
 
     ;; ii.i get the next ID - (rst "tickerId")
     ;; ii.ii) get the next stock
-    ;;(log/debug "snapshot-handler > SNAPSHOT END result [" rst "] > bucket-tranche [" bucket "] > stock-lists SIZE [" (count stock-lists) "]")
+    (log/info "snapshot-handler > SNAPSHOT END result [" rst "] > bucket-tranche [" bucket "] > stock-lists SIZE [" (count stock-lists) "]")
 
 
     ;; remove previous stock & mktRequest for next stock
@@ -169,9 +169,9 @@
 (defn snapshot-handler [options rst]
 
 
-  (log/debug "")
-  (log/debug "")
-  (log/debug "snapshot-handler > event index [" nil #_event-index "] result [" rst "] > bucket [" nil #_@bucket "]")
+  (log/info "")
+  (log/info "")
+  (log/info "snapshot-handler > event index [" nil #_event-index "] result [" rst "] > bucket [" nil #_@bucket "]")
 
   (if (and (= "historicalData" (rst "type"))
            (re-find #"finished-" (rst "date")))

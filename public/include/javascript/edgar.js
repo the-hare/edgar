@@ -9,11 +9,11 @@ return jayq.core.$.call(null,"#main-stock-graph").highcharts("StockChart",cljs.c
 edgar.tick_list = cljs.core.clj__GT_js.call(null,cljs.core.PersistentVector.fromArray([cljs.core.PersistentVector.fromArray([1368215573010,203.98], true),cljs.core.PersistentVector.fromArray([1368215576331,203.99], true),cljs.core.PersistentVector.fromArray([1368215576857,203.99], true),cljs.core.PersistentVector.fromArray([1368215577765,203.99], true),cljs.core.PersistentVector.fromArray([1368215578769,204.0], true),cljs.core.PersistentVector.fromArray([1368215579272,204.01], true),cljs.core.PersistentVector.fromArray([1368215579517,204.02], true),cljs.core.PersistentVector.fromArray([1368215581769,204.02], true),cljs.core.PersistentVector.fromArray([1368215583602,204.01], true),cljs.core.PersistentVector.fromArray([1368215585650,204.02], true),cljs.core.PersistentVector.fromArray([1368215586060,204.02], true),cljs.core.PersistentVector.fromArray([1368215587029,204.01], true),cljs.core.PersistentVector.fromArray([1368215588318,204.02], true),cljs.core.PersistentVector.fromArray([1368215589335,204.01], true),cljs.core.PersistentVector.fromArray([1368215589536,204.01], true),cljs.core.PersistentVector.fromArray([1368215589846,204.0], true),cljs.core.PersistentVector.fromArray([1368215591079,203.99], true),cljs.core.PersistentVector.fromArray([1368215591789,203.99], true),cljs.core.PersistentVector.fromArray([1368215592104,203.98], true),cljs.core.PersistentVector.fromArray([1368215592615,203.98], true),cljs.core.PersistentVector.fromArray([1368215592758,203.99], true),cljs.core.PersistentVector.fromArray([1368215594039,203.97], true),cljs.core.PersistentVector.fromArray([1368215597119,203.98], true),cljs.core.PersistentVector.fromArray([1368215597632,203.97], true),cljs.core.PersistentVector.fromArray([1368215599396,203.97], true),cljs.core.PersistentVector.fromArray([1368215603876,203.96], true),cljs.core.PersistentVector.fromArray([1368215606059,203.96], true),cljs.core.PersistentVector.fromArray([1368215610316,203.95], true),cljs.core.PersistentVector.fromArray([1368215610634,203.95], true),cljs.core.PersistentVector.fromArray([1368215610813,203.93], true),cljs.core.PersistentVector.fromArray([1368215612886,203.95], true),cljs.core.PersistentVector.fromArray([1368215615858,203.94], true),cljs.core.PersistentVector.fromArray([1368215618621,203.94], true),cljs.core.PersistentVector.fromArray([1368215619138,203.96], true),cljs.core.PersistentVector.fromArray([1368215623846,203.94], true),cljs.core.PersistentVector.fromArray([1368215632669,203.94], true),cljs.core.PersistentVector.fromArray([1368215634709,203.92], true),cljs.core.PersistentVector.fromArray([1368215636587,203.93], true),cljs.core.PersistentVector.fromArray([1368215636952,203.94], true),cljs.core.PersistentVector.fromArray([1368215638328,203.93], true)], true));
 edgar.render_main_stock_graph.call(null,edgar.tick_list);
 edgar.populate_multiselect = (function populate_multiselect(selector,options){
-var G__36811 = (new cljs.core.Keyword("\uFDD0'bind")).call(null,jayq.core.deferred_m);
-var G__36812 = (new cljs.core.Keyword("\uFDD0'return")).call(null,jayq.core.deferred_m);
-var G__36813 = (new cljs.core.Keyword("\uFDD0'zero")).call(null,jayq.core.deferred_m);
-return G__36811.call(null,$.ajax.call(null,"/list-filtered-input"),(function (filtered_input){
-return G__36812.call(null,(function (){var multiselect = jayq.core.$.call(null,selector);
+var G__12120 = (new cljs.core.Keyword("\uFDD0'bind")).call(null,jayq.core.deferred_m);
+var G__12121 = (new cljs.core.Keyword("\uFDD0'return")).call(null,jayq.core.deferred_m);
+var G__12122 = (new cljs.core.Keyword("\uFDD0'zero")).call(null,jayq.core.deferred_m);
+return G__12120.call(null,$.ajax.call(null,"/list-filtered-input"),(function (filtered_input){
+return G__12121.call(null,(function (){var multiselect = jayq.core.$.call(null,selector);
 cljs.core.reduce.call(null,(function (rslt,inp){
 var option_value = cljs.core.second.call(null,inp);
 var option_label = cljs.core.nth.call(null,inp,2);
@@ -26,11 +26,12 @@ return jayq.core.$.call(null,selector).multiselect(cljs.core.clj__GT_js.call(nul
 });
 edgar.populate_multiselect.call(null,".multiselect-live",cljs.core.ObjMap.fromObject(["\uFDD0'onChange"],{"\uFDD0'onChange":(function (element,checked){
 if(cljs.core.truth_(checked))
-{return $.ajax.call(null,"/get-streaming-stock-data",cljs.core.clj__GT_js.call(null,cljs.core.ObjMap.fromObject(["\uFDD0'data","\uFDD0'complete"],{"\uFDD0'data":cljs.core.ObjMap.fromObject(["\uFDD0'stock-selection"],{"\uFDD0'stock-selection":element.val()}),"\uFDD0'complete":(function (jqXHR,status){
-return console.log([cljs.core.str(".multiselect-live > jqXHR["),cljs.core.str(jqXHR),cljs.core.str("] / status["),cljs.core.str(status),cljs.core.str("]")].join(''));
-})})));
+{edgar.livesource = (new window.EventSource([cljs.core.str("/get-streaming-stock-data?stock-selection="),cljs.core.str(element.val())].join('')));
 } else
-{return null;
+{return edgar.livesource.addEventListener("stream-live",(function (e){
+var data = r.read_string.call(null,e.data);
+return console.log([cljs.core.str(">> stream-live["),cljs.core.str(e),cljs.core.str("]")].join(''));
+}),false);
 }
 })}));
 edgar.populate_multiselect.call(null,".multiselect-historical",cljs.core.ObjMap.fromObject(["\uFDD0'onChange"],{"\uFDD0'onChange":(function (element,checked){

@@ -76,7 +76,14 @@
              stock-selection)))
 
 (defn initialize-workbench []
-  {:interactive-brokers-client (:esocket (market/connect-to-market))})
+  (def *interactive-brokers-workbench* {:interactive-brokers-client (:esocket (market/connect-to-market))})
+  *interactive-brokers-workbench*)
+
+(defn refresh-workbench []
+
+  (market/close-market-channel)
+  (market/disconnect-from-market)
+  (refresh))
 
 (defn test-run []
 

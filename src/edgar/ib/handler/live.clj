@@ -102,7 +102,7 @@
           (do
 
             (reduce (fn [rslt efn]
-                      (efn tail-evt))
+                      (efn trimmed-list))
                     nil
                     tee-list)
 

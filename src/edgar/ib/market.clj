@@ -78,17 +78,20 @@
   (.cancelMktData client idx))
 
 
-(defonce event-channel (ref (lamina/channel)))
+(defonce event-channel (atom nil))
+(defn close-market-channel []
+  (lamina/force-close @event-channel))
 (defn subscribe-to-market [handle-fn]
+  (if (not @event-channel)
+    (swap! event-channel lamina/channel))
   (lamina/receive-all @event-channel handle-fn))
 
-(defn publish-event
-  [^clojure.lang.PersistentHashMap event]
-
+(defn publish-event [^clojure.lang.PersistentHashMap event]
+  (if (not @event-channel)
+    (swap! event-channel lamina/channel))
   (lamina/enqueue @event-channel event))
 
-(defn publish-event-from-java
-  [^java.util.HashMap event]
+(defn publish-event-from-java [^java.util.HashMap event]
 
   ;; transform java.util.HashMap to a Clojure map
   (publish-event (merge {} event)))
