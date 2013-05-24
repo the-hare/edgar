@@ -83,7 +83,8 @@
 
   (market/close-market-channel)
   (market/disconnect-from-market)
-  (refresh))
+  (refresh)
+  (market/create-event-channel))
 
 (defn test-run []
 
