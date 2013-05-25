@@ -34,9 +34,7 @@
       height: 566;
       float: left;
       overflow-y: scroll;
-      border: 1px red solid;
       #live-stream , #historical-data {
-        border: 1px black solid;
         height: 700;
 
         .graph-group-header {
@@ -59,9 +57,11 @@
               text-decoration: none;  // ... TODO turn off underline on hover
             }
           }
-          #live-stop { top: -20; }
-          .btn-group { top: -40; }
         }
+      }
+      #live-stream > .graph-group-header {
+        #live-stop { top: -20; }
+        .btn-group { top: -40; }
       }
     }
     .body-summary {

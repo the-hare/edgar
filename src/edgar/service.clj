@@ -2,6 +2,7 @@
   (:use [clojure.tools.namespace.repl])
   (:require [edgar.datomic :as edatomic]
             [edgar.core.edgar :as edgar]
+            [edgar.ib.market :as market]
             [edgar.ib.handler.historical :as historical]
             [edgar.ib.handler.live :as live]
             [clojure.java.io :as io]
@@ -70,8 +71,10 @@
                       time-interval "] > client-from-session["
                       (:session (:request paused-context)) "]"))
 
+       (market/create-event-channel)
        (edgar/play-historical client stock-selection time-duration time-interval [(fn [tick-list]
 
+                                                                                    (market/close-market-channel)
                                                                                     ((:resume-fn paused-context) {:result tick-list :client client}))])
     ))
 (defbefore get-historical-data
