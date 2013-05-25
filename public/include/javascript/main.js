@@ -14300,7 +14300,7 @@ edgar.populate_multiselect = function(a, b) {
 };
 edgar.populate_multiselect.call(null, ".multiselect-live", cljs.core.ObjMap.fromObject(["\ufdd0'onChange"], {"\ufdd0'onChange":function(a, b) {
   if(cljs.core.truth_(b)) {
-    edgar.livesource = new window.EventSource([cljs.core.str("/get-streaming-stock-data?stock-selection="), cljs.core.str(a.val())].join(""))
+    edgar.livesource = new window.EventSource([cljs.core.str("/init-streaming-stock-data?stock-selection="), cljs.core.str(a.val())].join(""))
   }else {
     return edgar.livesource.addEventListener("stream-live", function(a) {
       r.read_string.call(null, a.data);

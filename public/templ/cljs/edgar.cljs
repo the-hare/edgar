@@ -60,7 +60,7 @@
                                                              (if checked
 
 
-                                                               (def livesource (js/window.EventSource. (str "/get-streaming-stock-data?stock-selection=" (.val element))))
+                                                               (def livesource (js/window.EventSource. (str "/init-streaming-stock-data?stock-selection=" (.val element))))
 
                                                                (.addEventListener livesource
                                                                                   "stream-live"
