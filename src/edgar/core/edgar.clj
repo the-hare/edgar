@@ -103,7 +103,7 @@
 (defn test-play-live []
   (let [workbench (initialize-workbench)
         client (:interactive-brokers-client workbench)]
-    (play-live client ["IBM" "AAPL"])))
+    (play-live client ["DDD" #_"IBM" #_"AAPL"])))
 
 (defn test-play-historical []
   (let [workbench (initialize-workbench)

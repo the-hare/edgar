@@ -69,7 +69,7 @@
                       (:tick-window options)
                       40)]
 
-    (log/debug "edgar.core.edgar/handle-event [" evt "] FILTER[" (:ticker-id-filter options) "] > tick-list size[" (count @tick-list) "] > [" @tick-list "] > options[" #_options "]")
+    (log/info "edgar.core.edgar/handle-event [" evt "] FILTER[" (:ticker-id-filter options) "] > tick-list size[" (count @tick-list) "] > [" @tick-list "] > options[" #_options "]")
 
     ;; handle tickPrice
     #_(if (= "tickPrice" (evt "type")) (handle-tick-price options evt))

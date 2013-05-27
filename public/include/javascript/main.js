@@ -14300,13 +14300,15 @@ edgar.populate_multiselect = function(a, b) {
   })
 };
 edgar.populate_multiselect.call(null, ".multiselect-live", cljs.core.ObjMap.fromObject(["\ufdd0'onChange"], {"\ufdd0'onChange":function(a, b) {
-  return cljs.core.truth_(b) ? $.post.call(null, "/get-streaming-stock-data", function(a) {
+  return cljs.core.truth_(b) ? $.post.call(null, [cljs.core.str("/get-streaming-stock-data?stock-selection="), cljs.core.str(a.val())].join(""), function(a) {
     return console.log([cljs.core.str("POST:: get-streaming-stock-data > data["), cljs.core.str(a), cljs.core.str("]")].join(""))
   }) : null
 }}));
 edgar.livesource = new window.EventSource("/get-streaming-stock-data");
 edgar.livesource.addEventListener("stream-live", function(a) {
-  return console.log([cljs.core.str("GET:: get-streaming-live-data > e["), cljs.core.str(a), cljs.core.str("]")].join(""))
+  console.log([cljs.core.str("GET:: get-streaming-live-data > e["), cljs.core.str(a), cljs.core.str("]")].join(""));
+  var b = cljs.reader.read_string.call(null, a.data), a = (new cljs.core.Keyword("\ufdd0'stock-list")).call(null, b), b = (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, b);
+  return edgar.render_stock_graph.call(null, "#live-stock-graph", a, b)
 });
 edgar.core = {};
 edgar.core.analysis = {};

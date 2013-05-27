@@ -56,7 +56,7 @@
 (populate-multiselect ".multiselect-live" {:onChange (fn [element checked]
                                                        (if checked
 
-                                                         ($/post "/get-streaming-stock-data"
+                                                         ($/post (str "/get-streaming-stock-data?stock-selection=" (.val element))
                                                                  (fn [data]
                                                                    (.log js/console (str "POST:: get-streaming-stock-data > data[" data "]"))))))})
 
@@ -74,7 +74,13 @@
 (.addEventListener livesource
                    "stream-live"
                    (fn [e]
-                     (.log js/console (str "GET:: get-streaming-live-data > e[" e "]"))))
+
+                     (.log js/console (str "GET:: get-streaming-live-data > e[" e "]"))
+                     (let [result-data (reader/read-string (.-data e))
+                           local-list (:stock-list result-data)
+                           stock-name (:stock-name result-data)]
+
+                       (render-stock-graph "#live-stock-graph" local-list stock-name))))
 
 
 
