@@ -60,34 +60,9 @@
                                                  :onChange (fn [element checked]
                                                              (if checked
 
-
-                                                               (def livesource (js/window.EventSource. (str "/init-streaming-stock-data?stock-selection=" (.val element))))
-
-                                                               (.addEventListener livesource
-                                                                                  "stream-live"
-                                                                                  (fn [e]
-                                                                                    (let [data (r/read-string (.-data e))]
-                                                                                      (.log js/console (str ">> stream-live[" e "]"))))
-                                                                                  false)
-
-
-                                                               #_(def livesource (EventSource. ))
-                                                               #_(.addEventListener livesource "stream-live" (fn [e] (.log js/console ">> live-source > event[" e "]")) false)
-
-
-                                                               #_($/ajax "/get-streaming-stock-data"
-                                                                       (clj->js {:data {:stock-selection (.val element)}
-                                                                                 :complete (fn [jqXHR status]
-                                                                                             (.log js/console (str ".multiselect-live > jqXHR[" jqXHR "] / status[" status "]"))
-                                                                                             )}))
-                                                               #_($/eventsource (clj->js {:label "edn-event-source"
-                                                                                        :url "/get-streaming-stock-data"
-                                                                                        :data {:stock-selection (.val element)}
-                                                                                        :dataType "text"
-                                                                                        :open (fn []
-                                                                                                (.log js/console (str "edn-event-source > open CALLED")))
-                                                                                        :message (fn [data]
-                                                                                                   (.log js/console (str "edn-event-source > message CALLED > data[" data "]")))})))
+                                                               ($/post "/get-streaming-stock-data"
+                                                                       (clj->js {:complete (fn [jqXHR status]
+                                                                                             (.log js/console (str "POST:: get-streaming-stock-data > jqXHR[" jqXHR "] / status[" status "]")))})))
                                                              )})
 
 
@@ -108,10 +83,12 @@
 (->
  ($ "#live-initialize")
  (.click (fn [arg1 arg2]
-           ($/ajax "/init-streaming-stock-data"
-                   (clj->js {:complete (fn [jqXHR status] (.log js/console (str "#live-initialize > jqXHR[" jqXHR "] / status[" status "]")))})))))
 
-
-#_(->
- ($ ".body-summary")
- (.affix))
+           (def livesource (js/window.EventSource. (str "/get-streaming-stock-data")))
+           (.addEventListener livesource
+                              "stream-live"
+                              (fn [e]
+                                (let [data (r/read-string (.-data e))]
+                                  (.log js/console (str ">> stream-live[" e "]"))))
+                              false)
+           )))

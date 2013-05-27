@@ -10,11 +10,11 @@ edgar.tick_list = cljs.core.clj__GT_js.call(null,cljs.core.PersistentVector.from
 edgar.render_stock_graph.call(null,"#live-stock-graph",edgar.tick_list,"IBM");
 edgar.render_stock_graph.call(null,"#historical-stock-graph",edgar.tick_list,"AAPL");
 edgar.populate_multiselect = (function populate_multiselect(selector,options){
-var G__14192 = (new cljs.core.Keyword("\uFDD0'bind")).call(null,jayq.core.deferred_m);
-var G__14193 = (new cljs.core.Keyword("\uFDD0'return")).call(null,jayq.core.deferred_m);
-var G__14194 = (new cljs.core.Keyword("\uFDD0'zero")).call(null,jayq.core.deferred_m);
-return G__14192.call(null,$.ajax.call(null,"/list-filtered-input"),(function (filtered_input){
-return G__14193.call(null,(function (){var multiselect = jayq.core.$.call(null,selector);
+var G__17559 = (new cljs.core.Keyword("\uFDD0'bind")).call(null,jayq.core.deferred_m);
+var G__17560 = (new cljs.core.Keyword("\uFDD0'return")).call(null,jayq.core.deferred_m);
+var G__17561 = (new cljs.core.Keyword("\uFDD0'zero")).call(null,jayq.core.deferred_m);
+return G__17559.call(null,$.ajax.call(null,"/list-filtered-input"),(function (filtered_input){
+return G__17560.call(null,(function (){var multiselect = jayq.core.$.call(null,selector);
 cljs.core.reduce.call(null,(function (rslt,inp){
 var option_value = cljs.core.second.call(null,inp);
 var option_label = cljs.core.nth.call(null,inp,2);
@@ -27,12 +27,11 @@ return jayq.core.$.call(null,selector).multiselect(cljs.core.clj__GT_js.call(nul
 });
 edgar.populate_multiselect.call(null,".multiselect-live",cljs.core.ObjMap.fromObject(["\uFDD0'onChange"],{"\uFDD0'onChange":(function (element,checked){
 if(cljs.core.truth_(checked))
-{edgar.livesource = (new window.EventSource([cljs.core.str("/init-streaming-stock-data?stock-selection="),cljs.core.str(element.val())].join('')));
+{return $.post.call(null,"/get-streaming-stock-data",cljs.core.clj__GT_js.call(null,cljs.core.ObjMap.fromObject(["\uFDD0'complete"],{"\uFDD0'complete":(function (jqXHR,status){
+return console.log([cljs.core.str("POST:: get-streaming-stock-data > jqXHR["),cljs.core.str(jqXHR),cljs.core.str("] / status["),cljs.core.str(status),cljs.core.str("]")].join(''));
+})})));
 } else
-{return edgar.livesource.addEventListener("stream-live",(function (e){
-var data = r.read_string.call(null,e.data);
-return console.log([cljs.core.str(">> stream-live["),cljs.core.str(e),cljs.core.str("]")].join(''));
-}),false);
+{return null;
 }
 })}));
 edgar.populate_multiselect.call(null,".multiselect-historical",cljs.core.ObjMap.fromObject(["\uFDD0'onChange"],{"\uFDD0'onChange":(function (element,checked){
@@ -45,7 +44,9 @@ return console.log([cljs.core.str(".multiselect-historical > jqXHR["),cljs.core.
 }
 })}));
 jayq.core.$.call(null,"#live-initialize").click((function (arg1,arg2){
-return $.ajax.call(null,"/init-streaming-stock-data",cljs.core.clj__GT_js.call(null,cljs.core.ObjMap.fromObject(["\uFDD0'complete"],{"\uFDD0'complete":(function (jqXHR,status){
-return console.log([cljs.core.str("#live-initialize > jqXHR["),cljs.core.str(jqXHR),cljs.core.str("] / status["),cljs.core.str(status),cljs.core.str("]")].join(''));
-})})));
+edgar.livesource = (new window.EventSource([cljs.core.str("/get-streaming-stock-data")].join('')));
+return edgar.livesource.addEventListener("stream-live",(function (e){
+var data = r.read_string.call(null,e.data);
+return console.log([cljs.core.str(">> stream-live["),cljs.core.str(e),cljs.core.str("]")].join(''));
+}),false);
 }));

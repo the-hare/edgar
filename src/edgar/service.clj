@@ -88,89 +88,93 @@
 
 
 ;; LIVE Data
+#_ (comment
+
+     (def stored-streaming-context (atom nil))
+     (defn store-streaming-context [streaming-context]
+       (reset! stored-streaming-context streaming-context))
+     (defn stop-streaming-stock-data
+       "Stops streaming stock data for 1 or a list of stocks"
+       []
+       (when-let [streaming-context @stored-streaming-context]
+         (reset! stored-streaming-context nil)
+         (sse/end-event-stream streaming-context)))
+
+     (defn- session-id [] (.toString (java.util.UUID/randomUUID)))
+     (defn init-streaming-stock-data
+       [request]
+
+       ;; ===
+       (log/info (str "... init-streaming-stock-data CALLED > (" (type request) ")[" request "]"))
+       (sse/start-event-stream store-streaming-context)
+
+       ;; ===
+       (-> ""
+           ring-resp/response
+           (ring-resp/content-type "text/event-stream"))
+       (let [session-id (or (get-in request [:cookies "live-id" :value])
+                            (session-id))
+             cookie {:live-id {:value session-id :path "/"}}]
+
+         (-> (ring-resp/redirect (route/url-for ::get-streaming-stock-data))
+             (update-in [:cookies] merge cookie))))
+
+     (defn stream-live
+       [streaming-context event-name result]
+
+       (log/info (str "... stream-live > context[" @stored-streaming-context "] > event-name[" event-name "] response[" (:result result) "]"))
+       (try
+
+         (sse/send-event (ring-resp/content-type streaming-context "text/event-stream") event-name (pr-str {:data [1 2 3 4]}))
+
+         (catch java.io.IOException ioe
+           (stop-streaming-stock-data))))
+     (defn get-streaming-stock-data
+       "Get streaming stock data for 1 or a list of stocks"
+       [streaming-context]
+
+       (let [client (or (-> streaming-context :session :ib-client)
+                        (:interactive-brokers-client edgar/*interactive-brokers-workbench*))
+             stock-selection [ (-> streaming-context :query-params :stock-selection)]]
+
+         (log/info (str "... get-streaming-stock-data CALLED > streaming-context[" streaming-context "]"))
+
+         (sse/start-event-stream store-streaming-context)
+         (stream-live streaming-context "stream-live" nil)
+
+
+         #_(def *LIVE-LIST* (atom nil))
+         #_(edgar/play-live client stock-selection [(fn [tick-list]
+
+                                                      (swap! *LIVE-LIST* (fn [inp] tick-list))
+                                                      (stream-live "stream-live" {:result tick-list :client client}))])
+
+         )))
+
 (def stored-streaming-context (atom nil))
-(defn store-streaming-context [streaming-context]
-  (reset! stored-streaming-context streaming-context))
-(defn stop-streaming-stock-data
-  "Stops streaming stock data for 1 or a list of stocks"
-  []
-  (when-let [streaming-context @stored-streaming-context]
-    (reset! stored-streaming-context nil)
-    (sse/end-event-stream streaming-context)))
+(defn init-streaming-stock-data [sse-context]
 
-(defn- session-id [] (.toString (java.util.UUID/randomUUID)))
-(defn init-streaming-stock-data
-  [request]
+  (log/info (str "... init-streaming-stock-data CALLED > sse-context[" sse-context "]"))
+  (reset! stored-streaming-context sse-context))
 
-  ;; ===
-  (log/info (str "... init-streaming-stock-data CALLED > (" (type request) ")[" request "]"))
-  (sse/start-event-stream store-streaming-context)
+(defn get-streaming-stock-data [request]
 
-  ;; ===
-  (-> ""
-        ring-resp/response
-        (ring-resp/content-type "text/event-stream"))
-  (let [session-id (or (get-in request [:cookies "live-id" :value])
-                       (session-id))
-        cookie {:live-id {:value session-id :path "/"}}]
-
-    (-> (ring-resp/redirect (route/url-for ::get-streaming-stock-data))
-        (update-in [:cookies] merge cookie))))
-
-(defn stream-live
-  [streaming-context event-name result]
-
-  (log/info (str "... stream-live > context[" @stored-streaming-context "] > event-name[" event-name "] response[" (:result result) "]"))
-  (try
-
-    (sse/send-event (ring-resp/content-type streaming-context "text/event-stream") event-name (pr-str {:data [1 2 3 4]}))
-
-    (catch java.io.IOException ioe
-      (stop-streaming-stock-data))))
-(defn get-streaming-stock-data
-  "Get streaming stock data for 1 or a list of stocks"
-  [streaming-context]
-
-  (let [client (or (-> streaming-context :session :ib-client)
-                   (:interactive-brokers-client edgar/*interactive-brokers-workbench*))
-        stock-selection [ (-> streaming-context :query-params :stock-selection)]]
-
-    (log/info (str "... get-streaming-stock-data CALLED > streaming-context[" streaming-context "]"))
-
-    (sse/start-event-stream store-streaming-context)
-    (stream-live streaming-context "stream-live" nil)
-
-
-    #_(def *LIVE-LIST* (atom nil))
-    #_(edgar/play-live client stock-selection [(fn [tick-list]
-
-                                               (swap! *LIVE-LIST* (fn [inp] tick-list))
-                                               (stream-live "stream-live" {:result tick-list :client client}))])
-
-    ))
-
+  (log/info (str "... get-streaming-stock-data CALLED > sse-context[" @stored-streaming-context "]"))
+  (sse/send-event @stored-streaming-context "stream-live" (pr-str {:data [1 2 3 4]})))
 
 (definterceptor session-interceptor
   (middlewares/session {:store (rmemory/memory-store)}))
-(definterceptor cookie-session-interceptor
-  (middlewares/session {:store (rcookie/cookie-store)}))
 (defroutes routes
   [[
     ["/" {:get home-page}
 
-     ;; Set default interceptors for /about and any other paths under /
-     ;; ^:interceptors [(body-params/body-params) bootstrap/html-body]
-     ^:interceptors [#_middlewares/params
-                     #_middlewares/keyword-params
-                     session-interceptor]
+     ^:interceptors [session-interceptor]
 
      ["/list-filtered-input" {:get list-filtered-input}]
      ["/get-historical-data" {:get get-historical-data}]
 
-     ;;["/init-streaming-stock-data" {:get [::init-streaming-stock-data (sse/start-event-stream init-streaming-stock-data)]}]
-     ["/init-streaming-stock-data" {:get init-streaming-stock-data}]
-     ["/get-streaming-stock-data" {:get get-streaming-stock-data}]
-     ["/stop-streaming-stock-data" {:post stop-streaming-stock-data}]]
+     ["/get-streaming-stock-data" {:get [::init-streaming-stock-data (sse/start-event-stream init-streaming-stock-data)]
+                                   :post get-streaming-stock-data}]]
     ]])
 
 

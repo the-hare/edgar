@@ -14300,14 +14300,9 @@ edgar.populate_multiselect = function(a, b) {
   })
 };
 edgar.populate_multiselect.call(null, ".multiselect-live", cljs.core.ObjMap.fromObject(["\ufdd0'onChange"], {"\ufdd0'onChange":function(a, b) {
-  if(cljs.core.truth_(b)) {
-    edgar.livesource = new window.EventSource([cljs.core.str("/init-streaming-stock-data?stock-selection="), cljs.core.str(a.val())].join(""))
-  }else {
-    return edgar.livesource.addEventListener("stream-live", function(a) {
-      r.read_string.call(null, a.data);
-      return console.log([cljs.core.str(">> stream-live["), cljs.core.str(a), cljs.core.str("]")].join(""))
-    }, !1)
-  }
+  return cljs.core.truth_(b) ? $.post.call(null, "/get-streaming-stock-data", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'complete"], {"\ufdd0'complete":function(a, b) {
+    return console.log([cljs.core.str("POST:: get-streaming-stock-data > jqXHR["), cljs.core.str(a), cljs.core.str("] / status["), cljs.core.str(b), cljs.core.str("]")].join(""))
+  }}))) : null
 }}));
 edgar.populate_multiselect.call(null, ".multiselect-historical", cljs.core.ObjMap.fromObject(["\ufdd0'onChange"], {"\ufdd0'onChange":function(a, b) {
   return cljs.core.truth_(b) ? $.ajax.call(null, "/get-historical-data", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'data", "\ufdd0'complete"], {"\ufdd0'data":cljs.core.ObjMap.fromObject(["\ufdd0'stock-selection", "\ufdd0'time-duration", "\ufdd0'time-interval"], {"\ufdd0'stock-selection":a.val(), "\ufdd0'time-duration":"60 S", "\ufdd0'time-interval":"1 secs"}), "\ufdd0'complete":function(a, b) {
@@ -14315,9 +14310,11 @@ edgar.populate_multiselect.call(null, ".multiselect-historical", cljs.core.ObjMa
   }}))) : null
 }}));
 jayq.core.$.call(null, "#live-initialize").click(function() {
-  return $.ajax.call(null, "/init-streaming-stock-data", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'complete"], {"\ufdd0'complete":function(a, b) {
-    return console.log([cljs.core.str("#live-initialize > jqXHR["), cljs.core.str(a), cljs.core.str("] / status["), cljs.core.str(b), cljs.core.str("]")].join(""))
-  }})))
+  edgar.livesource = new window.EventSource("" + cljs.core.str("/get-streaming-stock-data"));
+  return edgar.livesource.addEventListener("stream-live", function(a) {
+    r.read_string.call(null, a.data);
+    return console.log([cljs.core.str(">> stream-live["), cljs.core.str(a), cljs.core.str("]")].join(""))
+  }, !1)
 });
 edgar.core = {};
 edgar.core.analysis = {};
