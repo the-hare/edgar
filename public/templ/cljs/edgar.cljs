@@ -1,7 +1,8 @@
 (ns edgar
   (:use [jayq.core :only [$ css inner]])
   (:use-macros [jayq.macros :only [let-ajax let-deferred]])
-  (:require [jayq.core :as jq]))
+  (:require [jayq.core :as jq]
+            [cljs.reader :as reader]))
 
 
 ;; === SCROLLING  with Lionbars
@@ -33,62 +34,55 @@
 ;; === POPULATE the live multi-select
 (defn populate-multiselect [selector options]
 
-  (let-deferred
-   [filtered-input ($/ajax "/list-filtered-input")]
+  (let-deferred [filtered-input ($/ajax "/list-filtered-input")]
 
-   (let [multiselect ($ selector)]
+                (let [multiselect ($ selector)]
 
-     (reduce (fn [rslt inp]
+                  (reduce (fn [rslt inp]
 
-               (let [option-value (second inp)
-                     option-label (nth inp 2)
-                     price-difference (.toFixed (first inp) 2)]
+                            (let [option-value (second inp)
+                                  option-label (nth inp 2)
+                                  price-difference (.toFixed (first inp) 2)]
 
-                 (-> multiselect
-                     (.append (str "<option value='" option-value "'>" option-label " (" price-difference ")</option>")))))
-             nil
-             (into-array filtered-input))
+                              (-> multiselect
+                                  (.append (str "<option value='" option-value "'>" option-label " (" price-difference ")</option>")))))
+                          nil
+                          (into-array (reader/read-string filtered-input)))
 
-     (-> ($ selector)
-         (.multiselect (clj->js (merge {:enableFiltering true} options))))))
-
-  )
-
-(populate-multiselect ".multiselect-live" {#_:buttonText #_(fn [options]
-                                                               (if (= 0 (.length options))
-                                                                 "Historical Selections"))
-                                                 :onChange (fn [element checked]
-                                                             (if checked
-
-                                                               ($/post "/get-streaming-stock-data"
-                                                                       (clj->js {:complete (fn [jqXHR status]
-                                                                                             (.log js/console (str "POST:: get-streaming-stock-data > jqXHR[" jqXHR "] / status[" status "]")))})))
-                                                             )})
+                  (-> ($ selector)
+                      (.multiselect (clj->js (merge {:enableFiltering true} options)))))))
 
 
-(populate-multiselect ".multiselect-historical" {#_:buttonText #_(fn [options]
-                                                         (if (= 0 (.length options))
-                                                           "Live Selections"))
-                                           :onChange (fn [element checked]
+(populate-multiselect ".multiselect-live" {:onChange (fn [element checked]
                                                        (if checked
-                                                         ($/ajax "/get-historical-data"
-                                                                 (clj->js {:data {:stock-selection (.val element)
-                                                                                  :time-duration "60 S"
-                                                                                  :time-interval "1 secs"}
-                                                                           :complete (fn [jqXHR status]
-                                                                                       (.log js/console (str ".multiselect-historical > jqXHR[" jqXHR "] / status[" status "]"))
-                                                                                       )})))
-                                                       )})
 
-(->
- ($ "#live-initialize")
- (.click (fn [arg1 arg2]
+                                                         ($/post "/get-streaming-stock-data"
+                                                                 (fn [data]
+                                                                   (.log js/console (str "POST:: get-streaming-stock-data > data[" data "]"))))))})
 
-           (def livesource (js/window.EventSource. (str "/get-streaming-stock-data")))
-           (.addEventListener livesource
-                              "stream-live"
-                              (fn [e]
-                                (let [data (r/read-string (.-data e))]
-                                  (.log js/console (str ">> stream-live[" e "]"))))
-                              false)
-           )))
+
+#_(populate-multiselect ".multiselect-historical" {:onChange (fn [element checked]
+                                                             (if checked
+                                                               ($/ajax "/get-historical-data"
+                                                                       (clj->js {:data {:stock-selection (.val element)
+                                                                                        :time-duration "60 S"
+                                                                                        :time-interval "1 secs"}
+                                                                                 :complete (fn [jqXHR status]
+                                                                                             (.log js/console (str ".multiselect-historical > jqXHR[" jqXHR "] / status[" status "]")))}))))})
+
+(def livesource (js/window.EventSource. "/get-streaming-stock-data"))
+(.addEventListener livesource
+                   "stream-live"
+                   (fn [e]
+                     (.log js/console (str "GET:: get-streaming-live-data > e[" e "]"))))
+
+
+
+#_(-> ($ "#live-initialize")
+    (.click (fn [arg1 arg2]
+
+              (def livesource (js/window.EventSource. "/get-streaming-stock-data"))
+              (.addEventListener livesource
+                                 "stream-live"
+                                 (fn [e]
+                                   (.log js/console (str "GET:: get-streaming-live-data > e[" e "]")))))))

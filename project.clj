@@ -6,9 +6,9 @@
   :dependencies [
                  ;; Pedestal libraries
                  [org.clojure/clojure "1.5.0"]
-                 [io.pedestal/pedestal.service "0.1.6"]
-                 [io.pedestal/pedestal.jetty "0.1.6"]
-                 #_[io.pedestal/pedestal.tomcat "0.1.6"]
+                 [io.pedestal/pedestal.service "0.1.7"]
+                 [io.pedestal/pedestal.jetty "0.1.7"]
+
 
                  ;; Logging
                  [ch.qos.logback/logback-classic "1.0.7"]
@@ -45,12 +45,7 @@
 
   :plugins [[lein-ring "0.8.2"]
             [lein-cljsbuild "0.3.0"]
-            [lein-midje "3.0.1"]
-            #_[lein-haml-sass "0.2.5"]
-            ]
-
-  #_:haml #_{:src "public/templ/haml"
-             :output-directory "public/include"}
+            [lein-midje "3.0.1"]]
 
   :cljsbuild {
               :crossovers [edgar.core.analysis]
