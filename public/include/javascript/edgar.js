@@ -11,11 +11,11 @@ edgar.tick_list = cljs.core.clj__GT_js.call(null,cljs.core.PersistentVector.from
 edgar.render_stock_graph.call(null,"#live-stock-graph",edgar.tick_list,"IBM");
 edgar.render_stock_graph.call(null,"#historical-stock-graph",edgar.tick_list,"AAPL");
 edgar.populate_multiselect = (function populate_multiselect(selector,options){
-var G__7704 = (new cljs.core.Keyword("\uFDD0'bind")).call(null,jayq.core.deferred_m);
-var G__7705 = (new cljs.core.Keyword("\uFDD0'return")).call(null,jayq.core.deferred_m);
-var G__7706 = (new cljs.core.Keyword("\uFDD0'zero")).call(null,jayq.core.deferred_m);
-return G__7704.call(null,$.ajax.call(null,"/list-filtered-input"),(function (filtered_input){
-return G__7705.call(null,(function (){var multiselect = jayq.core.$.call(null,selector);
+var G__9517 = (new cljs.core.Keyword("\uFDD0'bind")).call(null,jayq.core.deferred_m);
+var G__9518 = (new cljs.core.Keyword("\uFDD0'return")).call(null,jayq.core.deferred_m);
+var G__9519 = (new cljs.core.Keyword("\uFDD0'zero")).call(null,jayq.core.deferred_m);
+return G__9517.call(null,$.ajax.call(null,"/list-filtered-input"),(function (filtered_input){
+return G__9518.call(null,(function (){var multiselect = jayq.core.$.call(null,selector);
 cljs.core.reduce.call(null,(function (rslt,inp){
 var option_value = cljs.core.second.call(null,inp);
 var option_label = cljs.core.nth.call(null,inp,2);
@@ -31,6 +31,19 @@ if(cljs.core.truth_(checked))
 {return $.post.call(null,[cljs.core.str("/get-streaming-stock-data?stock-selection="),cljs.core.str(element.val()),cljs.core.str("&stock-name="),cljs.core.str(element.text())].join(''),(function (data){
 return console.log([cljs.core.str("POST:: get-streaming-stock-data > data["),cljs.core.str(data),cljs.core.str("]")].join(''));
 }));
+} else
+{return null;
+}
+})}));
+edgar.populate_multiselect.call(null,".multiselect-historical",cljs.core.ObjMap.fromObject(["\uFDD0'onChange"],{"\uFDD0'onChange":(function (element,checked){
+if(cljs.core.truth_(checked))
+{return $.ajax.call(null,"/get-historical-data",cljs.core.clj__GT_js.call(null,cljs.core.ObjMap.fromObject(["\uFDD0'data","\uFDD0'complete"],{"\uFDD0'data":cljs.core.ObjMap.fromObject(["\uFDD0'stock-selection","\uFDD0'time-duration","\uFDD0'time-interval"],{"\uFDD0'stock-selection":element.val(),"\uFDD0'time-duration":"60 S","\uFDD0'time-interval":"1 secs"}),"\uFDD0'complete":(function (jqXHR,status){
+console.log([cljs.core.str(".multiselect-historical > jqXHR["),cljs.core.str(jqXHR),cljs.core.str("] / status["),cljs.core.str(status),cljs.core.str("]")].join(''));
+var result_data = cljs.reader.read_string.call(null,jqXHR.responseText);
+var local_list = (new cljs.core.Keyword("\uFDD0'stock-list")).call(null,result_data);
+var stock_name = (new cljs.core.Keyword("\uFDD0'stock-name")).call(null,result_data);
+return edgar.render_stock_graph.call(null,"#historical-stock-graph",local_list,stock_name);
+})})));
 } else
 {return null;
 }

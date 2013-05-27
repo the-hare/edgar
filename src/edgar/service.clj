@@ -47,36 +47,38 @@
 ;; HISTORICAL Data
 (defn resume-historical [context result-map]
 
-  (let [response-result (ring-resp/response (:result result-map))
-        response-final (if (-> response-result :request :session :ib-client) ;; conditionally put the IB client into session
-                         response-result
-                         (merge response-result {:session {:ib-client (:client result-map)}}))]
+  (let [response-result (ring-resp/response result-map)]
 
-    (log/info (str "... resume-historical > paused-context class[" (class context) "] > response [" (class response-final) "] [" response-final "]"))
+    (log/info (str "... resume-historical > paused-context class[" (class context) "] > response [" (class response-result) "] [" response-result "]"))
     (iimpl/resume
      (-> context
-         (assoc :response response-final)))))
+         (assoc :response response-result)))))
+
 (defn async-historical [paused-context]
 
-     (let [client (or (-> paused-context :request :session :ib-client)
-                      (:interactive-brokers-client (edgar/initialize-workbench)))
-           stock-selection [ (-> paused-context :request :query-params :stock-selection) ]
-           time-duration (-> paused-context :request :query-params :time-duration)
-           time-interval (-> paused-context :request :query-params :time-interval)]
+  (let [client (:interactive-brokers-client (edgar/initialize-workbench))
+        stock-selection [ (-> paused-context :request :query-params :stock-selection) ]
+        time-duration (-> paused-context :request :query-params :time-duration)
+        time-interval (-> paused-context :request :query-params :time-interval)]
 
-       (log/info (str "... async-historical 1 > paused-context class["
-                      (class paused-context) "] > stock-selection["
-                      stock-selection "] > time-duration["
-                      time-duration "] > time-interval["
-                      time-interval "] > client-from-session["
-                      (:session (:request paused-context)) "]"))
+    (log/info (str "... async-historical 1 > paused-context class["
+                   (class paused-context) "] > stock-selection["
+                   stock-selection "] > time-duration["
+                   time-duration "] > time-interval["
+                   time-interval "] > client-from-session["
+                   (:session (:request paused-context)) "]"))
 
-       (market/create-event-channel)
-       (edgar/play-historical client stock-selection time-duration time-interval [(fn [tick-list]
+    (market/create-event-channel)
+    (edgar/play-historical client stock-selection time-duration time-interval [(fn [tick-list]
 
-                                                                                    (market/close-market-channel)
-                                                                                    ((:resume-fn paused-context) {:result tick-list :client client}))])
-    ))
+                                                                                 (market/close-market-channel)
+
+                                                                                 (let [final-list (reduce (fn [rslt ech]
+                                                                                                            (conj rslt [(ech "date") (ech "close")]))
+                                                                                                          []
+                                                                                                          (-> tick-list first :event-list))]
+
+                                                                                   ((:resume-fn paused-context) {:stock-list final-list :stock-name (-> tick-list first :company)})))])))
 (defbefore get-historical-data
   "Get historical data for a particular stock"
   [{request :request :as context}]
@@ -143,6 +145,7 @@
 
      ^:interceptors [body-params/body-params, session-interceptor]
      ["/list-filtered-input" {:get list-filtered-input}]
+     ["/get-historical-data" {:get get-historical-data}]
      ["/get-streaming-stock-data" { :get [::init-streaming-stock-data (sse/start-event-stream init-streaming-stock-data)]
                                     :post get-streaming-stock-data}]
      ]]])

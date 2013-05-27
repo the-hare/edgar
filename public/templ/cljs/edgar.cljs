@@ -54,21 +54,28 @@
 
 
 (populate-multiselect ".multiselect-live" {:onChange (fn [element checked]
-                                                       (if checked
 
+                                                       (if checked
                                                          ($/post (str "/get-streaming-stock-data?stock-selection=" (.val element) "&stock-name=" (.text element))
                                                                  (fn [data]
                                                                    (.log js/console (str "POST:: get-streaming-stock-data > data[" data "]"))))))})
 
 
-#_(populate-multiselect ".multiselect-historical" {:onChange (fn [element checked]
+(populate-multiselect ".multiselect-historical" {:onChange (fn [element checked]
+
                                                              (if checked
                                                                ($/ajax "/get-historical-data"
                                                                        (clj->js {:data {:stock-selection (.val element)
                                                                                         :time-duration "60 S"
                                                                                         :time-interval "1 secs"}
                                                                                  :complete (fn [jqXHR status]
-                                                                                             (.log js/console (str ".multiselect-historical > jqXHR[" jqXHR "] / status[" status "]")))}))))})
+
+                                                                                             (.log js/console (str ".multiselect-historical > jqXHR[" jqXHR "] / status[" status "]"))
+                                                                                             (let [result-data (reader/read-string (.-responseText jqXHR))
+                                                                                                   local-list (:stock-list result-data)
+                                                                                                   stock-name (:stock-name result-data)]
+
+                                                                                               (render-stock-graph "#historical-stock-graph" local-list stock-name)))}))))})
 
 (def livesource (js/window.EventSource. "/get-streaming-stock-data"))
 (.addEventListener livesource
@@ -81,14 +88,3 @@
                            stock-name (:stock-name result-data)]
 
                        (render-stock-graph "#live-stock-graph" local-list stock-name))))
-
-
-
-#_(-> ($ "#live-initialize")
-    (.click (fn [arg1 arg2]
-
-              (def livesource (js/window.EventSource. "/get-streaming-stock-data"))
-              (.addEventListener livesource
-                                 "stream-live"
-                                 (fn [e]
-                                   (.log js/console (str "GET:: get-streaming-live-data > e[" e "]")))))))
