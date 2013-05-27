@@ -56,7 +56,7 @@
 (populate-multiselect ".multiselect-live" {:onChange (fn [element checked]
                                                        (if checked
 
-                                                         ($/post (str "/get-streaming-stock-data?stock-selection=" (.val element))
+                                                         ($/post (str "/get-streaming-stock-data?stock-selection=" (.val element) "&stock-name=" (.text element))
                                                                  (fn [data]
                                                                    (.log js/console (str "POST:: get-streaming-stock-data > data[" data "]"))))))})
 
