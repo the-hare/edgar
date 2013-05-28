@@ -59,7 +59,7 @@
 
 (defn tee-market
   ""
-  [tick]
+  [tick-list tick]
 
   (log/debug "tee.datomic/tee-market > tick[" tick "]")
   )

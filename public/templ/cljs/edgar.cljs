@@ -11,23 +11,30 @@
 
 
 ;; === RENDER the Live stock graph
-(defn render-stock-graph [selector tlist label]
+(defn render-stock-graph [selector tlist label increment]
 
-  (-> ($ selector)
-      (.highcharts "StockChart" (clj->js
-                                 {:rangeSelector {:selected 1},
-                                  :title {:text label},
-                                  :series [{:name label,
-                                            :data tlist
-                                            :marker {:enabled true, :radius 3},
-                                            :shadow true,
-                                            :tooltip {:valueDecimals 2}}]})
-                   )))
+  (if-not increment
+
+    (-> ($ selector)
+        (.highcharts "StockChart" (clj->js
+                                   {:rangeSelector {:selected 1},
+                                    :title {:text label},
+                                    :series [{:name label,
+                                              :data tlist
+                                              :marker {:enabled true, :radius 3},
+                                              :shadow true,
+                                              :tooltip {:valueDecimals 2}}]})
+                     ))
+    (-> ($ selector)
+        (.highcharts)
+        (.-series)
+        first
+        (.addPoint (first tlist) true true true)) ))
 
 (def tick-list (clj->js [[1368215573010 203.98] [1368215576331 203.99] [1368215576857 203.99] [1368215577765 203.99] [1368215578769 204.0] [1368215579272 204.01] [1368215579517 204.02] [1368215581769 204.02] [1368215583602 204.01] [1368215585650 204.02] [1368215586060 204.02] [1368215587029 204.01] [1368215588318 204.02] [1368215589335 204.01] [1368215589536 204.01] [1368215589846 204.0] [1368215591079 203.99] [1368215591789 203.99] [1368215592104 203.98] [1368215592615 203.98] [1368215592758 203.99] [1368215594039 203.97] [1368215597119 203.98] [1368215597632 203.97] [1368215599396 203.97] [1368215603876 203.96] [1368215606059 203.96] [1368215610316 203.95] [1368215610634 203.95] [1368215610813 203.93] [1368215612886 203.95] [1368215615858 203.94] [1368215618621 203.94] [1368215619138 203.96] [1368215623846 203.94] [1368215632669 203.94] [1368215634709 203.92] [1368215636587 203.93] [1368215636952 203.94] [1368215638328 203.93]]))
 
-(render-stock-graph "#live-stock-graph" tick-list "IBM")
-(render-stock-graph "#historical-stock-graph" tick-list "AAPL")
+(render-stock-graph "#live-stock-graph" tick-list "IBM" false)
+(render-stock-graph "#historical-stock-graph" tick-list "AAPL" false)
 
 
 
@@ -58,7 +65,7 @@
                                                        (if checked
                                                          ($/post (str "/get-streaming-stock-data?stock-selection=" (.val element) "&stock-name=" (.text element))
                                                                  (fn [data]
-                                                                   (.log js/console (str "POST:: get-streaming-stock-data > data[" data "]"))))))})
+                                                                   (.log js/console (str "POST:: get-streaming-stock-data > data[" (.-data data) "]"))))))})
 
 
 (populate-multiselect ".multiselect-historical" {:onChange (fn [element checked]
@@ -75,7 +82,7 @@
                                                                                                    local-list (:stock-list result-data)
                                                                                                    stock-name (:stock-name result-data)]
 
-                                                                                               (render-stock-graph "#historical-stock-graph" local-list stock-name)))}))))})
+                                                                                               (render-stock-graph "#historical-stock-graph" local-list stock-name false)))}))))})
 
 (def livesource (js/window.EventSource. "/get-streaming-stock-data"))
 (.addEventListener livesource
@@ -84,7 +91,12 @@
 
                      (.log js/console (str "GET:: get-streaming-live-data > e[" e "]"))
                      (let [result-data (reader/read-string (.-data e))
-                           local-list (:stock-list result-data)
-                           stock-name (:stock-name result-data)]
+                           local-list (into-array (reduce (fn [rslt ech]
+                                                            (conj rslt (into-array [(js/window.parseInt (first ech)) (js/window.parseFloat (second ech))])))
+                                                          []
+                                                          (into-array (:stock-list result-data))))
+                           stock-name (:stock-name result-data)
+                           increment?  (= stock-name
+                                          (-> ($ "#live-stock-graph") (.highcharts "StockChart") (.-title) (.-text))) ]
 
-                       (render-stock-graph "#live-stock-graph" local-list stock-name))))
+                       (render-stock-graph "#live-stock-graph" local-list stock-name increment?))))

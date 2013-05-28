@@ -14273,9 +14273,9 @@ jayq.core.deferred_m = cljs.core.ObjMap.fromObject(["\ufdd0'return", "\ufdd0'bin
 jayq.core.ajax_m = cljs.core.ObjMap.fromObject(["\ufdd0'return", "\ufdd0'bind", "\ufdd0'zero"], {"\ufdd0'return":cljs.core.identity, "\ufdd0'bind":function(a, b) {
   return jayq.core.done.call(null, jayq.core.ajax.call(null, a), b)
 }, "\ufdd0'zero":cljs.core.identity});
-var edgar = {render_stock_graph:function(a, b, c) {
-  return jayq.core.$.call(null, a).highcharts("StockChart", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'rangeSelector", "\ufdd0'title", "\ufdd0'series"], {"\ufdd0'rangeSelector":cljs.core.ObjMap.fromObject(["\ufdd0'selected"], {"\ufdd0'selected":1}), "\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":c}), "\ufdd0'series":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'name", "\ufdd0'data", "\ufdd0'marker", "\ufdd0'shadow", 
-  "\ufdd0'tooltip"], {"\ufdd0'name":c, "\ufdd0'data":b, "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled", "\ufdd0'radius"], {"\ufdd0'enabled":!0, "\ufdd0'radius":3}), "\ufdd0'shadow":!0, "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], {"\ufdd0'valueDecimals":2})})], !0)})))
+var edgar = {render_stock_graph:function(a, b, c, d) {
+  return cljs.core.not.call(null, d) ? jayq.core.$.call(null, a).highcharts("StockChart", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'rangeSelector", "\ufdd0'title", "\ufdd0'series"], {"\ufdd0'rangeSelector":cljs.core.ObjMap.fromObject(["\ufdd0'selected"], {"\ufdd0'selected":1}), "\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":c}), "\ufdd0'series":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'name", "\ufdd0'data", "\ufdd0'marker", 
+  "\ufdd0'shadow", "\ufdd0'tooltip"], {"\ufdd0'name":c, "\ufdd0'data":b, "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled", "\ufdd0'radius"], {"\ufdd0'enabled":!0, "\ufdd0'radius":3}), "\ufdd0'shadow":!0, "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], {"\ufdd0'valueDecimals":2})})], !0)}))) : cljs.core.first.call(null, jayq.core.$.call(null, a).highcharts().series).addPoint(cljs.core.first.call(null, b), !0, !0, !0)
 }};
 edgar.tick_list = cljs.core.clj__GT_js.call(null, cljs.core.PersistentVector.fromArray([cljs.core.PersistentVector.fromArray([1368215573010, 203.98], !0), cljs.core.PersistentVector.fromArray([1368215576331, 203.99], !0), cljs.core.PersistentVector.fromArray([1368215576857, 203.99], !0), cljs.core.PersistentVector.fromArray([1368215577765, 203.99], !0), cljs.core.PersistentVector.fromArray([1368215578769, 204], !0), cljs.core.PersistentVector.fromArray([1368215579272, 204.01], !0), cljs.core.PersistentVector.fromArray([1368215579517, 
 204.02], !0), cljs.core.PersistentVector.fromArray([1368215581769, 204.02], !0), cljs.core.PersistentVector.fromArray([1368215583602, 204.01], !0), cljs.core.PersistentVector.fromArray([1368215585650, 204.02], !0), cljs.core.PersistentVector.fromArray([1368215586060, 204.02], !0), cljs.core.PersistentVector.fromArray([1368215587029, 204.01], !0), cljs.core.PersistentVector.fromArray([1368215588318, 204.02], !0), cljs.core.PersistentVector.fromArray([1368215589335, 204.01], !0), cljs.core.PersistentVector.fromArray([1368215589536, 
@@ -14283,8 +14283,8 @@ edgar.tick_list = cljs.core.clj__GT_js.call(null, cljs.core.PersistentVector.fro
 203.98], !0), cljs.core.PersistentVector.fromArray([1368215597632, 203.97], !0), cljs.core.PersistentVector.fromArray([1368215599396, 203.97], !0), cljs.core.PersistentVector.fromArray([1368215603876, 203.96], !0), cljs.core.PersistentVector.fromArray([1368215606059, 203.96], !0), cljs.core.PersistentVector.fromArray([1368215610316, 203.95], !0), cljs.core.PersistentVector.fromArray([1368215610634, 203.95], !0), cljs.core.PersistentVector.fromArray([1368215610813, 203.93], !0), cljs.core.PersistentVector.fromArray([1368215612886, 
 203.95], !0), cljs.core.PersistentVector.fromArray([1368215615858, 203.94], !0), cljs.core.PersistentVector.fromArray([1368215618621, 203.94], !0), cljs.core.PersistentVector.fromArray([1368215619138, 203.96], !0), cljs.core.PersistentVector.fromArray([1368215623846, 203.94], !0), cljs.core.PersistentVector.fromArray([1368215632669, 203.94], !0), cljs.core.PersistentVector.fromArray([1368215634709, 203.92], !0), cljs.core.PersistentVector.fromArray([1368215636587, 203.93], !0), cljs.core.PersistentVector.fromArray([1368215636952, 
 203.94], !0), cljs.core.PersistentVector.fromArray([1368215638328, 203.93], !0)], !0));
-edgar.render_stock_graph.call(null, "#live-stock-graph", edgar.tick_list, "IBM");
-edgar.render_stock_graph.call(null, "#historical-stock-graph", edgar.tick_list, "AAPL");
+edgar.render_stock_graph.call(null, "#live-stock-graph", edgar.tick_list, "IBM", !1);
+edgar.render_stock_graph.call(null, "#historical-stock-graph", edgar.tick_list, "AAPL", !1);
 edgar.populate_multiselect = function(a, b) {
   var c = (new cljs.core.Keyword("\ufdd0'bind")).call(null, jayq.core.deferred_m), d = (new cljs.core.Keyword("\ufdd0'return")).call(null, jayq.core.deferred_m);
   (new cljs.core.Keyword("\ufdd0'zero")).call(null, jayq.core.deferred_m);
@@ -14308,7 +14308,7 @@ edgar.populate_multiselect.call(null, ".multiselect-historical", cljs.core.ObjMa
   return cljs.core.truth_(b) ? $.ajax.call(null, "/get-historical-data", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'data", "\ufdd0'complete"], {"\ufdd0'data":cljs.core.ObjMap.fromObject(["\ufdd0'stock-selection", "\ufdd0'time-duration", "\ufdd0'time-interval"], {"\ufdd0'stock-selection":a.val(), "\ufdd0'time-duration":"60 S", "\ufdd0'time-interval":"1 secs"}), "\ufdd0'complete":function(a, b) {
     console.log([cljs.core.str(".multiselect-historical > jqXHR["), cljs.core.str(a), cljs.core.str("] / status["), cljs.core.str(b), cljs.core.str("]")].join(""));
     var e = cljs.reader.read_string.call(null, a.responseText), f = (new cljs.core.Keyword("\ufdd0'stock-list")).call(null, e), e = (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, e);
-    return edgar.render_stock_graph.call(null, "#historical-stock-graph", f, e)
+    return edgar.render_stock_graph.call(null, "#historical-stock-graph", f, e, !1)
   }}))) : null
 }}));
 edgar.livesource = new window.EventSource("/get-streaming-stock-data");
@@ -14316,8 +14316,8 @@ edgar.livesource.addEventListener("stream-live", function(a) {
   console.log([cljs.core.str("GET:: get-streaming-live-data > e["), cljs.core.str(a), cljs.core.str("]")].join(""));
   var b = cljs.reader.read_string.call(null, a.data), a = cljs.core.into_array.call(null, cljs.core.reduce.call(null, function(a, b) {
     return cljs.core.conj.call(null, a, cljs.core.into_array.call(null, cljs.core.PersistentVector.fromArray([window.parseInt(cljs.core.first.call(null, b)), window.parseFloat(cljs.core.second.call(null, b))], !0)))
-  }, cljs.core.PersistentVector.EMPTY, cljs.core.into_array.call(null, (new cljs.core.Keyword("\ufdd0'stock-list")).call(null, b)))), b = (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, b);
-  return edgar.render_stock_graph.call(null, "#live-stock-graph", a, b)
+  }, cljs.core.PersistentVector.EMPTY, cljs.core.into_array.call(null, (new cljs.core.Keyword("\ufdd0'stock-list")).call(null, b)))), b = (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, b), c = cljs.core._EQ_.call(null, b, jayq.core.$.call(null, "#live-stock-graph").highcharts("StockChart").title.text);
+  return edgar.render_stock_graph.call(null, "#live-stock-graph", a, b, c)
 });
 edgar.core = {};
 edgar.core.analysis = {};

@@ -69,7 +69,7 @@
                       (:tick-window options)
                       40)]
 
-    (log/info "edgar.core.edgar/handle-event [" evt "] FILTER[" (:ticker-id-filter options) "] > tick-list size[" (count @tick-list) "] > [" @tick-list "] > options[" #_options "]")
+    (log/debug "edgar.core.edgar/handle-event [" evt "] FILTER[" (:ticker-id-filter options) "] > tick-list size[" (count @tick-list) "] > [" @tick-list "] > options[" #_options "]")
 
     ;; handle tickPrice
     #_(if (= "tickPrice" (evt "type")) (handle-tick-price options evt))
@@ -102,7 +102,7 @@
           (do
 
             (reduce (fn [rslt efn]
-                      (efn trimmed-list))
+                      (efn trimmed-list (first trimmed-list)))
                     nil
                     tee-list)
 
