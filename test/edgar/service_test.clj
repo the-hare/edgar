@@ -9,7 +9,7 @@
 (def service
   (::bootstrap/service-fn (bootstrap/create-servlet service/service)))
 
-(deftest home-page-test
+#_(deftest home-page-test
   (is (=
        (:body (response-for service :get "/"))
        "Hello World!"))
@@ -17,7 +17,7 @@
        (:headers (response-for service :get "/"))
        {"Content-Type" "text/html"})))
 
-(deftest about-page-test
+#_(deftest about-page-test
   (is (.contains
        (:body (response-for service :get "/about"))
        "Clojure 1.5"))

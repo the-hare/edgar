@@ -33,4 +33,4 @@
 
 (def run-me (partial live/feed-handler {:tick-list tick-list :ticker-id-filter [1] :tee-list tee-list}))
 
-(run-me (read-string (slurp "etc/test-live-latest-event.edn")))
+#_(run-me (read-string (slurp "etc/test-live-latest-event.edn")))
