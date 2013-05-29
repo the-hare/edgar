@@ -69,6 +69,8 @@
                        raw-data fst
                        ]
 
+                   (println (str "... up[" signal-up "] / down[" signal-down "] / first[" (dissoc fst :last-trade-price) "] / second[" (dissoc snd :last-trade-price) "]"))
+
                    ;; return either i) :up signal, ii) :down signal or iii) nothing, with just the raw data
                    (if signal-up
                      (cons (assoc raw-data :signal :up) rslt)
