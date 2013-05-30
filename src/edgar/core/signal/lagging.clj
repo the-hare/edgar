@@ -9,7 +9,7 @@
 
      (let [sma-list (analysis/simple-moving-average nil tick-window tick-list)
            ema-list (analysis/exponential-moving-average nil tick-window tick-list sma-list)]
-       (moving-averages tick-window tick-list sma-list ema-list)))
+       (join-averages tick-window tick-list sma-list ema-list)))
 
   ([tick-window tick-list sma-list ema-list]
      (map (fn [titem sitem eitem]
@@ -80,3 +80,41 @@
                start-list
                (reverse partitioned-join))
        )))
+
+(defn bollinger-band
+
+  ([tick-window tick-list]
+     (let [sma-list (analysis/simple-moving-average nil tick-window tick-list)]
+       (bollinger-band tick-window tick-list sma-list)))
+
+  ([tick-window tick-list sma-list]
+
+
+     ;; taken from these videos:
+     ;; i. http://www.youtube.com/watch?v=tkwUOUZQZ3s
+     ;; ii. http://www.youtube.com/watch?v=7PY4XxQWVfM
+
+     ;; A... when the band width is very low, can indicate that price will breakout sooner than later;
+     ;; MA is in an UP or DOWN market
+
+     ;; check for narrow bollinger band width
+        ;; less than the most previous narrow band width
+
+     ;; close is outside of band, and previous swing high/low is inside the band
+
+
+
+
+     ;; B... when the band width is very high (high volatility); can mean that the trend is ending soon; can i. change direction or ii. consolidate
+     ;; MA is in a sideways (choppy) market -> check if many closes that are abouve or below the bollinger band
+        ;; track widest & narrowest band over the last 'n' ticks
+        ;; track last 3 widest & narrowest bands
+
+     ;; check for a wide bollinger band width
+        ;; greater than the most previous wide band
+
+     ;; RSI Divergence; i. price makes a higher high and ii. rsi devergence makes a lower high iii. and divergence should happen abouve the overbought line
+
+     ;; entry signal -> check if one of next 3 closes are underneath the priors (or are in the opposite direction)
+
+     ))
