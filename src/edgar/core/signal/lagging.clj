@@ -82,6 +82,24 @@
                (reverse partitioned-join))
        )))
 
+(defn up-market? [period partitioned-list]
+  (every? (fn [inp]
+            (> (:last-trade-price (first inp))
+               (:last-trade-price (second inp))))
+          (take period partitioned-list)))
+
+(defn down-market? [period partitioned-list]
+  (every? (fn [inp]
+            (< (:last-trade-price (first inp))
+               (:last-trade-price (second inp))))
+          (take period partitioned-list)))
+
+(defn sort-bollinger-band [bband]
+
+  (let [diffs (map (fn [inp] (assoc inp :difference (- (:upper-band inp) (:lower-band inp))))
+                   (remove nil? bband))]
+    (sort-by :difference diffs)))
+
 (defn bollinger-band
 
   "Implementing signals for analysis/bollinger-band. Taken from these videos:
@@ -114,30 +132,20 @@
            ;; generate the Bollinger-Band
            bband (analysis/bollinger-band tick-window tick-list sma-list)
 
-
            ;; track widest & narrowest band over the last 'n' ( 3 ) ticks
-           diffs (map (fn [inp] (assoc inp :difference (- (:upper-band inp) (:lower-band inp)))) (remove nil? bband))
-           sorted-list (sort-by :difference diffs)
-
-           most-narrow (take 3 sorted-list)
-           most-wide (take-last 3 sorted-list)]
+           sorted-bands (sort-bollinger-band bband)
+           most-narrow (take 3 sorted-bands)
+           most-wide (take-last 3 sorted-bands)]
 
 
        (let [partitioned-list (partition 2 1 tick-list)
-             up-market? (every? (fn [inp]
-                                  (> (:last-trade-price (first inp))
-                                     (:last-trade-price (second inp))))
-                                (take 10 partitioned-list))
-             down-market? (every? (fn [inp]
-                                    (< (:last-trade-price (first inp))
-                                       (:last-trade-price (second inp))))
-                                  (take 10 partitioned-list))
-
+             upM? (up-market? 10 partitioned-list)
+             downM? (down-market? 10 partitioned-list)
 
              ;; ... TODO - determine how far back to look (defaults to 10 ticks) to decide on an UP or DOWN market
              ;; ... TODO - does tick price fluctuate abouve and below the MA
-             side-market? (if (and (not up-market?)
-                                   (not down-market?))
+             side-market? (if (and (not upM?)
+                                   (not downM?))
                             true
                             false)
 
@@ -146,28 +154,20 @@
                                      (let [fst (read-string (:last-trade-price (first ech)))
                                            snd (read-string (:last-trade-price (second ech)))
                                            thd (read-string (:last-trade-price (nth ech 2)))
-
-                                           valley? (and (> fst snd)
-                                                        (< snd thd))
-
-                                           peak? (and (< fst snd)
-                                                      (> snd thd))
-
-                                           peak-valley? (or peak? valley?)]
+                                           valley? (and (> fst snd) (< snd thd))
+                                           peak? (and (< fst snd) (> snd thd))]
 
                                        (if (or valley? peak?)
                                          (if peak?
                                            (conj rslt (assoc (second ech) :signal :peak))
                                            (conj rslt (assoc (second ech) :signal :valley)))
-                                         rslt)
-                                       ))
+                                         rslt)))
                                    []
                                    (partition 3 1 tick-list))
              peaks (:peak (group-by :signal peaks-valleys))
-             valleys (:valley (group-by :signal peaks-valleys))
-             ]
+             valleys (:valley (group-by :signal peaks-valleys))]
 
-         (if (or up-market? down-market?)
+         (if (or upM? downM?)
 
            ;; A.
            (let [latest-diff (- (:upper-band (first bband)) (:lower-band (first bband)))
@@ -176,7 +176,7 @@
              (if less-than-any-narrow?
 
                ;; entry signal -> close is outside of band, and previous swing high/low is inside the band
-               (if up-market?
+               (if upM?
 
                  (if (and (< (:last-tick-price (first tick-list)) (:lower-band (first bband)))
                           (> (:last-tick-price (first valleys)) (:lower-band (first (some #(= (:last-trade-time %) (:last-trade-time (first valleys)))
