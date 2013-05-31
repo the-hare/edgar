@@ -93,38 +93,47 @@
   [tick-window tick-list]
 
   (let [twindow (if tick-window tick-window 14)
-        window-list (take (+ 1 twindow) tick-list)
+        window-list (partition twindow 1 tick-list)]
 
-        pass-one (reduce (fn [rslt ech]
+    ;; run over the collection of populations
+    (reduce (fn [rslt ech]
 
-                           (let [fst (read-string (:last-trade-price (first ech)))
-                                 snd (read-string (:last-trade-price (second ech)))
+              ;; each item will be a population of tick-window (default of 14)
+              (let [pass-one (reduce (fn [rslt ech]
 
-                                 up? (> fst snd)
-                                 down? (< fst snd)
-                                 sideways? (and (not up?) (not down?))]
+                                       (let [fst (read-string (:last-trade-price (first ech)))
+                                             snd (read-string (:last-trade-price (second ech)))
 
-                             (if (or up? down?)
-                               (if up?
-                                 (conj rslt (assoc (first ech) :signal :up))
-                                 (conj rslt (assoc (first ech) :signal :down)))
-                               (conj rslt (assoc (first ech) :signal :sideways)))))
-                         []
-                         (partition 2 1 window-list))
+                                             up? (> fst snd)
+                                             down? (< fst snd)
+                                             sideways? (and (not up?) (not down?))]
 
-        up-list (:up (group-by :signal pass-one))
-        down-list (:down (group-by :signal pass-one))
-
-        avg-gains (/ (apply +
-                            (map read-string (map :last-trade-price up-list)))
-                     tick-window)
-        avg-losses (/ (apply +
-                             (map read-string (map :last-trade-price down-list)))
-                      tick-window)
-
-        rs (/ avg-gains avg-losses)
-        rsi (- 100 (/ 100 (+ 1 rs)))
-        ]
+                                         (if (or up? down?)
+                                           (if up?
+                                             (conj rslt (assoc (first ech) :signal :up))
+                                             (conj rslt (assoc (first ech) :signal :down)))
+                                           (conj rslt (assoc (first ech) :signal :sideways)))))
+                                     []
+                                     (partition 2 1 ech))
 
 
+                    up-list (:up (group-by :signal pass-one))
+                    down-list (:down (group-by :signal pass-one))
+
+                    avg-gains (/ (apply +
+                                        (map read-string (map :last-trade-price up-list)))
+                                 tick-window)
+                    avg-losses (/ (apply +
+                                         (map read-string (map :last-trade-price down-list)))
+                                  tick-window)
+
+                    rs (/ avg-gains avg-losses)
+                    rsi (- 100 (/ 100 (+ 1 rs)))]
+
+                (conj rslt {:last-trade-time (:last-trade-time (first ech))
+                            :last-trade-price (:last-trade-price (first ech))
+                            :rs rs
+                            :rsi rsi})))
+            []
+            window-list)
     ))

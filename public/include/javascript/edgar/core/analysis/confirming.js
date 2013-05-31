@@ -48,10 +48,11 @@ return cljs.core.cons.call(null,cljs.core.ObjMap.fromObject(["\uFDD0'obv","\uFDD
 */
 edgar.core.analysis.confirming.relative_strength_index = (function relative_strength_index(tick_window,tick_list){
 var twindow = (cljs.core.truth_(tick_window)?tick_window:14);
-var window_list = cljs.core.take.call(null,(1 + twindow),tick_list);
-var pass_one = cljs.core.reduce.call(null,(function (rslt,ech){
-var fst = edgar.core.analysis.confirming.read_string.call(null,(new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,cljs.core.first.call(null,ech)));
-var snd = edgar.core.analysis.confirming.read_string.call(null,(new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,cljs.core.second.call(null,ech)));
+var window_list = cljs.core.partition.call(null,twindow,1,tick_list);
+return cljs.core.reduce.call(null,(function (rslt,ech){
+var pass_one = cljs.core.reduce.call(null,(function (rslt__$1,ech__$1){
+var fst = edgar.core.analysis.confirming.read_string.call(null,(new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,cljs.core.first.call(null,ech__$1)));
+var snd = edgar.core.analysis.confirming.read_string.call(null,(new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,cljs.core.second.call(null,ech__$1)));
 var up_QMARK_ = (fst > snd);
 var down_QMARK_ = (fst < snd);
 var sideways_QMARK_ = (function (){var and__3949__auto__ = !(up_QMARK_);
@@ -69,19 +70,20 @@ if(or__3951__auto__)
 }
 })())
 {if(up_QMARK_)
-{return cljs.core.conj.call(null,rslt,cljs.core.assoc.call(null,cljs.core.first.call(null,ech),"\uFDD0'signal","\uFDD0'up"));
+{return cljs.core.conj.call(null,rslt__$1,cljs.core.assoc.call(null,cljs.core.first.call(null,ech__$1),"\uFDD0'signal","\uFDD0'up"));
 } else
-{return cljs.core.conj.call(null,rslt,cljs.core.assoc.call(null,cljs.core.first.call(null,ech),"\uFDD0'signal","\uFDD0'down"));
+{return cljs.core.conj.call(null,rslt__$1,cljs.core.assoc.call(null,cljs.core.first.call(null,ech__$1),"\uFDD0'signal","\uFDD0'down"));
 }
 } else
-{return cljs.core.conj.call(null,rslt,cljs.core.assoc.call(null,cljs.core.first.call(null,ech),"\uFDD0'signal","\uFDD0'sideways"));
+{return cljs.core.conj.call(null,rslt__$1,cljs.core.assoc.call(null,cljs.core.first.call(null,ech__$1),"\uFDD0'signal","\uFDD0'sideways"));
 }
-}),cljs.core.PersistentVector.EMPTY,cljs.core.partition.call(null,2,1,window_list));
+}),cljs.core.PersistentVector.EMPTY,cljs.core.partition.call(null,2,1,ech));
 var up_list = (new cljs.core.Keyword("\uFDD0'up")).call(null,cljs.core.group_by.call(null,"\uFDD0'signal",pass_one));
 var down_list = (new cljs.core.Keyword("\uFDD0'down")).call(null,cljs.core.group_by.call(null,"\uFDD0'signal",pass_one));
 var avg_gains = (cljs.core.apply.call(null,cljs.core._PLUS_,cljs.core.map.call(null,edgar.core.analysis.confirming.read_string,cljs.core.map.call(null,"\uFDD0'last-trade-price",up_list))) / tick_window);
 var avg_losses = (cljs.core.apply.call(null,cljs.core._PLUS_,cljs.core.map.call(null,edgar.core.analysis.confirming.read_string,cljs.core.map.call(null,"\uFDD0'last-trade-price",down_list))) / tick_window);
 var rs = (avg_gains / avg_losses);
 var rsi = (100 - (100 / (1 + rs)));
-return null;
+return cljs.core.conj.call(null,rslt,cljs.core.ObjMap.fromObject(["\uFDD0'last-trade-time","\uFDD0'last-trade-price","\uFDD0'rs","\uFDD0'rsi"],{"\uFDD0'last-trade-time":(new cljs.core.Keyword("\uFDD0'last-trade-time")).call(null,cljs.core.first.call(null,ech)),"\uFDD0'last-trade-price":(new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,cljs.core.first.call(null,ech)),"\uFDD0'rs":rs,"\uFDD0'rsi":rsi}));
+}),cljs.core.PersistentVector.EMPTY,window_list);
 });
