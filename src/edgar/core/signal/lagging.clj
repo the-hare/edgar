@@ -118,7 +118,33 @@
              side-market? (if (and (not up-market?)
                                    (not down-market?))
                             true
-                            false)]
+                            false)
+
+             ;; find last 3 peaks and valleys
+             peaks-valleys (reduce (fn [rslt ech]
+                                     (let [fst (read-string (:last-trade-price (first ech)))
+                                           snd (read-string (:last-trade-price (second ech)))
+                                           thd (read-string (:last-trade-price (nth ech 2)))
+
+                                           valley? (and (> fst snd)
+                                                        (< snd thd))
+
+                                           peak? (and (< fst snd)
+                                                      (> snd thd))
+
+                                           peak-valley? (or peak? valley?)]
+
+                                       (if (or valley? peak?)
+                                         (if peak?
+                                           (conj rslt (assoc (second ech) :signal :peak))
+                                           (conj rslt (assoc (second ech) :signal :valley)))
+                                         rslt)
+                                       ))
+                                   []
+                                   (partition 3 1 tick-list))
+             peaks (:peak (group-by :signal peaks-valleys))
+             valleys (:valley (group-by :signal peaks-valleys))
+             ]
 
          (if (or up-market? down-market?)
 
@@ -129,7 +155,13 @@
              ;; less than the most previous narrow band width
 
            ;; close is outside of band, and previous swing high/low is inside the band
+           (let [latest-diff (- (:upper-band (first bband)) (:lower-band (first bband)))
+                 less-than-any-narrow? (some (fn [inp] (< latest-diff (:difference inp))) most-narrow)
 
+
+                 ;; ... entry signal -> close is outside of band, and previous swing high/low is inside the band
+
+                 ])
 
 
 
@@ -142,12 +174,17 @@
            ;; RSI Divergence; i. price makes a higher high and ii. rsi devergence makes a lower high iii. and divergence should happen abouve the overbought line
 
            ;; entry signal -> check if one of next 3 closes are underneath the priors (or are in the opposite direction)
+           (let [latest-diff (- (:upper-band (first bband)) (:lower-band (first bband)))
+                 more-than-any-wide? (some (fn [inp] (> latest-diff (:difference inp))) most-wide)
 
+
+                 ;; ... RSI Divergence; i. price makes a higher high and ii. rsi devergence makes a lower high iii. and divergence should happen abouve the overbought line
+
+                 ;; ... entry signal -> check if one of next 3 closes are underneath the priors (or are in the opposite direction)
+
+                 ])
 
            )
-
          )
-
        )
-
      ))
