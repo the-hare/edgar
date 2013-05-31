@@ -205,16 +205,29 @@
 
                        ;; i. price makes a higher high and
                        higher-highPRICE? (> (read-string (:last-trade-price (first tick-list)))
-                                          (read-string (:last-trade-price (first peaks))))
+                                            (read-string (:last-trade-price (first peaks))))
 
                        ;; ii. rsi devergence makes a lower high
-                       lower-highRSI? (< (read-string (:last-trade-price (first rsi-list)))
-                                         (read-string (:last-trade-price (first (some #(= (:last-trade-time %) (:last-trade-time (first tick-list)))
-                                                                                      rsi-list)))))
+                       lower-highRSI? (< (:rsi (first rsi-list))
+                                         (:rsi (first (some #(= (:last-trade-time %) (:last-trade-time (first peaks)))
+                                                            rsi-list))))
 
                        ;; iii. and divergence should happen abouve the overbought line
                        divergence-overbought? (> (:rsi (first rsi-list))
                                                  OVER_BOUGHT)
+
+
+
+                       ;; i. price makes a lower low
+                       lower-highPRICE? (< (read-string (:last-trade-price (first tick-list)))
+                                           (read-string (:last-trade-price (first valleys))))
+
+                       higher-highRSI? (> (:rsi (first rsi-list))
+                                          (:rsi (first (some #(= (:last-trade-time %) (:last-trade-time (first) valleys))
+                                                             rsi-list))))
+
+                       divergence-oversold? (< (:rsi (first rsi-list))
+                                               OVER_SOLD)
                        ]
 
                    (if (and higher-highPRICE? lower-highRSI? divergence-overbought?)
