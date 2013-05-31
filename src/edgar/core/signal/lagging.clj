@@ -115,6 +115,9 @@
                                     (< (:last-trade-price (first inp))
                                        (:last-trade-price (second inp))))
                                   (take 10 partitioned-list))
+
+
+             ;; ... TODO - does tick price fluctuate abouve and below the MA
              side-market? (if (and (not up-market?)
                                    (not down-market?))
                             true

@@ -14450,3 +14450,13 @@ edgar.core.analysis.confirming.on_balance_volume = function(a, b) {
   }
   return c
 };
+edgar.core.analysis.confirming.relative_strength_index = function(a, b) {
+  var c = cljs.core.truth_(a) ? a : 14, c = cljs.core.take.call(null, 1 + c, b), d = cljs.core.reduce.call(null, function(a, b) {
+    var c = edgar.core.analysis.confirming.read_string.call(null, (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, cljs.core.first.call(null, b))), d = edgar.core.analysis.confirming.read_string.call(null, (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, cljs.core.second.call(null, b))), i = c > d;
+    c = i ? i : c < d;
+    return c ? i ? cljs.core.conj.call(null, a, cljs.core.assoc.call(null, cljs.core.first.call(null, b), "\ufdd0'signal", "\ufdd0'up")) : cljs.core.conj.call(null, a, cljs.core.assoc.call(null, cljs.core.first.call(null, b), "\ufdd0'signal", "\ufdd0'down")) : cljs.core.conj.call(null, a, cljs.core.assoc.call(null, cljs.core.first.call(null, b), "\ufdd0'signal", "\ufdd0'sideways"))
+  }, cljs.core.PersistentVector.EMPTY, cljs.core.partition.call(null, 2, 1, c)), c = (new cljs.core.Keyword("\ufdd0'up")).call(null, cljs.core.group_by.call(null, "\ufdd0'signal", d)), d = (new cljs.core.Keyword("\ufdd0'down")).call(null, cljs.core.group_by.call(null, "\ufdd0'signal", d));
+  cljs.core.apply.call(null, cljs.core._PLUS_, cljs.core.map.call(null, edgar.core.analysis.confirming.read_string, cljs.core.map.call(null, "\ufdd0'last-trade-price", c)));
+  cljs.core.apply.call(null, cljs.core._PLUS_, cljs.core.map.call(null, edgar.core.analysis.confirming.read_string, cljs.core.map.call(null, "\ufdd0'last-trade-price", d)));
+  return null
+};

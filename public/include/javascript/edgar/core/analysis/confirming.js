@@ -41,3 +41,47 @@ return cljs.core.cons.call(null,cljs.core.ObjMap.fromObject(["\uFDD0'obv","\uFDD
 {return obv_list;
 }
 });
+/**
+* The Relative Strength Index (RSI) is a momentum oscillator that measures the speed and change of price movements. It oscillates between zero and 100.
+* 
+* If no 'tick-window' is given, it defaults to 14
+*/
+edgar.core.analysis.confirming.relative_strength_index = (function relative_strength_index(tick_window,tick_list){
+var twindow = (cljs.core.truth_(tick_window)?tick_window:14);
+var window_list = cljs.core.take.call(null,(1 + twindow),tick_list);
+var pass_one = cljs.core.reduce.call(null,(function (rslt,ech){
+var fst = edgar.core.analysis.confirming.read_string.call(null,(new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,cljs.core.first.call(null,ech)));
+var snd = edgar.core.analysis.confirming.read_string.call(null,(new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,cljs.core.second.call(null,ech)));
+var up_QMARK_ = (fst > snd);
+var down_QMARK_ = (fst < snd);
+var sideways_QMARK_ = (function (){var and__3949__auto__ = !(up_QMARK_);
+if(and__3949__auto__)
+{return !(down_QMARK_);
+} else
+{return and__3949__auto__;
+}
+})();
+if((function (){var or__3951__auto__ = up_QMARK_;
+if(or__3951__auto__)
+{return or__3951__auto__;
+} else
+{return down_QMARK_;
+}
+})())
+{if(up_QMARK_)
+{return cljs.core.conj.call(null,rslt,cljs.core.assoc.call(null,cljs.core.first.call(null,ech),"\uFDD0'signal","\uFDD0'up"));
+} else
+{return cljs.core.conj.call(null,rslt,cljs.core.assoc.call(null,cljs.core.first.call(null,ech),"\uFDD0'signal","\uFDD0'down"));
+}
+} else
+{return cljs.core.conj.call(null,rslt,cljs.core.assoc.call(null,cljs.core.first.call(null,ech),"\uFDD0'signal","\uFDD0'sideways"));
+}
+}),cljs.core.PersistentVector.EMPTY,cljs.core.partition.call(null,2,1,window_list));
+var up_list = (new cljs.core.Keyword("\uFDD0'up")).call(null,cljs.core.group_by.call(null,"\uFDD0'signal",pass_one));
+var down_list = (new cljs.core.Keyword("\uFDD0'down")).call(null,cljs.core.group_by.call(null,"\uFDD0'signal",pass_one));
+var avg_gains = (cljs.core.apply.call(null,cljs.core._PLUS_,cljs.core.map.call(null,edgar.core.analysis.confirming.read_string,cljs.core.map.call(null,"\uFDD0'last-trade-price",up_list))) / tick_window);
+var avg_losses = (cljs.core.apply.call(null,cljs.core._PLUS_,cljs.core.map.call(null,edgar.core.analysis.confirming.read_string,cljs.core.map.call(null,"\uFDD0'last-trade-price",down_list))) / tick_window);
+var rs = (avg_gains / avg_losses);
+var rsi = (100 - (100 / (1 + rs)));
+return null;
+});

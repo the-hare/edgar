@@ -85,3 +85,46 @@
       obv-list)
     )
 )
+
+(defn relative-strength-index
+  "The Relative Strength Index (RSI) is a momentum oscillator that measures the speed and change of price movements. It oscillates between zero and 100.
+
+   If no 'tick-window' is given, it defaults to 14"
+  [tick-window tick-list]
+
+  (let [twindow (if tick-window tick-window 14)
+        window-list (take (+ 1 twindow) tick-list)
+
+        pass-one (reduce (fn [rslt ech]
+
+                           (let [fst (read-string (:last-trade-price (first ech)))
+                                 snd (read-string (:last-trade-price (second ech)))
+
+                                 up? (> fst snd)
+                                 down? (< fst snd)
+                                 sideways? (and (not up?) (not down?))]
+
+                             (if (or up? down?)
+                               (if up?
+                                 (conj rslt (assoc (first ech) :signal :up))
+                                 (conj rslt (assoc (first ech) :signal :down)))
+                               (conj rslt (assoc (first ech) :signal :sideways)))))
+                         []
+                         (partition 2 1 window-list))
+
+        up-list (:up (group-by :signal pass-one))
+        down-list (:down (group-by :signal pass-one))
+
+        avg-gains (/ (apply +
+                            (map read-string (map :last-trade-price up-list)))
+                     tick-window)
+        avg-losses (/ (apply +
+                             (map read-string (map :last-trade-price down-list)))
+                      tick-window)
+
+        rs (/ avg-gains avg-losses)
+        rsi (- 100 (/ 100 (+ 1 rs)))
+        ]
+
+
+    ))
