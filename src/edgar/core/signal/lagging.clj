@@ -103,7 +103,7 @@
            sorted-list (sort-by :difference diffs)
 
            most-narrow (take 3 sorted-list)
-           most-wide (take-last 3 sorted-l)]
+           most-wide (take-last 3 sorted-list)]
 
 
        (let [partitioned-list (partition 2 1 tick-list)
@@ -156,35 +156,52 @@
 
            ;; close is outside of band, and previous swing high/low is inside the band
            (let [latest-diff (- (:upper-band (first bband)) (:lower-band (first bband)))
-                 less-than-any-narrow? (some (fn [inp] (< latest-diff (:difference inp))) most-narrow)
+                 less-than-any-narrow? (some (fn [inp] (< latest-diff (:difference inp))) most-narrow)]
+
+             (if less-than-any-narrow?
+
+               ;; ... entry signal -> close is outside of band, and previous swing high/low is inside the band
+               (if up-market?
+
+                 (if (and (< (:last-tick-price (first tick-list)) (:lower-band (first bband)))
+                          (> (:last-tick-price (first valleys)) (:lower-band (first (some #(= (:last-trade-time %) (:last-trade-time (first valleys)))
+                                                                                          bband)))))
+                   (assoc (first bband) :signal :down))
+
+                 (if (and (> (:last-trade-price (first tick-list)) (:upper-band (first bband)))
+                          (< (:last-trade-price (first peaks)) (:upper-band (first (some #(= (:last-trade-time %) (:last-trade-time (first peaks))))
+                                                                                   bband))))
+                   (assoc (first bband) :signal :up)))
+               )
 
 
-                 ;; ... entry signal -> close is outside of band, and previous swing high/low is inside the band
 
-                 ])
+             ;; B... when the band width is very high (high volatility); can mean that the trend is ending soon; can i. change direction or ii. consolidate
+             ;; MA is in a sideways (choppy) market -> check if many closes that are abouve or below the bollinger band
 
-
-
-           ;; B... when the band width is very high (high volatility); can mean that the trend is ending soon; can i. change direction or ii. consolidate
-           ;; MA is in a sideways (choppy) market -> check if many closes that are abouve or below the bollinger band
-
-           ;; check for a wide bollinger band width
+             ;; check for a wide bollinger band width
              ;; greater than the most previous wide band
 
-           ;; RSI Divergence; i. price makes a higher high and ii. rsi devergence makes a lower high iii. and divergence should happen abouve the overbought line
+             ;; RSI Divergence; i. price makes a higher high and ii. rsi devergence makes a lower high iii. and divergence should happen abouve the overbought line
 
-           ;; entry signal -> check if one of next 3 closes are underneath the priors (or are in the opposite direction)
-           (let [latest-diff (- (:upper-band (first bband)) (:lower-band (first bband)))
-                 more-than-any-wide? (some (fn [inp] (> latest-diff (:difference inp))) most-wide)
+             ;; entry signal -> check if one of next 3 closes are underneath the priors (or are in the opposite direction)
+             (let [latest-diff (- (:upper-band (first bband)) (:lower-band (first bband)))
+                   more-than-any-wide? (some (fn [inp] (> latest-diff (:difference inp))) most-wide)]
 
+               #_(if more-than-any-wide?
 
                  ;; ... RSI Divergence; i. price makes a higher high and ii. rsi devergence makes a lower high iii. and divergence should happen abouve the overbought line
 
                  ;; ... entry signal -> check if one of next 3 closes are underneath the priors (or are in the opposite direction)
+                 #_(if #_rsi-divergence true
 
-                 ])
+                     (if )
+
+                     (assoc))
+               ))
 
            )
          )
        )
-     ))
+       ))
+)
