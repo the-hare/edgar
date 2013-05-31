@@ -1,5 +1,6 @@
 (ns edgar.core.signal.lagging
-  (:require [edgar.core.analysis.lagging :as analysis]))
+  (:require [edgar.core.analysis.lagging :as analysis]
+            [edgar.core.analysis.confirming :as confirming]))
 
 
 (defn join-averages
@@ -108,7 +109,10 @@
 
   ([tick-window tick-list sma-list]
 
-     (let [bband (analysis/bollinger-band tick-window tick-list sma-list)
+     (let [
+
+           ;; generate the Bollinger-Band
+           bband (analysis/bollinger-band tick-window tick-list sma-list)
 
 
            ;; track widest & narrowest band over the last 'n' ( 3 ) ticks
@@ -130,6 +134,7 @@
                                   (take 10 partitioned-list))
 
 
+             ;; ... TODO - determine how far back to look (defaults to 10 ticks) to decide on an UP or DOWN market
              ;; ... TODO - does tick price fluctuate abouve and below the MA
              side-market? (if (and (not up-market?)
                                    (not down-market?))
@@ -170,7 +175,7 @@
 
              (if less-than-any-narrow?
 
-               ;; ... entry signal -> close is outside of band, and previous swing high/low is inside the band
+               ;; entry signal -> close is outside of band, and previous swing high/low is inside the band
                (if up-market?
 
                  (if (and (< (:last-tick-price (first tick-list)) (:lower-band (first bband)))
@@ -188,16 +193,33 @@
              (let [latest-diff (- (:upper-band (first bband)) (:lower-band (first bband)))
                    more-than-any-wide? (some (fn [inp] (> latest-diff (:difference inp))) most-wide)]
 
-               #_(if more-than-any-wide?
+               (if more-than-any-wide?
 
-                 ;; ... RSI Divergence; i. price makes a higher high and ii. rsi devergence makes a lower high iii. and divergence should happen abouve the overbought line
+                 ;; B iii RSI Divergence
+                 (let [
+                       OVER_BOUGHT 80
+                       OVER_SOLD 20
+                       rsi-list (confirming/relative-strength-index 14 tick-list)
 
-                 ;; ... entry signal -> check if one of next 3 closes are underneath the priors (or are in the opposite direction)
-                 #_(if #_rsi-divergence true
+                       ;; i. price makes a higher high and
+                       higher-highPRICE? (> (read-string (:last-trade-price (first tick-list)))
+                                          (read-string (:last-trade-price (first peaks))))
 
-                     (if )
+                       ;; ii. rsi devergence makes a lower high
+                       lower-highRSI? (< (read-string (:last-trade-price (first rsi-list)))
+                                         (read-string (:last-trade-price (first (some #(= (:last-trade-time %) (:last-trade-time (first tick-list)))
+                                                                                      rsi-list)))))
 
-                     (assoc))
+                       ;; iii. and divergence should happen abouve the overbought line
+                       divergence-overbought? (> (:rsi (first rsi-list))
+                                                 OVER_BOUGHT)
+                       ]
+
+                   (if (and higher-highPRICE? lower-highRSI? divergence-overbought?)
+                     (assoc (first bband) :signal :down)))
+
+                 ;; ... TODO - entry signal -> check if one of next 3 closes are underneath the priors (or are in the opposite direction)
+
                  ))
              )
            )
