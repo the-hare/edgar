@@ -83,17 +83,30 @@
 
 (defn bollinger-band
 
+  "Implementing signals for analysis/bollinger-band. Taken from these videos:
+     i. http://www.youtube.com/watch?v=tkwUOUZQZ3s
+     ii. http://www.youtube.com/watch?v=7PY4XxQWVfM
+
+
+      A. when the band width is very low, can indicate that price will breakout sooner than later;
+
+      i. MA is in an UP or DOWN market
+      ii. check for narrow bollinger band width ; less than the most previous narrow band width
+      iii. close is outside of band, and previous swing high/low is inside the band
+
+
+       B. when the band width is very high (high volatility); can mean that the trend is ending soon; can i. change direction or ii. consolidate
+
+       i. MA is in a sideways (choppy) market -> check if many closes that are abouve or below the bollinger band
+       ii. check for a wide bollinger band width ; greater than the most previous wide band
+       iii. RSI Divergence; i. price makes a higher high and ii. rsi devergence makes a lower high iii. and divergence should happen abouve the overbought line
+       iv. entry signal -> check if one of next 3 closes are underneath the priors (or are in the opposite direction)
+  "
   ([tick-window tick-list]
      (let [sma-list (analysis/simple-moving-average nil tick-window tick-list)]
        (bollinger-band tick-window tick-list sma-list)))
 
   ([tick-window tick-list sma-list]
-
-
-     ;; taken from these videos:
-     ;; i. http://www.youtube.com/watch?v=tkwUOUZQZ3s
-     ;; ii. http://www.youtube.com/watch?v=7PY4XxQWVfM
-
 
      (let [bband (analysis/bollinger-band tick-window tick-list sma-list)
 
@@ -151,13 +164,7 @@
 
          (if (or up-market? down-market?)
 
-           ;; A... when the band width is very low, can indicate that price will breakout sooner than later;
-           ;; MA is in an UP or DOWN market
-
-           ;; check for narrow bollinger band width
-             ;; less than the most previous narrow band width
-
-           ;; close is outside of band, and previous swing high/low is inside the band
+           ;; A.
            (let [latest-diff (- (:upper-band (first bband)) (:lower-band (first bband)))
                  less-than-any-narrow? (some (fn [inp] (< latest-diff (:difference inp))) most-narrow)]
 
@@ -177,17 +184,7 @@
                    (assoc (first bband) :signal :up)))
                )
 
-
-
-             ;; B... when the band width is very high (high volatility); can mean that the trend is ending soon; can i. change direction or ii. consolidate
-             ;; MA is in a sideways (choppy) market -> check if many closes that are abouve or below the bollinger band
-
-             ;; check for a wide bollinger band width
-             ;; greater than the most previous wide band
-
-             ;; RSI Divergence; i. price makes a higher high and ii. rsi devergence makes a lower high iii. and divergence should happen abouve the overbought line
-
-             ;; entry signal -> check if one of next 3 closes are underneath the priors (or are in the opposite direction)
+             ;; B.
              (let [latest-diff (- (:upper-band (first bband)) (:lower-band (first bband)))
                    more-than-any-wide? (some (fn [inp] (> latest-diff (:difference inp))) most-wide)]
 
@@ -201,10 +198,9 @@
                      (if )
 
                      (assoc))
-               ))
-
+                 ))
+             )
            )
          )
-       )
        ))
 )
