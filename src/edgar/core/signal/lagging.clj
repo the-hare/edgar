@@ -94,6 +94,18 @@
      ;; i. http://www.youtube.com/watch?v=tkwUOUZQZ3s
      ;; ii. http://www.youtube.com/watch?v=7PY4XxQWVfM
 
+
+     ;; track widest & narrowest band over the last 'n' ( 3 ) ticks
+     (let [bband (analysis/bollinger-band tick-window tick-list sma-list)
+           diffs (map (fn [inp] (assoc inp :difference (- (:upper-band inp) (:lower-band inp)))) (remove nil? bband))
+           sorted-list (sort-by :difference diffs)
+
+           most-narrow (take 3 sorted-list)
+           most-wide (take-last 3 sorted-list)]
+
+       )
+
+
      ;; A... when the band width is very low, can indicate that price will breakout sooner than later;
      ;; MA is in an UP or DOWN market
 
@@ -107,8 +119,6 @@
 
      ;; B... when the band width is very high (high volatility); can mean that the trend is ending soon; can i. change direction or ii. consolidate
      ;; MA is in a sideways (choppy) market -> check if many closes that are abouve or below the bollinger band
-        ;; track widest & narrowest band over the last 'n' ticks
-        ;; track last 3 widest & narrowest bands
 
      ;; check for a wide bollinger band width
         ;; greater than the most previous wide band
