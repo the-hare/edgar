@@ -1,5 +1,6 @@
 (ns edgar.core.signal.leading
-  (:require [edgar.core.analysis.leading :as lanalysis]))
+  (:require [edgar.core.analysis.leading :as lead-analysis]
+            [edgar.core.analysis.lagging :as lag-analysis]))
 
 
 (defn macd
@@ -13,12 +14,15 @@
   "
 
   ([options tick-window tick-list]
-     (macd options tick-window tick-list (lagging/simple-moving-average nil tick-window tick-list)))
+     (macd options tick-window tick-list (lag-analysis/simple-moving-average nil tick-window tick-list)))
 
-  ;; A.
+  ([options tick-window tick-list sma-list]
 
-  ;; B.
+     ;; A.
 
-  ;; C.
+     ;; B.
 
-  )
+     ;; C.
+
+     )
+)
