@@ -143,101 +143,105 @@
   ([tick-window tick-list sma-list]
 
      (let [
-
            ;; generate the Bollinger-Band
-           bband (analysis/bollinger-band tick-window tick-list sma-list)
+           bband (analysis/bollinger-band tick-window tick-list sma-list)]
 
-           ;; track widest & narrowest band over the last 'n' ( 3 ) ticks
-           sorted-bands (sort-bollinger-band bband)
-           most-narrow (take 3 sorted-bands)
-           most-wide (take-last 3 sorted-bands)]
+       (reduce (fn [rslt ech-list]
 
-
-       (let [partitioned-list (partition 2 1 tick-list)
-             upM? (up-market? 10 partitioned-list)
-             downM? (down-market? 10 partitioned-list)
-
-             ;; ... TODO - determine how far back to look (defaults to 10 ticks) to decide on an UP or DOWN market
-             ;; ... TODO - does tick price fluctuate abouve and below the MA
-             side-market? (if (and (not upM?)
-                                   (not downM?))
-                            true
-                            false)
-
-             ;; find last 3 peaks and valleys
-             peaks-valleys (find-peaks-valleys tick-list)
-             peaks (:peak (group-by :signal peaks-valleys))
-             valleys (:valley (group-by :signal peaks-valleys))]
-
-         (if (or upM? downM?)
-
-           ;; A.
-           (let [latest-diff (- (:upper-band (first bband)) (:lower-band (first bband)))
-                 less-than-any-narrow? (some (fn [inp] (< latest-diff (:difference inp))) most-narrow)]
-
-             (if less-than-any-narrow?
-
-               ;; entry signal -> close is outside of band, and previous swing high/low is inside the band
-               (if upM?
-
-                 (if (and (< (:last-tick-price (first tick-list)) (:lower-band (first bband)))
-                          (> (:last-tick-price (first valleys)) (:lower-band (first (some #(= (:last-trade-time %) (:last-trade-time (first valleys)))
-                                                                                          bband)))))
-                   (assoc (first bband) :signal :down))
-
-                 (if (and (> (:last-trade-price (first tick-list)) (:upper-band (first bband)))
-                          (< (:last-trade-price (first peaks)) (:upper-band (first (some #(= (:last-trade-time %) (:last-trade-time (first peaks))))
-                                                                                   bband))))
-                   (assoc (first bband) :signal :up)))
-               )
-
-             ;; B.
-             (let [latest-diff (- (:upper-band (first bband)) (:lower-band (first bband)))
-                   more-than-any-wide? (some (fn [inp] (> latest-diff (:difference inp))) most-wide)]
-
-               (if more-than-any-wide?
-
-                 ;; B iii RSI Divergence
                  (let [
-                       OVER_BOUGHT 80
-                       OVER_SOLD 20
-                       rsi-list (confirming/relative-strength-index 14 tick-list)
-
-                       ;; i. price makes a higher high and
-                       higher-highPRICE? (> (read-string (:last-trade-price (first tick-list)))
-                                            (read-string (:last-trade-price (first peaks))))
-
-                       ;; ii. rsi devergence makes a lower high
-                       lower-highRSI? (< (:rsi (first rsi-list))
-                                         (:rsi (first (some #(= (:last-trade-time %) (:last-trade-time (first peaks)))
-                                                            rsi-list))))
-
-                       ;; iii. and divergence should happen abouve the overbought line
-                       divergence-overbought? (> (:rsi (first rsi-list))
-                                                 OVER_BOUGHT)
+                       ;; track widest & narrowest band over the last 'n' ( 3 ) ticks
+                       sorted-bands (sort-bollinger-band ech-list)
+                       most-narrow (take 3 sorted-bands)
+                       most-wide (take-last 3 sorted-bands)
 
 
+                       partitioned-list (partition 2 1 ech-list)
+                       upM? (up-market? 10 partitioned-list)
+                       downM? (down-market? 10 partitioned-list)
 
-                       ;; i. price makes a lower low
-                       lower-highPRICE? (< (read-string (:last-trade-price (first tick-list)))
-                                           (read-string (:last-trade-price (first valleys))))
+                       ;; ... TODO - determine how far back to look (defaults to 10 ticks) to decide on an UP or DOWN market
+                       ;; ... TODO - does tick price fluctuate abouve and below the MA
+                       side-market? (if (and (not upM?)
+                                             (not downM?))
+                                      true
+                                      false)
 
-                       higher-highRSI? (> (:rsi (first rsi-list))
-                                          (:rsi (first (some #(= (:last-trade-time %) (:last-trade-time (first) valleys))
-                                                             rsi-list))))
+                       ;; find last 3 peaks and valleys
+                       peaks-valleys (find-peaks-valleys ech-list)
+                       peaks (:peak (group-by :signal peaks-valleys))
+                       valleys (:valley (group-by :signal peaks-valleys))]
 
-                       divergence-oversold? (< (:rsi (first rsi-list))
-                                               OVER_SOLD)
-                       ]
+                   (if (or upM? downM?)
 
-                   (if (and higher-highPRICE? lower-highRSI? divergence-overbought?)
-                     (assoc (first bband) :signal :down)))
+                     ;; A.
+                     (let [latest-diff (- (:upper-band (first ech-list)) (:lower-band (first ech-list)))
+                           less-than-any-narrow? (some (fn [inp] (< latest-diff (:difference inp))) most-narrow)]
 
-                 ;; ... TODO - entry signal -> check if one of next 3 closes are underneath the priors (or are in the opposite direction)
+                       (if less-than-any-narrow?
 
-                 ))
-             )
-           )
-         )
+                         ;; entry signal -> close is outside of band, and previous swing high/low is inside the band
+                         (if upM?
+
+                           (if (and (< (:last-tick-price (first ech-list)) (:lower-band (first ech-list)))
+                                    (> (:last-tick-price (first valleys)) (:lower-band (first (some #(= (:last-trade-time %) (:last-trade-time (first valleys)))
+                                                                                                    ech-list)))))
+                             (conj rslt (assoc (first ech-list) :signal :down)))
+
+                           (if (and (> (:last-trade-price (first ech-list)) (:upper-band (first ech-list)))
+                                    (< (:last-trade-price (first peaks)) (:upper-band (first (some #(= (:last-trade-time %) (:last-trade-time (first peaks))))
+                                                                                             ech-list))))
+                             (conj rslt (assoc (first ech-list) :signal :up)))))
+
+                       ;; B.
+                       (let [latest-diff (- (:upper-band (first ech-list)) (:lower-band (first ech-list)))
+                             more-than-any-wide? (some (fn [inp] (> latest-diff (:difference inp))) most-wide)]
+
+                         (if more-than-any-wide?
+
+                           ;; B iii RSI Divergence
+                           (let [
+                                 OVER_BOUGHT 80
+                                 OVER_SOLD 20
+                                 rsi-list (confirming/relative-strength-index 14 ech-list)
+
+                                 ;; i. price makes a higher high and
+                                 higher-highPRICE? (> (read-string (:last-trade-price (first ech-list)))
+                                                      (read-string (:last-trade-price (first peaks))))
+
+                                 ;; ii. rsi devergence makes a lower high
+                                 lower-highRSI? (< (:rsi (first rsi-list))
+                                                   (:rsi (first (some #(= (:last-trade-time %) (:last-trade-time (first peaks)))
+                                                                      rsi-list))))
+
+                                 ;; iii. and divergence should happen abouve the overbought line
+                                 divergence-overbought? (> (:rsi (first rsi-list))
+                                                           OVER_BOUGHT)
+
+
+
+                                 ;; i. price makes a lower low
+                                 lower-highPRICE? (< (read-string (:last-trade-price (first ech-list)))
+                                                     (read-string (:last-trade-price (first valleys))))
+
+                                 higher-highRSI? (> (:rsi (first rsi-list))
+                                                    (:rsi (first (some #(= (:last-trade-time %) (:last-trade-time (first) valleys))
+                                                                       rsi-list))))
+
+                                 divergence-oversold? (< (:rsi (first rsi-list))
+                                                         OVER_SOLD)
+                                 ]
+
+                             (if (and higher-highPRICE? lower-highRSI? divergence-overbought?)
+                               (assoc (first ech-list) :signal :down)))
+
+                           ;; ... TODO - entry signal -> check if one of next 3 closes are underneath the priors (or are in the opposite direction)
+
+                           ))
+                       )
+                     )
+                   )
+                 )
+               []
+               (partition tick-window 1 bband))
        ))
 )
