@@ -161,6 +161,7 @@
 
                        ;; ... TODO - determine how far back to look (defaults to 10 ticks) to decide on an UP or DOWN market
                        ;; ... TODO - does tick price fluctuate abouve and below the MA
+                       ;; ... TODO - B iv. entry signal -> check if one of next 3 closes are underneath the priors (or are in the opposite direction)
                        side-market? (if (and (not upM?)
                                              (not downM?))
                                       true
@@ -232,10 +233,13 @@
                                  ]
 
                              (if (and higher-highPRICE? lower-highRSI? divergence-overbought?)
-                               (assoc (first ech-list) :signal :down)))
 
-                           ;; ... TODO - entry signal -> check if one of next 3 closes are underneath the priors (or are in the opposite direction)
+                               (assoc (first ech-list) :signal :down)
 
+                               (if (and lower-highPRICE? higher-highRSI? divergence-oversold?)
+                                 (conj rslt (assoc (first ech-list) :signal :up))
+
+                                 (conj rslt (first ech-list)))))
                            ))
                        )
                      )
