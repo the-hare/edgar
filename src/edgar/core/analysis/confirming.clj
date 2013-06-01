@@ -114,7 +114,7 @@
                                              (conj rslt (assoc (first ech) :signal :down)))
                                            (conj rslt (assoc (first ech) :signal :sideways)))))
                                      []
-                                     (partition 2 1 ech))
+                                     (partition 2 1 (remove nil? ech)))
 
 
                     up-list (:up (group-by :signal pass-one))
@@ -127,7 +127,9 @@
                                          (map read-string (map :last-trade-price down-list)))
                                   tick-window)
 
-                    rs (/ avg-gains avg-losses)
+                    rs (if-not (= 0 avg-losses)
+                         (/ avg-gains avg-losses)
+                         0)
                     rsi (- 100 (/ 100 (+ 1 rs)))]
 
                 (conj rslt {:last-trade-time (:last-trade-time (first ech))

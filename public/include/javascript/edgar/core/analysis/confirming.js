@@ -77,12 +77,12 @@ if(or__3951__auto__)
 } else
 {return cljs.core.conj.call(null,rslt__$1,cljs.core.assoc.call(null,cljs.core.first.call(null,ech__$1),"\uFDD0'signal","\uFDD0'sideways"));
 }
-}),cljs.core.PersistentVector.EMPTY,cljs.core.partition.call(null,2,1,ech));
+}),cljs.core.PersistentVector.EMPTY,cljs.core.partition.call(null,2,1,cljs.core.remove.call(null,cljs.core.nil_QMARK_,ech)));
 var up_list = (new cljs.core.Keyword("\uFDD0'up")).call(null,cljs.core.group_by.call(null,"\uFDD0'signal",pass_one));
 var down_list = (new cljs.core.Keyword("\uFDD0'down")).call(null,cljs.core.group_by.call(null,"\uFDD0'signal",pass_one));
 var avg_gains = (cljs.core.apply.call(null,cljs.core._PLUS_,cljs.core.map.call(null,edgar.core.analysis.confirming.read_string,cljs.core.map.call(null,"\uFDD0'last-trade-price",up_list))) / tick_window);
 var avg_losses = (cljs.core.apply.call(null,cljs.core._PLUS_,cljs.core.map.call(null,edgar.core.analysis.confirming.read_string,cljs.core.map.call(null,"\uFDD0'last-trade-price",down_list))) / tick_window);
-var rs = (avg_gains / avg_losses);
+var rs = ((!(cljs.core._EQ_.call(null,0,avg_losses)))?(avg_gains / avg_losses):0);
 var rsi = (100 - (100 / (1 + rs)));
 return cljs.core.conj.call(null,rslt,cljs.core.ObjMap.fromObject(["\uFDD0'last-trade-time","\uFDD0'last-trade-price","\uFDD0'rs","\uFDD0'rsi"],{"\uFDD0'last-trade-time":(new cljs.core.Keyword("\uFDD0'last-trade-time")).call(null,cljs.core.first.call(null,ech)),"\uFDD0'last-trade-price":(new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,cljs.core.first.call(null,ech)),"\uFDD0'rs":rs,"\uFDD0'rsi":rsi}));
 }),cljs.core.PersistentVector.EMPTY,window_list);
