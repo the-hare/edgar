@@ -66,23 +66,18 @@
            ]
 
        ;; compute the difference, or divergence
-       (let [macd-list (into '() (repeat signal-window nil))]
+       (map (fn [e-macd e-ema]
 
-         (cons
-          (map (fn [e-macd e-ema]
+              (if (and (-> e-macd nil? not)
+                       (-> e-ema nil? not))
 
-                 (if (and (-> e-macd nil? not)
-                          (-> e-ema nil? not))
-
-                   {:last-trade-price (:last-trade-price e-macd)
-                    :last-trade-time (:last-trade-time e-macd)
-                    :histogram (- (:last-trade-macd e-macd) (:ema-signal e-ema))}
-                   ))
-               macd
-               ema-signal
-               )
-          macd-list)
-         )
+                {:last-trade-price (:last-trade-price e-macd)
+                 :last-trade-time (:last-trade-time e-macd)
+                 :last-trade-macd (:last-trade-macd e-macd)
+                 :ema-signal (:ema-signal e-ema)
+                 :histogram (- (:last-trade-macd e-macd) (:ema-signal e-ema))}))
+            macd
+            ema-signal)
        )
      )
 )
