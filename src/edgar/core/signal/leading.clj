@@ -181,6 +181,34 @@
             macd-A
             macd-B))))
 
+(defn is-overbought? [level ech]
+  (> (:K ech) level))
+(defn is-oversold? [level ech]
+  (< (:K ech) level))
+(defn stochastic-level [stochastic-list]
+  (reduce (fn [rslt ech]
+
+            (let [
+                  OVERBOUGHT 0.8
+                  OVERSOLD 0.2
+
+                  isOB? (is-overbought? OVERBOUGHT ech)
+                  isOS? (is-oversold? OVERSOLD ech)]
+
+              (if (or isOB? isOS?)
+                (if isOB?
+                  (conj rslt (assoc ech :signals [{:signal :down
+                                                   :why :stochastic-overbought
+                                                   :arguments [OVERBOUGHT ech]
+                                                   :function is-overbought?}]))
+                  (conj rslt (assoc ech :signals [{:signal :up
+                                                   :why :stochastic-oversold
+                                                   :arguments [OVERSOLD ech]
+                                                   :function is-oversold?}])))
+                (conj rslt ech))))
+          []
+          stochastic-list))
+
 (defn stochastic-oscillator
   "This function searches for signals to overlay on top of a regular Stochastic Oscillator time series.
 
@@ -197,6 +225,10 @@
 
   ([tick-window trigger-window trigger-line tick-list stochastic-list]
 
-     )
+     (let [
 
-  )
+           ;; A. is %K abouve or below the overbought or oversold levels
+           stochastic-A (stochastic-level stochastic-list)
+
+           partitioned-stochastic (partition tick-window 1 stochastic-list)
+           ])))

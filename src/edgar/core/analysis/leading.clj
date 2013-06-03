@@ -137,6 +137,8 @@
                                 (into '() (repeat tick-window nil))
                                 (reverse (partition tick-window 1 tick-list)))
 
+        ;; ... TODO - should %D be a simple moving average of %K (instead of exponential moving average)
+
         ;; calculate %D
         d-list (reduce (fn [rslt ech]
 
