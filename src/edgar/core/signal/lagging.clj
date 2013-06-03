@@ -142,7 +142,7 @@
                                       false)
 
                        ;; find last 3 peaks and valleys
-                       peaks-valleys (common/find-peaks-valleys (remove nil? ech-list))
+                       peaks-valleys (common/find-peaks-valleys nil (remove nil? ech-list))
                        peaks (:peak (group-by :signal peaks-valleys))
                        valleys (:valley (group-by :signal peaks-valleys))]
 

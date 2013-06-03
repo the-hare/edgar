@@ -28,15 +28,71 @@
                      (if macd-cross-abouve?
                        (conj rslt (assoc fst :signal {:signal :up
                                                       :why :macd-signal-crossover
-                                                      :population ech
+                                                      :arguments [ech]
                                                       :function macd-cross-abouve?}))
                        (conj rslt (assoc fst :signal {:signal :down
                                                       :why :macd-signal-crossover
-                                                      :population ech
+                                                      :arguments [ech]
                                                       :function macd-cross-below?})))
                      (conj rslt fst))))
                []
                partitioned-list)))
+
+(defn divergence-up? [ech-list price-peaks-valleys macd-peaks-valleys]
+
+  (let [price-higher-high? (> (:last-trade-price (first ech-list)) (:last-trade-price (first price-peaks-valleys)))
+        macd-lower-high? (< (:last-trade-macd (first ech-list)) (:last-trade-macd (first macd-peaks-valleys)))]
+
+    (and price-higher-high? macd-lower-high?)))
+
+(defn divergence-down? [ech-list price-peaks-valleys macd-peaks-valleys]
+
+  (let [price-lower-high? (< (:last-trade-price (first ech-list)) (:last-trade-price (first price-peaks-valleys)))
+        macd-higher-high? (> (:last-trade-macd (first ech-list)) (:last-trade-macd (first macd-peaks-valleys)))]
+
+    (and price-lower-high? macd-higher-high?)))
+
+(defn macd-divergence [view-window tick-list macd-list]
+
+  (let [partitioned-macd (partition view-window 1 macd-list)
+
+
+        ;; B i.
+        ;;    when i. closing price makes a higher high and ii. MACD makes a lower high
+        ;;    when price rises and falls quickly
+        divergence-macd (reduce (fn [rslt ech-list]
+
+                                  (let [fst (first ech-list)
+
+                                        price-peaks-valleys (common/find-peaks-valleys nil ech-list)
+                                        macd-peaks-valleys (common/find-peaks-valleys {:input :last-trade-macd} ech-list)
+
+                                        dUP? (divergence-up? ech-list price-peaks-valleys macd-peaks-valleys)
+                                        dDOWN? (divergence-down? ech-list price-peaks-valleys macd-peaks-valleys)
+                                        ]
+
+                                    (if (or dUP? dDOWN?)
+
+                                      (if dUP?
+                                        (conj rslt (assoc fst :signal {:signal :up
+                                                                       :why :mac-divergence
+                                                                       :arguments [ech-list price-peaks-valleys macd-peaks-valleys]
+                                                                       :function divergence-up?}))
+                                        (conj rslt (assoc fst :signal {:signal :down
+                                                                       :why :macd-divergence
+                                                                       :arguments [ech-list price-peaks-valleys macd-peaks-valleys]
+                                                                       :function divergence-down?})))
+                                      (conj rslt (first ech-list)))))
+                                []
+                                partitioned-macd)
+
+        ;; B ii.
+
+        ]
+
+    )
+
+  )
 
 
 (defn macd
@@ -46,11 +102,14 @@
       when i. MACD line crosses over the ii. signal line
 
    B. MACD divergence
+
+      i)
       when i. closing price makes a higher high and ii. MACD makes a lower high
       when price rises and falls quickly
 
       OR
 
+      ii)
       look for high price resistance over last 3 peaks
       when i. closing price makes a higher high and ii. histogram makes a lower high
 
@@ -89,17 +148,7 @@
 
 
            ;; B.
-           price-peaks-valleys (common/find-peaks-valleys tick-list)
-           macd-peaks-valleys (common/find-peaks-valleys macd-list)
-
-
-           price-higher-high? (> (:last-trade-price (first tick-list)) (:last-trade-price (first price-peaks-valleys)))
-           macd-lower-high? (< (:last-trade-macd (first macd-list)) (:last-trade-macd (first macd-peaks-valleys)))
-
-
-           price-lower-high? (< (:last-trade-price (first tick-list)) (:last-trade-price (first price-peaks-valleys)))
-           macd-higher-high? (> (:last-trade-macd (first macd-list)) (:last-trade-macd (first macd-peaks-valleys)))
-
+           aaa (macd-divergence tick-list)
 
            ;; C.
 
