@@ -26,29 +26,49 @@
                    (if (or macd-cross-A? macd-cross-B?)
 
                      (if macd-cross-A?
-                       (conj rslt (assoc fst :signal {:signal :up
-                                                      :why :macd-signal-crossover
-                                                      :arguments [ech]
-                                                      :function macd-cross-abouve?}))
-                       (conj rslt (assoc fst :signal {:signal :down
-                                                      :why :macd-signal-crossover
-                                                      :arguments [ech]
-                                                      :function macd-cross-below?})))
+                       (conj rslt (assoc fst :signals [{:signal :up
+                                                        :why :macd-signal-crossover
+                                                        :arguments [ech]
+                                                        :function macd-cross-abouve?}]))
+                       (conj rslt (assoc fst :signals [{:signal :down
+                                                        :why :macd-signal-crossover
+                                                        :arguments [ech]
+                                                        :function macd-cross-below?}])))
                      (conj rslt fst))))
                []
                partitioned-list)))
 
 (defn divergence-up? [ech-list price-peaks-valleys macd-peaks-valleys]
 
-  (let [price-higher-high? (> (:last-trade-price (first ech-list)) (:last-trade-price (first price-peaks-valleys)))
-        macd-lower-high? (< (:last-trade-macd (first ech-list)) (:last-trade-macd (first macd-peaks-valleys)))]
+  (let [
+        first-ech (first ech-list)
+        first-price (first price-peaks-valleys)
+        first-macd (first macd-peaks-valleys)
+
+        price-higher-high? (and (-> (:last-trade-price first-ech) nil? not)
+                                (-> (:last-trade-price first-price) nil? not)
+                                (> (:last-trade-price first-ech) (:last-trade-price first-price)))
+
+        macd-lower-high? (and (-> (:last-trade-macd first-ech) nil? not)
+                              (-> (:last-trade-macd first-macd) nil? not)
+                              (< (:last-trade-macd first-ech) (:last-trade-macd first-macd)))]
 
     (and price-higher-high? macd-lower-high?)))
 
 (defn divergence-down? [ech-list price-peaks-valleys macd-peaks-valleys]
 
-  (let [price-lower-high? (< (:last-trade-price (first ech-list)) (:last-trade-price (first price-peaks-valleys)))
-        macd-higher-high? (> (:last-trade-macd (first ech-list)) (:last-trade-macd (first macd-peaks-valleys)))]
+  (let [
+        first-ech (first ech-list)
+        first-price (first price-peaks-valleys)
+        first-macd (first macd-peaks-valleys)
+
+        price-lower-high? (and (-> (:last-trade-price first-ech) nil? not)
+                               (-> (:last-trade-price first-price) nil? not)
+                               (< (:last-trade-price (first ech-list)) (:last-trade-price (first price-peaks-valleys))))
+
+        macd-higher-high? (and (-> (:last-trade-price first-ech) nil? not)
+                               (-> (:last-trade-price first-price) nil? not)
+                               (> (:last-trade-macd (first ech-list)) (:last-trade-macd (first macd-peaks-valleys))))]
 
     (and price-lower-high? macd-higher-high?)))
 
@@ -74,14 +94,14 @@
                                     (if (or dUP? dDOWN?)
 
                                       (if dUP?
-                                        (conj rslt (assoc fst :signal {:signal :up
-                                                                       :why :mac-divergence
-                                                                       :arguments [ech-list price-peaks-valleys macd-peaks-valleys]
-                                                                       :function divergence-up?}))
-                                        (conj rslt (assoc fst :signal {:signal :down
-                                                                       :why :macd-divergence
-                                                                       :arguments [ech-list price-peaks-valleys macd-peaks-valleys]
-                                                                       :function divergence-down?})))
+                                        (conj rslt (assoc fst :signals [{:signal :up
+                                                                         :why :mac-divergence
+                                                                         :arguments [ech-list price-peaks-valleys macd-peaks-valleys]
+                                                                         :function divergence-up?}]))
+                                        (conj rslt (assoc fst :signals [{:signal :down
+                                                                         :why :macd-divergence
+                                                                         :arguments [ech-list price-peaks-valleys macd-peaks-valleys]
+                                                                         :function divergence-down?}])))
                                       (conj rslt (first ech-list)))))
                                 []
                                 partitioned-macd)
@@ -90,9 +110,7 @@
 
         ]
 
-    )
-
-  )
+    divergence-macd))
 
 
 (defn macd
@@ -150,8 +168,15 @@
            macd-B (macd-divergence 10 macd-list)
 
            ;; C.
-
-
            ]
-     )
-))
+
+       ;; joining the results of all the signals
+       (map (fn [e1 e2]
+
+              (if (or (-> (:signals e1) nil? not)
+                      (-> (:signals e2) nil? not))
+                (assoc e1 :signals (concat (:signals e1)
+                                           (:signals e2)))
+                e1))
+            macd-A
+            macd-B))))

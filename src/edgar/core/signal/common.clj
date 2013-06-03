@@ -19,8 +19,12 @@
                           (read-string (input-key (nth ech 2)))
                           (input-key (nth ech 2)))
 
-                    valley? (and (> fst snd) (< snd thd))
-                    peak? (and (< fst snd) (> snd thd))]
+                    valley? (and (and (-> fst nil? not) (-> snd nil? not) (-> thd nil? not))
+                                 (> fst snd)
+                                 (< snd thd))
+                    peak? (and (and (-> fst nil? not) (-> snd nil? not) (-> thd nil? not))
+                               (< fst snd)
+                               (> snd thd))]
 
                 (if (or valley? peak?)
                   (if peak?

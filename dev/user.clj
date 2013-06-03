@@ -28,3 +28,6 @@
 
 
 (def sma-list (alagging/simple-moving-average nil 20 live-list))
+(def macd-list (aleading/macd nil 20 live-list sma-list))
+
+
