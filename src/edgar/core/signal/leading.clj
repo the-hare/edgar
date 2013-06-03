@@ -3,6 +3,13 @@
             [edgar.core.analysis.lagging :as lag-analysis]))
 
 
+(defn macd-cross-abouve? [fst snd]
+  (and (< (:last-trade-macd snd) (:ema-signal snd))
+       (> (:last-trade-macd fst) (:ema-signal snd))))
+(defn macd-cross-below? [fst snd]
+  (and (> (:last-trade-macd snd) (:ema-signal snd))
+       (< (:last-trade-macd fst) (:ema-signal fst))))
+
 (defn macd
   "Functions searches for signals to overlay on top of a regular MACD time series. It uses the following strategies
 
@@ -47,7 +54,28 @@
 
 
      ;; A.
+     (let [partitioned-list (partition 2 1 (remove nil? macd-list))]
 
+       (reduce (fn [rslt ech]
+
+                 (let [fst (first ech)
+                       snd (second ech)
+
+                       macd-cross-A? (macd-cross-abouve? fst snd)
+                       macd-cross-B? (macd-cross-below? fst snd)]
+
+                   (if (or macd-cross-A? macd-cross-B?)
+
+                     (if macd-cross-abouve?
+                       (conj rslt (assoc fst :signal {:signal :up
+                                                      :population ech
+                                                      :function macd-cross-abouve?}))
+                       (conj rslt (assoc fst :signal {:signal :down
+                                                      :population ech
+                                                      :function macd-cross-below?})))
+                     (conj rslt fst))))
+               []
+               partitioned-list))
 
      ;; B.
 
