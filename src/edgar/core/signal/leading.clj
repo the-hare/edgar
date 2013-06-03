@@ -114,7 +114,7 @@
 
 
 (defn macd
-  "Functions searches for signals to overlay on top of a regular MACD time series. It uses the following strategies
+  "This functions searches for signals to overlay on top of a regular MACD time series. It uses the following strategies
 
    A. MACD / signal crossover
       when i. MACD line crosses over the ii. signal line
@@ -180,3 +180,23 @@
                 e1))
             macd-A
             macd-B))))
+
+(defn stochastic-oscillator
+  "This function searches for signals to overlay on top of a regular Stochastic Oscillator time series.
+
+   A. Look for the %K Stochastic line to be abouve (0.8) or below (0.2) the overbought and oversold levels, respectively
+
+   B. Look for %K Stochastic line to cross over the %D trigger line
+
+   C. Look for Divergence, where i. price makes a higher high AND %K Stochastic makes a lower low
+  "
+
+  ([tick-window trigger-window trigger-line tick-list]
+     (let [stochastic-list (lead-analysis/stochastic-oscillator tick-window trigger-window trigger-line tick-list)]
+       (stochastic-oscillator tick-window trigger-window trigger-line tick-list stochastic-list)))
+
+  ([tick-window trigger-window trigger-line tick-list stochastic-list]
+
+     )
+
+  )

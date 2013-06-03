@@ -29,5 +29,7 @@
 
 (def sma-list (alagging/simple-moving-average nil 20 live-list))
 (def macd-list (aleading/macd nil 20 live-list sma-list))
+(def k-list (aleading/stochastic-oscillator 14 3 3 live-list))
+
 
 
