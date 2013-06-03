@@ -7,9 +7,18 @@
          :or {input-key :last-trade-price}} options]
 
     (reduce (fn [rslt ech]
-              (let [fst (read-string (input-key (first ech)))
-                    snd (read-string (input-key (second ech)))
-                    thd (read-string (input-key (nth ech 2)))
+              (let [fst (if (string? (input-key (first ech)))
+                          (read-string (input-key (first ech)))
+                          (input-key (first ech)))
+
+                    snd (if (string? (input-key (second ech)))
+                          (read-string (input-key (second ech)))
+                          (input-key (second ech)))
+
+                    thd (if (string? (input-key (nth ech 2)))
+                          (read-string (input-key (nth ech 2)))
+                          (input-key (nth ech 2)))
+
                     valley? (and (> fst snd) (< snd thd))
                     peak? (and (< fst snd) (> snd thd))]
 

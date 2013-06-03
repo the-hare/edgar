@@ -25,7 +25,7 @@
 
                    (if (or macd-cross-A? macd-cross-B?)
 
-                     (if macd-cross-abouve?
+                     (if macd-cross-A?
                        (conj rslt (assoc fst :signal {:signal :up
                                                       :why :macd-signal-crossover
                                                       :arguments [ech]
@@ -52,14 +52,14 @@
 
     (and price-lower-high? macd-higher-high?)))
 
-(defn macd-divergence [view-window tick-list macd-list]
+(defn macd-divergence [view-window macd-list]
 
   (let [partitioned-macd (partition view-window 1 macd-list)
 
 
         ;; B i.
         ;;    when i. closing price makes a higher high and ii. MACD makes a lower high
-        ;;    when price rises and falls quickly
+        ;;    ... TODO - when price rises and falls quickly
         divergence-macd (reduce (fn [rslt ech-list]
 
                                   (let [fst (first ech-list)
@@ -86,7 +86,7 @@
                                 []
                                 partitioned-macd)
 
-        ;; B ii.
+        ;; B ii. ... TODO - if histogram goes into negative territory
 
         ]
 
@@ -105,7 +105,7 @@
 
       i)
       when i. closing price makes a higher high and ii. MACD makes a lower high
-      when price rises and falls quickly
+      ... TODO - when price rises and falls quickly
 
       OR
 
@@ -114,7 +114,6 @@
       when i. closing price makes a higher high and ii. histogram makes a lower high
 
       ... TODO - after both are true, look for
-
          i. subsequent 3 closing prices to be below the high
 
          OR
@@ -148,7 +147,7 @@
 
 
            ;; B.
-           aaa (macd-divergence tick-list)
+           macd-B (macd-divergence 10 macd-list)
 
            ;; C.
 
