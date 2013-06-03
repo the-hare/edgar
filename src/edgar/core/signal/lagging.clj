@@ -1,6 +1,7 @@
 (ns edgar.core.signal.lagging
   (:require [edgar.core.analysis.lagging :as analysis]
-            [edgar.core.analysis.confirming :as confirming]))
+            [edgar.core.analysis.confirming :as confirming]
+            [edgar.core.signal.common :as common]))
 
 
 (defn join-averages
@@ -80,38 +81,12 @@
                (reverse partitioned-join))
        )))
 
-(defn up-market? [period partitioned-list]
-  (every? (fn [inp]
-            (> (read-string (:last-trade-price (first inp)))
-               (read-string (:last-trade-price (second inp)))))
-          (take period partitioned-list)))
-
-(defn down-market? [period partitioned-list]
-  (every? (fn [inp]
-            (< (read-string (:last-trade-price (first inp)))
-               (read-string (:last-trade-price (second inp)))))
-          (take period partitioned-list)))
 
 (defn sort-bollinger-band [bband]
   (let [diffs (map (fn [inp] (assoc inp :difference (- (:upper-band inp) (:lower-band inp))))
                    (remove nil? bband))]
     (sort-by :difference diffs)))
 
-(defn find-peaks-valleys [tick-list]
-  (reduce (fn [rslt ech]
-            (let [fst (read-string (:last-trade-price (first ech)))
-                  snd (read-string (:last-trade-price (second ech)))
-                  thd (read-string (:last-trade-price (nth ech 2)))
-                  valley? (and (> fst snd) (< snd thd))
-                  peak? (and (< fst snd) (> snd thd))]
-
-              (if (or valley? peak?)
-                (if peak?
-                  (conj rslt (assoc (second ech) :signal :peak))
-                  (conj rslt (assoc (second ech) :signal :valley)))
-                rslt)))
-          []
-          (partition 3 1 tick-list)))
 
 (defn bollinger-band
 
@@ -155,8 +130,8 @@
 
                        partitioned-list (partition 2 1 (remove nil? ech-list))
 
-                       upM? (up-market? 10 (remove nil? partitioned-list))
-                       downM? (down-market? 10 (remove nil? partitioned-list))
+                       upM? (common/up-market? 10 (remove nil? partitioned-list))
+                       downM? (common/down-market? 10 (remove nil? partitioned-list))
 
                        ;; ... TODO - determine how far back to look (defaults to 10 ticks) to decide on an UP or DOWN market
                        ;; ... TODO - does tick price fluctuate abouve and below the MA
@@ -167,7 +142,7 @@
                                       false)
 
                        ;; find last 3 peaks and valleys
-                       peaks-valleys (find-peaks-valleys (remove nil? ech-list))
+                       peaks-valleys (common/find-peaks-valleys (remove nil? ech-list))
                        peaks (:peak (group-by :signal peaks-valleys))
                        valleys (:valley (group-by :signal peaks-valleys))]
 

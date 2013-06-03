@@ -1,6 +1,7 @@
 (ns edgar.core.signal.leading
   (:require [edgar.core.analysis.leading :as lead-analysis]
-            [edgar.core.analysis.lagging :as lag-analysis]))
+            [edgar.core.analysis.lagging :as lag-analysis]
+            [edgar.core.signal.common :as common]))
 
 
 (defn macd-cross-abouve? [fst snd]
@@ -53,7 +54,7 @@
       look for high price resistance over last 3 peaks
       when i. closing price makes a higher high and ii. histogram makes a lower high
 
-      after both are true, look for
+      ... TODO - after both are true, look for
 
          i. subsequent 3 closing prices to be below the high
 
@@ -88,6 +89,16 @@
 
 
            ;; B.
+           price-peaks-valleys (common/find-peaks-valleys tick-list)
+           macd-peaks-valleys (common/find-peaks-valleys macd-list)
+
+
+           price-higher-high? (> (:last-trade-price (first tick-list)) (:last-trade-price (first price-peaks-valleys)))
+           macd-lower-high? (< (:last-trade-macd (first macd-list)) (:last-trade-macd (first macd-peaks-valleys)))
+
+
+           price-lower-high? (< (:last-trade-price (first tick-list)) (:last-trade-price (first price-peaks-valleys)))
+           macd-higher-high? (> (:last-trade-macd (first macd-list)) (:last-trade-macd (first macd-peaks-valleys)))
 
 
            ;; C.
