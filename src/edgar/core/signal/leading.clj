@@ -10,6 +10,34 @@
   (and (> (:last-trade-macd snd) (:ema-signal snd))
        (< (:last-trade-macd fst) (:ema-signal fst))))
 
+(defn macd-signal-crossover [macd-list]
+
+  (let [partitioned-list (partition 2 1 (remove nil? macd-list))]
+
+       (reduce (fn [rslt ech]
+
+                 (let [fst (first ech)
+                       snd (second ech)
+
+                       macd-cross-A? (macd-cross-abouve? fst snd)
+                       macd-cross-B? (macd-cross-below? fst snd)]
+
+                   (if (or macd-cross-A? macd-cross-B?)
+
+                     (if macd-cross-abouve?
+                       (conj rslt (assoc fst :signal {:signal :up
+                                                      :why :macd-signal-crossover
+                                                      :population ech
+                                                      :function macd-cross-abouve?}))
+                       (conj rslt (assoc fst :signal {:signal :down
+                                                      :why :macd-signal-crossover
+                                                      :population ech
+                                                      :function macd-cross-below?})))
+                     (conj rslt fst))))
+               []
+               partitioned-list)))
+
+
 (defn macd
   "Functions searches for signals to overlay on top of a regular MACD time series. It uses the following strategies
 
@@ -53,35 +81,18 @@
   ([options tick-window tick-list sma-list macd-list]
 
 
-     ;; A.
-     (let [partitioned-list (partition 2 1 (remove nil? macd-list))]
+     (let [
 
-       (reduce (fn [rslt ech]
-
-                 (let [fst (first ech)
-                       snd (second ech)
-
-                       macd-cross-A? (macd-cross-abouve? fst snd)
-                       macd-cross-B? (macd-cross-below? fst snd)]
-
-                   (if (or macd-cross-A? macd-cross-B?)
-
-                     (if macd-cross-abouve?
-                       (conj rslt (assoc fst :signal {:signal :up
-                                                      :population ech
-                                                      :function macd-cross-abouve?}))
-                       (conj rslt (assoc fst :signal {:signal :down
-                                                      :population ech
-                                                      :function macd-cross-below?})))
-                     (conj rslt fst))))
-               []
-               partitioned-list))
-
-     ;; B.
+           ;; A.
+           macd-A (macd-signal-crossover macd-list)
 
 
-     ;; C.
+           ;; B.
 
 
+           ;; C.
+
+
+           ]
      )
-)
+))
