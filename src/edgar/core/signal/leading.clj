@@ -209,6 +209,41 @@
           []
           stochastic-list))
 
+(defn k-crosses-abouve? [fst snd]
+  (and (< (:K snd) (:D snd))
+       (> (:K fst) (:D fst))))
+(defn k-crosses-below? [fst snd]
+  (and (> (:K snd) (:D snd))
+       (< (:K fst) (:D fst))))
+(defn stochastic-crossover [partitioned-stochastic]
+
+  (reduce (fn [rslt ech]
+
+            (let [fst (first ech)
+                  snd (second ech)
+
+                  both-exist? (and (-> fst nil? not)
+                                   (-> snd nil? not))
+
+                  kA? (and both-exist?
+                           (k-crosses-abouve? fst snd))
+                  kB? (and both-exist?
+                           (k-crosses-below? fst snd))]
+
+              (if (or kA? kB?)
+                (if kA?
+                  (conj rslt (assoc fst :signals [{:signal :down
+                                                   :why :stochastic-crossover
+                                                   :arguments [fst snd]
+                                                   :function k-crosses-abouve?}]))
+                  (conj rslt (assoc fst :signals [{:signal :up
+                                                   :why :stochastic-crossover
+                                                   :arguments [fst snd]
+                                                   :function k-crosses-below?}])))
+                (conj rslt fst))))
+          []
+          partitioned-stochastic))
+
 (defn stochastic-oscillator
   "This function searches for signals to overlay on top of a regular Stochastic Oscillator time series.
 
@@ -230,5 +265,11 @@
            ;; A. is %K abouve or below the overbought or oversold levels
            stochastic-A (stochastic-level stochastic-list)
 
-           partitioned-stochastic (partition tick-window 1 stochastic-list)
+
+           partitioned-stochastic (partition 2 1 stochastic-list)
+
+
+           ;; B. Does %K Stochastic line cross over the %D trigger line
+           stochastic-B (stochastic-crossover partitioned-stochastic)
+
            ])))
