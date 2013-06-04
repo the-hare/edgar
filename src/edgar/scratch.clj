@@ -34,3 +34,19 @@
 (def run-me (partial live/feed-handler {:tick-list tick-list :ticker-id-filter [1] :tee-list tee-list}))
 
 #_(run-me (read-string (slurp "etc/test-live-latest-event.edn")))
+
+
+;; =====
+(def t1 (sleading/macd-signal-crossover macd-list))
+(def t2 (sleading/macd-divergence 10 macd-list))
+
+(def t3 (sleading/stochastic-level k-list))
+(def t4 (sleading/stochastic-crossover (partition 2 1 k-list)))
+(def t5 (sleading/stochastic-divergence 10 k-list))
+(def t6 (sleading/stochastic-oscillator 14 3 3 live-list k-list))
+
+
+;; TODO - Stategies, where we compose filters and signals
+   ;; -- consider signals against trends
+   ;; -- put stop-losses against support / resistance
+   ;; -- find good market, where price movement is i big and ii steady
