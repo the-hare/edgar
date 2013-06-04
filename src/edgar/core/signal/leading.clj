@@ -155,8 +155,7 @@
          when subsequent 3 low(s) are equal or greater than the previous high(s)
 
       EXIT:
-         measure last up-move and project target (difference from last high, from low); stop below the current low
-  "
+         measure last up-move and project target (difference from last high, from low); stop below the current low."
 
   ([options tick-window tick-list]
      (macd options tick-window tick-list (lag-analysis/simple-moving-average nil tick-window tick-list)))
@@ -293,8 +292,7 @@
 
    B. Look for %K Stochastic line to cross over the %D trigger line
 
-   C. Look for Divergence, where i. price makes a higher high AND %K Stochastic makes a lower low
-  "
+   C. Look for Divergence, where i. price makes a higher high AND %K Stochastic makes a lower low."
 
   ([tick-window trigger-window trigger-line tick-list]
      (let [stochastic-list (lead-analysis/stochastic-oscillator tick-window trigger-window trigger-line tick-list)]
@@ -307,16 +305,13 @@
            stochastic-A (stochastic-level stochastic-list)
 
 
-           partitioned-stochastic (partition 2 1 stochastic-list)
-
-
            ;; B. Does %K Stochastic line cross over the %D trigger line
-           stochastic-B (stochastic-crossover partitioned-stochastic)
+           stochastic-B (stochastic-crossover (partition 2 1 stochastic-list))
 
 
            ;; C. Look for Divergence, where i. price makes a higher high AND %K Stochastic makes a lower low
-           stochastic-C (stochastic-divergence 10 stochastic-list)
-           ]
+           stochastic-C (stochastic-divergence 10 stochastic-list)]
+
 
        ;; joining the results of all the signals
        (map (fn [e1 e2 e3]
