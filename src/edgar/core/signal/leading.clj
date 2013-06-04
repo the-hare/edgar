@@ -105,7 +105,7 @@
 
                                       (if dUP?
                                         (conj rslt (assoc fst :signals [{:signal :up
-                                                                         :why :mac-divergence
+                                                                         :why :macd-divergence
                                                                          :arguments [ech-list price-peaks-valleys macd-peaks-valleys]
                                                                          :function divergence-up?}]))
                                         (conj rslt (assoc fst :signals [{:signal :down
