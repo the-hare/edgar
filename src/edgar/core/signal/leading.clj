@@ -38,43 +38,47 @@
                []
                partitioned-list)))
 
-(defn divergence-up? [ech-list price-peaks-valleys macd-peaks-valleys]
+(defn divergence-up? [options ech-list price-peaks-valleys macd-peaks-valleys]
 
-  #_{input-key :input
-            output-key :output
-            etal-keys :etal
-            :or {input-key :last-trade-price
-                 output-key :last-trade-price-exponential
-                 etal-keys [:last-trade-price :last-trade-time]}}
   (let [
         first-ech (first ech-list)
         first-price (first price-peaks-valleys)
         first-macd (first macd-peaks-valleys)
 
-        price-higher-high? (and (-> (:last-trade-price first-ech) nil? not)
-                                (-> (:last-trade-price first-price) nil? not)
-                                (> (:last-trade-price first-ech) (:last-trade-price first-price)))
+        {input-top :input-top
+         input-bottom :input-bottom
+         :or {input-top :last-trade-price
+              input-bottom :last-trade-macd}} options
 
-        macd-lower-high? (and (-> (:last-trade-macd first-ech) nil? not)
-                              (-> (:last-trade-macd first-macd) nil? not)
-                              (< (:last-trade-macd first-ech) (:last-trade-macd first-macd)))]
+        price-higher-high? (and (-> (input-top first-ech) nil? not)
+                                (-> (input-top first-price) nil? not)
+                                (> (input-top first-ech) (input-top first-price)))
+
+        macd-lower-high? (and (-> (input-bottom first-ech) nil? not)
+                              (-> (input-bottom first-macd) nil? not)
+                              (< (input-bottom first-ech) (input-bottom first-macd)))]
 
     (and price-higher-high? macd-lower-high?)))
 
-(defn divergence-down? [ech-list price-peaks-valleys macd-peaks-valleys]
+(defn divergence-down? [options ech-list price-peaks-valleys macd-peaks-valleys]
 
   (let [
         first-ech (first ech-list)
         first-price (first price-peaks-valleys)
         first-macd (first macd-peaks-valleys)
 
-        price-lower-high? (and (-> (:last-trade-price first-ech) nil? not)
-                               (-> (:last-trade-price first-price) nil? not)
-                               (< (:last-trade-price (first ech-list)) (:last-trade-price (first price-peaks-valleys))))
+        {input-top :input-top
+         input-bottom :input-bottom
+         :or {input-top :last-trade-price
+              input-bottom :last-trade-macd}} options
 
-        macd-higher-high? (and (-> (:last-trade-price first-ech) nil? not)
-                               (-> (:last-trade-price first-price) nil? not)
-                               (> (:last-trade-macd (first ech-list)) (:last-trade-macd (first macd-peaks-valleys))))]
+        price-lower-high? (and (-> (input-top first-ech) nil? not)
+                               (-> (input-top first-price) nil? not)
+                               (< (input-top (first ech-list)) (input-top (first price-peaks-valleys))))
+
+        macd-higher-high? (and (-> (input-top first-ech) nil? not)
+                               (-> (input-top first-price) nil? not)
+                               (> (input-bottom (first ech-list)) (input-bottom (first macd-peaks-valleys))))]
 
     (and price-lower-high? macd-higher-high?)))
 
@@ -93,8 +97,8 @@
                                         price-peaks-valleys (common/find-peaks-valleys nil ech-list)
                                         macd-peaks-valleys (common/find-peaks-valleys {:input :last-trade-macd} ech-list)
 
-                                        dUP? (divergence-up? ech-list price-peaks-valleys macd-peaks-valleys)
-                                        dDOWN? (divergence-down? ech-list price-peaks-valleys macd-peaks-valleys)
+                                        dUP? (divergence-up? nil  ech-list price-peaks-valleys macd-peaks-valleys)
+                                        dDOWN? (divergence-down? nil ech-list price-peaks-valleys macd-peaks-valleys)
                                         ]
 
                                     (if (or dUP? dDOWN?)
@@ -179,8 +183,7 @@
        ;; joining the results of all the signals
        (map (fn [e1 e2]
 
-              (if (or (-> (:signals e1) nil? not)
-                      (-> (:signals e2) nil? not))
+              (if (some #(not (nil? (:signals %))) [e1 e2])
                 (assoc e1 :signals (concat (:signals e1)
                                            (:signals e2)))
                 e1))
@@ -263,8 +266,8 @@
                                               k-peaks-valleys (common/find-peaks-valleys {:input :K} ech-list)
                                               d-peaks-valleys (common/find-peaks-valleys {:input :D} ech-list)
 
-                                              dUP? (divergence-up? ech-list k-peaks-valleys d-peaks-valleys)
-                                              dDOWN? (divergence-down? ech-list k-peaks-valleys d-peaks-valleys)]
+                                              dUP? (divergence-up? {:input-top :K :input-bottom :D} ech-list k-peaks-valleys d-peaks-valleys)
+                                              dDOWN? (divergence-down? {:input-top :K :input-bottom :D} ech-list k-peaks-valleys d-peaks-valleys)]
 
                                           (if (or dUP? dDOWN?)
 
@@ -300,7 +303,6 @@
   ([tick-window trigger-window trigger-line tick-list stochastic-list]
 
      (let [
-
            ;; A. is %K abouve or below the overbought or oversold levels
            stochastic-A (stochastic-level stochastic-list)
 
@@ -311,15 +313,19 @@
            ;; B. Does %K Stochastic line cross over the %D trigger line
            stochastic-B (stochastic-crossover partitioned-stochastic)
 
+
+           ;; C. Look for Divergence, where i. price makes a higher high AND %K Stochastic makes a lower low
+           stochastic-C (stochastic-divergence 10 stochastic-list)
            ]
 
        ;; joining the results of all the signals
-       (map (fn [e1 e2]
+       (map (fn [e1 e2 e3]
 
-              (if (or (-> (:signals e1) nil? not)
-                      (-> (:signals e2) nil? not))
+              (if (some #(not (nil? (:signals %))) [e1 e2 e3])
                 (assoc e1 :signals (concat (:signals e1)
-                                           (:signals e2)))
+                                           (:signals e2)
+                                           (:signals e3)))
                 e1))
             stochastic-A
-            stochastic-B))))
+            stochastic-B
+            stochastic-C))))
