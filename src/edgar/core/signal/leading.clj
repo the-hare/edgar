@@ -40,6 +40,12 @@
 
 (defn divergence-up? [ech-list price-peaks-valleys macd-peaks-valleys]
 
+  #_{input-key :input
+            output-key :output
+            etal-keys :etal
+            :or {input-key :last-trade-price
+                 output-key :last-trade-price-exponential
+                 etal-keys [:last-trade-price :last-trade-time]}}
   (let [
         first-ech (first ech-list)
         first-price (first price-peaks-valleys)
@@ -207,7 +213,7 @@
                                                    :function is-oversold?}])))
                 (conj rslt ech))))
           []
-          stochastic-list))
+          (remove nil? stochastic-list)))
 
 (defn k-crosses-abouve? [fst snd]
   (and (< (:K snd) (:D snd))
@@ -244,6 +250,39 @@
           []
           partitioned-stochastic))
 
+(defn stochastic-divergence [view-window stochastic-list]
+
+  (let [partitioned-stochastic (partition view-window 1 stochastic-list)
+
+
+        ;; when i. closing price makes a higher high and ii. MACD makes a lower high
+        divergence-stochastic (reduce (fn [rslt ech-list]
+
+                                        (let [fst (first ech-list)
+
+                                              k-peaks-valleys (common/find-peaks-valleys {:input :K} ech-list)
+                                              d-peaks-valleys (common/find-peaks-valleys {:input :D} ech-list)
+
+                                              dUP? (divergence-up? ech-list k-peaks-valleys d-peaks-valleys)
+                                              dDOWN? (divergence-down? ech-list k-peaks-valleys d-peaks-valleys)]
+
+                                          (if (or dUP? dDOWN?)
+
+                                            (if dUP?
+                                              (conj rslt (assoc fst :signals [{:signal :up
+                                                                               :why :stochastic-divergence
+                                                                               :arguments [ech-list k-peaks-valleys d-peaks-valleys]
+                                                                               :function divergence-up?}]))
+                                              (conj rslt (assoc fst :signals [{:signal :down
+                                                                               :why :stochastic-divergence
+                                                                               :arguments [ech-list k-peaks-valleys d-peaks-valleys]
+                                                                               :function divergence-down?}])))
+                                            (conj rslt (first ech-list)))))
+                                      []
+                                      partitioned-stochastic)]
+
+    divergence-stochastic))
+
 (defn stochastic-oscillator
   "This function searches for signals to overlay on top of a regular Stochastic Oscillator time series.
 
@@ -272,4 +311,15 @@
            ;; B. Does %K Stochastic line cross over the %D trigger line
            stochastic-B (stochastic-crossover partitioned-stochastic)
 
-           ])))
+           ]
+
+       ;; joining the results of all the signals
+       (map (fn [e1 e2]
+
+              (if (or (-> (:signals e1) nil? not)
+                      (-> (:signals e2) nil? not))
+                (assoc e1 :signals (concat (:signals e1)
+                                           (:signals e2)))
+                e1))
+            stochastic-A
+            stochastic-B))))
