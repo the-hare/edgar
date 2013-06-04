@@ -20,8 +20,8 @@
                                            price-peaks-valleys (common/find-peaks-valleys nil ech-list)
                                            obv-peaks-valleys (common/find-peaks-valleys {:input :obv} ech-list)
 
-                                           dUP? (sleading/divergence-up? {:input-top :last-trade-price :input-bottom :obv}  ech-list price-peaks-valleys obv-peaks-valleys)
-                                           dDOWN? (sleading/divergence-down? {:input-top :last-trade-price :input-bottom :obv} ech-list price-peaks-valleys obv-peaks-valleys)]
+                                           dUP? (common/divergence-up? {:input-top :last-trade-price :input-bottom :obv}  ech-list price-peaks-valleys obv-peaks-valleys)
+                                           dDOWN? (common/divergence-down? {:input-top :last-trade-price :input-bottom :obv} ech-list price-peaks-valleys obv-peaks-valleys)]
 
                                        (if (or dUP? dDOWN?)
 
@@ -29,11 +29,11 @@
                                            (conj rslt (assoc fst :signals [{:signal :up
                                                                             :why :obv-divergence
                                                                             :arguments [ech-list price-peaks-valleys obv-peaks-valleys]
-                                                                            :function sleading/divergence-up?}]))
+                                                                            :function common/divergence-up?}]))
                                            (conj rslt (assoc fst :signals [{:signal :down
                                                                             :why :obv-divergence
                                                                             :arguments [ech-list price-peaks-valleys obv-peaks-valleys]
-                                                                            :function sleading/divergence-down?}])))
+                                                                            :function common/divergence-down?}])))
                                          (conj rslt (first ech-list)))))
                                    []
                                    (partition view-window 1 obv-list))]

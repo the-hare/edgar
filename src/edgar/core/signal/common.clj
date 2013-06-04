@@ -47,3 +47,47 @@
             (< (read-string (:last-trade-price (first inp)))
                (read-string (:last-trade-price (second inp)))))
           (take period partitioned-list)))
+
+(defn divergence-up? [options ech-list price-peaks-valleys macd-peaks-valleys]
+
+  (let [
+        first-ech (first ech-list)
+        first-price (first price-peaks-valleys)
+        first-macd (first macd-peaks-valleys)
+
+        {input-top :input-top
+         input-bottom :input-bottom
+         :or {input-top :last-trade-price
+              input-bottom :last-trade-macd}} options
+
+        price-higher-high? (and (-> (input-top first-ech) nil? not)
+                                (-> (input-top first-price) nil? not)
+                                (> (input-top first-ech) (input-top first-price)))
+
+        macd-lower-high? (and (-> (input-bottom first-ech) nil? not)
+                              (-> (input-bottom first-macd) nil? not)
+                              (< (input-bottom first-ech) (input-bottom first-macd)))]
+
+    (and price-higher-high? macd-lower-high?)))
+
+(defn divergence-down? [options ech-list price-peaks-valleys macd-peaks-valleys]
+
+  (let [
+        first-ech (first ech-list)
+        first-price (first price-peaks-valleys)
+        first-macd (first macd-peaks-valleys)
+
+        {input-top :input-top
+         input-bottom :input-bottom
+         :or {input-top :last-trade-price
+              input-bottom :last-trade-macd}} options
+
+        price-lower-high? (and (-> (input-top first-ech) nil? not)
+                               (-> (input-top first-price) nil? not)
+                               (< (input-top (first ech-list)) (input-top (first price-peaks-valleys))))
+
+        macd-higher-high? (and (-> (input-top first-ech) nil? not)
+                               (-> (input-top first-price) nil? not)
+                               (> (input-bottom (first ech-list)) (input-bottom (first macd-peaks-valleys))))]
+
+    (and price-lower-high? macd-higher-high?)))

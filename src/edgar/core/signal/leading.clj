@@ -38,50 +38,6 @@
                []
                partitioned-list)))
 
-(defn divergence-up? [options ech-list price-peaks-valleys macd-peaks-valleys]
-
-  (let [
-        first-ech (first ech-list)
-        first-price (first price-peaks-valleys)
-        first-macd (first macd-peaks-valleys)
-
-        {input-top :input-top
-         input-bottom :input-bottom
-         :or {input-top :last-trade-price
-              input-bottom :last-trade-macd}} options
-
-        price-higher-high? (and (-> (input-top first-ech) nil? not)
-                                (-> (input-top first-price) nil? not)
-                                (> (input-top first-ech) (input-top first-price)))
-
-        macd-lower-high? (and (-> (input-bottom first-ech) nil? not)
-                              (-> (input-bottom first-macd) nil? not)
-                              (< (input-bottom first-ech) (input-bottom first-macd)))]
-
-    (and price-higher-high? macd-lower-high?)))
-
-(defn divergence-down? [options ech-list price-peaks-valleys macd-peaks-valleys]
-
-  (let [
-        first-ech (first ech-list)
-        first-price (first price-peaks-valleys)
-        first-macd (first macd-peaks-valleys)
-
-        {input-top :input-top
-         input-bottom :input-bottom
-         :or {input-top :last-trade-price
-              input-bottom :last-trade-macd}} options
-
-        price-lower-high? (and (-> (input-top first-ech) nil? not)
-                               (-> (input-top first-price) nil? not)
-                               (< (input-top (first ech-list)) (input-top (first price-peaks-valleys))))
-
-        macd-higher-high? (and (-> (input-top first-ech) nil? not)
-                               (-> (input-top first-price) nil? not)
-                               (> (input-bottom (first ech-list)) (input-bottom (first macd-peaks-valleys))))]
-
-    (and price-lower-high? macd-higher-high?)))
-
 (defn macd-divergence [view-window macd-list]
 
   (let [partitioned-macd (partition view-window 1 macd-list)
@@ -97,8 +53,8 @@
                                         price-peaks-valleys (common/find-peaks-valleys nil ech-list)
                                         macd-peaks-valleys (common/find-peaks-valleys {:input :last-trade-macd} ech-list)
 
-                                        dUP? (divergence-up? nil  ech-list price-peaks-valleys macd-peaks-valleys)
-                                        dDOWN? (divergence-down? nil ech-list price-peaks-valleys macd-peaks-valleys)
+                                        dUP? (common/divergence-up? nil  ech-list price-peaks-valleys macd-peaks-valleys)
+                                        dDOWN? (common/divergence-down? nil ech-list price-peaks-valleys macd-peaks-valleys)
                                         ]
 
                                     (if (or dUP? dDOWN?)
@@ -107,11 +63,11 @@
                                         (conj rslt (assoc fst :signals [{:signal :up
                                                                          :why :macd-divergence
                                                                          :arguments [ech-list price-peaks-valleys macd-peaks-valleys]
-                                                                         :function divergence-up?}]))
+                                                                         :function common/divergence-up?}]))
                                         (conj rslt (assoc fst :signals [{:signal :down
                                                                          :why :macd-divergence
                                                                          :arguments [ech-list price-peaks-valleys macd-peaks-valleys]
-                                                                         :function divergence-down?}])))
+                                                                         :function common/divergence-down?}])))
                                       (conj rslt (first ech-list)))))
                                 []
                                 partitioned-macd)
@@ -265,8 +221,8 @@
                                               k-peaks-valleys (common/find-peaks-valleys {:input :K} ech-list)
                                               d-peaks-valleys (common/find-peaks-valleys {:input :D} ech-list)
 
-                                              dUP? (divergence-up? {:input-top :K :input-bottom :D} ech-list k-peaks-valleys d-peaks-valleys)
-                                              dDOWN? (divergence-down? {:input-top :K :input-bottom :D} ech-list k-peaks-valleys d-peaks-valleys)]
+                                              dUP? (common/divergence-up? {:input-top :K :input-bottom :D} ech-list k-peaks-valleys d-peaks-valleys)
+                                              dDOWN? (common/divergence-down? {:input-top :K :input-bottom :D} ech-list k-peaks-valleys d-peaks-valleys)]
 
                                           (if (or dUP? dDOWN?)
 
@@ -274,11 +230,11 @@
                                               (conj rslt (assoc fst :signals [{:signal :up
                                                                                :why :stochastic-divergence
                                                                                :arguments [ech-list k-peaks-valleys d-peaks-valleys]
-                                                                               :function divergence-up?}]))
+                                                                               :function common/divergence-up?}]))
                                               (conj rslt (assoc fst :signals [{:signal :down
                                                                                :why :stochastic-divergence
                                                                                :arguments [ech-list k-peaks-valleys d-peaks-valleys]
-                                                                               :function divergence-down?}])))
+                                                                               :function common/divergence-down?}])))
                                             (conj rslt (first ech-list)))))
                                       []
                                       partitioned-stochastic)]
