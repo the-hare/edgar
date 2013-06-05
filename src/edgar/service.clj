@@ -147,7 +147,7 @@
                                                                                        :bollinger-band (reverse (slagging/bollinger-band 20 tick-list-N sma-list))
                                                                                        :macd (reverse (sleading/macd nil 20 tick-list-N sma-list))
                                                                                        :stochastic-oscillator (reverse (sleading/stochastic-oscillator 14 3 3 tick-list-N))
-                                                                                       :obv (reverse (sconfirming/on-balance-volume (first tick-list-N) tick-list-N))}})))])
+                                                                                       :obv (reverse (sconfirming/on-balance-volume 10 (first tick-list-N) tick-list-N))}})))])
     { :status 204 }))
 
 

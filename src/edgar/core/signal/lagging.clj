@@ -1,7 +1,8 @@
 (ns edgar.core.signal.lagging
   (:require [edgar.core.analysis.lagging :as analysis]
             [edgar.core.analysis.confirming :as confirming]
-            [edgar.core.signal.common :as common]))
+            [edgar.core.signal.common :as common]
+            [clojure.tools.logging :as log]))
 
 
 (defn join-averages
@@ -192,6 +193,7 @@
                                  OVER_SOLD 20
                                  rsi-list (confirming/relative-strength-index 14 ech-list)
 
+                                 xxx (log/info "... signal.lagging/bollinger-band > rsi-list[" rsi-list "]")
 
                                  ;; i. price makes a higher high and
                                  higher-highPRICE? (if (empty? peaks)
@@ -206,7 +208,7 @@
                                                   (< (:rsi (first rsi-list))
                                                      (:rsi (first (filter (fn [inp] (= (:last-trade-time inp)
                                                                                       (:last-trade-time (first peaks))))
-                                                                          rsi-list)))))
+                                                                          (remove nil? rsi-list))))))
 
                                  ;; iii. and divergence should happen abouve the overbought line
                                  divergence-overbought? (> (:rsi (first rsi-list))
@@ -225,7 +227,7 @@
                                                    (> (:rsi (first rsi-list))
                                                       (:rsi (first (filter (fn [inp] (= (:last-trade-time inp)
                                                                                        (:last-trade-time (first valleys))))
-                                                                           rsi-list)))))
+                                                                           (remove nil? rsi-list))))))
 
                                  divergence-oversold? (< (:rsi (first rsi-list))
                                                          OVER_SOLD)]

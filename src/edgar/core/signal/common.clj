@@ -68,12 +68,21 @@
          :or {input-top :last-trade-price
               input-bottom :last-trade-macd}} options
 
+
+        both-exist-price? (and (not (empty? (remove nil? ech-list)))
+                               (not (empty? (remove nil? price-peaks-valleys))))
         price-higher-high? (and (-> (input-top first-ech) nil? not)
                                 (-> (input-top first-price) nil? not)
+
+                                both-exist-price?
                                 (> (input-top first-ech) (input-top first-price)))
 
+        both-exist-macd? (and (not (empty? (remove nil? ech-list)))
+                              (not (empty? (remove nil? macd-peaks-valleys))))
         macd-lower-high? (and (-> (input-bottom first-ech) nil? not)
                               (-> (input-bottom first-macd) nil? not)
+
+                              both-exist-macd?
                               (< (input-bottom first-ech) (input-bottom first-macd)))]
 
     (and price-higher-high? macd-lower-high?)))
@@ -90,12 +99,21 @@
          :or {input-top :last-trade-price
               input-bottom :last-trade-macd}} options
 
+
+        both-exist-price? (and (not (empty? (remove nil? ech-list)))
+                               (not (empty? (remove nil? price-peaks-valleys))))
         price-lower-high? (and (-> (input-top first-ech) nil? not)
                                (-> (input-top first-price) nil? not)
+
+                               both-exist-price?
                                (< (input-top (first ech-list)) (input-top (first price-peaks-valleys))))
 
+        both-exist-macd? (and (not (empty? (remove nil? ech-list)))
+                              (not (empty? (remove nil? macd-peaks-valleys))))
         macd-higher-high? (and (-> (input-top first-ech) nil? not)
                                (-> (input-top first-price) nil? not)
+
+                               both-exist-macd?
                                (> (input-bottom (first ech-list)) (input-bottom (first macd-peaks-valleys))))]
 
     (and price-lower-high? macd-higher-high?)))
