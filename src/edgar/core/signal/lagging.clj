@@ -203,7 +203,8 @@
 
 
                                  ;; ii. rsi devergence makes a lower high
-                                 lower-highRSI? (if (empty? peaks)
+                                 lower-highRSI? (if (or (empty? peaks)
+                                                        (some #(nil? (:last-trade-time %)) rsi-list))
                                                   false
                                                   (< (:rsi (first rsi-list))
                                                      (:rsi (first (filter (fn [inp] (= (:last-trade-time inp)
@@ -217,7 +218,8 @@
 
 
                                  ;; i. price makes a lower low
-                                 lower-highPRICE? (if (empty? valleys)
+                                 lower-highPRICE? (if (or (empty? valleys)
+                                                          (some #(nil? (:last-trade-time %)) rsi-list))
                                                     false
                                                     (< (:last-trade-price (first ech-list))
                                                        (:last-trade-price (first valleys))))
