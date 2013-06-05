@@ -14315,7 +14315,8 @@ edgar.livesource.addEventListener("stream-live", function(a) {
   console.log([cljs.core.str("GET:: get-streaming-live-data > e["), cljs.core.str(a), cljs.core.str("]")].join(""));
   var b = cljs.reader.read_string.call(null, a.data), a = cljs.core.into_array.call(null, cljs.core.reduce.call(null, function(a, b) {
     return cljs.core.conj.call(null, a, cljs.core.into_array.call(null, cljs.core.PersistentVector.fromArray([window.parseInt(cljs.core.first.call(null, b)), window.parseFloat(cljs.core.second.call(null, b))], !0)))
-  }, cljs.core.PersistentVector.EMPTY, cljs.core.into_array.call(null, (new cljs.core.Keyword("\ufdd0'stock-list")).call(null, b)))), b = (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, b), c = cljs.core._EQ_.call(null, b, jayq.core.$.call(null, "#live-stock-graph").highcharts("StockChart").title.text);
+  }, cljs.core.PersistentVector.EMPTY, cljs.core.into_array.call(null, (new cljs.core.Keyword("\ufdd0'stock-list")).call(null, b)))), b = (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, b), c;
+  c = (c = null != jayq.core.$.call(null, "#live-stock-graph").highcharts("StockChart")) ? cljs.core._EQ_.call(null, b, jayq.core.$.call(null, "#live-stock-graph").highcharts("StockChart").title.text) : c;
   return edgar.render_stock_graph.call(null, "#live-stock-graph", a, b, c)
 });
 edgar.core = {};

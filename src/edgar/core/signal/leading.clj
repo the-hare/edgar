@@ -29,11 +29,11 @@
                        (conj rslt (assoc fst :signals [{:signal :up
                                                         :why :macd-signal-crossover
                                                         :arguments [ech]
-                                                        :function macd-cross-abouve?}]))
+                                                        #_:function #_macd-cross-abouve?}]))
                        (conj rslt (assoc fst :signals [{:signal :down
                                                         :why :macd-signal-crossover
                                                         :arguments [ech]
-                                                        :function macd-cross-below?}])))
+                                                        #_:function #_macd-cross-below?}])))
                      (conj rslt fst))))
                []
                partitioned-list)))
@@ -63,11 +63,11 @@
                                         (conj rslt (assoc fst :signals [{:signal :up
                                                                          :why :macd-divergence
                                                                          :arguments [ech-list price-peaks-valleys macd-peaks-valleys]
-                                                                         :function common/divergence-up?}]))
+                                                                         #_:function #_common/divergence-up?}]))
                                         (conj rslt (assoc fst :signals [{:signal :down
                                                                          :why :macd-divergence
                                                                          :arguments [ech-list price-peaks-valleys macd-peaks-valleys]
-                                                                         :function common/divergence-down?}])))
+                                                                         #_:function #_common/divergence-down?}])))
                                       (conj rslt (first ech-list)))))
                                 []
                                 partitioned-macd)
@@ -164,11 +164,11 @@
                   (conj rslt (assoc ech :signals [{:signal :down
                                                    :why :stochastic-overbought
                                                    :arguments [OVERBOUGHT ech]
-                                                   :function is-overbought?}]))
+                                                   #_:function #_is-overbought?}]))
                   (conj rslt (assoc ech :signals [{:signal :up
                                                    :why :stochastic-oversold
                                                    :arguments [OVERSOLD ech]
-                                                   :function is-oversold?}])))
+                                                   #_:function #_is-oversold?}])))
                 (conj rslt ech))))
           []
           (remove nil? stochastic-list)))
@@ -199,11 +199,11 @@
                   (conj rslt (assoc fst :signals [{:signal :down
                                                    :why :stochastic-crossover
                                                    :arguments [fst snd]
-                                                   :function k-crosses-abouve?}]))
+                                                   #_:function #_k-crosses-abouve?}]))
                   (conj rslt (assoc fst :signals [{:signal :up
                                                    :why :stochastic-crossover
                                                    :arguments [fst snd]
-                                                   :function k-crosses-below?}])))
+                                                   #_:function #_k-crosses-below?}])))
                 (conj rslt fst))))
           []
           partitioned-stochastic))
@@ -230,11 +230,11 @@
                                               (conj rslt (assoc fst :signals [{:signal :up
                                                                                :why :stochastic-divergence
                                                                                :arguments [ech-list k-peaks-valleys d-peaks-valleys]
-                                                                               :function common/divergence-up?}]))
+                                                                               #_:function #_common/divergence-up?}]))
                                               (conj rslt (assoc fst :signals [{:signal :down
                                                                                :why :stochastic-divergence
                                                                                :arguments [ech-list k-peaks-valleys d-peaks-valleys]
-                                                                               :function common/divergence-down?}])))
+                                                                               #_:function #_common/divergence-down?}])))
                                             (conj rslt (first ech-list)))))
                                       []
                                       partitioned-stochastic)]

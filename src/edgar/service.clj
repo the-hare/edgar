@@ -141,7 +141,7 @@
                                                      ema-list (alagging/exponential-moving-average nil 20 tick-list-N sma-list)]
 
                                                  (stream-live "stream-live" {:stock-name stock-name
-                                                                             :stock-list (reverse final-list)
+                                                                             :stock-list final-list
                                                                              :source-list (reverse tick-list-N)
                                                                              :signals {:moving-average (reverse (slagging/moving-averages 20 tick-list-N sma-list ema-list))
                                                                                        :bollinger-band (reverse (slagging/bollinger-band 20 tick-list-N sma-list))

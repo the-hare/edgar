@@ -193,7 +193,6 @@
                                  OVER_SOLD 20
                                  rsi-list (confirming/relative-strength-index 14 ech-list)
 
-                                 xxx (log/info "... signal.lagging/bollinger-band > rsi-list[" rsi-list "]")
 
                                  ;; i. price makes a higher high and
                                  higher-highPRICE? (if (empty? peaks)
@@ -204,12 +203,16 @@
 
                                  ;; ii. rsi devergence makes a lower high
                                  lower-highRSI? (if (or (empty? peaks)
-                                                        (some #(nil? (:last-trade-time %)) rsi-list))
+                                                        (some #(nil? (:last-trade-time %)) rsi-list)
+                                                        (not (nil? rsi-list)))
                                                   false
                                                   (< (:rsi (first rsi-list))
-                                                     (:rsi (first (filter (fn [inp] (= (:last-trade-time inp)
-                                                                                      (:last-trade-time (first peaks))))
-                                                                          (remove nil? rsi-list))))))
+                                                     (:rsi (first (filter (fn [inp]
+
+                                                                            (log/info "... signal.lagging/bollinger-band > lower-lowRSI? > rsi-list > ech[" inp "]")
+                                                                            (= (:last-trade-time inp)
+                                                                               (:last-trade-time (first peaks))))
+                                                                          rsi-list)))))
 
                                  ;; iii. and divergence should happen abouve the overbought line
                                  divergence-overbought? (> (:rsi (first rsi-list))
@@ -224,12 +227,16 @@
                                                     (< (:last-trade-price (first ech-list))
                                                        (:last-trade-price (first valleys))))
 
-                                 higher-highRSI? (if (empty? valleys)
+                                 higher-highRSI? (if (or (empty? valleys)
+                                                         (not (nil? rsi-list)))
                                                    false
                                                    (> (:rsi (first rsi-list))
-                                                      (:rsi (first (filter (fn [inp] (= (:last-trade-time inp)
-                                                                                       (:last-trade-time (first valleys))))
-                                                                           (remove nil? rsi-list))))))
+                                                      (:rsi (first (filter (fn [inp]
+
+                                                                             (log/info "... signal.lagging/bollinger-band > higher-highRSI? > RSI-LIST > ech[" inp "]")
+                                                                             (= (:last-trade-time inp)
+                                                                                (:last-trade-time (first valleys))))
+                                                                           rsi-list)))))
 
                                  divergence-oversold? (< (:rsi (first rsi-list))
                                                          OVER_SOLD)]
