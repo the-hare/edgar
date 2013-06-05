@@ -164,16 +164,16 @@
                            ;; entry signal -> close is outside of band, and previous swing high/low is inside the band
                            (if upM?
 
-                             (if (and (< (read-string (:last-trade-price (first ech-list))) (:lower-band (first ech-list)))
-                                      (> (read-string (:last-trade-price (first valleys))) (:lower-band (first (some #(= (:last-trade-time %) (:last-trade-time (first valleys)))
+                             (if (and (< (:last-trade-price (first ech-list)) (:lower-band (first ech-list)))
+                                      (> (:last-trade-price (first valleys)) (:lower-band (first (some #(= (:last-trade-time %) (:last-trade-time (first valleys)))
                                                                                                                      ech-list)))))
 
                                (conj rslt (assoc (first ech-list) :signal :down))
 
                                (conj rslt (first ech-list)))
 
-                             (if (and (> (read-string (:last-trade-price (first ech-list))) (:upper-band (first ech-list)))
-                                      (< (read-string (:last-trade-price (first peaks))) (:upper-band (first (some #(= (:last-trade-time %) (:last-trade-time (first peaks))))
+                             (if (and (> (:last-trade-price (first ech-list)) (:upper-band (first ech-list)))
+                                      (< (:last-trade-price (first peaks)) (:upper-band (first (some #(= (:last-trade-time %) (:last-trade-time (first peaks))))
                                                                                                              ech-list))))
 
                                (conj rslt (assoc (first ech-list) :signal :up))
@@ -196,8 +196,8 @@
                                  ;; i. price makes a higher high and
                                  higher-highPRICE? (if (empty? peaks)
                                                      false
-                                                     (> (read-string (:last-trade-price (first ech-list)))
-                                                        (read-string (:last-trade-price (first peaks)))))
+                                                     (> (:last-trade-price (first ech-list))
+                                                        (:last-trade-price (first peaks))))
 
 
                                  ;; ii. rsi devergence makes a lower high
@@ -217,8 +217,8 @@
                                  ;; i. price makes a lower low
                                  lower-highPRICE? (if (empty? valleys)
                                                     false
-                                                    (< (read-string (:last-trade-price (first ech-list)))
-                                                       (read-string (:last-trade-price (first valleys)))))
+                                                    (< (:last-trade-price (first ech-list))
+                                                       (:last-trade-price (first valleys))))
 
                                  higher-highRSI? (if (empty? valleys)
                                                    false

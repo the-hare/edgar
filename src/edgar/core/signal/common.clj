@@ -37,15 +37,23 @@
 
 (defn up-market? [period partitioned-list]
   (every? (fn [inp]
-            (> (read-string (:last-trade-price (first inp)))
-               (read-string (:last-trade-price (second inp)))))
+            (> (if (string? (:last-trade-price (first inp)))
+                 (read-string (:last-trade-price (first inp)))
+                 (:last-trade-price (first inp)))
+               (if (string? (:last-trade-price (second inp)))
+                 (read-string (:last-trade-price (second inp)))
+                 (:last-trade-price (second inp)))))
           (take period partitioned-list)))
 
 
 (defn down-market? [period partitioned-list]
   (every? (fn [inp]
-            (< (read-string (:last-trade-price (first inp)))
-               (read-string (:last-trade-price (second inp)))))
+            (< (if (string? (:last-trade-price (first inp)))
+                 (read-string (:last-trade-price (first inp)))
+                 (:last-trade-price (first inp)))
+               (if (string? (:last-trade-price (second inp)))
+                 (read-string (:last-trade-price (second inp)))
+                 (:last-trade-price (second inp)))))
           (take period partitioned-list)))
 
 (defn divergence-up? [options ech-list price-peaks-valleys macd-peaks-valleys]

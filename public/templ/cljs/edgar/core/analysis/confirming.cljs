@@ -105,8 +105,8 @@
               ;; each item will be a population of tick-window (default of 14)
               (let [pass-one (reduce (fn [rslt ech]
 
-                                       (let [fst (read-string (:last-trade-price (first ech)))
-                                             snd (read-string (:last-trade-price (second ech)))
+                                       (let [fst (:last-trade-price (first ech))
+                                             snd (:last-trade-price (second ech))
 
                                              up? (> fst snd)
                                              down? (< fst snd)
@@ -125,10 +125,10 @@
                     down-list (:down (group-by :signal pass-one))
 
                     avg-gains (/ (apply +
-                                        (map read-string (map :last-trade-price up-list)))
+                                        (map :last-trade-price up-list))
                                  tick-window)
                     avg-losses (/ (apply +
-                                         (map read-string (map :last-trade-price down-list)))
+                                         (map :last-trade-price down-list))
                                   tick-window)
 
                     rs (if-not (= 0 avg-losses)
