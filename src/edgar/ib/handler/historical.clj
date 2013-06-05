@@ -108,7 +108,7 @@
 
     ;; ii.i get the next ID - (rst "tickerId")
     ;; ii.ii) get the next stock
-    (log/info "snapshot-handler > SNAPSHOT END result [" rst "] > bucket-tranche [" bucket "] > stock-lists SIZE [" (count stock-lists) "]")
+    (log/info "snapshot-handler > SNAPSHOT END result [" rst "] > bucket-tranche [" #_bucket "] > stock-lists SIZE [" (count stock-lists) "]")
 
 
     ;; remove previous stock & mktRequest for next stock

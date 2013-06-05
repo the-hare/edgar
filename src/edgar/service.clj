@@ -4,6 +4,10 @@
             [edgar.ib.market :as market]
             [edgar.datomic :as edatomic]
             [edgar.ib.handler.live :as live]
+            [edgar.core.analysis.lagging :as alagging]
+            [edgar.core.signal.lagging :as slagging]
+            [edgar.core.signal.leading :as sleading]
+            [edgar.core.signal.confirming :as sconfirming]
 
             [clojure.java.io :as io]
             [io.pedestal.service.log :as log]
@@ -19,8 +23,7 @@
             [io.pedestal.service.interceptor :refer [defhandler definterceptor]]
             [ring.middleware.session.memory :as rmemory]
             [ring.middleware.session.cookie :as rcookie]
-            [ring.util.response :as ring-resp]
-            ))
+            [ring.util.response :as ring-resp]))
 
 
 
@@ -32,6 +35,7 @@
       (ring-resp/content-type "text/html")))
 
 
+
 ;; LIST Filtered Stocks
 (defhandler list-filtered-input
   "List high-moving stocks"
@@ -40,7 +44,6 @@
   (let [conn (edatomic/database-connect nil)
         result (live/load-filtered-results 20 conn)]
     (ring-resp/response result)))
-
 
 
 
@@ -116,19 +119,35 @@
 
 (defn get-streaming-stock-data [request]
 
-  (println (str "... get-streaming-stock-data CALLED > servlet-response[" (:servlet-response request) "] > sse-context[" @stored-streaming-context "]"))
   (let [client (:interactive-brokers-client edgar/*interactive-brokers-workbench*)
         stock-selection [ (-> request :query-params :stock-selection) ]
         stock-name (-> request :query-params :stock-name)]
 
     (edgar/play-live client stock-selection [(fn [tick-list tick]
 
-                                               (let [final-list (reduce (fn [rslt ech]
+                                               (let [tick-list-N (map (fn [inp]
+                                                                        (assoc inp
+                                                                          :total-volume (read-string (:total-volume inp))
+                                                                          :last-trade-size (read-string (:last-trade-size inp))
+                                                                          :vwap (read-string (:vwap inp))
+                                                                          :last-trade-price (read-string (:last-trade-price inp))))
+                                                                      tick-list)
+
+                                                     final-list (reduce (fn [rslt ech]
                                                                           (conj rslt [(:last-trade-time ech) (:last-trade-price ech)]))
                                                                         []
-                                                                        tick-list)]
+                                                                        tick-list-N)
+                                                     sma-list (alagging/simple-moving-average nil 20 tick-list-N)
+                                                     ema-list (alagging/exponential-moving-average nil 20 tick-list-N sma-list)]
 
-                                                 (stream-live "stream-live" {:stock-list final-list :stock-name stock-name})))])
+                                                 (stream-live "stream-live" {:stock-name stock-name
+                                                                             :stock-list (reverse final-list)
+                                                                             :source-list (reverse tick-list-N)
+                                                                             :signals {:moving-average (reverse (slagging/moving-averages 20 tick-list-N sma-list ema-list))
+                                                                                       :bollinger-band (reverse (slagging/bollinger-band 20 tick-list-N sma-list))
+                                                                                       :macd (reverse (sleading/macd nil 20 tick-list-N sma-list))
+                                                                                       :stochastic-oscillator (reverse (sleading/stochastic-oscillator 14 3 3 tick-list-N))
+                                                                                       :obv (reverse (sconfirming/on-balance-volume (first tick-list-N) tick-list-N))}})))])
     { :status 204 }))
 
 

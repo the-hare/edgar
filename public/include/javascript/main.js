@@ -14284,8 +14284,6 @@ edgar.tick_list = cljs.core.clj__GT_js.call(null, cljs.core.PersistentVector.fro
 203.98], !0), cljs.core.PersistentVector.fromArray([1368215597632, 203.97], !0), cljs.core.PersistentVector.fromArray([1368215599396, 203.97], !0), cljs.core.PersistentVector.fromArray([1368215603876, 203.96], !0), cljs.core.PersistentVector.fromArray([1368215606059, 203.96], !0), cljs.core.PersistentVector.fromArray([1368215610316, 203.95], !0), cljs.core.PersistentVector.fromArray([1368215610634, 203.95], !0), cljs.core.PersistentVector.fromArray([1368215610813, 203.93], !0), cljs.core.PersistentVector.fromArray([1368215612886, 
 203.95], !0), cljs.core.PersistentVector.fromArray([1368215615858, 203.94], !0), cljs.core.PersistentVector.fromArray([1368215618621, 203.94], !0), cljs.core.PersistentVector.fromArray([1368215619138, 203.96], !0), cljs.core.PersistentVector.fromArray([1368215623846, 203.94], !0), cljs.core.PersistentVector.fromArray([1368215632669, 203.94], !0), cljs.core.PersistentVector.fromArray([1368215634709, 203.92], !0), cljs.core.PersistentVector.fromArray([1368215636587, 203.93], !0), cljs.core.PersistentVector.fromArray([1368215636952, 
 203.94], !0), cljs.core.PersistentVector.fromArray([1368215638328, 203.93], !0)], !0));
-edgar.render_stock_graph.call(null, "#live-stock-graph", edgar.tick_list, "IBM", !1);
-edgar.render_stock_graph.call(null, "#historical-stock-graph", edgar.tick_list, "AAPL", !1);
 edgar.populate_multiselect = function(a, b) {
   var c = (new cljs.core.Keyword("\ufdd0'bind")).call(null, jayq.core.deferred_m), d = (new cljs.core.Keyword("\ufdd0'return")).call(null, jayq.core.deferred_m);
   (new cljs.core.Keyword("\ufdd0'zero")).call(null, jayq.core.deferred_m);
@@ -14302,7 +14300,7 @@ edgar.populate_multiselect = function(a, b) {
 };
 edgar.populate_multiselect.call(null, ".multiselect-live", cljs.core.ObjMap.fromObject(["\ufdd0'onChange"], {"\ufdd0'onChange":function(a, b) {
   return cljs.core.truth_(b) ? $.post.call(null, [cljs.core.str("/get-streaming-stock-data?stock-selection="), cljs.core.str(a.val()), cljs.core.str("&stock-name="), cljs.core.str(a.text())].join(""), function(a) {
-    return console.log([cljs.core.str("POST:: get-streaming-stock-data > data["), cljs.core.str(a.data), cljs.core.str("]")].join(""))
+    return console.log([cljs.core.str("POST:: get-streaming-stock-data > data["), cljs.core.str(a), cljs.core.str("]")].join(""))
   }) : null
 }}));
 edgar.populate_multiselect.call(null, ".multiselect-historical", cljs.core.ObjMap.fromObject(["\ufdd0'onChange"], {"\ufdd0'onChange":function(a, b) {

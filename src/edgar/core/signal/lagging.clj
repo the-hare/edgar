@@ -23,7 +23,9 @@
                      (= (:last-trade-time titem) (:last-trade-time sitem) (:last-trade-time eitem)))
 
               {:last-trade-time (:last-trade-time titem)
-               :last-trade-price (read-string (:last-trade-price titem))
+               :last-trade-price (if (string? (:last-trade-price titem))
+                                   (read-string (:last-trade-price titem))
+                                   (:last-trade-price titem))
                :last-trade-price-average (:last-trade-price-average sitem)
                :last-trade-price-exponential (:last-trade-price-exponential eitem)}
 
