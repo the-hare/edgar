@@ -17,7 +17,9 @@
     Options are:
       :macd-window-fast (default is 12)
       :macd-window-slow (default is 26)
-      :signal-window (default is 9)"
+      :signal-window (default is 9)
+
+    ** This function assumes the latest tick is on the left**"
 
   ([options tick-window tick-list]
      (macd options tick-window tick-list (lagging/simple-moving-average nil tick-window tick-list)))
@@ -109,7 +111,9 @@
      tick-window: the length of Stochastic, or number of ticks under observation (defaults to 14)
      trigger-window: the smoothing line (defaults to 3)
      trigger-line: (defaults to 3)
-     tick-list: the input time series (in last trade price)"
+     tick-list: the input time series (in last trade price)
+
+   ** This function assumes the latest tick is on the left**"
 
   [tick-window trigger-window trigger-line tick-list]
 

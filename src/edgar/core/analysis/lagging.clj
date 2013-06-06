@@ -1,5 +1,5 @@
-(ns edgar.core.analysis.lagging
-  )
+(ns edgar.core.analysis.lagging)
+
 
 (defn simple-moving-average
   "Takes the tick-list, and moves back as far as the tick window will take it.
@@ -10,7 +10,9 @@
    Options are:
    :input - input key function will look for (defaults to :last-trade-price)
    :output - output key function will emit (defaults to :last-trade-price-average)
-   :etal - other keys to emit in each result map"
+   :etal - other keys to emit in each result map
+
+   ** This function assumes the latest tick is on the left**"
   [options tick-window tick-list]
 
   (let [;; calculate how far back the window can start
@@ -65,7 +67,9 @@
    Options are:
    :input - input key function will look for (defaults to :last-trade-price)
    :output - output key function will emit (defaults to :last-trade-price-exponential)
-   :etal - other keys to emit in each result map"
+   :etal - other keys to emit in each result map
+
+   ** This function assumes the latest tick is on the left**"
 
   ([options tick-window tick-list]
 
@@ -132,7 +136,9 @@
      N: period, or tick-window we are looking at
 
    Returns a list, equal in length to the tick-list, but only with slots filled,
-   where preceding tick-list allows."
+   where preceding tick-list allows.
+
+   ** This function assumes the latest tick is on the left**"
 
   ([tick-window tick-list]
      (bollinger-band tick-window tick-list (simple-moving-average nil tick-window tick-list)))

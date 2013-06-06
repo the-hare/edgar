@@ -14,7 +14,8 @@
     If closing price equals prior:
       Current OBV = Previous OBV (no change)
 
-    ** The first OBV value is the first period's positive/negative volume."
+    ** The first OBV value is the first period's positive/negative volume.
+    ** This function assumes the latest tick is on the left**"
   [latest-tick tick-list]
 
 
@@ -89,7 +90,9 @@
 (defn relative-strength-index
   "The Relative Strength Index (RSI) is a momentum oscillator that measures the speed and change of price movements. It oscillates between zero and 100.
 
-   If no 'tick-window' is given, it defaults to 14"
+   If no 'tick-window' is given, it defaults to 14
+
+   ** This function assumes the latest tick is on the left**"
   [tick-window tick-list]
 
   (let [twindow (if tick-window tick-window 14)
@@ -137,5 +140,4 @@
                             :rs rs
                             :rsi rsi})))
             []
-            window-list)
-    ))
+            window-list)))

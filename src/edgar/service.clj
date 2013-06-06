@@ -134,7 +134,7 @@
                                                                           :last-trade-size (read-string (:last-trade-size inp))
                                                                           :vwap (read-string (:vwap inp))
                                                                           :last-trade-price (read-string (:last-trade-price inp))))
-                                                                      tick-list)
+                                                                      (reverse tick-list))
 
                                                      final-list (reduce (fn [rslt ech]
                                                                           (conj rslt [(:last-trade-time ech) (:last-trade-price ech)]))

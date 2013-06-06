@@ -17,6 +17,8 @@ goog.require('edgar.core.analysis.lagging');
 * :macd-window-fast (default is 12)
 * :macd-window-slow (default is 26)
 * :signal-window (default is 9)
+* 
+* ** This function assumes the latest tick is on the left**
 */
 edgar.core.analysis.leading.macd = (function() {
 var macd = null;
@@ -24,11 +26,11 @@ var macd__3 = (function (options,tick_window,tick_list){
 return macd.call(null,options,tick_window,tick_list,edgar.core.analysis.lagging.simple_moving_average.call(null,null,tick_window,tick_list));
 });
 var macd__4 = (function (options,tick_window,tick_list,sma_list){
-var map__5242 = options;
-var map__5242__$1 = ((cljs.core.seq_QMARK_.call(null,map__5242))?cljs.core.apply.call(null,cljs.core.hash_map,map__5242):map__5242);
-var macd_fast = cljs.core._lookup.call(null,map__5242__$1,"\uFDD0'macd-window-fast",12);
-var macd_slow = cljs.core._lookup.call(null,map__5242__$1,"\uFDD0'macd-window-slow",26);
-var signal_window = cljs.core._lookup.call(null,map__5242__$1,"\uFDD0'signal-window",9);
+var map__13716 = options;
+var map__13716__$1 = ((cljs.core.seq_QMARK_.call(null,map__13716))?cljs.core.apply.call(null,cljs.core.hash_map,map__13716):map__13716);
+var macd_fast = cljs.core._lookup.call(null,map__13716__$1,"\uFDD0'macd-window-fast",12);
+var macd_slow = cljs.core._lookup.call(null,map__13716__$1,"\uFDD0'macd-window-slow",26);
+var signal_window = cljs.core._lookup.call(null,map__13716__$1,"\uFDD0'signal-window",9);
 var ema_short = edgar.core.analysis.lagging.exponential_moving_average.call(null,null,macd_fast,tick_list,sma_list);
 var ema_long = edgar.core.analysis.lagging.exponential_moving_average.call(null,null,macd_slow,tick_list,sma_list);
 var macd__$1 = cljs.core.map.call(null,(function (e1,e2){
@@ -101,27 +103,29 @@ return macd;
 * trigger-window: the smoothing line (defaults to 3)
 * trigger-line: (defaults to 3)
 * tick-list: the input time series (in last trade price)
+* 
+* ** This function assumes the latest tick is on the left**
 */
 edgar.core.analysis.leading.stochastic_oscillator = (function stochastic_oscillator(tick_window,trigger_window,trigger_line,tick_list){
 var stochastic_list = cljs.core.reduce.call(null,(function (rslt,ech){
 var last_time = (new cljs.core.Keyword("\uFDD0'last-trade-time")).call(null,cljs.core.first.call(null,ech));
 var last_price = (new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,cljs.core.first.call(null,ech));
-var last_price_list = cljs.core.map.call(null,(function (p1__5240_SHARP_){
-if(cljs.core.string_QMARK_.call(null,(new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,p1__5240_SHARP_)))
-{return edgar.core.analysis.leading.read_string.call(null,(new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,p1__5240_SHARP_));
+var last_price_list = cljs.core.map.call(null,(function (p1__13714_SHARP_){
+if(cljs.core.string_QMARK_.call(null,(new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,p1__13714_SHARP_)))
+{return edgar.core.analysis.leading.read_string.call(null,(new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,p1__13714_SHARP_));
 } else
-{return (new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,p1__5240_SHARP_);
+{return (new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,p1__13714_SHARP_);
 }
 }),ech);
 var highest_price = cljs.core.apply.call(null,cljs.core.max,last_price_list);
 var lowest_price = cljs.core.apply.call(null,cljs.core.min,last_price_list);
 var _PERCENT_K = (function (){try{return ((last_price - lowest_price) / (highest_price - lowest_price));
-}catch (e5244){if(cljs.core.instance_QMARK_.call(null,edgar.core.analysis.leading.Exception,e5244))
-{var e = e5244;
+}catch (e13718){if(cljs.core.instance_QMARK_.call(null,edgar.core.analysis.leading.Exception,e13718))
+{var e = e13718;
 return 0;
 } else
 {if("\uFDD0'else")
-{throw e5244;
+{throw e13718;
 } else
 {return null;
 }

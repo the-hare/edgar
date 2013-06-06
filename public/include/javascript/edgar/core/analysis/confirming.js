@@ -15,6 +15,7 @@ goog.require('cljs.core');
 * Current OBV = Previous OBV (no change)
 * 
 * ** The first OBV value is the first period's positive/negative volume.
+* ** This function assumes the latest tick is on the left**
 */
 edgar.core.analysis.confirming.on_balance_volume = (function on_balance_volume(latest_tick,tick_list){
 var obv_list = cljs.core.reduce.call(null,(function (rslt,ech){
@@ -29,7 +30,7 @@ return cljs.core.cons.call(null,cljs.core.ObjMap.fromObject(["\uFDD0'obv","\uFDD
 } else
 {return cljs.core.cons.call(null,cljs.core.ObjMap.fromObject(["\uFDD0'obv","\uFDD0'total-volume","\uFDD0'last-trade-price","\uFDD0'last-trade-time"],{"\uFDD0'obv":(new cljs.core.Keyword("\uFDD0'total-volume")).call(null,cljs.core.first.call(null,ech)),"\uFDD0'total-volume":(new cljs.core.Keyword("\uFDD0'total-volume")).call(null,cljs.core.first.call(null,ech)),"\uFDD0'last-trade-price":(new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,cljs.core.first.call(null,ech)),"\uFDD0'last-trade-time":(new cljs.core.Keyword("\uFDD0'last-trade-time")).call(null,cljs.core.first.call(null,ech))}),rslt);
 }
-}),cljs.core.with_meta(cljs.core.list(null),cljs.core.hash_map("\uFDD0'line",61,"\uFDD0'column",27)),cljs.core.reverse.call(null,cljs.core.partition.call(null,2,1,tick_list)));
+}),cljs.core.with_meta(cljs.core.list(null),cljs.core.hash_map("\uFDD0'line",62,"\uFDD0'column",27)),cljs.core.reverse.call(null,cljs.core.partition.call(null,2,1,tick_list)));
 if(cljs.core.truth_(latest_tick))
 {var cprice = ((cljs.core.string_QMARK_.call(null,(new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,latest_tick)))?edgar.core.analysis.confirming.read_string.call(null,(new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,latest_tick)):(new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,latest_tick));
 var pprice = ((cljs.core.string_QMARK_.call(null,(new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,cljs.core.first.call(null,obv_list))))?edgar.core.analysis.confirming.read_string.call(null,(new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,cljs.core.first.call(null,obv_list))):(new cljs.core.Keyword("\uFDD0'last-trade-price")).call(null,cljs.core.first.call(null,obv_list)));
@@ -45,6 +46,8 @@ return cljs.core.cons.call(null,cljs.core.ObjMap.fromObject(["\uFDD0'obv","\uFDD
 * The Relative Strength Index (RSI) is a momentum oscillator that measures the speed and change of price movements. It oscillates between zero and 100.
 * 
 * If no 'tick-window' is given, it defaults to 14
+* 
+* ** This function assumes the latest tick is on the left**
 */
 edgar.core.analysis.confirming.relative_strength_index = (function relative_strength_index(tick_window,tick_list){
 var twindow = (cljs.core.truth_(tick_window)?tick_window:14);

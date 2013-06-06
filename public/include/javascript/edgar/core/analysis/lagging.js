@@ -10,23 +10,25 @@ goog.require('cljs.core');
 * :input - input key function will look for (defaults to :last-trade-price)
 * :output - output key function will emit (defaults to :last-trade-price-average)
 * :etal - other keys to emit in each result map
+* 
+* ** This function assumes the latest tick is on the left**
 */
 edgar.core.analysis.lagging.simple_moving_average = (function simple_moving_average(options,tick_window,tick_list){
 var start_index = tick_window;
 var ma_list = cljs.core.into.call(null,cljs.core.List.EMPTY,cljs.core.repeat.call(null,tick_window,null));
-var map__3641 = options;
-var map__3641__$1 = ((cljs.core.seq_QMARK_.call(null,map__3641))?cljs.core.apply.call(null,cljs.core.hash_map,map__3641):map__3641);
-var input_key = cljs.core._lookup.call(null,map__3641__$1,"\uFDD0'input","\uFDD0'last-trade-price");
-var output_key = cljs.core._lookup.call(null,map__3641__$1,"\uFDD0'output","\uFDD0'last-trade-price-average");
-var etal_keys = cljs.core._lookup.call(null,map__3641__$1,"\uFDD0'etal",cljs.core.PersistentVector.fromArray(["\uFDD0'last-trade-price","\uFDD0'last-trade-time"], true));
+var map__13458 = options;
+var map__13458__$1 = ((cljs.core.seq_QMARK_.call(null,map__13458))?cljs.core.apply.call(null,cljs.core.hash_map,map__13458):map__13458);
+var input_key = cljs.core._lookup.call(null,map__13458__$1,"\uFDD0'input","\uFDD0'last-trade-price");
+var output_key = cljs.core._lookup.call(null,map__13458__$1,"\uFDD0'output","\uFDD0'last-trade-price-average");
+var etal_keys = cljs.core._lookup.call(null,map__13458__$1,"\uFDD0'etal",cljs.core.PersistentVector.fromArray(["\uFDD0'last-trade-price","\uFDD0'last-trade-time"], true));
 return cljs.core.reduce.call(null,(function (rslt,ech){
 var tsum = cljs.core.reduce.call(null,(function (rslt__$1,inp){
 var ltprice = input_key.call(null,inp);
 return (((cljs.core.string_QMARK_.call(null,ltprice))?edgar.core.analysis.lagging.read_string.call(null,ltprice):ltprice) + rslt__$1);
 }),0,ech);
 var taverage = (tsum / cljs.core.count.call(null,ech));
-return cljs.core.cons.call(null,cljs.core.merge.call(null,cljs.core.zipmap.call(null,etal_keys,cljs.core.map.call(null,(function (p1__3638_SHARP_){
-return p1__3638_SHARP_.call(null,cljs.core.first.call(null,ech));
+return cljs.core.cons.call(null,cljs.core.merge.call(null,cljs.core.zipmap.call(null,etal_keys,cljs.core.map.call(null,(function (p1__13455_SHARP_){
+return p1__13455_SHARP_.call(null,cljs.core.first.call(null,ech));
 }),etal_keys)),cljs.core.PersistentArrayMap.fromArrays([output_key,"\uFDD0'population"],[taverage,ech])),rslt);
 }),ma_list,cljs.core.reverse.call(null,cljs.core.partition.call(null,tick_window,1,tick_list)));
 });
@@ -44,6 +46,8 @@ return p1__3638_SHARP_.call(null,cljs.core.first.call(null,ech));
 * :input - input key function will look for (defaults to :last-trade-price)
 * :output - output key function will emit (defaults to :last-trade-price-exponential)
 * :etal - other keys to emit in each result map
+* 
+* ** This function assumes the latest tick is on the left**
 */
 edgar.core.analysis.lagging.exponential_moving_average = (function() {
 var exponential_moving_average = null;
@@ -53,17 +57,17 @@ return exponential_moving_average.call(null,options,tick_window,tick_list,edgar.
 var exponential_moving_average__4 = (function (options,tick_window,tick_list,sma_list){
 var k = (2 / (tick_window + 1));
 var ema_list = cljs.core.into.call(null,cljs.core.List.EMPTY,cljs.core.repeat.call(null,tick_window,null));
-var map__3643 = options;
-var map__3643__$1 = ((cljs.core.seq_QMARK_.call(null,map__3643))?cljs.core.apply.call(null,cljs.core.hash_map,map__3643):map__3643);
-var input_key = cljs.core._lookup.call(null,map__3643__$1,"\uFDD0'input","\uFDD0'last-trade-price");
-var output_key = cljs.core._lookup.call(null,map__3643__$1,"\uFDD0'output","\uFDD0'last-trade-price-exponential");
-var etal_keys = cljs.core._lookup.call(null,map__3643__$1,"\uFDD0'etal",cljs.core.PersistentVector.fromArray(["\uFDD0'last-trade-price","\uFDD0'last-trade-time"], true));
+var map__13460 = options;
+var map__13460__$1 = ((cljs.core.seq_QMARK_.call(null,map__13460))?cljs.core.apply.call(null,cljs.core.hash_map,map__13460):map__13460);
+var input_key = cljs.core._lookup.call(null,map__13460__$1,"\uFDD0'input","\uFDD0'last-trade-price");
+var output_key = cljs.core._lookup.call(null,map__13460__$1,"\uFDD0'output","\uFDD0'last-trade-price-exponential");
+var etal_keys = cljs.core._lookup.call(null,map__13460__$1,"\uFDD0'etal",cljs.core.PersistentVector.fromArray(["\uFDD0'last-trade-price","\uFDD0'last-trade-time"], true));
 return cljs.core.reduce.call(null,(function (rslt,ech){
 var ltprice = input_key.call(null,ech);
 var ema_last = (cljs.core.truth_(output_key.call(null,cljs.core.first.call(null,rslt)))?output_key.call(null,cljs.core.first.call(null,rslt)):input_key.call(null,ech));
 var ema_now = ((k * ((cljs.core.string_QMARK_.call(null,ltprice))?edgar.core.analysis.lagging.read_string.call(null,ltprice):ltprice)) + (((cljs.core.string_QMARK_.call(null,ema_last))?edgar.core.analysis.lagging.read_string.call(null,ema_last):ema_last) * (1 - k)));
-return cljs.core.cons.call(null,cljs.core.merge.call(null,cljs.core.zipmap.call(null,etal_keys,cljs.core.map.call(null,(function (p1__3639_SHARP_){
-return p1__3639_SHARP_.call(null,ech);
+return cljs.core.cons.call(null,cljs.core.merge.call(null,cljs.core.zipmap.call(null,etal_keys,cljs.core.map.call(null,(function (p1__13456_SHARP_){
+return p1__13456_SHARP_.call(null,ech);
 }),etal_keys)),cljs.core.PersistentArrayMap.fromArrays([output_key],[ema_now])),rslt);
 }),ema_list,cljs.core.reverse.call(null,cljs.core.remove.call(null,cljs.core.nil_QMARK_,sma_list)));
 });
@@ -91,6 +95,8 @@ return exponential_moving_average;
 * 
 * Returns a list, equal in length to the tick-list, but only with slots filled,
 * where preceding tick-list allows.
+* 
+* ** This function assumes the latest tick is on the left**
 */
 edgar.core.analysis.lagging.bollinger_band = (function() {
 var bollinger_band = null;

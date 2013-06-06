@@ -38,8 +38,8 @@
   [options evt]
 
   (dosync (alter (:tick-list options)
-                 (fn [inp] (conj inp (walk/keywordize-keys (merge evt {:uuid (str (uuid/make-random))}))))))
-  )
+                 (fn [inp] (conj inp (walk/keywordize-keys (merge evt {:uuid (str (uuid/make-random))})))))))
+
 (defn handle-tick-string
   "Format will look like:
 
@@ -50,14 +50,12 @@
   (log/debug "handle-tick-string > options[" options "] evt[" evt "]")
   (let [tkeys [:last-trade-price :last-trade-size :last-trade-time :total-volume :vwap :single-trade-flag]
         tvalues (cstring/split (evt "value") #";")  ;; parsing RTVolume data
-        result-map (zipmap tkeys tvalues)
-        ]
+        result-map (zipmap tkeys tvalues)]
 
     (dosync (alter (:tick-list options)
                    (fn [inp] (conj inp (merge result-map {:tickerId (evt "tickerId")
                                                          :type (evt "type")
-                                                         :uuid (str (uuid/make-random))}) ))))
-     ))
+                                                         :uuid (str (uuid/make-random))}) ))))))
 
 (defn handle-event [options evt]
 
@@ -70,6 +68,7 @@
                       40)]
 
     (log/debug "edgar.core.edgar/handle-event [" evt "] FILTER[" (:ticker-id-filter options) "] > tick-list size[" (count @tick-list) "] > [" @tick-list "] > options[" #_options "]")
+
 
     ;; handle tickPrice
     #_(if (= "tickPrice" (evt "type")) (handle-tick-price options evt))
@@ -133,9 +132,8 @@
       (lagging/exponential-moving-average nil 5 @tick-list)) #_(log/debug "*** PRINTING our EMA [" ema "]")
 
     (def bollinger
-      (lagging/bollinger-band 5 @tick-list)) #_(log/debug "*** PRINTING our Bollinger Band [" bollinger "]")
+      (lagging/bollinger-band 5 @tick-list)) #_(log/debug "*** PRINTING our Bollinger Band [" bollinger "]")))
 
-    ))
 
 (defn feed-handler
   "Event structures will look like 'tickPrice' or 'tickString'
