@@ -11,27 +11,38 @@
 
 
 ;; === RENDER the Live stock graph
-(defn render-stock-graph [selector tlist label increment]
+(defn render-stock-graph [selector dataList label increment]
 
   (if-not increment
 
     (-> ($ selector)
         (.highcharts "StockChart" (clj->js
-                                   {:rangeSelector {:selected 1},
-                                    :title {:text label},
+                                   {:names [label "Simple Moving Average" "Exponential Moving Average"]
+                                    :rangeSelector {:selected 3}
+                                    :title {:text label}
                                     :chart {:zoomType "x"}
                                     :navigator {:adaptToUpdatedData true}
                                     :series [{:name label,
-                                              :data tlist
-                                              :marker {:enabled true, :radius 3},
+                                              :data (first dataList)
+                                              :marker {:enabled true, :radius 3}
+                                              :shadow true,
+                                              :tooltip {:valueDecimals 2}}
+                                             {:name "Simple Moving Average"
+                                              :data (second dataList)
+                                              :marker {:enabled true, :radius 3}
+                                              :shadow true,
+                                              :tooltip {:valueDecimals 2}}
+                                             {:name "Exponential Moving Average"
+                                              :data (nth dataList 2)
+                                              :marker {:enabled true, :radius 3}
                                               :shadow true,
                                               :tooltip {:valueDecimals 2}}]})
                      ))
-    (-> ($ selector)
+    #_(-> ($ selector)
         (.highcharts)
         (.-series)
         first
-        (.addPoint (last tlist) true false)) ))
+        (.addPoint (last (first dataList)) true false)) ))
 
 (def tick-list (clj->js [[1368215573010 203.98] [1368215576331 203.99] [1368215576857 203.99] [1368215577765 203.99] [1368215578769 204.0] [1368215579272 204.01] [1368215579517 204.02] [1368215581769 204.02] [1368215583602 204.01] [1368215585650 204.02] [1368215586060 204.02] [1368215587029 204.01] [1368215588318 204.02] [1368215589335 204.01] [1368215589536 204.01] [1368215589846 204.0] [1368215591079 203.99] [1368215591789 203.99] [1368215592104 203.98] [1368215592615 203.98] [1368215592758 203.99] [1368215594039 203.97] [1368215597119 203.98] [1368215597632 203.97] [1368215599396 203.97] [1368215603876 203.96] [1368215606059 203.96] [1368215610316 203.95] [1368215610634 203.95] [1368215610813 203.93] [1368215612886 203.95] [1368215615858 203.94] [1368215618621 203.94] [1368215619138 203.96] [1368215623846 203.94] [1368215632669 203.94] [1368215634709 203.92] [1368215636587 203.93] [1368215636952 203.94] [1368215638328 203.93]]))
 
@@ -91,15 +102,33 @@
                    "stream-live"
                    (fn [e]
 
-                     (.log js/console (str "GET:: get-streaming-live-data > e[" e "]"))
+                     #_(.log js/console (str "GET:: get-streaming-live-data > e[" e "]"))
                      (let [result-data (reader/read-string (.-data e))
+
                            local-list (into-array (reduce (fn [rslt ech]
                                                             (conj rslt (into-array [(js/window.parseInt (first ech)) (js/window.parseFloat (second ech))])))
                                                           []
                                                           (into-array (:stock-list result-data))))
+
+                           sma-list (into-array (reduce (fn [rslt ech]
+                                                            (conj rslt (into-array [(js/window.parseInt (first ech)) (js/window.parseFloat (second ech))])))
+                                                          []
+                                                          (remove #(nil? (first %))
+                                                                  (into-array (:sma-list result-data)))))
+
+                           ema-list (into-array (reduce (fn [rslt ech]
+                                                            (conj rslt (into-array [(js/window.parseInt (first ech)) (js/window.parseFloat (second ech))])))
+                                                          []
+                                                          (remove #(nil? (first %))
+                                                                  (into-array (:ema-list result-data)))))
+
+
                            stock-name (:stock-name result-data)
                            increment?  (and (not (nil? (-> ($ "#live-stock-graph") (.highcharts "StockChart"))))
                                             (= stock-name
                                                (-> ($ "#live-stock-graph") (.highcharts "StockChart") (.-title) (.-text)))) ]
 
-                       (render-stock-graph "#live-stock-graph" local-list stock-name increment?))))
+                       (.log js/console "")
+                       (.log js/console (str "...sma-list[" sma-list "]"))
+                       (.log js/console (str "...ema-list[" ema-list "]"))
+                       (render-stock-graph "#live-stock-graph" [local-list sma-list ema-list] stock-name increment?))))

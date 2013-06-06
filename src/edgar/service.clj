@@ -140,15 +140,26 @@
                                                                           (conj rslt [(:last-trade-time ech) (:last-trade-price ech)]))
                                                                         []
                                                                         tick-list-N)
+
+
                                                      sma-list (alagging/simple-moving-average nil 20 tick-list-N)
-                                                     ema-list (alagging/exponential-moving-average nil 20 tick-list-N sma-list)]
+                                                     smaF (reduce (fn [rslt ech]
+                                                                    (conj rslt [(:last-trade-time ech) (:last-trade-price-average ech)]))
+                                                                  []
+                                                                  sma-list)
+
+                                                     ema-list (alagging/exponential-moving-average nil 20 tick-list-N sma-list)
+                                                     emaF (reduce (fn [rslt ech]
+                                                                    (conj rslt [(:last-trade-time ech) (:last-trade-price-exponential ech)]))
+                                                                  []
+                                                                  ema-list)]
 
                                                  (dosync (alter *TICK-LIST-FINAL* (fn [inp] tick-list-N)))
                                                  (stream-live "stream-live" {:stock-name stock-name
                                                                              :stock-list final-list
                                                                              :source-list tick-list-N
-                                                                             :sma-list sma-list
-                                                                             :ema-list ema-list
+                                                                             :sma-list smaF
+                                                                             :ema-list emaF
                                                                              :signals {:moving-average (slagging/moving-averages 20 tick-list-N sma-list ema-list)
                                                                                        :bollinger-band (slagging/bollinger-band 20 tick-list-N sma-list)
                                                                                        :macd (sleading/macd nil 20 tick-list-N sma-list)
