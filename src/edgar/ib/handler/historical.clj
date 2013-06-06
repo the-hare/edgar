@@ -92,8 +92,7 @@
        (log/debug "local-request-historical-data > options[" options "]")
 
        (dosync (alter bucket conj { :id rslt :symbol stock-sym :company stock-name :price-difference 0.0 :event-list [] :processed? false } ))
-       (market/request-historical-data client rslt stock-sym duration-str bar-size "TRADES")))
-  )
+       (market/request-historical-data client rslt stock-sym duration-str bar-size "TRADES"))))
 
 
 (defn- handle-snapshot-end [options rst]

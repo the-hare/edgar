@@ -72,7 +72,7 @@
                    (:session (:request paused-context)) "]"))
 
     (market/create-event-channel)
-    (edgar/play-historical client stock-selection time-duration time-interval [(fn [tick-list]
+    #_(edgar/play-historical client stock-selection time-duration time-interval [(fn [tick-list]
 
                                                                                  (market/close-market-channel)
 
@@ -81,7 +81,41 @@
                                                                                                           []
                                                                                                           (-> tick-list first :event-list))]
 
-                                                                                   ((:resume-fn paused-context) {:stock-list final-list :stock-name (-> tick-list first :company)})))])))
+                                                                                   ((:resume-fn paused-context) {:stock-list final-list :stock-name (-> tick-list first :company)})))])
+
+    (edgar/play-historical client stock-selection time-duration time-interval [(fn [tick-list]
+
+                                                                                 (market/close-market-channel)
+
+                                                                                 (let [
+                                                                                       final-list (reduce (fn [rslt ech]
+                                                                                                            (conj rslt [(ech "date") (ech "close")]))
+                                                                                                          []
+                                                                                                          (-> tick-list first :event-list))
+
+
+                                                                                       sma-list (alagging/simple-moving-average nil 20 tick-list)
+                                                                                       #_smaF #_(reduce (fn [rslt ech]
+                                                                                                      (conj rslt [(:last-trade-time ech) (:last-trade-price-average ech)]))
+                                                                                                    []
+                                                                                                    sma-list)
+
+                                                                                       #_ema-list #_(alagging/exponential-moving-average nil 20 tick-list-N sma-list)
+                                                                                       #_emaF #_(reduce (fn [rslt ech]
+                                                                                                      (conj rslt [(:last-trade-time ech) (:last-trade-price-exponential ech)]))
+                                                                                                    []
+                                                                                                    ema-list)]
+
+                                                                                   ((:resume-fn paused-context) {:stock-name (-> tick-list first :company)
+                                                                                                                 :stock-list final-list
+                                                                                                                 :source-list tick-list
+                                                                                                                 #_:sma-list #_smaF
+                                                                                                                 #_:ema-list #_emaF
+                                                                                                                 #_:signals #_{:moving-average (slagging/moving-averages 20 tick-list-N sma-list ema-list)
+                                                                                                                           :bollinger-band (slagging/bollinger-band 20 tick-list-N sma-list)
+                                                                                                                           :macd (sleading/macd nil 20 tick-list-N sma-list)
+                                                                                                                           :stochastic-oscillator (sleading/stochastic-oscillator 14 3 3 tick-list-N)
+                                                                                                                           :obv (sconfirming/on-balance-volume 10 (first tick-list-N) tick-list-N)}})))])))
 (defbefore get-historical-data
   "Get historical data for a particular stock"
   [{request :request :as context}]
@@ -118,8 +152,6 @@
       (stop-streaming-stock-data))))
 
 
-(def *TICK-LIST-FINAL* (ref []))
-
 (defn get-streaming-stock-data [request]
 
   (let [client (:interactive-brokers-client edgar/*interactive-brokers-workbench*)
@@ -154,7 +186,6 @@
                                                                   []
                                                                   ema-list)]
 
-                                                 (dosync (alter *TICK-LIST-FINAL* (fn [inp] tick-list-N)))
                                                  (stream-live "stream-live" {:stock-name stock-name
                                                                              :stock-list final-list
                                                                              :source-list tick-list-N

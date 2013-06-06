@@ -47,7 +47,7 @@
            tformat (format/formatter "yyyyMMdd HH:mm:ss z")
            tstring (format/unparse tformat nnow)
            ]
-       (.reqHistoricalData client idx contract tstring duration-str bar-size what-to-show 0 1)
+       (.reqHistoricalData client idx contract tstring duration-str bar-size what-to-show 1 1)
        )
      ))
 

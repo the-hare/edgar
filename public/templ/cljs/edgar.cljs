@@ -23,17 +23,17 @@
                                     :chart {:zoomType "x"}
                                     :navigator {:adaptToUpdatedData true}
                                     :series [{:name label,
-                                              :data (first dataList)
+                                              :data (reverse (first dataList))
                                               :marker {:enabled true, :radius 3}
                                               :shadow true,
                                               :tooltip {:valueDecimals 2}}
                                              {:name "Simple Moving Average"
-                                              :data (second dataList)
+                                              :data (reverse (second dataList))
                                               :marker {:enabled true, :radius 3}
                                               :shadow true,
                                               :tooltip {:valueDecimals 2}}
                                              {:name "Exponential Moving Average"
-                                              :data (nth dataList 2)
+                                              :data (reverse (nth dataList 2))
                                               :marker {:enabled true, :radius 3}
                                               :shadow true,
                                               :tooltip {:valueDecimals 2}}]})
