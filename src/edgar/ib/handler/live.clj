@@ -99,16 +99,20 @@
       ;; ii. and trim the list list back to the tick-window size
       (if (>= (count trimmed-list) tick-window)
 
-          (do
+        (do
 
-            (reduce (fn [rslt efn]
-                      (efn trimmed-list (first trimmed-list)))
-                    nil
-                    tee-list)
 
+          (reduce (fn [rslt efn]
+                    (efn trimmed-list (first trimmed-list)))
+                  nil
+                  tee-list)
+
+
+          ;; trim down tick-list if it's greater than 200
+          (if (>= (count trimmed-list) 200)
             (dosync (alter tick-list
                            (fn [inp] (into []
-                                          (remove #(= (:uuid tail-evt) (% :uuid)) inp))))))))
+                                          (remove #(= (:uuid tail-evt) (% :uuid)) inp)))))))))
 
 
 

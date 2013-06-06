@@ -99,7 +99,7 @@
                                                           (into-array (:stock-list result-data))))
                            stock-name (:stock-name result-data)
                            increment?  (and (not (nil? (-> ($ "#live-stock-graph") (.highcharts "StockChart"))))
-                                           (= stock-name
-                                              (-> ($ "#live-stock-graph") (.highcharts "StockChart") (.-title) (.-text)))) ]
+                                            (= stock-name
+                                               (-> ($ "#live-stock-graph") (.highcharts "StockChart") (.-title) (.-text)))) ]
 
                        (render-stock-graph "#live-stock-graph" local-list stock-name increment?))))

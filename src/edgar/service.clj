@@ -117,6 +117,9 @@
     (catch java.io.IOException ioe
       (stop-streaming-stock-data))))
 
+
+(def *TICK-LIST-FINAL* (ref []))
+
 (defn get-streaming-stock-data [request]
 
   (let [client (:interactive-brokers-client edgar/*interactive-brokers-workbench*)
@@ -140,6 +143,7 @@
                                                      sma-list (alagging/simple-moving-average nil 20 tick-list-N)
                                                      ema-list (alagging/exponential-moving-average nil 20 tick-list-N sma-list)]
 
+                                                 (dosync (alter *TICK-LIST-FINAL* (fn [inp] tick-list-N)))
                                                  (stream-live "stream-live" {:stock-name stock-name
                                                                              :stock-list final-list
                                                                              :source-list (reverse tick-list-N)
