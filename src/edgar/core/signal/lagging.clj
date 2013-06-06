@@ -6,7 +6,9 @@
 
 
 (defn join-averages
-  "Create a list where i) tick-list ii) sma-list and iii) ema-list are overlaid"
+  "Create a list where i) tick-list ii) sma-list and iii) ema-list are overlaid.
+
+   ** This function assumes the latest tick is on the left**"
 
   ([tick-window tick-list]
 
@@ -41,7 +43,9 @@
   "Takes baseline time series, along with 2 other moving averages.
 
    Produces a list of signals where the 2nd moving average overlaps (abouve or below) the first.
-   By default, this function will produce a Simple Moving Average and an Exponential Moving Average."
+   By default, this function will produce a Simple Moving Average and an Exponential Moving Average.
+
+   ** This function assumes the latest tick is on the left**"
 
   ([tick-window tick-list]
 
@@ -111,7 +115,8 @@
        ii. check for a wide bollinger band width ; greater than the most previous wide band
        iii. RSI Divergence; i. price makes a higher high and ii. rsi devergence makes a lower high iii. and divergence should happen abouve the overbought line
        iv. entry signal -> check if one of next 3 closes are underneath the priors (or are in the opposite direction)
-  "
+
+   ** This function assumes the latest tick is on the left**"
   ([tick-window tick-list]
      (let [sma-list (analysis/simple-moving-average nil tick-window tick-list)]
        (bollinger-band tick-window tick-list sma-list)))

@@ -6,7 +6,9 @@
 (defn on-balance-volume
   "signal for the on-balance-volume analysis chart. This function uses.
 
-   A. OBV Divergence from price."
+   A. OBV Divergence from price.
+
+   ** This function assumes the latest tick is on the left**"
 
   ([view-window tick-list]
      (let [obv-list (aconfirming/on-balance-volume (first tick-list) tick-list)]

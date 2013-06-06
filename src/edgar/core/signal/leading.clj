@@ -4,14 +4,20 @@
             [edgar.core.signal.common :as common]))
 
 
-(defn macd-cross-abouve? [fst snd]
+(defn macd-cross-abouve?
+  "** This function assumes the latest tick is on the left**"
+  [fst snd]
   (and (< (:last-trade-macd snd) (:ema-signal snd))
        (> (:last-trade-macd fst) (:ema-signal snd))))
-(defn macd-cross-below? [fst snd]
+(defn macd-cross-below?
+  "** This function assumes the latest tick is on the left**"
+  [fst snd]
   (and (> (:last-trade-macd snd) (:ema-signal snd))
        (< (:last-trade-macd fst) (:ema-signal fst))))
 
-(defn macd-signal-crossover [macd-list]
+(defn macd-signal-crossover
+  "** This function assumes the latest tick is on the left**"
+  [macd-list]
 
   (let [partitioned-list (partition 2 1 (remove nil? macd-list))]
 
@@ -38,7 +44,9 @@
                []
                partitioned-list)))
 
-(defn macd-divergence [view-window macd-list]
+(defn macd-divergence
+  "** This function assumes the latest tick is on the left**"
+  [view-window macd-list]
 
   (let [partitioned-macd (partition view-window 1 macd-list)
 
@@ -111,7 +119,9 @@
          when subsequent 3 low(s) are equal or greater than the previous high(s)
 
       EXIT:
-         measure last up-move and project target (difference from last high, from low); stop below the current low."
+         measure last up-move and project target (difference from last high, from low); stop below the current low.
+
+   ** This function assumes the latest tick is on the left**"
 
   ([options tick-window tick-list]
      (macd options tick-window tick-list (lag-analysis/simple-moving-average nil tick-window tick-list)))
@@ -149,7 +159,9 @@
   (> (:K ech) level))
 (defn is-oversold? [level ech]
   (< (:K ech) level))
-(defn stochastic-level [stochastic-list]
+(defn stochastic-level
+  "** This function assumes the latest tick is on the left**"
+  [stochastic-list]
   (reduce (fn [rslt ech]
 
             (let [
@@ -173,13 +185,19 @@
           []
           (remove nil? stochastic-list)))
 
-(defn k-crosses-abouve? [fst snd]
+(defn k-crosses-abouve?
+  "** This function assumes the latest tick is on the left**"
+  [fst snd]
   (and (< (:K snd) (:D snd))
        (> (:K fst) (:D fst))))
-(defn k-crosses-below? [fst snd]
+(defn k-crosses-below?
+  "** This function assumes the latest tick is on the left**"
+  [fst snd]
   (and (> (:K snd) (:D snd))
        (< (:K fst) (:D fst))))
-(defn stochastic-crossover [partitioned-stochastic]
+(defn stochastic-crossover
+  "** This function assumes the latest tick is on the left**"
+  [partitioned-stochastic]
 
   (reduce (fn [rslt ech]
 
@@ -208,7 +226,9 @@
           []
           partitioned-stochastic))
 
-(defn stochastic-divergence [view-window stochastic-list]
+(defn stochastic-divergence
+  "** This function assumes the latest tick is on the left**"
+  [view-window stochastic-list]
 
   (let [partitioned-stochastic (partition view-window 1 stochastic-list)
 
@@ -245,10 +265,10 @@
   "This function searches for signals to overlay on top of a regular Stochastic Oscillator time series.
 
    A. Look for the %K Stochastic line to be abouve (0.8) or below (0.2) the overbought and oversold levels, respectively
-
    B. Look for %K Stochastic line to cross over the %D trigger line
+   C. Look for Divergence, where i. price makes a higher high AND %K Stochastic makes a lower low.
 
-   C. Look for Divergence, where i. price makes a higher high AND %K Stochastic makes a lower low."
+   ** This function assumes the latest tick is on the left**"
 
   ([tick-window trigger-window trigger-line tick-list]
      (let [stochastic-list (lead-analysis/stochastic-oscillator tick-window trigger-window trigger-line tick-list)]

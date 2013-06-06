@@ -1,7 +1,9 @@
 (ns edgar.core.signal.common)
 
 
-(defn find-peaks-valleys [options tick-list]
+(defn find-peaks-valleys
+  "** This function assumes the latest tick is on the left**"
+  [options tick-list]
 
   (let [{input-key :input
          :or {input-key :last-trade-price}} options]
@@ -35,7 +37,9 @@
             (partition 3 1 tick-list))))
 
 
-(defn up-market? [period partitioned-list]
+(defn up-market?
+  "** This function assumes the latest tick is on the left**"
+  [period partitioned-list]
   (every? (fn [inp]
             (> (if (string? (:last-trade-price (first inp)))
                  (read-string (:last-trade-price (first inp)))
@@ -46,7 +50,9 @@
           (take period partitioned-list)))
 
 
-(defn down-market? [period partitioned-list]
+(defn down-market?
+  "** This function assumes the latest tick is on the left**"
+  [period partitioned-list]
   (every? (fn [inp]
             (< (if (string? (:last-trade-price (first inp)))
                  (read-string (:last-trade-price (first inp)))
@@ -56,7 +62,9 @@
                  (:last-trade-price (second inp)))))
           (take period partitioned-list)))
 
-(defn divergence-up? [options ech-list price-peaks-valleys macd-peaks-valleys]
+(defn divergence-up?
+  "** This function assumes the latest tick is on the left**"
+  [options ech-list price-peaks-valleys macd-peaks-valleys]
 
   (let [
         first-ech (first ech-list)
@@ -87,7 +95,9 @@
 
     (and price-higher-high? macd-lower-high?)))
 
-(defn divergence-down? [options ech-list price-peaks-valleys macd-peaks-valleys]
+(defn divergence-down?
+  "** This function assumes the latest tick is on the left**"
+  [options ech-list price-peaks-valleys macd-peaks-valleys]
 
   (let [
         first-ech (first ech-list)
