@@ -14397,11 +14397,12 @@ edgar.core.analysis.leading.macd = function() {
       var c = null != a;
       return(c ? null != b : c) ? cljs.core.ObjMap.fromObject(["\ufdd0'last-trade-price", "\ufdd0'last-trade-time", "\ufdd0'last-trade-macd"], {"\ufdd0'last-trade-price":(new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, a), "\ufdd0'last-trade-time":(new cljs.core.Keyword("\ufdd0'last-trade-time")).call(null, a), "\ufdd0'last-trade-macd":(new cljs.core.Keyword("\ufdd0'last-trade-price-exponential")).call(null, a) - (new cljs.core.Keyword("\ufdd0'last-trade-price-exponential")).call(null, 
       b)}) : null
-    }, h, c), g = edgar.core.analysis.lagging.exponential_moving_average.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'input", "\ufdd0'output", "\ufdd0'etal"], {"\ufdd0'input":"\ufdd0'last-trade-macd", "\ufdd0'output":"\ufdd0'ema-signal", "\ufdd0'etal":cljs.core.PersistentVector.fromArray(["\ufdd0'last-trade-price", "\ufdd0'last-trade-time"], !0)}), a, null, c), a = cljs.core.into.call(null, cljs.core.List.EMPTY, cljs.core.repeat.call(null, a, null));
-    return cljs.core.cons.call(null, cljs.core.map.call(null, function(a, b) {
+    }, h, c), g = edgar.core.analysis.lagging.exponential_moving_average.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'input", "\ufdd0'output", "\ufdd0'etal"], {"\ufdd0'input":"\ufdd0'last-trade-macd", "\ufdd0'output":"\ufdd0'ema-signal", "\ufdd0'etal":cljs.core.PersistentVector.fromArray(["\ufdd0'last-trade-price", "\ufdd0'last-trade-time"], !0)}), a, null, c);
+    return cljs.core.map.call(null, function(a, b) {
       var c = null != a;
-      return(c ? null != b : c) ? cljs.core.ObjMap.fromObject(["\ufdd0'last-trade-price", "\ufdd0'last-trade-time", "\ufdd0'histogram"], {"\ufdd0'last-trade-price":(new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, a), "\ufdd0'last-trade-time":(new cljs.core.Keyword("\ufdd0'last-trade-time")).call(null, a), "\ufdd0'histogram":(new cljs.core.Keyword("\ufdd0'last-trade-macd")).call(null, a) - (new cljs.core.Keyword("\ufdd0'ema-signal")).call(null, b)}) : null
-    }, c, g), a)
+      return(c ? null != b : c) ? cljs.core.ObjMap.fromObject(["\ufdd0'last-trade-price", "\ufdd0'last-trade-time", "\ufdd0'last-trade-macd", "\ufdd0'ema-signal", "\ufdd0'histogram"], {"\ufdd0'last-trade-price":(new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, a), "\ufdd0'last-trade-time":(new cljs.core.Keyword("\ufdd0'last-trade-time")).call(null, a), "\ufdd0'last-trade-macd":(new cljs.core.Keyword("\ufdd0'last-trade-macd")).call(null, a), "\ufdd0'ema-signal":(new cljs.core.Keyword("\ufdd0'ema-signal")).call(null, 
+      b), "\ufdd0'histogram":(new cljs.core.Keyword("\ufdd0'last-trade-macd")).call(null, a) - (new cljs.core.Keyword("\ufdd0'ema-signal")).call(null, b)}) : null
+    }, c, g)
   }, a = function(a, e, f, g) {
     switch(arguments.length) {
       case 3:
@@ -14417,13 +14418,13 @@ edgar.core.analysis.leading.macd = function() {
 }();
 edgar.core.analysis.leading.stochastic_oscillator = function(a, b, c, d) {
   c = cljs.core.reduce.call(null, function(a, b) {
-    var c = (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, cljs.core.first.call(null, b)), d = cljs.core.map.call(null, function(a) {
+    var c = (new cljs.core.Keyword("\ufdd0'last-trade-time")).call(null, cljs.core.first.call(null, b)), d = (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, cljs.core.first.call(null, b)), i = cljs.core.map.call(null, function(a) {
       return cljs.core.string_QMARK_.call(null, (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, a)) ? edgar.core.analysis.leading.read_string.call(null, (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, a)) : (new cljs.core.Keyword("\ufdd0'last-trade-price")).call(null, a)
-    }, b), i = cljs.core.apply.call(null, cljs.core.max, d), d = cljs.core.apply.call(null, cljs.core.min, d);
-    return cljs.core.cons.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'last-price", "\ufdd0'highest-price", "\ufdd0'lowest-price", "\ufdd0'K"], {"\ufdd0'last-price":c, "\ufdd0'highest-price":i, "\ufdd0'lowest-price":d, "\ufdd0'K":(c - d) / (i - d)}), a)
+    }, b), j = cljs.core.apply.call(null, cljs.core.max, i), i = cljs.core.apply.call(null, cljs.core.min, i);
+    return cljs.core.cons.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'last-trade-price", "\ufdd0'last-trade-time", "\ufdd0'highest-price", "\ufdd0'lowest-price", "\ufdd0'K"], {"\ufdd0'last-trade-price":d, "\ufdd0'last-trade-time":c, "\ufdd0'highest-price":j, "\ufdd0'lowest-price":i, "\ufdd0'K":(d - i) / (j - i)}), a)
   }, cljs.core.into.call(null, cljs.core.List.EMPTY, cljs.core.repeat.call(null, a, null)), cljs.core.reverse.call(null, cljs.core.partition.call(null, a, 1, d)));
   return cljs.core.reduce.call(null, function(a, b) {
-    var c = edgar.core.analysis.lagging.exponential_moving_average.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'input", "\ufdd0'output", "\ufdd0'etal"], {"\ufdd0'input":"\ufdd0'K", "\ufdd0'output":"\ufdd0'D", "\ufdd0'etal":cljs.core.PersistentVector.fromArray(["\ufdd0'last-price", "\ufdd0'highest-price", "\ufdd0'lowest-price", "\ufdd0'K"], !0)}), 3, null, b);
+    var c = edgar.core.analysis.lagging.exponential_moving_average.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'input", "\ufdd0'output", "\ufdd0'etal"], {"\ufdd0'input":"\ufdd0'K", "\ufdd0'output":"\ufdd0'D", "\ufdd0'etal":cljs.core.PersistentVector.fromArray(["\ufdd0'last-trade-time", "\ufdd0'last-trade-price", "\ufdd0'highest-price", "\ufdd0'lowest-price", "\ufdd0'K"], !0)}), 3, null, b);
     return cljs.core.cons.call(null, cljs.core.first.call(null, c), a)
   }, cljs.core.into.call(null, cljs.core.List.EMPTY, cljs.core.repeat.call(null, a, null)), cljs.core.reverse.call(null, cljs.core.partition.call(null, b, 1, cljs.core.remove.call(null, cljs.core.nil_QMARK_, c))))
 };

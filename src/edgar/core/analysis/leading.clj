@@ -126,7 +126,10 @@
                                         lowest-price (apply min last-price-list)
 
                                         ;; calculate %K
-                                        %K (/ (- last-price lowest-price) (- highest-price lowest-price))
+                                        %K (try
+                                             (/ (- last-price lowest-price) (- highest-price lowest-price))
+                                             (catch Exception e
+                                               0))
                                         ]
 
                                     (cons {:last-trade-price last-price

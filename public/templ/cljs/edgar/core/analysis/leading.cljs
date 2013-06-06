@@ -70,23 +70,18 @@
            ]
 
        ;; compute the difference, or divergence
-       (let [macd-list (into '() (repeat signal-window nil))]
+       (map (fn [e-macd e-ema]
 
-         (cons
-          (map (fn [e-macd e-ema]
+              (if (and (-> e-macd nil? not)
+                       (-> e-ema nil? not))
 
-                 (if (and (-> e-macd nil? not)
-                          (-> e-ema nil? not))
-
-                   {:last-trade-price (:last-trade-price e-macd)
-                    :last-trade-time (:last-trade-time e-macd)
-                    :histogram (- (:last-trade-macd e-macd) (:ema-signal e-ema))}
-                   ))
-               macd
-               ema-signal
-               )
-          macd-list)
-         )
+                {:last-trade-price (:last-trade-price e-macd)
+                 :last-trade-time (:last-trade-time e-macd)
+                 :last-trade-macd (:last-trade-macd e-macd)
+                 :ema-signal (:ema-signal e-ema)
+                 :histogram (- (:last-trade-macd e-macd) (:ema-signal e-ema))}))
+            macd
+            ema-signal)
        )
      )
 )
@@ -126,7 +121,8 @@
   (let [;; calculate %K
         stochastic-list (reduce (fn [rslt ech]
 
-                                  (let [last-price (:last-trade-price (first ech))
+                                  (let [last-time (:last-trade-time (first ech))
+                                        last-price (:last-trade-price (first ech))
                                         last-price-list (map #(if (string? (:last-trade-price %))
                                                                 (read-string (:last-trade-price %))
                                                                 (:last-trade-price %)) ech)
@@ -134,20 +130,26 @@
                                         lowest-price (apply min last-price-list)
 
                                         ;; calculate %K
-                                        %K (/ (- last-price lowest-price) (- highest-price lowest-price))
+                                        %K (try
+                                             (/ (- last-price lowest-price) (- highest-price lowest-price))
+                                             (catch Exception e
+                                               0))
                                         ]
 
-                                    (cons {:last-price last-price
+                                    (cons {:last-trade-price last-price
+                                           :last-trade-time last-time
                                            :highest-price highest-price
                                            :lowest-price lowest-price
                                            :K %K} rslt)))
                                 (into '() (repeat tick-window nil))
                                 (reverse (partition tick-window 1 tick-list)))
 
+        ;; ... TODO - should %D be a simple moving average of %K (instead of exponential moving average)
+
         ;; calculate %D
         d-list (reduce (fn [rslt ech]
 
-                         (let [e-list (lagging/exponential-moving-average {:input :K :output :D :etal [:last-price :highest-price :lowest-price :K]} 3 nil ech)]
+                         (let [e-list (lagging/exponential-moving-average {:input :K :output :D :etal [:last-trade-time :last-trade-price :highest-price :lowest-price :K]} 3 nil ech)]
                            (cons (first e-list) rslt)))
                        (into '() (repeat tick-window nil))
                        (reverse (partition trigger-window 1 (remove nil? stochastic-list)))
