@@ -146,12 +146,14 @@
                                                  (dosync (alter *TICK-LIST-FINAL* (fn [inp] tick-list-N)))
                                                  (stream-live "stream-live" {:stock-name stock-name
                                                                              :stock-list final-list
-                                                                             :source-list (reverse tick-list-N)
-                                                                             :signals {:moving-average (reverse (slagging/moving-averages 20 tick-list-N sma-list ema-list))
-                                                                                       :bollinger-band (reverse (slagging/bollinger-band 20 tick-list-N sma-list))
-                                                                                       :macd (reverse (sleading/macd nil 20 tick-list-N sma-list))
-                                                                                       :stochastic-oscillator (reverse (sleading/stochastic-oscillator 14 3 3 tick-list-N))
-                                                                                       :obv (reverse (sconfirming/on-balance-volume 10 (first tick-list-N) tick-list-N))}})))])
+                                                                             :source-list tick-list-N
+                                                                             :sma-list sma-list
+                                                                             :ema-list ema-list
+                                                                             :signals {:moving-average (slagging/moving-averages 20 tick-list-N sma-list ema-list)
+                                                                                       :bollinger-band (slagging/bollinger-band 20 tick-list-N sma-list)
+                                                                                       :macd (sleading/macd nil 20 tick-list-N sma-list)
+                                                                                       :stochastic-oscillator (sleading/stochastic-oscillator 14 3 3 tick-list-N)
+                                                                                       :obv (sconfirming/on-balance-volume 10 (first tick-list-N) tick-list-N)}})))])
     { :status 204 }))
 
 
