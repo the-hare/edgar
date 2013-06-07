@@ -5,6 +5,7 @@
             [cljs.reader :as reader]))
 
 
+
 ;; === SCROLLING  with Lionbars
 #_(.lionbars ($ ".body-container"))
 
@@ -18,32 +19,69 @@
     (-> ($ selector)
         (.highcharts "StockChart" (clj->js
                                    {:names [label "Simple Moving Average" "Exponential Moving Average" "Bolling Band"]
-                                    :rangeSelector {:selected 4}
+                                    :rangeSelector {:selected 7}
                                     :title {:text label}
                                     :chart {:zoomType "x"}
                                     :navigator {:adaptToUpdatedData true}
+                                    :yAxis [{
+                                             :title {:text "Technical Analysis"}
+                                             :height 200}
+                                            {
+                                             :title {:text "MACD / Signal"}
+                                             :height 100
+                                             :top 300
+                                             :offset 0
+                                             :lineWidth 2}
+                                            {
+                                             :title {:text "MACD Histog"}
+                                             :height 100
+                                             :top 400
+                                             :offset 0
+                                             :lineWidth 2}]
+
                                     :series [{:name label,
                                               :data (reverse (first dataList))
-                                              :marker {:enabled true, :radius 3}
-                                              :shadow true,
+                                              :marker {:enabled true :radius 3}
+                                              :shadow true
                                               :tooltip {:valueDecimals 2}}
                                              {:name "Simple Moving Average"
                                               :data (reverse (second dataList))
-                                              :marker {:enabled true, :radius 3}
-                                              :shadow true,
+                                              :marker {:enabled true :radius 3}
+                                              :shadow true
                                               :tooltip {:valueDecimals 2}}
                                              {:name "Exponential Moving Average"
                                               :data (reverse (nth dataList 2))
-                                              :marker {:enabled true, :radius 3}
-                                              :shadow true,
+                                              :marker {:enabled true :radius 3}
+                                              :shadow true
                                               :tooltip {:valueDecimals 2}}
                                              {:name "Bollinger Band"
                                               :data (reverse (nth dataList 3))
                                               :type "arearange"
-                                              :color "#B0C4DE"
-                                              :marker {:enabled true, :radius 3}
-                                              :shadow false
-                                              :tooltip {:valueDecimals 2}}]})))
+                                              :color "#629DFF"
+                                              :marker {:enabled true :radius 3}
+                                              :tooltip {:valueDecimals 2}}
+
+                                             {:name "MACD Price"
+                                              :data (reverse (nth dataList 4))
+                                              :yAxis 1
+                                              :marker {:enabled true :radius 3}
+                                              :shadow true
+                                              :tooltip {:valueDecimals 2}}
+                                             {:name "MACD Signal"
+                                              :data (reverse (nth dataList 5))
+                                              :yAxis 1
+                                              :marker {:enabled true :radius 3}
+                                              :shadow true
+                                              :tooltip {:valueDecimals 2}}
+
+                                             {:name "MACD Histogram"
+                                              :data (reverse (nth dataList 6))
+                                              :yAxis 2
+                                              :type "column"
+                                              :marker {:enabled true :radius 3}
+                                              :shadow true
+                                              :tooltip {:valueDecimals 2}}
+                                             ]})))
     (do
 
       (-> ($ selector)
@@ -69,12 +107,6 @@
           (.-series)
           (nth 3)
           (.addPoint (last (reverse (nth dataList 3))) true false)))))
-
-
-(def tick-list (clj->js [[1368215573010 203.98] [1368215576331 203.99] [1368215576857 203.99] [1368215577765 203.99] [1368215578769 204.0] [1368215579272 204.01] [1368215579517 204.02] [1368215581769 204.02] [1368215583602 204.01] [1368215585650 204.02] [1368215586060 204.02] [1368215587029 204.01] [1368215588318 204.02] [1368215589335 204.01] [1368215589536 204.01] [1368215589846 204.0] [1368215591079 203.99] [1368215591789 203.99] [1368215592104 203.98] [1368215592615 203.98] [1368215592758 203.99] [1368215594039 203.97] [1368215597119 203.98] [1368215597632 203.97] [1368215599396 203.97] [1368215603876 203.96] [1368215606059 203.96] [1368215610316 203.95] [1368215610634 203.95] [1368215610813 203.93] [1368215612886 203.95] [1368215615858 203.94] [1368215618621 203.94] [1368215619138 203.96] [1368215623846 203.94] [1368215632669 203.94] [1368215634709 203.92] [1368215636587 203.93] [1368215636952 203.94] [1368215638328 203.93]]))
-
-#_(render-stock-graph "#live-stock-graph" tick-list "IBM" false)
-#_(render-stock-graph "#historical-stock-graph" tick-list "AAPL" false)
 
 
 
@@ -109,6 +141,8 @@
                                    []
                                    (into-array (:stock-list result-data))))
 
+
+   ;; Basic Long and Short Moving Averages
    :sma-list (into-array (reduce (fn [rslt ech]
                                    (conj rslt (into-array [(js/window.parseInt (first ech))
                                                            (js/window.parseFloat (second ech))])))
@@ -123,12 +157,33 @@
                                  (remove #(nil? (first %))
                                          (into-array (:ema-list result-data)))))
 
+
+   ;; Bollinger-Band Data
    :bollinger-band (into-array (reduce (fn [rslt ech]
                                          (conj rslt (into-array [(js/window.parseInt (:last-trade-time ech))
                                                                  (js/window.parseFloat (:lower-band ech))
                                                                  (js/window.parseFloat (:upper-band ech))])))
                                        []
                                        (remove nil? (-> result-data :signals :bollinger-band))))
+
+   ;; MACD Data
+   :macd-price-list (into-array (reduce (fn [rslt ech]
+                                         (conj rslt (into-array [(js/window.parseInt (:last-trade-time ech))
+                                                                 (js/window.parseFloat (:last-trade-macd ech))])))
+                                       []
+                                       (remove nil? (-> result-data :signals :macd))))
+
+   :macd-signal-list (into-array (reduce (fn [rslt ech]
+                                           (conj rslt (into-array [(js/window.parseInt (:last-trade-time ech))
+                                                                   (js/window.parseFloat (:ema-signal ech))])))
+                                         []
+                                         (remove nil? (-> result-data :signals :macd))))
+
+   :macd-histogram-list (into-array (reduce (fn [rslt ech]
+                                              (conj rslt (into-array [(js/window.parseInt (:last-trade-time ech))
+                                                                      (js/window.parseFloat (:histogram ech))])))
+                                            []
+                                            (remove nil? (-> result-data :signals :macd))))
 
    :stock-name (:stock-name result-data)})
 
@@ -161,7 +216,11 @@
                                                                                                                    [(:local-list parsed-result-map)
                                                                                                                     (:sma-list parsed-result-map)
                                                                                                                     (:ema-list parsed-result-map)
-                                                                                                                    (:bollinger-band parsed-result-map)]
+                                                                                                                    (:bollinger-band parsed-result-map)
+
+                                                                                                                    (:macd-price-list parsed-result-map)
+                                                                                                                    (:macd-signal-list parsed-result-map)
+                                                                                                                    (:macd-histogram-list parsed-result-map)]
                                                                                                                    (:stock-name parsed-result-map)
                                                                                                                    increment?)))}))))})
 

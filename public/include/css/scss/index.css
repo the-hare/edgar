@@ -1,6 +1,6 @@
 /* line 2, ../../../templ/scss/index.scss */
 #tabs {
-  height: 700;
+  height: 900;
   border: none;
 }
 /* line 8, ../../../templ/scss/index.scss */
@@ -55,15 +55,19 @@
 #tabs .tab-content .body-container #live-stream .graph-group-header .btn-success ul > li > a > label, #tabs .tab-content .body-container #live-stream .graph-group-header .btn-danger ul > li > a > label, #tabs .tab-content .body-container #live-stream .graph-group-header .btn-group ul > li > a > label, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-success ul > li > a > label, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-danger ul > li > a > label, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-group ul > li > a > label {
   text-decoration: none;
 }
-/* line 63, ../../../templ/scss/index.scss */
+/* line 61, ../../../templ/scss/index.scss */
+#tabs .tab-content .body-container #live-stream #historical-stock-graph, #tabs .tab-content .body-container #historical-data #historical-stock-graph {
+  height: 600;
+}
+/* line 66, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-container #live-stream > .graph-group-header #live-stop {
   top: -20;
 }
-/* line 64, ../../../templ/scss/index.scss */
+/* line 67, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-container #live-stream > .graph-group-header .btn-group {
   top: -40;
 }
-/* line 67, ../../../templ/scss/index.scss */
+/* line 70, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-summary {
   background: lightgray;
   float: left;

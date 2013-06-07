@@ -1,14 +1,47 @@
-.ui-tabs {
-  height: 700;
+#tabs {
+  height: 900;
   border: none; }
-  .ui-tabs .ui-tabs-nav {
-    width: 32;
-    height: 100%;
-    float: left;
-    background: none;
-    border: none; }
-  .ui-tabs .tab-content {
+  #tabs .tab-content .tab-pane {
     height: 90%;
-    overflow-y: scroll;
     white-space: pre-wrap;
+    overflow: hidden;
     border: 1px #aaa solid; }
+    #tabs .tab-content .tab-pane .navbar .navbar-inner .container .nav {
+      white-space: initial; }
+      #tabs .tab-content .tab-pane .navbar .navbar-inner .container .nav li {
+        white-space: initial; }
+      #tabs .tab-content .tab-pane .navbar .navbar-inner .container .nav a {
+        white-space: initial; }
+  #tabs .tab-content .body-container {
+    width: 70%;
+    height: 566;
+    float: left;
+    overflow-y: scroll; }
+    #tabs .tab-content .body-container #live-stream, #tabs .tab-content .body-container #historical-data {
+      height: 700; }
+      #tabs .tab-content .body-container #live-stream .graph-group-header, #tabs .tab-content .body-container #historical-data .graph-group-header {
+        background: lightgray;
+        height: 40;
+        /* capture multi-select control, right-justify */ }
+        #tabs .tab-content .body-container #live-stream .graph-group-header .btn-success, #tabs .tab-content .body-container #live-stream .graph-group-header .btn-danger, #tabs .tab-content .body-container #live-stream .graph-group-header .btn-group, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-success, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-danger, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-group {
+          float: left;
+          position: relative;
+          white-space: nowrap;
+          margin: 5 0 0 5; }
+          #tabs .tab-content .body-container #live-stream .graph-group-header .btn-success .multiselect-container > .input-prepend > .multiselect-search, #tabs .tab-content .body-container #live-stream .graph-group-header .btn-danger .multiselect-container > .input-prepend > .multiselect-search, #tabs .tab-content .body-container #live-stream .graph-group-header .btn-group .multiselect-container > .input-prepend > .multiselect-search, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-success .multiselect-container > .input-prepend > .multiselect-search, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-danger .multiselect-container > .input-prepend > .multiselect-search, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-group .multiselect-container > .input-prepend > .multiselect-search {
+            /* fixing a bad height in default text entry */
+            height: 30; }
+          #tabs .tab-content .body-container #live-stream .graph-group-header .btn-success ul > li > a > label, #tabs .tab-content .body-container #live-stream .graph-group-header .btn-danger ul > li > a > label, #tabs .tab-content .body-container #live-stream .graph-group-header .btn-group ul > li > a > label, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-success ul > li > a > label, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-danger ul > li > a > label, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-group ul > li > a > label {
+            text-decoration: none; }
+      #tabs .tab-content .body-container #live-stream #historical-stock-graph, #tabs .tab-content .body-container #historical-data #historical-stock-graph {
+        height: 600; }
+    #tabs .tab-content .body-container #live-stream > .graph-group-header #live-stop {
+      top: -20; }
+    #tabs .tab-content .body-container #live-stream > .graph-group-header .btn-group {
+      top: -40; }
+  #tabs .tab-content .body-summary {
+    background: lightgray;
+    float: left;
+    width: 25%;
+    height: 500;
+    margin-left: 20; }
