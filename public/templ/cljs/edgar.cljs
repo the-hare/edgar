@@ -36,27 +36,26 @@
                                               :data (reverse (nth dataList 2))
                                               :marker {:enabled true, :radius 3}
                                               :shadow true,
-                                              :tooltip {:valueDecimals 2}}]})
-                     ))
+                                              :tooltip {:valueDecimals 2}}]})))
     (do
 
       (-> ($ selector)
           (.highcharts)
           (.-series)
           first
-          (.addPoint (last (first dataList)) true false))
+          (.addPoint (last (reverse (first dataList))) true false))
 
       (-> ($ selector)
           (.highcharts)
           (.-series)
           second
-          (.addPoint (last (second dataList)) true false))
+          (.addPoint (last (reverse (second dataList))) true false))
 
       (-> ($ selector)
           (.highcharts)
           (.-series)
           (nth 2)
-          (.addPoint (last (nth dataList 2)) true false)))))
+          (.addPoint (last (reverse (nth dataList 2))) true false)))))
 
 (def tick-list (clj->js [[1368215573010 203.98] [1368215576331 203.99] [1368215576857 203.99] [1368215577765 203.99] [1368215578769 204.0] [1368215579272 204.01] [1368215579517 204.02] [1368215581769 204.02] [1368215583602 204.01] [1368215585650 204.02] [1368215586060 204.02] [1368215587029 204.01] [1368215588318 204.02] [1368215589335 204.01] [1368215589536 204.01] [1368215589846 204.0] [1368215591079 203.99] [1368215591789 203.99] [1368215592104 203.98] [1368215592615 203.98] [1368215592758 203.99] [1368215594039 203.97] [1368215597119 203.98] [1368215597632 203.97] [1368215599396 203.97] [1368215603876 203.96] [1368215606059 203.96] [1368215610316 203.95] [1368215610634 203.95] [1368215610813 203.93] [1368215612886 203.95] [1368215615858 203.94] [1368215618621 203.94] [1368215619138 203.96] [1368215623846 203.94] [1368215632669 203.94] [1368215634709 203.92] [1368215636587 203.93] [1368215636952 203.94] [1368215638328 203.93]]))
 
@@ -151,9 +150,9 @@
                                             (= (:stock-name parsed-result-map)
                                                (-> ($ "#live-stock-graph") (.highcharts "StockChart") (.-title) (.-text)))) ]
 
-                       (.log js/console "")
-                       (.log js/console (str "...local-list[" local-list "]"))
-                       (.log js/console (str "...sma-list[" sma-list "]"))
+                       #_(.log js/console "")
+                       #_(.log js/console (str "...local-list[" (:local-list parsed-result-map) "]"))
+                       #_(.log js/console (str "...sma-list[" (:sma-list parsed-result-map) "]"))
                        (render-stock-graph "#live-stock-graph"
                                            [(:local-list parsed-result-map)
                                             (:sma-list parsed-result-map)

@@ -14281,9 +14281,9 @@ var edgar = {render_stock_graph:function(a, b, c, d) {
     "\ufdd0'radius":3}), "\ufdd0'shadow":!0, "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], {"\ufdd0'valueDecimals":2})}), cljs.core.ObjMap.fromObject(["\ufdd0'name", "\ufdd0'data", "\ufdd0'marker", "\ufdd0'shadow", "\ufdd0'tooltip"], {"\ufdd0'name":"Exponential Moving Average", "\ufdd0'data":cljs.core.reverse.call(null, cljs.core.nth.call(null, b, 2)), "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled", "\ufdd0'radius"], {"\ufdd0'enabled":!0, "\ufdd0'radius":3}), 
     "\ufdd0'shadow":!0, "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], {"\ufdd0'valueDecimals":2})})], !0)})))
   }
-  cljs.core.first.call(null, jayq.core.$.call(null, a).highcharts().series).addPoint(cljs.core.last.call(null, cljs.core.first.call(null, b)), !0, !1);
-  cljs.core.second.call(null, jayq.core.$.call(null, a).highcharts().series).addPoint(cljs.core.last.call(null, cljs.core.second.call(null, b)), !0, !1);
-  return cljs.core.nth.call(null, jayq.core.$.call(null, a).highcharts().series, 2).addPoint(cljs.core.last.call(null, cljs.core.nth.call(null, b, 2)), !0, !1)
+  cljs.core.first.call(null, jayq.core.$.call(null, a).highcharts().series).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.first.call(null, b))), !0, !1);
+  cljs.core.second.call(null, jayq.core.$.call(null, a).highcharts().series).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.second.call(null, b))), !0, !1);
+  return cljs.core.nth.call(null, jayq.core.$.call(null, a).highcharts().series, 2).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.nth.call(null, b, 2))), !0, !1)
 }};
 edgar.tick_list = cljs.core.clj__GT_js.call(null, cljs.core.PersistentVector.fromArray([cljs.core.PersistentVector.fromArray([1368215573010, 203.98], !0), cljs.core.PersistentVector.fromArray([1368215576331, 203.99], !0), cljs.core.PersistentVector.fromArray([1368215576857, 203.99], !0), cljs.core.PersistentVector.fromArray([1368215577765, 203.99], !0), cljs.core.PersistentVector.fromArray([1368215578769, 204], !0), cljs.core.PersistentVector.fromArray([1368215579272, 204.01], !0), cljs.core.PersistentVector.fromArray([1368215579517, 
 204.02], !0), cljs.core.PersistentVector.fromArray([1368215581769, 204.02], !0), cljs.core.PersistentVector.fromArray([1368215583602, 204.01], !0), cljs.core.PersistentVector.fromArray([1368215585650, 204.02], !0), cljs.core.PersistentVector.fromArray([1368215586060, 204.02], !0), cljs.core.PersistentVector.fromArray([1368215587029, 204.01], !0), cljs.core.PersistentVector.fromArray([1368215588318, 204.02], !0), cljs.core.PersistentVector.fromArray([1368215589335, 204.01], !0), cljs.core.PersistentVector.fromArray([1368215589536, 
@@ -14334,9 +14334,6 @@ edgar.livesource = new window.EventSource("/get-streaming-stock-data");
 edgar.livesource.addEventListener("stream-live", function(a) {
   var a = cljs.reader.read_string.call(null, a.data), a = edgar.parse_result_data.call(null, a), b;
   b = (b = null != jayq.core.$.call(null, "#live-stock-graph").highcharts("StockChart")) ? cljs.core._EQ_.call(null, (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, a), jayq.core.$.call(null, "#live-stock-graph").highcharts("StockChart").title.text) : b;
-  console.log("");
-  console.log([cljs.core.str("...local-list["), cljs.core.str(edgar.local_list), cljs.core.str("]")].join(""));
-  console.log([cljs.core.str("...sma-list["), cljs.core.str(edgar.sma_list), cljs.core.str("]")].join(""));
   return edgar.render_stock_graph.call(null, "#live-stock-graph", cljs.core.PersistentVector.fromArray([(new cljs.core.Keyword("\ufdd0'local-list")).call(null, a), (new cljs.core.Keyword("\ufdd0'sma-list")).call(null, a), (new cljs.core.Keyword("\ufdd0'ema-list")).call(null, a)], !0), (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, a), b)
 });
 edgar.core = {};
