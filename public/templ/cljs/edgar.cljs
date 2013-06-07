@@ -123,8 +123,8 @@
                                                              (if checked
                                                                ($/ajax "/get-historical-data"
                                                                        (clj->js {:data {:stock-selection (.val element)
-                                                                                        :time-duration "1800 S"
-                                                                                        :time-interval "1 min"}
+                                                                                        :time-duration "300 S"
+                                                                                        :time-interval "1 secs"}
                                                                                  :complete (fn [jqXHR status]
 
                                                                                              (.log js/console (str ".multiselect-historical > jqXHR[" jqXHR "] / status[" status "]"))

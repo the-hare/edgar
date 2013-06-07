@@ -94,9 +94,9 @@
 
 
                                                                                        final-list (reduce (fn [rslt ech]
-                                                                                                            (conj rslt [(ech "date") (ech "close")]))
+                                                                                                            (conj rslt [(:last-trade-time ech) (:last-trade-price ech)]))
                                                                                                           []
-                                                                                                          (-> tick-list-formatted first :event-list))
+                                                                                                          tick-list-formatted)
 
 
                                                                                        sma-list (alagging/simple-moving-average {:input :last-trade-price

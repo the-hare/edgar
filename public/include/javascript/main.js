@@ -14324,7 +14324,7 @@ edgar.populate_multiselect.call(null, ".multiselect-live", cljs.core.ObjMap.from
   }) : null
 }}));
 edgar.populate_multiselect.call(null, ".multiselect-historical", cljs.core.ObjMap.fromObject(["\ufdd0'onChange"], {"\ufdd0'onChange":function(a, b) {
-  return cljs.core.truth_(b) ? $.ajax.call(null, "/get-historical-data", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'data", "\ufdd0'complete"], {"\ufdd0'data":cljs.core.ObjMap.fromObject(["\ufdd0'stock-selection", "\ufdd0'time-duration", "\ufdd0'time-interval"], {"\ufdd0'stock-selection":a.val(), "\ufdd0'time-duration":"1800 S", "\ufdd0'time-interval":"1 min"}), "\ufdd0'complete":function(a, b) {
+  return cljs.core.truth_(b) ? $.ajax.call(null, "/get-historical-data", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'data", "\ufdd0'complete"], {"\ufdd0'data":cljs.core.ObjMap.fromObject(["\ufdd0'stock-selection", "\ufdd0'time-duration", "\ufdd0'time-interval"], {"\ufdd0'stock-selection":a.val(), "\ufdd0'time-duration":"300 S", "\ufdd0'time-interval":"1 secs"}), "\ufdd0'complete":function(a, b) {
     console.log([cljs.core.str(".multiselect-historical > jqXHR["), cljs.core.str(a), cljs.core.str("] / status["), cljs.core.str(b), cljs.core.str("]")].join(""));
     var e = cljs.reader.read_string.call(null, a.responseText), e = edgar.parse_result_data.call(null, e);
     return edgar.render_stock_graph.call(null, "#historical-stock-graph", cljs.core.PersistentVector.fromArray([(new cljs.core.Keyword("\ufdd0'local-list")).call(null, e), (new cljs.core.Keyword("\ufdd0'sma-list")).call(null, e), (new cljs.core.Keyword("\ufdd0'ema-list")).call(null, e)], !0), (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, e), !1)
