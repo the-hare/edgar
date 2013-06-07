@@ -1,5 +1,6 @@
 (ns edgar.service
-  (:import [javax.servlet.http HttpServletRequest HttpServletResponse])
+  (:import [javax.servlet.http HttpServletRequest HttpServletResponse]
+           [java.text SimpleDateFormat])
   (:require [edgar.core.edgar :as edgar]
             [edgar.ib.market :as market]
             [edgar.datomic :as edatomic]
@@ -73,31 +74,30 @@
                    (:session (:request paused-context)) "]"))
 
     (market/create-event-channel)
-    #_(edgar/play-historical client stock-selection time-duration time-interval [(fn [tick-list]
-
-                                                                                 (market/close-market-channel)
-
-                                                                                 (let [final-list (reduce (fn [rslt ech]
-                                                                                                            (conj rslt [(ech "date") (ech "close")]))
-                                                                                                          []
-                                                                                                          (-> tick-list first :event-list))]
-
-                                                                                   ((:resume-fn paused-context) {:stock-list final-list :stock-name (-> tick-list first :company)})))])
 
     (edgar/play-historical client stock-selection time-duration time-interval [(fn [tick-list]
 
                                                                                  (market/close-market-channel)
 
                                                                                  (let [
-                                                                                       final-list (reduce (fn [rslt ech]
-                                                                                                            (conj rslt [(ech "date") (ech "close")]))
-                                                                                                          []
-                                                                                                          (-> tick-list first :event-list))
+
+                                                                                       ;; from Historical feed, dates will be strings that look like: "20130606  15:33:00"
+                                                                                       date-format (SimpleDateFormat. "yyyyMMdd HH:mm:ss")
 
                                                                                        tick-list-formatted (map (fn [inp]
                                                                                                                   {:last-trade-price (:close inp)
-                                                                                                                   :last-trade-time (:date inp)})
-                                                                                                                (walk/keywordize-keys (-> tick-list first :event-list)))
+                                                                                                                   :last-trade-time (->> (:date inp)
+                                                                                                                                         (.parse date-format)
+                                                                                                                                         .getTime)})
+                                                                                                                (reverse (walk/keywordize-keys
+                                                                                                                          (-> tick-list first :event-list))))
+
+
+                                                                                       final-list (reduce (fn [rslt ech]
+                                                                                                            (conj rslt [(ech "date") (ech "close")]))
+                                                                                                          []
+                                                                                                          (-> tick-list-formatted first :event-list))
+
 
                                                                                        sma-list (alagging/simple-moving-average {:input :last-trade-price
                                                                                                                                  :output :last-trade-price-average
@@ -116,7 +116,7 @@
                                                                                                     ema-list)]
 
                                                                                    (log/info "")
-                                                                                   (log/info "... play-historical CALLBACK > tick-list[" tick-list "]")
+                                                                                   (log/info "... play-historical CALLBACK > tick-list[" tick-list-formatted "]")
                                                                                    (log/info "... play-historical CALLBACK > sma-list[" (map #(dissoc % :population) sma-list) "]")
                                                                                    (log/info "... play-historical CALLBACK > ema-list[" ema-list "]")
                                                                                    ((:resume-fn paused-context) {:stock-name (-> tick-list first :company)
