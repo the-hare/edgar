@@ -1,12 +1,13 @@
 
 #tabs {
 
-  height: 900;
+  height: 1200;
   border: none;
 
   .tab-content {
+    height: 100%;
     .tab-pane {
-      height: 90%;
+      height: 100%;
       white-space: pre-wrap;
       overflow: hidden;
       border: 1px #aaa solid;
@@ -31,11 +32,11 @@
     .body-container {
 
       width: 70%;
-      height: 566;
+      height: 100%;
       float: left;
       overflow-y: scroll;
       #live-stream , #historical-data {
-        height: 700;
+        height: 900;
 
         .graph-group-header {
 
@@ -59,7 +60,7 @@
           }
         }
         #historical-stock-graph {
-          height: 600;
+          height: 900;
         }
       }
       #live-stream > .graph-group-header {

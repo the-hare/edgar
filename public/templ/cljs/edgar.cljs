@@ -37,6 +37,32 @@
                                              :height 100
                                              :top 400
                                              :offset 0
+                                             :lineWidth 2}
+                                            {
+                                             :title {:text "Stochastic Osc"}
+                                             :height 100
+                                             :top 500
+                                             :offset 0
+                                             :lineWidth 2
+                                             :max 1
+                                             :min 0
+                                             :plotLines [{
+                                                          :value 0.75
+                                                          :color "red"
+                                                          :width 1
+                                                          :dashStyle "longdash"
+                                                          :label {:text "Overbought"}}
+                                                         {
+                                                          :value 0.25
+                                                          :color "green"
+                                                          :width 1
+                                                          :dashStyle "longdash"
+                                                          :label {:text "Oversold"}}]}
+                                            {
+                                             :title {:text "OBV"}
+                                             :height 100
+                                             :top 600
+                                             :offset 0
                                              :lineWidth 2}]
 
                                     :series [{:name label,
@@ -61,6 +87,7 @@
                                               :marker {:enabled true :radius 3}
                                               :tooltip {:valueDecimals 2}}
 
+                                             ;; MACD Data
                                              {:name "MACD Price"
                                               :data (reverse (nth dataList 4))
                                               :yAxis 1
@@ -81,7 +108,28 @@
                                               :marker {:enabled true :radius 3}
                                               :shadow true
                                               :tooltip {:valueDecimals 2}}
-                                             ]})))
+
+                                             ;; Stochastic Data
+                                             {:name "Stochastic K"
+                                              :data (reverse (nth dataList 7))
+                                              :yAxis 3
+                                              :marker {:enabled true :radius 3}
+                                              :shadow true
+                                              :tooltip {:valueDecimals 2}}
+                                             {:name "Stochastic D"
+                                              :data (reverse (nth dataList 8))
+                                              :yAxis 3
+                                              :marker {:enabled true :radius 3}
+                                              :shadow true
+                                              :tooltip {:valueDecimals 2}}
+
+                                             {:name "On Balance Volume"
+                                              :data (reverse (nth dataList 9))
+                                              :yAxis 4
+                                              :type "column"
+                                              :marker {:enabled true :radius 3}
+                                              :shadow true
+                                              :tooltip {:valueDecimals 2}}]})))
     (do
 
       (-> ($ selector)
@@ -185,6 +233,19 @@
                                             []
                                             (remove nil? (-> result-data :signals :macd))))
 
+   ;; Stochastic Oscillator
+   :stochastic-k (into-array (reduce (fn [rslt ech]
+                                       (conj rslt (into-array [(js/window.parseInt (:last-trade-time ech))
+                                                               (js/window.parseFloat (:K ech))])))
+                                     []
+                                     (remove nil? (-> result-data :signals :stochastic-oscillator))))
+
+   :stochastic-d (into-array (reduce (fn [rslt ech]
+                                       (conj rslt (into-array [(js/window.parseInt (:last-trade-time ech))
+                                                               (js/window.parseFloat (:D ech))])))
+                                     []
+                                     (remove nil? (-> result-data :signals :stochastic-oscillator))))
+
    :stock-name (:stock-name result-data)})
 
 
@@ -210,8 +271,8 @@
                                                                                                    parsed-result-map (parse-result-data result-data)
                                                                                                    increment? false]
 
-                                                                                               (.log js/console (str "BB-1[" (-> result-data :signals :bollinger-band) "]"))
-                                                                                               (.log js/console (str "BB-2[" (:bollinger-band parsed-result-map) "]"))
+                                                                                               (.log js/console (str "K[" (:stochastic-k parsed-result-map) "]"))
+                                                                                               (.log js/console (str "D[" (:stochastic-d parsed-result-map) "]"))
                                                                                                (render-stock-graph "#historical-stock-graph"
                                                                                                                    [(:local-list parsed-result-map)
                                                                                                                     (:sma-list parsed-result-map)
@@ -220,7 +281,10 @@
 
                                                                                                                     (:macd-price-list parsed-result-map)
                                                                                                                     (:macd-signal-list parsed-result-map)
-                                                                                                                    (:macd-histogram-list parsed-result-map)]
+                                                                                                                    (:macd-histogram-list parsed-result-map)
+
+                                                                                                                    (:stochastic-k parsed-result-map)
+                                                                                                                    (:stochastic-d parsed-result-map)]
                                                                                                                    (:stock-name parsed-result-map)
                                                                                                                    increment?)))}))))})
 

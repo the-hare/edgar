@@ -1,73 +1,77 @@
 /* line 2, ../../../templ/scss/index.scss */
 #tabs {
-  height: 900;
+  height: 1200;
   border: none;
 }
-/* line 8, ../../../templ/scss/index.scss */
+/* line 7, ../../../templ/scss/index.scss */
+#tabs .tab-content {
+  height: 100%;
+}
+/* line 9, ../../../templ/scss/index.scss */
 #tabs .tab-content .tab-pane {
-  height: 90%;
+  height: 100%;
   white-space: pre-wrap;
   overflow: hidden;
   border: 1px #aaa solid;
 }
-/* line 18, ../../../templ/scss/index.scss */
+/* line 19, ../../../templ/scss/index.scss */
 #tabs .tab-content .tab-pane .navbar .navbar-inner .container .nav {
   white-space: initial;
 }
-/* line 20, ../../../templ/scss/index.scss */
+/* line 21, ../../../templ/scss/index.scss */
 #tabs .tab-content .tab-pane .navbar .navbar-inner .container .nav li {
   white-space: initial;
 }
-/* line 23, ../../../templ/scss/index.scss */
+/* line 24, ../../../templ/scss/index.scss */
 #tabs .tab-content .tab-pane .navbar .navbar-inner .container .nav a {
   white-space: initial;
 }
-/* line 31, ../../../templ/scss/index.scss */
+/* line 32, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-container {
   width: 70%;
-  height: 566;
+  height: 100%;
   float: left;
   overflow-y: scroll;
 }
-/* line 37, ../../../templ/scss/index.scss */
+/* line 38, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-container #live-stream, #tabs .tab-content .body-container #historical-data {
-  height: 700;
+  height: 900;
 }
-/* line 40, ../../../templ/scss/index.scss */
+/* line 41, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-container #live-stream .graph-group-header, #tabs .tab-content .body-container #historical-data .graph-group-header {
   background: lightgray;
   height: 40;
   /* capture multi-select control, right-justify */
 }
-/* line 45, ../../../templ/scss/index.scss */
+/* line 46, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-container #live-stream .graph-group-header .btn-success, #tabs .tab-content .body-container #live-stream .graph-group-header .btn-danger, #tabs .tab-content .body-container #live-stream .graph-group-header .btn-group, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-success, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-danger, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-group {
   float: left;
   position: relative;
   white-space: nowrap;
   margin: 5 0 0 5;
 }
-/* line 51, ../../../templ/scss/index.scss */
+/* line 52, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-container #live-stream .graph-group-header .btn-success .multiselect-container > .input-prepend > .multiselect-search, #tabs .tab-content .body-container #live-stream .graph-group-header .btn-danger .multiselect-container > .input-prepend > .multiselect-search, #tabs .tab-content .body-container #live-stream .graph-group-header .btn-group .multiselect-container > .input-prepend > .multiselect-search, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-success .multiselect-container > .input-prepend > .multiselect-search, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-danger .multiselect-container > .input-prepend > .multiselect-search, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-group .multiselect-container > .input-prepend > .multiselect-search {
   /* fixing a bad height in default text entry */
   height: 30;
 }
-/* line 56, ../../../templ/scss/index.scss */
+/* line 57, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-container #live-stream .graph-group-header .btn-success ul > li > a > label, #tabs .tab-content .body-container #live-stream .graph-group-header .btn-danger ul > li > a > label, #tabs .tab-content .body-container #live-stream .graph-group-header .btn-group ul > li > a > label, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-success ul > li > a > label, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-danger ul > li > a > label, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-group ul > li > a > label {
   text-decoration: none;
 }
-/* line 61, ../../../templ/scss/index.scss */
+/* line 62, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-container #live-stream #historical-stock-graph, #tabs .tab-content .body-container #historical-data #historical-stock-graph {
-  height: 600;
+  height: 900;
 }
-/* line 66, ../../../templ/scss/index.scss */
+/* line 67, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-container #live-stream > .graph-group-header #live-stop {
   top: -20;
 }
-/* line 67, ../../../templ/scss/index.scss */
+/* line 68, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-container #live-stream > .graph-group-header .btn-group {
   top: -40;
 }
-/* line 70, ../../../templ/scss/index.scss */
+/* line 71, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-summary {
   background: lightgray;
   float: left;

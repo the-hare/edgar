@@ -133,7 +133,7 @@
                                                                                                                  :signals {:moving-average signals-ma
                                                                                                                            :bollinger-band signals-bollinger
                                                                                                                            :macd signals-macd
-                                                                                                                           :stochastic-oscillator signals-macd
+                                                                                                                           :stochastic-oscillator signals-stochastic
                                                                                                                            :obv signals-obv}})))])))
 (defbefore get-historical-data
   "Get historical data for a particular stock"
