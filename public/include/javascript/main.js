@@ -14305,36 +14305,39 @@ edgar.populate_multiselect = function(a, b) {
     }())
   })
 };
+edgar.parse_result_data = function(a) {
+  return cljs.core.ObjMap.fromObject(["\ufdd0'local-list", "\ufdd0'sma-list", "\ufdd0'ema-list", "\ufdd0'stock-name"], {"\ufdd0'local-list":cljs.core.into_array.call(null, cljs.core.reduce.call(null, function(a, c) {
+    return cljs.core.conj.call(null, a, cljs.core.into_array.call(null, cljs.core.PersistentVector.fromArray([window.parseInt(cljs.core.first.call(null, c)), window.parseFloat(cljs.core.second.call(null, c))], !0)))
+  }, cljs.core.PersistentVector.EMPTY, cljs.core.into_array.call(null, (new cljs.core.Keyword("\ufdd0'stock-list")).call(null, a)))), "\ufdd0'sma-list":cljs.core.into_array.call(null, cljs.core.reduce.call(null, function(a, c) {
+    return cljs.core.conj.call(null, a, cljs.core.into_array.call(null, cljs.core.PersistentVector.fromArray([window.parseInt(cljs.core.first.call(null, c)), window.parseFloat(cljs.core.second.call(null, c))], !0)))
+  }, cljs.core.PersistentVector.EMPTY, cljs.core.remove.call(null, function(a) {
+    return null == cljs.core.first.call(null, a)
+  }, cljs.core.into_array.call(null, (new cljs.core.Keyword("\ufdd0'sma-list")).call(null, a))))), "\ufdd0'ema-list":cljs.core.into_array.call(null, cljs.core.reduce.call(null, function(a, c) {
+    return cljs.core.conj.call(null, a, cljs.core.into_array.call(null, cljs.core.PersistentVector.fromArray([window.parseInt(cljs.core.first.call(null, c)), window.parseFloat(cljs.core.second.call(null, c))], !0)))
+  }, cljs.core.PersistentVector.EMPTY, cljs.core.remove.call(null, function(a) {
+    return null == cljs.core.first.call(null, a)
+  }, cljs.core.into_array.call(null, (new cljs.core.Keyword("\ufdd0'ema-list")).call(null, a))))), "\ufdd0'stock-name":(new cljs.core.Keyword("\ufdd0'stock-name")).call(null, a)})
+};
 edgar.populate_multiselect.call(null, ".multiselect-live", cljs.core.ObjMap.fromObject(["\ufdd0'onChange"], {"\ufdd0'onChange":function(a, b) {
   return cljs.core.truth_(b) ? $.post.call(null, [cljs.core.str("/get-streaming-stock-data?stock-selection="), cljs.core.str(a.val()), cljs.core.str("&stock-name="), cljs.core.str(a.text())].join(""), function(a) {
     return console.log([cljs.core.str("POST:: get-streaming-stock-data > data["), cljs.core.str(a), cljs.core.str("]")].join(""))
   }) : null
 }}));
 edgar.populate_multiselect.call(null, ".multiselect-historical", cljs.core.ObjMap.fromObject(["\ufdd0'onChange"], {"\ufdd0'onChange":function(a, b) {
-  return cljs.core.truth_(b) ? $.ajax.call(null, "/get-historical-data", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'data", "\ufdd0'complete"], {"\ufdd0'data":cljs.core.ObjMap.fromObject(["\ufdd0'stock-selection", "\ufdd0'time-duration", "\ufdd0'time-interval"], {"\ufdd0'stock-selection":a.val(), "\ufdd0'time-duration":"60 S", "\ufdd0'time-interval":"1 secs"}), "\ufdd0'complete":function(a, b) {
+  return cljs.core.truth_(b) ? $.ajax.call(null, "/get-historical-data", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'data", "\ufdd0'complete"], {"\ufdd0'data":cljs.core.ObjMap.fromObject(["\ufdd0'stock-selection", "\ufdd0'time-duration", "\ufdd0'time-interval"], {"\ufdd0'stock-selection":a.val(), "\ufdd0'time-duration":"300 S", "\ufdd0'time-interval":"1 secs"}), "\ufdd0'complete":function(a, b) {
     console.log([cljs.core.str(".multiselect-historical > jqXHR["), cljs.core.str(a), cljs.core.str("] / status["), cljs.core.str(b), cljs.core.str("]")].join(""));
-    var e = cljs.reader.read_string.call(null, a.responseText), f = (new cljs.core.Keyword("\ufdd0'stock-list")).call(null, e), e = (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, e);
-    return edgar.render_stock_graph.call(null, "#historical-stock-graph", f, e, !1)
+    var e = cljs.reader.read_string.call(null, a.responseText), e = edgar.parse_result_data.call(null, e);
+    return edgar.render_stock_graph.call(null, "#historical-stock-graph", cljs.core.PersistentVector.fromArray([(new cljs.core.Keyword("\ufdd0'local-list")).call(null, e), (new cljs.core.Keyword("\ufdd0'sma-list")).call(null, e), (new cljs.core.Keyword("\ufdd0'ema-list")).call(null, e)], !0), (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, e), !1)
   }}))) : null
 }}));
 edgar.livesource = new window.EventSource("/get-streaming-stock-data");
 edgar.livesource.addEventListener("stream-live", function(a) {
-  var b = cljs.reader.read_string.call(null, a.data), a = cljs.core.into_array.call(null, cljs.core.reduce.call(null, function(a, b) {
-    return cljs.core.conj.call(null, a, cljs.core.into_array.call(null, cljs.core.PersistentVector.fromArray([window.parseInt(cljs.core.first.call(null, b)), window.parseFloat(cljs.core.second.call(null, b))], !0)))
-  }, cljs.core.PersistentVector.EMPTY, cljs.core.into_array.call(null, (new cljs.core.Keyword("\ufdd0'stock-list")).call(null, b)))), c = cljs.core.into_array.call(null, cljs.core.reduce.call(null, function(a, b) {
-    return cljs.core.conj.call(null, a, cljs.core.into_array.call(null, cljs.core.PersistentVector.fromArray([window.parseInt(cljs.core.first.call(null, b)), window.parseFloat(cljs.core.second.call(null, b))], !0)))
-  }, cljs.core.PersistentVector.EMPTY, cljs.core.remove.call(null, function(a) {
-    return null == cljs.core.first.call(null, a)
-  }, cljs.core.into_array.call(null, (new cljs.core.Keyword("\ufdd0'sma-list")).call(null, b))))), d = cljs.core.into_array.call(null, cljs.core.reduce.call(null, function(a, b) {
-    return cljs.core.conj.call(null, a, cljs.core.into_array.call(null, cljs.core.PersistentVector.fromArray([window.parseInt(cljs.core.first.call(null, b)), window.parseFloat(cljs.core.second.call(null, b))], !0)))
-  }, cljs.core.PersistentVector.EMPTY, cljs.core.remove.call(null, function(a) {
-    return null == cljs.core.first.call(null, a)
-  }, cljs.core.into_array.call(null, (new cljs.core.Keyword("\ufdd0'ema-list")).call(null, b))))), b = (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, b), e;
-  e = (e = null != jayq.core.$.call(null, "#live-stock-graph").highcharts("StockChart")) ? cljs.core._EQ_.call(null, b, jayq.core.$.call(null, "#live-stock-graph").highcharts("StockChart").title.text) : e;
+  var a = cljs.reader.read_string.call(null, a.data), a = edgar.parse_result_data.call(null, a), b;
+  b = (b = null != jayq.core.$.call(null, "#live-stock-graph").highcharts("StockChart")) ? cljs.core._EQ_.call(null, (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, a), jayq.core.$.call(null, "#live-stock-graph").highcharts("StockChart").title.text) : b;
   console.log("");
-  console.log([cljs.core.str("...local-list["), cljs.core.str(a), cljs.core.str("]")].join(""));
-  console.log([cljs.core.str("...sma-list["), cljs.core.str(c), cljs.core.str("]")].join(""));
-  return edgar.render_stock_graph.call(null, "#live-stock-graph", cljs.core.PersistentVector.fromArray([a, c, d], !0), b, e)
+  console.log([cljs.core.str("...local-list["), cljs.core.str(edgar.local_list), cljs.core.str("]")].join(""));
+  console.log([cljs.core.str("...sma-list["), cljs.core.str(edgar.sma_list), cljs.core.str("]")].join(""));
+  return edgar.render_stock_graph.call(null, "#live-stock-graph", cljs.core.PersistentVector.fromArray([(new cljs.core.Keyword("\ufdd0'local-list")).call(null, a), (new cljs.core.Keyword("\ufdd0'sma-list")).call(null, a), (new cljs.core.Keyword("\ufdd0'ema-list")).call(null, a)], !0), (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, a), b)
 });
 edgar.core = {};
 edgar.core.analysis = {};

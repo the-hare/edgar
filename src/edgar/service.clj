@@ -10,6 +10,7 @@
             [edgar.core.signal.confirming :as sconfirming]
 
             [clojure.java.io :as io]
+            [clojure.walk :as walk]
             [io.pedestal.service.log :as log]
             [io.pedestal.service.http :as bootstrap]
             [io.pedestal.service.http.route :as route]
@@ -93,24 +94,36 @@
                                                                                                           []
                                                                                                           (-> tick-list first :event-list))
 
+                                                                                       tick-list-formatted (map (fn [inp]
+                                                                                                                  {:last-trade-price (:close inp)
+                                                                                                                   :last-trade-time (:date inp)})
+                                                                                                                (walk/keywordize-keys (-> tick-list first :event-list)))
 
-                                                                                       sma-list (alagging/simple-moving-average nil 20 tick-list)
-                                                                                       #_smaF #_(reduce (fn [rslt ech]
+                                                                                       sma-list (alagging/simple-moving-average {:input :last-trade-price
+                                                                                                                                 :output :last-trade-price-average
+                                                                                                                                 :etal [:last-trade-price :last-trade-time]}
+                                                                                                                                20
+                                                                                                                                tick-list-formatted)
+                                                                                       smaF (reduce (fn [rslt ech]
                                                                                                       (conj rslt [(:last-trade-time ech) (:last-trade-price-average ech)]))
                                                                                                     []
                                                                                                     sma-list)
 
-                                                                                       #_ema-list #_(alagging/exponential-moving-average nil 20 tick-list-N sma-list)
-                                                                                       #_emaF #_(reduce (fn [rslt ech]
+                                                                                       ema-list (alagging/exponential-moving-average nil 20 tick-list-formatted sma-list)
+                                                                                       emaF (reduce (fn [rslt ech]
                                                                                                       (conj rslt [(:last-trade-time ech) (:last-trade-price-exponential ech)]))
                                                                                                     []
                                                                                                     ema-list)]
 
+                                                                                   (log/info "")
+                                                                                   (log/info "... play-historical CALLBACK > tick-list[" tick-list "]")
+                                                                                   (log/info "... play-historical CALLBACK > sma-list[" (map #(dissoc % :population) sma-list) "]")
+                                                                                   (log/info "... play-historical CALLBACK > ema-list[" ema-list "]")
                                                                                    ((:resume-fn paused-context) {:stock-name (-> tick-list first :company)
                                                                                                                  :stock-list final-list
                                                                                                                  :source-list tick-list
-                                                                                                                 #_:sma-list #_smaF
-                                                                                                                 #_:ema-list #_emaF
+                                                                                                                 :sma-list smaF
+                                                                                                                 :ema-list emaF
                                                                                                                  #_:signals #_{:moving-average (slagging/moving-averages 20 tick-list-N sma-list ema-list)
                                                                                                                            :bollinger-band (slagging/bollinger-band 20 tick-list-N sma-list)
                                                                                                                            :macd (sleading/macd nil 20 tick-list-N sma-list)

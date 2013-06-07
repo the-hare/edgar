@@ -87,6 +87,29 @@
                       (.multiselect (clj->js (merge {:enableFiltering true} options)))))))
 
 
+
+(defn parse-result-data [result-data]
+
+  {:local-list (into-array (reduce (fn [rslt ech]
+                                     (conj rslt (into-array [(js/window.parseInt (first ech)) (js/window.parseFloat (second ech))])))
+                                   []
+                                   (into-array (:stock-list result-data))))
+
+   :sma-list (into-array (reduce (fn [rslt ech]
+                                  (conj rslt (into-array [(js/window.parseInt (first ech)) (js/window.parseFloat (second ech))])))
+                                []
+                                (remove #(nil? (first %))
+                                        (into-array (:sma-list result-data)))))
+
+   :ema-list (into-array (reduce (fn [rslt ech]
+                                  (conj rslt (into-array [(js/window.parseInt (first ech)) (js/window.parseFloat (second ech))])))
+                                []
+                                (remove #(nil? (first %))
+                                        (into-array (:ema-list result-data)))))
+
+   :stock-name (:stock-name result-data)})
+
+
 (populate-multiselect ".multiselect-live" {:onChange (fn [element checked]
 
                                                        (if checked
@@ -100,16 +123,21 @@
                                                              (if checked
                                                                ($/ajax "/get-historical-data"
                                                                        (clj->js {:data {:stock-selection (.val element)
-                                                                                        :time-duration "60 S"
+                                                                                        :time-duration "300 S"
                                                                                         :time-interval "1 secs"}
                                                                                  :complete (fn [jqXHR status]
 
                                                                                              (.log js/console (str ".multiselect-historical > jqXHR[" jqXHR "] / status[" status "]"))
                                                                                              (let [result-data (reader/read-string (.-responseText jqXHR))
-                                                                                                   local-list (:stock-list result-data)
-                                                                                                   stock-name (:stock-name result-data)]
+                                                                                                   parsed-result-map (parse-result-data result-data)
+                                                                                                   increment? false]
 
-                                                                                               (render-stock-graph "#historical-stock-graph" local-list stock-name false)))}))))})
+                                                                                               (render-stock-graph "#historical-stock-graph"
+                                                                                                                   [(:local-list parsed-result-map)
+                                                                                                                    (:sma-list parsed-result-map)
+                                                                                                                    (:ema-list parsed-result-map)]
+                                                                                                                   (:stock-name parsed-result-map)
+                                                                                                                   increment?)))}))))})
 
 (def livesource (js/window.EventSource. "/get-streaming-stock-data"))
 (.addEventListener livesource
@@ -118,31 +146,17 @@
 
                      #_(.log js/console (str "GET:: get-streaming-live-data > e[" e "]"))
                      (let [result-data (reader/read-string (.-data e))
-
-                           local-list (into-array (reduce (fn [rslt ech]
-                                                            (conj rslt (into-array [(js/window.parseInt (first ech)) (js/window.parseFloat (second ech))])))
-                                                          []
-                                                          (into-array (:stock-list result-data))))
-
-                           sma-list (into-array (reduce (fn [rslt ech]
-                                                            (conj rslt (into-array [(js/window.parseInt (first ech)) (js/window.parseFloat (second ech))])))
-                                                        []
-                                                        (remove #(nil? (first %))
-                                                                (into-array (:sma-list result-data)))))
-
-                           ema-list (into-array (reduce (fn [rslt ech]
-                                                            (conj rslt (into-array [(js/window.parseInt (first ech)) (js/window.parseFloat (second ech))])))
-                                                        []
-                                                        (remove #(nil? (first %))
-                                                                (into-array (:ema-list result-data)))))
-
-
-                           stock-name (:stock-name result-data)
+                           parsed-result-map (parse-result-data result-data)
                            increment?  (and (not (nil? (-> ($ "#live-stock-graph") (.highcharts "StockChart"))))
-                                            (= stock-name
+                                            (= (:stock-name parsed-result-map)
                                                (-> ($ "#live-stock-graph") (.highcharts "StockChart") (.-title) (.-text)))) ]
 
                        (.log js/console "")
                        (.log js/console (str "...local-list[" local-list "]"))
                        (.log js/console (str "...sma-list[" sma-list "]"))
-                       (render-stock-graph "#live-stock-graph" [local-list sma-list ema-list] stock-name increment?))))
+                       (render-stock-graph "#live-stock-graph"
+                                           [(:local-list parsed-result-map)
+                                            (:sma-list parsed-result-map)
+                                            (:ema-list parsed-result-map)]
+                                           (:stock-name parsed-result-map)
+                                           increment?))))
