@@ -46,6 +46,8 @@
 (def t6 (sleading/stochastic-oscillator 14 3 3 live-list k-list))
 
 
+(def t7 (slagging/bollinger-band 20 live-list sma-list))
+
 ;; TODO - Stategies, where we compose filters and signals
    ;; -- consider signals against trends
    ;; -- put stop-losses against support / resistance

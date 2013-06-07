@@ -113,7 +113,13 @@
                                                                                        emaF (reduce (fn [rslt ech]
                                                                                                       (conj rslt [(:last-trade-time ech) (:last-trade-price-exponential ech)]))
                                                                                                     []
-                                                                                                    ema-list)]
+                                                                                                    ema-list)
+
+                                                                                       signals-ma (slagging/moving-averages 20 tick-list-formatted sma-list ema-list)
+                                                                                       signals-bollinger (slagging/bollinger-band 20 tick-list-formatted sma-list)
+                                                                                       signals-macd (sleading/macd nil 20 tick-list-formatted sma-list)
+                                                                                       signals-stochastic (sleading/stochastic-oscillator 14 3 3 tick-list-formatted)
+                                                                                       signals-obv (sconfirming/on-balance-volume 10 (first tick-list-formatted) tick-list-formatted)]
 
                                                                                    (log/info "")
                                                                                    (log/info "... play-historical CALLBACK > tick-list[" tick-list-formatted "]")
@@ -124,11 +130,11 @@
                                                                                                                  :source-list tick-list
                                                                                                                  :sma-list smaF
                                                                                                                  :ema-list emaF
-                                                                                                                 #_:signals #_{:moving-average (slagging/moving-averages 20 tick-list-N sma-list ema-list)
-                                                                                                                           :bollinger-band (slagging/bollinger-band 20 tick-list-N sma-list)
-                                                                                                                           :macd (sleading/macd nil 20 tick-list-N sma-list)
-                                                                                                                           :stochastic-oscillator (sleading/stochastic-oscillator 14 3 3 tick-list-N)
-                                                                                                                           :obv (sconfirming/on-balance-volume 10 (first tick-list-N) tick-list-N)}})))])))
+                                                                                                                 :signals {:moving-average signals-ma
+                                                                                                                           :bollinger-band signals-bollinger
+                                                                                                                           :macd signals-macd
+                                                                                                                           :stochastic-oscillator signals-macd
+                                                                                                                           :obv signals-obv}})))])))
 (defbefore get-historical-data
   "Get historical data for a particular stock"
   [{request :request :as context}]
@@ -197,18 +203,24 @@
                                                      emaF (reduce (fn [rslt ech]
                                                                     (conj rslt [(:last-trade-time ech) (:last-trade-price-exponential ech)]))
                                                                   []
-                                                                  ema-list)]
+                                                                  ema-list)
+
+                                                     signals-ma (slagging/moving-averages 20 tick-list-N sma-list ema-list)
+                                                     signals-bollinger (slagging/bollinger-band 20 tick-list-N sma-list)
+                                                     signals-macd (sleading/macd nil 20 tick-list-N sma-list)
+                                                     signals-stochastic (sleading/stochastic-oscillator 14 3 3 tick-list-N)
+                                                     signals-obv (sconfirming/on-balance-volume 10 (first tick-list-N) tick-list-N)]
 
                                                  (stream-live "stream-live" {:stock-name stock-name
                                                                              :stock-list final-list
                                                                              :source-list tick-list-N
                                                                              :sma-list smaF
                                                                              :ema-list emaF
-                                                                             :signals {:moving-average (slagging/moving-averages 20 tick-list-N sma-list ema-list)
-                                                                                       :bollinger-band (slagging/bollinger-band 20 tick-list-N sma-list)
-                                                                                       :macd (sleading/macd nil 20 tick-list-N sma-list)
-                                                                                       :stochastic-oscillator (sleading/stochastic-oscillator 14 3 3 tick-list-N)
-                                                                                       :obv (sconfirming/on-balance-volume 10 (first tick-list-N) tick-list-N)}})))])
+                                                                             :signals {:moving-average signals-ma
+                                                                                       :bollinger-band signals-bollinger
+                                                                                       :macd signals-macd
+                                                                                       :stochastic-oscillator signals-stochastic
+                                                                                       :obv signals-obv}})))])
     { :status 204 }))
 
 
