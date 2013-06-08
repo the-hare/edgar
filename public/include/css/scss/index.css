@@ -61,7 +61,7 @@
 }
 /* line 62, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-container #live-stream #historical-stock-graph, #tabs .tab-content .body-container #historical-data #historical-stock-graph {
-  height: 900;
+  height: 800;
 }
 /* line 67, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-container #live-stream > .graph-group-header #live-stop {

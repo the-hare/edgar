@@ -277,8 +277,6 @@
                                                                                                    parsed-result-map (parse-result-data result-data)
                                                                                                    increment? false]
 
-                                                                                               (.log js/console (str "obv[" (:obv parsed-result-map) "]"))
-                                                                                               (.log js/console (str "obv INPUT[" (-> result-data :signals :obv) "]"))
                                                                                                (render-stock-graph "#historical-stock-graph"
                                                                                                                    [(:local-list parsed-result-map)
                                                                                                                     (:sma-list parsed-result-map)
