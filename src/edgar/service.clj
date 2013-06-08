@@ -88,7 +88,8 @@
                                                                                                                   {:last-trade-price (:close inp)
                                                                                                                    :last-trade-time (->> (:date inp)
                                                                                                                                          (.parse date-format)
-                                                                                                                                         .getTime)})
+                                                                                                                                         .getTime)
+                                                                                                                   :total-volume (:volume inp)})
                                                                                                                 (reverse (walk/keywordize-keys
                                                                                                                           (-> tick-list first :event-list))))
 
@@ -119,12 +120,9 @@
                                                                                        signals-bollinger (slagging/bollinger-band 20 tick-list-formatted sma-list)
                                                                                        signals-macd (sleading/macd nil 20 tick-list-formatted sma-list)
                                                                                        signals-stochastic (sleading/stochastic-oscillator 14 3 3 tick-list-formatted)
-                                                                                       signals-obv (sconfirming/on-balance-volume 10 (first tick-list-formatted) tick-list-formatted)]
+                                                                                       signals-obv (sconfirming/on-balance-volume 10 tick-list-formatted)]
 
-                                                                                   (log/info "")
-                                                                                   (log/info "... play-historical CALLBACK > tick-list[" tick-list-formatted "]")
-                                                                                   (log/info "... play-historical CALLBACK > sma-list[" (map #(dissoc % :population) sma-list) "]")
-                                                                                   (log/info "... play-historical CALLBACK > ema-list[" ema-list "]")
+
                                                                                    ((:resume-fn paused-context) {:stock-name (-> tick-list first :company)
                                                                                                                  :stock-list final-list
                                                                                                                  :source-list tick-list

@@ -15,6 +15,7 @@
        (on-balance-volume view-window tick-list obv-list)))
   ([view-window tick-list obv-list]
 
+     (println (str "... obv-list[" obv-list "]"))
      (let [divergence-obv (reduce (fn [rslt ech-list]
 
                                      (let [fst (first ech-list)
@@ -31,11 +32,11 @@
                                            (conj rslt (assoc fst :signals [{:signal :up
                                                                             :why :obv-divergence
                                                                             :arguments [ech-list price-peaks-valleys obv-peaks-valleys]
-                                                                            :function common/divergence-up?}]))
+                                                                            #_:function #_common/divergence-up?}]))
                                            (conj rslt (assoc fst :signals [{:signal :down
                                                                             :why :obv-divergence
                                                                             :arguments [ech-list price-peaks-valleys obv-peaks-valleys]
-                                                                            :function common/divergence-down?}])))
+                                                                            #_:function #_common/divergence-down?}])))
                                          (conj rslt (first ech-list)))))
                                    []
                                    (partition view-window 1 obv-list))]

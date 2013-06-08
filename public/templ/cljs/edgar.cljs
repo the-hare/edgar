@@ -246,6 +246,12 @@
                                      []
                                      (remove nil? (-> result-data :signals :stochastic-oscillator))))
 
+   :obv (into-array (reduce (fn [rslt ech]
+                              (conj rslt (into-array [(js/window.parseInt (:last-trade-time ech))
+                                                      (js/window.parseInt (:obv ech))])))
+                            []
+                            (remove nil? (-> result-data :signals :obv))))
+
    :stock-name (:stock-name result-data)})
 
 
@@ -271,8 +277,8 @@
                                                                                                    parsed-result-map (parse-result-data result-data)
                                                                                                    increment? false]
 
-                                                                                               (.log js/console (str "K[" (:stochastic-k parsed-result-map) "]"))
-                                                                                               (.log js/console (str "D[" (:stochastic-d parsed-result-map) "]"))
+                                                                                               (.log js/console (str "obv[" (:obv parsed-result-map) "]"))
+                                                                                               (.log js/console (str "obv INPUT[" (-> result-data :signals :obv) "]"))
                                                                                                (render-stock-graph "#historical-stock-graph"
                                                                                                                    [(:local-list parsed-result-map)
                                                                                                                     (:sma-list parsed-result-map)
@@ -284,7 +290,9 @@
                                                                                                                     (:macd-histogram-list parsed-result-map)
 
                                                                                                                     (:stochastic-k parsed-result-map)
-                                                                                                                    (:stochastic-d parsed-result-map)]
+                                                                                                                    (:stochastic-d parsed-result-map)
+
+                                                                                                                    (:obv parsed-result-map)]
                                                                                                                    (:stock-name parsed-result-map)
                                                                                                                    increment?)))}))))})
 
