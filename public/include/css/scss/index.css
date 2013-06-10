@@ -70,7 +70,7 @@
   height: 30;
 }
 /* line 70, ../../../templ/scss/index.scss */
-#tabs .tab-content .body-container #live-stream #historical-stock-graph, #tabs .tab-content .body-container #historical-data #historical-stock-graph {
+#tabs .tab-content .body-container #live-stream #live-stock-graph, #tabs .tab-content .body-container #live-stream #historical-stock-graph, #tabs .tab-content .body-container #historical-data #live-stock-graph, #tabs .tab-content .body-container #historical-data #historical-stock-graph {
   height: 800;
 }
 /* line 75, ../../../templ/scss/index.scss */

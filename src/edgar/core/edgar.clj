@@ -50,6 +50,7 @@
        (market/subscribe-to-market (partial historical/snapshot-handler options))
        (historical/schedule-historical-data options))))
 
+(def ^:dynamic *ticker-id-index* (atom 0))
 (defn play-live
   "1) takes a selection of stock symbols
    2) gets a live market feed
@@ -61,19 +62,20 @@
      {:pre [(not (nil? client))
             (not (nil? stock-selection))]}
 
-     (reduce (fn [req-id ech]
+     (let [result-id (reduce (fn [req-id ech]
 
-               (let [tick-list (ref [])
-                     tee-list (if tee-fn-list tee-fn-list [(partial tplay/tee-market @tick-list)])
-                     options {:tick-list tick-list :tee-list tee-list :ticker-id-filter [req-id]}]
+                                (let [tick-list (ref [])
+                                      tee-list (if tee-fn-list tee-fn-list [(partial tplay/tee-market @tick-list)])
+                                      options {:tick-list tick-list :tee-list tee-list :ticker-id-filter [req-id]}]
 
-                 (market/subscribe-to-market (partial live/feed-handler options))
-                 (market/request-market-data client req-id ech "233" false)
+                                  (market/subscribe-to-market (partial live/feed-handler options))
+                                  (market/request-market-data client req-id ech "233" false)
 
-                 (inc req-id)  ;; increment the request ID for the next stock symbol
-                 ))
-             0
-             stock-selection)))
+                                  ;; increment the request ID for the next stock symbol
+                                  (inc req-id)))
+                              @*ticker-id-index*
+                              stock-selection)]
+       (swap! *ticker-id-index* (fn [inp] result-id)))))
 
 (defn initialize-workbench []
   (def ^:dynamic *interactive-brokers-workbench* {:interactive-brokers-client (:esocket (market/connect-to-market))})
@@ -115,4 +117,6 @@
 (defn fubar []
   (test-run)
   (test-play-live)
-  (test-play-historical))
+  (test-play-historical)
+
+  (refresh-workbench))

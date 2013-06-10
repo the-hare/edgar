@@ -18,7 +18,7 @@
 
     (-> ($ selector)
         (.highcharts "StockChart" (clj->js
-                                   {:names [label "Simple Moving Average" "Exponential Moving Average" "Bolling Band"]
+                                   {:names [label "Bolling Band" "Simple Moving Average" "Exponential Moving Average"]
                                     :rangeSelector {:selected 7}
                                     :title {:text label}
                                     :chart {:zoomType "x"}
@@ -65,27 +65,28 @@
                                              :offset 0
                                              :lineWidth 2}]
 
-                                    :series [{:name label,
+                                    :series [{:name "Bollinger Band"
                                               :data (reverse (first dataList))
-                                              :marker {:enabled true :radius 3}
-                                              :shadow true
-                                              :tooltip {:valueDecimals 2}}
-                                             {:name "Simple Moving Average"
-                                              :data (reverse (second dataList))
-                                              :marker {:enabled true :radius 3}
-                                              :shadow true
-                                              :tooltip {:valueDecimals 2}}
-                                             {:name "Exponential Moving Average"
-                                              :data (reverse (nth dataList 2))
-                                              :marker {:enabled true :radius 3}
-                                              :shadow true
-                                              :tooltip {:valueDecimals 2}}
-                                             {:name "Bollinger Band"
-                                              :data (reverse (nth dataList 3))
                                               :type "arearange"
                                               :color "#629DFF"
                                               :marker {:enabled true :radius 3}
                                               :tooltip {:valueDecimals 2}}
+                                             {:name label,
+                                              :data (reverse (second dataList))
+                                              :marker {:enabled true :radius 3}
+                                              :shadow true
+                                              :tooltip {:valueDecimals 2}}
+                                             {:name "Simple Moving Average"
+                                              :data (reverse (nth dataList 2))
+                                              :marker {:enabled true :radius 3}
+                                              :shadow true
+                                              :tooltip {:valueDecimals 2}}
+                                             {:name "Exponential Moving Average"
+                                              :data (reverse (nth dataList 3))
+                                              :marker {:enabled true :radius 3}
+                                              :shadow true
+                                              :tooltip {:valueDecimals 2}}
+
 
                                              ;; MACD Data
                                              {:name "MACD Price"
@@ -154,7 +155,39 @@
           (.highcharts)
           (.-series)
           (nth 3)
-          (.addPoint (last (reverse (nth dataList 3))) true false)))))
+          (.addPoint (last (reverse (nth dataList 3))) true false))
+
+
+      (-> ($ selector)
+          (.highcharts)
+          (.-series)
+          (nth 4)
+          (.addPoint (last (reverse (nth dataList 4))) true false))
+      (-> ($ selector)
+          (.highcharts)
+          (.-series)
+          (nth 5)
+          (.addPoint (last (reverse (nth dataList 5))) true false))
+      (-> ($ selector)
+          (.highcharts)
+          (.-series)
+          (nth 6)
+          (.addPoint (last (reverse (nth dataList 6))) true false))
+      (-> ($ selector)
+          (.highcharts)
+          (.-series)
+          (nth 7)
+          (.addPoint (last (reverse (nth dataList 7))) true false))
+      (-> ($ selector)
+          (.highcharts)
+          (.-series)
+          (nth 8)
+          (.addPoint (last (reverse (nth dataList 8))) true false))
+      (-> ($ selector)
+          (.highcharts)
+          (.-series)
+          (nth 9)
+          (.addPoint (last (reverse (nth dataList 9))) true false)))))
 
 
 
@@ -262,7 +295,15 @@
                                                                  (fn [data]
                                                                    (.log js/console (str "POST:: get-streaming-stock-data > data[" data "]"))))))})
 (.click ($ "#freeform-live") (fn [eventObj]
-                               (.log js/console "... here[" eventObj "] / input[" (.val ($ "#freeform-live-input")) "]")))
+
+                               (let [input-val (.val ($ "#freeform-live-input"))]
+
+                                 (.log js/console "... here[" eventObj "] / input[" input-val "]")
+                                 (if (not (empty? input-val))
+
+                                   ($/post (str "/get-streaming-stock-data?stock-selection=" input-val "&stock-name=" input-val)
+                                           (fn [data]
+                                             (.log js/console (str "POST:: get-streaming-stock-data > data[" data "]"))))))))
 
 
 (populate-multiselect ".multiselect-historical" {:onChange (fn [element checked]
@@ -280,10 +321,11 @@
                                                                                                    increment? false]
 
                                                                                                (render-stock-graph "#historical-stock-graph"
-                                                                                                                   [(:local-list parsed-result-map)
+                                                                                                                   [(:bollinger-band parsed-result-map)
+                                                                                                                    (:local-list parsed-result-map)
                                                                                                                     (:sma-list parsed-result-map)
                                                                                                                     (:ema-list parsed-result-map)
-                                                                                                                    (:bollinger-band parsed-result-map)
+
 
                                                                                                                     (:macd-price-list parsed-result-map)
                                                                                                                     (:macd-signal-list parsed-result-map)
@@ -308,9 +350,19 @@
                                                (-> ($ "#live-stock-graph") (.highcharts "StockChart") (.-title) (.-text)))) ]
 
                        (render-stock-graph "#live-stock-graph"
-                                           [(:local-list parsed-result-map)
+                                           [(:bollinger-band parsed-result-map)
+                                            (:local-list parsed-result-map)
                                             (:sma-list parsed-result-map)
                                             (:ema-list parsed-result-map)
-                                            (:bollinger-band parsed-result-map)]
+
+
+                                            (:macd-price-list parsed-result-map)
+                                            (:macd-signal-list parsed-result-map)
+                                            (:macd-histogram-list parsed-result-map)
+
+                                            (:stochastic-k parsed-result-map)
+                                            (:stochastic-d parsed-result-map)
+
+                                            (:obv parsed-result-map)]
                                            (:stock-name parsed-result-map)
                                            increment?))))
