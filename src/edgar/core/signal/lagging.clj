@@ -178,7 +178,9 @@
                                       (> (:last-trade-price (first valleys)) (:lower-band (first (some #(= (:last-trade-time %) (:last-trade-time (first valleys)))
                                                                                                                      ech-list)))))
 
-                               (conj rslt (assoc (first ech-list) :signal :down))
+                               (conj rslt (assoc (first ech-list) :signals [{:signal :down
+                                                                             :why :bollinger-close-abouve
+                                                                             :arguments [ech-list valleys]}]))
 
                                (conj rslt (first ech-list)))
 
@@ -186,7 +188,9 @@
                                       (< (:last-trade-price (first peaks)) (:upper-band (first (some #(= (:last-trade-time %) (:last-trade-time (first peaks))))
                                                                                                              ech-list))))
 
-                               (conj rslt (assoc (first ech-list) :signal :up))
+                               (conj rslt (assoc (first ech-list) :signals [{:signal :up
+                                                                             :why :bollinger-close-below
+                                                                             :arguments [ech-list peaks]}]))
 
                                (conj rslt (first ech-list))))))
 

@@ -71,7 +71,8 @@
                                               :color "#629DFF"
                                               :marker {:enabled true :radius 3}
                                               :tooltip {:valueDecimals 2}}
-                                             {:name label,
+                                             {:name label
+                                              :id "tick-list"
                                               :data (reverse (second dataList))
                                               :marker {:enabled true :radius 3}
                                               :shadow true
@@ -130,7 +131,25 @@
                                               :type "column"
                                               :marker {:enabled true :radius 3}
                                               :shadow true
-                                              :tooltip {:valueDecimals 2}}]})))
+                                              :tooltip {:valueDecimals 2}}
+
+                                             ;; SIGNAL Flags
+                                             (second)
+                                             {:type "flags"
+                                              :data [{:x Date.UTC (2011, 2, 10),
+                                                      :title "C"
+                                                      :text 'Shape: "flag"'}
+                                                     {:x Date.UTC (2011, 3, 11)
+                                                      :title "C"
+                                                      :text 'Shape: "flag"'}]
+                                              :color "#5F86B3"
+                                              :fillColor "#5F86B3"
+                                              :onSeries "tick-list"
+                                              :width 16
+                                              :style {:color "white"}
+                                              :states {:hover { :fillColor "#395C84" }}}
+
+                                             ]})))
     (do
 
       (-> ($ selector)
