@@ -207,7 +207,7 @@
                                                      signals-bollinger (slagging/bollinger-band 20 tick-list-N sma-list)
                                                      signals-macd (sleading/macd nil 20 tick-list-N sma-list)
                                                      signals-stochastic (sleading/stochastic-oscillator 14 3 3 tick-list-N)
-                                                     signals-obv (sconfirming/on-balance-volume 10 (first tick-list-N) tick-list-N)]
+                                                     signals-obv (sconfirming/on-balance-volume 10 tick-list-N)]
 
                                                  (stream-live "stream-live" {:stock-name stock-name
                                                                              :stock-list final-list
