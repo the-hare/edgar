@@ -261,6 +261,8 @@
                                                          ($/post (str "/get-streaming-stock-data?stock-selection=" (.val element) "&stock-name=" (.text element))
                                                                  (fn [data]
                                                                    (.log js/console (str "POST:: get-streaming-stock-data > data[" data "]"))))))})
+(.click ($ "#freeform-live") (fn [eventObj]
+                               (.log js/console "... here[" eventObj "] / input[" (.val ($ "#freeform-live-input")) "]")))
 
 
 (populate-multiselect ".multiselect-historical" {:onChange (fn [element checked]
@@ -299,16 +301,12 @@
                    "stream-live"
                    (fn [e]
 
-                     #_(.log js/console (str "GET:: get-streaming-live-data > e[" e "]"))
                      (let [result-data (reader/read-string (.-data e))
                            parsed-result-map (parse-result-data result-data)
                            increment?  (and (not (nil? (-> ($ "#live-stock-graph") (.highcharts "StockChart"))))
                                             (= (:stock-name parsed-result-map)
                                                (-> ($ "#live-stock-graph") (.highcharts "StockChart") (.-title) (.-text)))) ]
 
-                       #_(.log js/console "")
-                       #_(.log js/console (str "... bollinger-band[" (:local-list parsed-result-map) "]"))
-                       #_(.log js/console (str "...sma-list[" (:sma-list parsed-result-map) "]"))
                        (render-stock-graph "#live-stock-graph"
                                            [(:local-list parsed-result-map)
                                             (:sma-list parsed-result-map)

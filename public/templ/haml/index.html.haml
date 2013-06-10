@@ -41,8 +41,8 @@
                     Stop
                   %select.multiselect-live( multiple="multiple" )
                   .input-append
-                    %input.span2( type="text" )
-                    %button.btn( type="button" )
+                    %input.span2#freeform-live-input( type="text" )
+                    %button.btn#freeform-live( type="button" )
                       Submit
 
                 #live-stock-graph
@@ -51,8 +51,8 @@
                 .graph-group-header
                   %select.multiselect-historical( multiple="multiple" )
                   .input-append
-                    %input.span2( type="text" )
-                    %button.btn( type="button" )
+                    %input.span2#freeform-historical-input( type="text" )
+                    %button.btn#freeform-historical( type="button" )
                       Submit
 
                 #historical-stock-graph
