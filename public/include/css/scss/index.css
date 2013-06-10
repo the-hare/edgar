@@ -59,19 +59,29 @@
 #tabs .tab-content .body-container #live-stream .graph-group-header .btn-success ul > li > a > label, #tabs .tab-content .body-container #live-stream .graph-group-header .btn-danger ul > li > a > label, #tabs .tab-content .body-container #live-stream .graph-group-header .btn-group ul > li > a > label, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-success ul > li > a > label, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-danger ul > li > a > label, #tabs .tab-content .body-container #historical-data .graph-group-header .btn-group ul > li > a > label {
   text-decoration: none;
 }
-/* line 62, ../../../templ/scss/index.scss */
+/* line 61, ../../../templ/scss/index.scss */
+#tabs .tab-content .body-container #live-stream .graph-group-header .input-append, #tabs .tab-content .body-container #historical-data .graph-group-header .input-append {
+  float: right;
+  position: relative;
+  top: -55;
+}
+/* line 65, ../../../templ/scss/index.scss */
+#tabs .tab-content .body-container #live-stream .graph-group-header .input-append .span2, #tabs .tab-content .body-container #historical-data .graph-group-header .input-append .span2 {
+  height: 30;
+}
+/* line 70, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-container #live-stream #historical-stock-graph, #tabs .tab-content .body-container #historical-data #historical-stock-graph {
   height: 800;
 }
-/* line 67, ../../../templ/scss/index.scss */
+/* line 75, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-container #live-stream > .graph-group-header #live-stop {
   top: -20;
 }
-/* line 68, ../../../templ/scss/index.scss */
+/* line 76, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-container #live-stream > .graph-group-header .btn-group {
   top: -40;
 }
-/* line 71, ../../../templ/scss/index.scss */
+/* line 79, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-summary {
   background: lightgray;
   float: left;

@@ -58,6 +58,14 @@
               text-decoration: none;  // ... TODO turn off underline on hover
             }
           }
+          .input-append {
+            float: right;
+            position: relative;
+            top: -55;
+            .span2 {
+              height: 30;
+            }
+          }
         }
         #historical-stock-graph {
           height: 800;

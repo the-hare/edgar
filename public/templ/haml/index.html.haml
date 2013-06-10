@@ -40,11 +40,21 @@
                   %button#live-stop.btn.btn-danger( type="button" )
                     Stop
                   %select.multiselect-live( multiple="multiple" )
+                  .input-append
+                    %input.span2( type="text" )
+                    %button.btn( type="button" )
+                      Submit
+
                 #live-stock-graph
 
               #historical-data
                 .graph-group-header
                   %select.multiselect-historical( multiple="multiple" )
+                  .input-append
+                    %input.span2( type="text" )
+                    %button.btn( type="button" )
+                      Submit
+
                 #historical-stock-graph
 
             .body-summary
@@ -55,12 +65,14 @@
   %link( rel="stylesheet" href="/include/vendor/bootstrap/css/bootstrap.min.css" )
   %link( rel="stylesheet" href="/include/vendor/bootstrap/css/bootstrap-responsive.min.css" )
   %link( rel="stylesheet" href="/include/vendor/bootstrap-multiselect/css/bootstrap-multiselect.css" )
-
+  /%link( rel="stylesheet" href="/include/vendor/select2-3.4.0/select2.css" )
   %link( rel="stylesheet" href="/include/css/scss/index.css" )
 
   %script( type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js" )
   %script( type="text/javascript" src="/include/vendor/bootstrap/js/bootstrap.min.js")
   %script( type="text/javascript" src="/include/vendor/bootstrap-multiselect/js/bootstrap-multiselect.js")
+  /%script( type="text/javascript" src="/include/vendor/select2-3.4.0/select2.js")
+  /%script( type="text/javascript" src="/include/vendor/select2-3.4.0/select2.jquery.js")
 
 
   %script( type="text/javascript" src="/include/vendor/lionbars/jquery.lionbars.0.3.min.js")
