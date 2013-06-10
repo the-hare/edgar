@@ -83,24 +83,31 @@
 
         with-signals (reduce (fn [rslt ech]
 
+
                                ;; SIGNAL Flags
                                (if (= :moving-average (first ech))
 
-                                 (conj rslt {:type "flags"
-                                             :data [{:x (-> ech second :x)
-                                                     :title (-> ech second :title)
-                                                     :text (-> ech second :title)}
-                                                    ]
-                                             :color "#5F86B3"
-                                             :fillColor "#5F86B3"
-                                             :onSeries "tick-list"
-                                             :width 16
-                                             :style {:color "white"}
-                                             :states {:hover { :fillColor "#395C84" }}})))
+                                 ;; second element is a list of signals
+                                 (concat rslt (reduce (fn [rF eF]
+
+                                                        (conj rF {:type "flags"
+                                                                  :data [{:x (-> eF :x)
+                                                                          :title (-> eF :title)
+                                                                          :text (-> eF :title)}]
+                                                                  :color "#5F86B3"
+                                                                  :fillColor "#5F86B3"
+                                                                  :onSeries "tick-list"
+                                                                  :width 16
+                                                                  :style {:color "white"}
+                                                                  :states {:hover { :fillColor "#395C84" }}}))
+                                                      []
+                                                      (second ech)))))
                              initial-list
                              (seq signal-map))  ;; iterate over map entries
+        ]
 
-        ]))
+    (.log js/console (str "... FINAL series array[" with-signals "]"))
+    with-signals))
 
 ;; === RENDER the Live stock graph
 (defn render-stock-graph [selector dataList signal-map label increment]
@@ -156,7 +163,7 @@
                                              :offset 0
                                              :lineWidth 2}]
 
-                                    :series (build-graph-series-data)})))
+                                    :series (build-graph-series-data dataList signal-map)})))
     (do
 
       (-> ($ selector)
@@ -311,15 +318,21 @@
                             []
                             (remove nil? (-> result-data :signals :obv))))
 
-   :signals {:moving-average (remove empty? (into-array (reduce (fn [rslt ech]
-                                                                   (conj rslt (map (fn [inp]   ;; iterate over the :signals list, for each tick entry
-                                                                                     {:x (js/window.parseInt (:last-trade-time ech))
-                                                                                      :title (:signal inp)
-                                                                                      :text (str "Why: " (:why inp))
-                                                                                      })
-                                                                                   (:signals ech))))
-                                                                 []
-                                                                 (remove nil? (-> result-data :signals :moving-average)))))}
+   :signals {:moving-average (->> (reduce (fn [rslt ech]
+
+                                            (conj rslt (map (fn [inp]   ;; iterate over the :signals list, for each tick entry
+                                                              {:x (js/window.parseInt (:last-trade-time ech))
+                                                               :title (:signal inp)
+                                                               :text (str "Why: " (:why inp))
+                                                               })
+                                                            (:signals ech))))
+                                          []
+                                          (remove nil? (-> result-data :signals :moving-average)))
+                                  into-array
+                                  (remove empty?)
+
+                                  ;; for some strange reason, each list entry is in another list
+                                  (map #(first %)))}
 
    :stock-name (:stock-name result-data)})
 
@@ -356,9 +369,7 @@
                                                                                                    parsed-result-map (parse-result-data result-data)
                                                                                                    increment? false]
 
-                                                                                               (.log js/console (str ".multiselect-historical > signals[" (:signals parsed-result-map) "]"))
                                                                                                (render-stock-graph "#historical-stock-graph"
-                                                                                                                   (:signals parsed-result-map)
                                                                                                                    [(:bollinger-band parsed-result-map)
                                                                                                                     (:local-list parsed-result-map)
                                                                                                                     (:sma-list parsed-result-map)
@@ -373,6 +384,7 @@
                                                                                                                     (:stochastic-d parsed-result-map)
 
                                                                                                                     (:obv parsed-result-map)]
+                                                                                                                   (:signals parsed-result-map)
                                                                                                                    (:stock-name parsed-result-map)
                                                                                                                    increment?)))}))))})
 
@@ -388,7 +400,6 @@
                                                (-> ($ "#live-stock-graph") (.highcharts "StockChart") (.-title) (.-text)))) ]
 
                        (render-stock-graph "#live-stock-graph"
-                                           (:signals parsed-result-map)
                                            [(:bollinger-band parsed-result-map)
                                             (:local-list parsed-result-map)
                                             (:sma-list parsed-result-map)
@@ -403,5 +414,6 @@
                                             (:stochastic-d parsed-result-map)
 
                                             (:obv parsed-result-map)]
+                                           (:signals parsed-result-map)
                                            (:stock-name parsed-result-map)
                                            increment?))))

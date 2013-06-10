@@ -29,7 +29,7 @@
 /* line 32, ../../../templ/scss/index.scss */
 #tabs .tab-content .body-container {
   width: 70%;
-  height: 100%;
+  height: 95%;
   float: left;
   overflow-y: scroll;
 }
