@@ -81,11 +81,11 @@
                    ;; return either i) :up signal, ii) :down signal or iii) nothing, with just the raw data
                    (if signal-up
                      (cons (assoc raw-data :signals [{:signal :up
-                                                      :why :moving-average
+                                                      :why :moving-average-crossover
                                                       :arguments [fst snd]}]) rslt)
                      (if signal-down
                        (cons (assoc raw-data :isgnals [{:signal :down
-                                                        :why :moving-average
+                                                        :why :moving-average-crossover
                                                         :arguments [fst snd]}]) rslt)
                        (cons raw-data rslt)))))
                start-list
