@@ -10,9 +10,100 @@
 #_(.lionbars ($ ".body-container"))
 
 
+(defn build-graph-series-data [dataList signal-map]
+
+  (let [initial-list [{:name "Bollinger Band"
+                       :data (reverse (first dataList))
+                       :type "arearange"
+                       :color "#629DFF"
+                       :marker {:enabled true :radius 3}
+                       :tooltip {:valueDecimals 2}}
+                      {:name label
+                       :id "tick-list"
+                       :data (reverse (second dataList))
+                       :marker {:enabled true :radius 3}
+                       :shadow true
+                       :tooltip {:valueDecimals 2}}
+                      {:name "Simple Moving Average"
+                       :data (reverse (nth dataList 2))
+                       :marker {:enabled true :radius 3}
+                       :shadow true
+                       :tooltip {:valueDecimals 2}}
+                      {:name "Exponential Moving Average"
+                       :data (reverse (nth dataList 3))
+                       :marker {:enabled true :radius 3}
+                       :shadow true
+                       :tooltip {:valueDecimals 2}}
+
+
+                      ;; MACD Data
+                      {:name "MACD Price"
+                       :data (reverse (nth dataList 4))
+                       :yAxis 1
+                       :marker {:enabled true :radius 3}
+                       :shadow true
+                       :tooltip {:valueDecimals 2}}
+                      {:name "MACD Signal"
+                       :data (reverse (nth dataList 5))
+                       :yAxis 1
+                       :marker {:enabled true :radius 3}
+                       :shadow true
+                       :tooltip {:valueDecimals 2}}
+
+                      {:name "MACD Histogram"
+                       :data (reverse (nth dataList 6))
+                       :yAxis 2
+                       :type "column"
+                       :marker {:enabled true :radius 3}
+                       :shadow true
+                       :tooltip {:valueDecimals 2}}
+
+                      ;; Stochastic Data
+                      {:name "Stochastic K"
+                       :data (reverse (nth dataList 7))
+                       :yAxis 3
+                       :marker {:enabled true :radius 3}
+                       :shadow true
+                       :tooltip {:valueDecimals 2}}
+                      {:name "Stochastic D"
+                       :data (reverse (nth dataList 8))
+                       :yAxis 3
+                       :marker {:enabled true :radius 3}
+                       :shadow true
+                       :tooltip {:valueDecimals 2}}
+
+                      {:name "On Balance Volume"
+                       :data (reverse (nth dataList 9))
+                       :yAxis 4
+                       :type "column"
+                       :marker {:enabled true :radius 3}
+                       :shadow true
+                       :tooltip {:valueDecimals 2}}
+                      ]
+
+        with-signals (reduce (fn [rslt ech]
+
+                               ;; SIGNAL Flags
+                               (if (= :moving-average (first ech))
+
+                                 (conj rslt {:type "flags"
+                                             :data [{:x (-> ech second :x)
+                                                     :title ()
+                                                     :text 'Shape: "flag"'}
+                                                    ]
+                                             :color "#5F86B3"
+                                             :fillColor "#5F86B3"
+                                             :onSeries "tick-list"
+                                             :width 16
+                                             :style {:color "white"}
+                                             :states {:hover { :fillColor "#395C84" }}})))
+                             initial-list
+                             (seq signal-map))  ;; iterate over map entries
+
+        ]))
 
 ;; === RENDER the Live stock graph
-(defn render-stock-graph [selector dataList label increment]
+(defn render-stock-graph [selector dataList signal-map label increment]
 
   (if-not increment
 
@@ -65,91 +156,7 @@
                                              :offset 0
                                              :lineWidth 2}]
 
-                                    :series [{:name "Bollinger Band"
-                                              :data (reverse (first dataList))
-                                              :type "arearange"
-                                              :color "#629DFF"
-                                              :marker {:enabled true :radius 3}
-                                              :tooltip {:valueDecimals 2}}
-                                             {:name label
-                                              :id "tick-list"
-                                              :data (reverse (second dataList))
-                                              :marker {:enabled true :radius 3}
-                                              :shadow true
-                                              :tooltip {:valueDecimals 2}}
-                                             {:name "Simple Moving Average"
-                                              :data (reverse (nth dataList 2))
-                                              :marker {:enabled true :radius 3}
-                                              :shadow true
-                                              :tooltip {:valueDecimals 2}}
-                                             {:name "Exponential Moving Average"
-                                              :data (reverse (nth dataList 3))
-                                              :marker {:enabled true :radius 3}
-                                              :shadow true
-                                              :tooltip {:valueDecimals 2}}
-
-
-                                             ;; MACD Data
-                                             {:name "MACD Price"
-                                              :data (reverse (nth dataList 4))
-                                              :yAxis 1
-                                              :marker {:enabled true :radius 3}
-                                              :shadow true
-                                              :tooltip {:valueDecimals 2}}
-                                             {:name "MACD Signal"
-                                              :data (reverse (nth dataList 5))
-                                              :yAxis 1
-                                              :marker {:enabled true :radius 3}
-                                              :shadow true
-                                              :tooltip {:valueDecimals 2}}
-
-                                             {:name "MACD Histogram"
-                                              :data (reverse (nth dataList 6))
-                                              :yAxis 2
-                                              :type "column"
-                                              :marker {:enabled true :radius 3}
-                                              :shadow true
-                                              :tooltip {:valueDecimals 2}}
-
-                                             ;; Stochastic Data
-                                             {:name "Stochastic K"
-                                              :data (reverse (nth dataList 7))
-                                              :yAxis 3
-                                              :marker {:enabled true :radius 3}
-                                              :shadow true
-                                              :tooltip {:valueDecimals 2}}
-                                             {:name "Stochastic D"
-                                              :data (reverse (nth dataList 8))
-                                              :yAxis 3
-                                              :marker {:enabled true :radius 3}
-                                              :shadow true
-                                              :tooltip {:valueDecimals 2}}
-
-                                             {:name "On Balance Volume"
-                                              :data (reverse (nth dataList 9))
-                                              :yAxis 4
-                                              :type "column"
-                                              :marker {:enabled true :radius 3}
-                                              :shadow true
-                                              :tooltip {:valueDecimals 2}}
-
-                                             ;; SIGNAL Flags
-                                             (second)
-                                             {:type "flags"
-                                              :data [{:x Date.UTC (2011, 2, 10),
-                                                      :title "C"
-                                                      :text 'Shape: "flag"'}
-                                                     {:x Date.UTC (2011, 3, 11)
-                                                      :title "C"
-                                                      :text 'Shape: "flag"'}]
-                                              :color "#5F86B3"
-                                              :fillColor "#5F86B3"
-                                              :onSeries "tick-list"
-                                              :width 16
-                                              :style {:color "white"}
-                                              :states {:hover { :fillColor "#395C84" }}}
-
-                                             ]})))
+                                    :series (build-graph-series-data)})))
     (do
 
       (-> ($ selector)
@@ -304,6 +311,16 @@
                             []
                             (remove nil? (-> result-data :signals :obv))))
 
+   :signals {:moving-average (into-array (reduce (fn [rslt ech]
+                                                   (conj rslt (map (fn [inp]   ;; iterate over the :signals list, for each tick entry
+                                                                     {:x (js/window.parseInt (:last-trade-time ech))
+                                                                      :title (:signal inp)
+                                                                      :text (str "Why: " (:why inp))
+                                                                      })
+                                                                   (:signals ech))))
+                                                 []
+                                                 (remove nil? (-> result-data :signals :moving-average))))}
+
    :stock-name (:stock-name result-data)})
 
 
@@ -340,6 +357,7 @@
                                                                                                    increment? false]
 
                                                                                                (render-stock-graph "#historical-stock-graph"
+                                                                                                                   (:signals parsed-result-map)
                                                                                                                    [(:bollinger-band parsed-result-map)
                                                                                                                     (:local-list parsed-result-map)
                                                                                                                     (:sma-list parsed-result-map)
@@ -369,6 +387,7 @@
                                                (-> ($ "#live-stock-graph") (.highcharts "StockChart") (.-title) (.-text)))) ]
 
                        (render-stock-graph "#live-stock-graph"
+                                           (:signals parsed-result-map)
                                            [(:bollinger-band parsed-result-map)
                                             (:local-list parsed-result-map)
                                             (:sma-list parsed-result-map)
