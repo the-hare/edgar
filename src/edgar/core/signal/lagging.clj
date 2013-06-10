@@ -69,24 +69,28 @@
 
                        ;; in the first element, has the ema crossed abouve the sma from the second element
                        signal-up (and (< (:last-trade-price-exponential snd) (:last-trade-price-average snd))
-                                      (> (:last-trade-price-exponential fst) (:last-trade-price-average snd)))
+                                      (> (:last-trade-price-exponential fst) (:last-trade-price-average fst)))
 
                        ;; in the first element, has the ema crossed below the sma from the second element
                        signal-down (and (> (:last-trade-price-exponential snd) (:last-trade-price-average snd))
-                                        (< (:last-trade-price-exponential fst) (:last-trade-price-average snd)))
+                                        (< (:last-trade-price-exponential fst) (:last-trade-price-average fst)))
 
                        raw-data fst
                        ]
 
                    ;; return either i) :up signal, ii) :down signal or iii) nothing, with just the raw data
                    (if signal-up
-                     (cons (assoc raw-data :signal :up) rslt)
+                     (cons (assoc raw-data :signals [{:signal :up
+                                                      :why :moving-average
+                                                      :arguments [fst snd]}]) rslt)
                      (if signal-down
-                       (cons (assoc raw-data :isgnal :down) rslt)
+                       (cons (assoc raw-data :isgnals [{:signal :down
+                                                        :why :moving-average
+                                                        :arguments [fst snd]}]) rslt)
                        (cons raw-data rslt)))))
                start-list
-               (reverse partitioned-join))
-       )))
+               (reverse partitioned-join)))))
+
 
 
 (defn sort-bollinger-band [bband]
@@ -248,17 +252,19 @@
 
                              (if (and higher-highPRICE? lower-highRSI? divergence-overbought?)
 
-                               (conj rslt (assoc (first ech-list) :signal :down))
+                               (conj rslt (assoc (first ech-list) :signals [{:signal :down
+                                                                             :why :bollinger-divergence-overbought
+                                                                             :arguments [peaks ech-list rsi-list]}]))
 
                                (if (and lower-highPRICE? higher-highRSI? divergence-oversold?)
 
-                                 (conj rslt (assoc (first ech-list) :signal :up))
+                                 (conj rslt (assoc (first ech-list) :signals [{:signal :up
+                                                                               :why :bollinger-divergence-oversold
+                                                                               :arguments [valleys ech-list rsi-list]}]))
 
                                  (conj rslt (first ech-list)))))
 
                            (conj rslt (first ech-list))))))
                    (conj rslt (first ech-list))))
                []
-               (partition tick-window 1 bband))
-       ))
-)
+               (partition tick-window 1 bband)))))
