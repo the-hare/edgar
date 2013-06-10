@@ -88,8 +88,8 @@
 
                                  (conj rslt {:type "flags"
                                              :data [{:x (-> ech second :x)
-                                                     :title ()
-                                                     :text 'Shape: "flag"'}
+                                                     :title (-> ech second :title)
+                                                     :text (-> ech second :title)}
                                                     ]
                                              :color "#5F86B3"
                                              :fillColor "#5F86B3"
@@ -311,15 +311,15 @@
                             []
                             (remove nil? (-> result-data :signals :obv))))
 
-   :signals {:moving-average (into-array (reduce (fn [rslt ech]
-                                                   (conj rslt (map (fn [inp]   ;; iterate over the :signals list, for each tick entry
-                                                                     {:x (js/window.parseInt (:last-trade-time ech))
-                                                                      :title (:signal inp)
-                                                                      :text (str "Why: " (:why inp))
-                                                                      })
-                                                                   (:signals ech))))
-                                                 []
-                                                 (remove nil? (-> result-data :signals :moving-average))))}
+   :signals {:moving-average (remove empty? (into-array (reduce (fn [rslt ech]
+                                                                   (conj rslt (map (fn [inp]   ;; iterate over the :signals list, for each tick entry
+                                                                                     {:x (js/window.parseInt (:last-trade-time ech))
+                                                                                      :title (:signal inp)
+                                                                                      :text (str "Why: " (:why inp))
+                                                                                      })
+                                                                                   (:signals ech))))
+                                                                 []
+                                                                 (remove nil? (-> result-data :signals :moving-average)))))}
 
    :stock-name (:stock-name result-data)})
 
@@ -356,6 +356,7 @@
                                                                                                    parsed-result-map (parse-result-data result-data)
                                                                                                    increment? false]
 
+                                                                                               (.log js/console (str ".multiselect-historical > signals[" (:signals parsed-result-map) "]"))
                                                                                                (render-stock-graph "#historical-stock-graph"
                                                                                                                    (:signals parsed-result-map)
                                                                                                                    [(:bollinger-band parsed-result-map)
