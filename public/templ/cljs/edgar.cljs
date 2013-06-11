@@ -10,7 +10,77 @@
 #_(.lionbars ($ ".body-container"))
 
 
-(defn build-graph-series-data [dataList signal-map]
+(defn add-signals [initial-list signal-map]
+
+  (reduce (fn [rslt ech]
+
+            (let [default-entry (fn [eF]
+                                  {:type "flags"
+                                   :data [{:x (-> eF :x)
+                                           :title (-> eF :title)
+                                           :text (-> eF :text)}]
+                                   :color "#5F86B3"
+                                   :fillColor "#5F86B3"
+                                   :width 16
+                                   :style {:color "white"}
+                                   :states {:hover { :fillColor "#395C84" }}})]
+
+              ;; SIGNAL Flags
+              (case (first ech)
+
+                :moving-average (concat rslt (reduce (fn [rF eF]        ;; second element is a list of signals
+                                                       (conj rF (assoc (default-entry eF) :onSeries "ema-list")))
+                                                     []
+                                                     (second ech)))
+
+                :bollinger-band (concat rslt (reduce (fn [rF eF]
+                                                       (conj rF (assoc (default-entry eF) :onSeries "bollinger-list")))
+                                                     []
+                                                     (second ech)))
+
+                :macd (concat rslt (reduce (fn [rF eF]
+                                             (conj rF (assoc (default-entry eF) :onSeries "macd-price-list")))
+                                           []
+                                           (second ech)))
+
+                :stochastic-oscillator (concat rslt (reduce (fn [rF eF]
+                                                              (conj rF (assoc (default-entry eF) :onSeries "k-list")))
+                                                            []
+                                                            (second ech)))
+
+                :obv (concat rslt (reduce (fn [rF eF]
+                                            (conj rF (assoc (default-entry eF) :onSeries "obv-list")))
+                                          []
+                                          (second ech)))
+                "default" rslt)))
+          initial-list
+          (seq signal-map)))
+
+(defn add-strategies [initial-list strategy-map]
+
+  (reduce (fn [rslt ech]
+
+            (let [default-entry (fn [eF]
+                                  {:type "flags"
+                                   :data [{:x (-> eF :x)
+                                           :title (-> eF :title)
+                                           :text (-> eF :text)}]
+                                   :color "#5F86B3"
+                                   :fillColor "#5F86B3"
+                                   :width 16
+                                   :style {:color "white"}
+                                   :states {:hover { :fillColor "#395C84" }}})]
+
+              (concat rslt (reduce (fn [rF eF]
+                                     (conj rF (assoc (default-entry eF) :onSeries "tick-list")))
+                                   []
+                                   (second ech)))))
+          initial-list
+          (seq strategy-map)))
+
+
+
+(defn build-graph-series-data [dataList signal-map strategy-map]
 
   (let [initial-list [{:name "Bollinger Band"
                        :id "bollinger-list"
@@ -90,57 +160,16 @@
                        :tooltip {:valueDecimals 2}}
                       ]
 
-        with-signals (reduce (fn [rslt ech]
-
-                               (let [default-entry (fn [eF]
-                                                        {:type "flags"
-                                                         :data [{:x (-> eF :x)
-                                                                 :title (-> eF :title)
-                                                                 :text (-> eF :text)}]
-                                                         :color "#5F86B3"
-                                                         :fillColor "#5F86B3"
-                                                         :width 16
-                                                         :style {:color "white"}
-                                                         :states {:hover { :fillColor "#395C84" }}})]
-
-                                 ;; SIGNAL Flags
-                                 (case (first ech)
-
-                                   :moving-average (concat rslt (reduce (fn [rF eF]        ;; second element is a list of signals
-                                                                          (conj rF (assoc (default-entry eF) :onSeries "ema-list")))
-                                                                        []
-                                                                        (second ech)))
-
-                                   :bollinger-band (concat rslt (reduce (fn [rF eF]
-                                                                          (conj rF (assoc (default-entry eF) :onSeries "bollinger-list")))
-                                                                        []
-                                                                        (second ech)))
-
-                                   :macd (concat rslt (reduce (fn [rF eF]
-                                                                (conj rF (assoc (default-entry eF) :onSeries "macd-price-list")))
-                                                              []
-                                                              (second ech)))
-
-                                   :stochastic-oscillator (concat rslt (reduce (fn [rF eF]
-                                                                                 (conj rF (assoc (default-entry eF) :onSeries "k-list")))
-                                                                               []
-                                                                               (second ech)))
-
-                                   :obv (concat rslt (reduce (fn [rF eF]
-                                                               (conj rF (assoc (default-entry eF) :onSeries "obv-list")))
-                                                             []
-                                                             (second ech)))
-                                   "default" rslt)))
-                             initial-list
-                             (seq signal-map))  ;; iterate over map entries
+        #_with-signals #_(add-signals initial-list signal-map)  ;; iterate over map entries
+        with-strategies (add-strategies initial-list strategy-map)
         ]
 
-    #_(.log js/console (str "... FINAL series array[" with-signals "]"))
+    (.log js/console (str "... FINAL series array[" with-strategies "]"))
     with-signals))
 
 
 ;; === RENDER the Live stock graph
-(defn render-stock-graph [selector dataList signal-map label increment]
+(defn render-stock-graph [selector dataList signal-map strategy-map label increment]
 
   (if-not increment
 
@@ -193,7 +222,7 @@
                                              :offset 0
                                              :lineWidth 2}]
 
-                                    :series (build-graph-series-data dataList signal-map)})))
+                                    :series (build-graph-series-data dataList signal-map strategy-map)})))
     (do
 
       (-> ($ selector)
@@ -294,6 +323,25 @@
        ;; for some strange reason, each list entry is in another list
        (map #(first %))))
 
+(defn- pull-out-strategies [result-data tag]
+
+  (->> (reduce (fn [rslt ech]
+
+                 (conj rslt (map (fn [inp]
+                                   {:x (js/window.parseInt (:last-trade-time ech))
+                                    :title (:signal inp)
+                                    :text (str "Why: " (:why inp))
+                                    })
+                                 (:strategies ech))))
+               []
+               (remove nil? (-> result-data :strategies tag)))
+       into-array
+       (remove empty?)
+
+       ;; for some strange reason, each list entry is in another list
+       (map #(first %))))
+
+
 (defn parse-result-data [result-data]
 
   {:local-list (into-array (reduce (fn [rslt ech]
@@ -371,6 +419,9 @@
              :stochastic-oscillator (pull-out-signals result-data :stochastic-oscillator)
              :obv (pull-out-signals result-data :obv)}
 
+   :strategies {:strategy-A (pull-out-strategies result-data :strategy-A)
+                :strategy-B (pull-out-strategies result-data :strategy-B)}
+
    :stock-name (:stock-name result-data)})
 
 
@@ -423,6 +474,7 @@
 
                                                                                                                     (:obv parsed-result-map)]
                                                                                                                    (:signals parsed-result-map)
+                                                                                                                   (:strategies parsed-result-map)
                                                                                                                    (:stock-name parsed-result-map)
                                                                                                                    increment?)))}))))})
 
@@ -453,5 +505,6 @@
 
                                             (:obv parsed-result-map)]
                                            (:signals parsed-result-map)
+                                           (:strategies parsed-result-map)
                                            (:stock-name parsed-result-map)
                                            increment?))))

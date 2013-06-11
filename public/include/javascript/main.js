@@ -14273,8 +14273,54 @@ jayq.core.deferred_m = cljs.core.ObjMap.fromObject(["\ufdd0'return", "\ufdd0'bin
 jayq.core.ajax_m = cljs.core.ObjMap.fromObject(["\ufdd0'return", "\ufdd0'bind", "\ufdd0'zero"], {"\ufdd0'return":cljs.core.identity, "\ufdd0'bind":function(a, b) {
   return jayq.core.done.call(null, jayq.core.ajax.call(null, a), b)
 }, "\ufdd0'zero":cljs.core.identity});
-var edgar = {build_graph_series_data:function(a, b) {
-  var c = cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject("\ufdd0'name \ufdd0'id \ufdd0'data \ufdd0'type \ufdd0'color \ufdd0'marker \ufdd0'tooltip".split(" "), {"\ufdd0'name":"Bollinger Band", "\ufdd0'id":"bollinger-list", "\ufdd0'data":cljs.core.reverse.call(null, cljs.core.first.call(null, a)), "\ufdd0'type":"arearange", "\ufdd0'color":"#629DFF", "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled", "\ufdd0'radius"], {"\ufdd0'enabled":!0, "\ufdd0'radius":3}), "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], 
+var edgar = {add_signals:function(a, b) {
+  return cljs.core.reduce.call(null, function(a, b) {
+    var e = function(a) {
+      return cljs.core.ObjMap.fromObject("\ufdd0'type \ufdd0'data \ufdd0'color \ufdd0'fillColor \ufdd0'width \ufdd0'style \ufdd0'states".split(" "), {"\ufdd0'type":"flags", "\ufdd0'data":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'x", "\ufdd0'title", "\ufdd0'text"], {"\ufdd0'x":(new cljs.core.Keyword("\ufdd0'x")).call(null, a), "\ufdd0'title":(new cljs.core.Keyword("\ufdd0'title")).call(null, a), "\ufdd0'text":(new cljs.core.Keyword("\ufdd0'text")).call(null, a)})], 
+      !0), "\ufdd0'color":"#5F86B3", "\ufdd0'fillColor":"#5F86B3", "\ufdd0'width":16, "\ufdd0'style":cljs.core.ObjMap.fromObject(["\ufdd0'color"], {"\ufdd0'color":"white"}), "\ufdd0'states":cljs.core.ObjMap.fromObject(["\ufdd0'hover"], {"\ufdd0'hover":cljs.core.ObjMap.fromObject(["\ufdd0'fillColor"], {"\ufdd0'fillColor":"#395C84"})})})
+    }, f = cljs.core.first.call(null, b);
+    if(cljs.core._EQ_.call(null, "default", f)) {
+      return a
+    }
+    if(cljs.core._EQ_.call(null, "\ufdd0'obv", f)) {
+      return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
+        return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, e.call(null, b), "\ufdd0'onSeries", "obv-list"))
+      }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
+    }
+    if(cljs.core._EQ_.call(null, "\ufdd0'stochastic-oscillator", f)) {
+      return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
+        return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, e.call(null, b), "\ufdd0'onSeries", "k-list"))
+      }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
+    }
+    if(cljs.core._EQ_.call(null, "\ufdd0'macd", f)) {
+      return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
+        return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, e.call(null, b), "\ufdd0'onSeries", "macd-price-list"))
+      }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
+    }
+    if(cljs.core._EQ_.call(null, "\ufdd0'bollinger-band", f)) {
+      return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
+        return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, e.call(null, b), "\ufdd0'onSeries", "bollinger-list"))
+      }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
+    }
+    if(cljs.core._EQ_.call(null, "\ufdd0'moving-average", f)) {
+      return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
+        return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, e.call(null, b), "\ufdd0'onSeries", "ema-list"))
+      }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
+    }
+    throw Error([cljs.core.str("No matching clause: "), cljs.core.str(cljs.core.first.call(null, b))].join(""));
+  }, a, cljs.core.seq.call(null, b))
+}, add_strategies:function(a, b) {
+  return cljs.core.reduce.call(null, function(a, b) {
+    var e = function(a) {
+      return cljs.core.ObjMap.fromObject("\ufdd0'type \ufdd0'data \ufdd0'color \ufdd0'fillColor \ufdd0'width \ufdd0'style \ufdd0'states".split(" "), {"\ufdd0'type":"flags", "\ufdd0'data":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'x", "\ufdd0'title", "\ufdd0'text"], {"\ufdd0'x":(new cljs.core.Keyword("\ufdd0'x")).call(null, a), "\ufdd0'title":(new cljs.core.Keyword("\ufdd0'title")).call(null, a), "\ufdd0'text":(new cljs.core.Keyword("\ufdd0'text")).call(null, a)})], 
+      !0), "\ufdd0'color":"#5F86B3", "\ufdd0'fillColor":"#5F86B3", "\ufdd0'width":16, "\ufdd0'style":cljs.core.ObjMap.fromObject(["\ufdd0'color"], {"\ufdd0'color":"white"}), "\ufdd0'states":cljs.core.ObjMap.fromObject(["\ufdd0'hover"], {"\ufdd0'hover":cljs.core.ObjMap.fromObject(["\ufdd0'fillColor"], {"\ufdd0'fillColor":"#395C84"})})})
+    };
+    return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
+      return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, e.call(null, b), "\ufdd0'onSeries", "tick-list"))
+    }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
+  }, a, cljs.core.seq.call(null, b))
+}, build_graph_series_data:function(a, b, c) {
+  a = cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject("\ufdd0'name \ufdd0'id \ufdd0'data \ufdd0'type \ufdd0'color \ufdd0'marker \ufdd0'tooltip".split(" "), {"\ufdd0'name":"Bollinger Band", "\ufdd0'id":"bollinger-list", "\ufdd0'data":cljs.core.reverse.call(null, cljs.core.first.call(null, a)), "\ufdd0'type":"arearange", "\ufdd0'color":"#629DFF", "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled", "\ufdd0'radius"], {"\ufdd0'enabled":!0, "\ufdd0'radius":3}), "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], 
   {"\ufdd0'valueDecimals":2})}), cljs.core.ObjMap.fromObject("\ufdd0'name \ufdd0'id \ufdd0'data \ufdd0'marker \ufdd0'shadow \ufdd0'tooltip".split(" "), {"\ufdd0'name":edgar.label, "\ufdd0'id":"tick-list", "\ufdd0'data":cljs.core.reverse.call(null, cljs.core.second.call(null, a)), "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled", "\ufdd0'radius"], {"\ufdd0'enabled":!0, "\ufdd0'radius":3}), "\ufdd0'shadow":!0, "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], {"\ufdd0'valueDecimals":2})}), 
   cljs.core.ObjMap.fromObject("\ufdd0'name \ufdd0'id \ufdd0'data \ufdd0'marker \ufdd0'shadow \ufdd0'tooltip".split(" "), {"\ufdd0'name":"Simple Moving Average", "\ufdd0'id":"sma-list", "\ufdd0'data":cljs.core.reverse.call(null, cljs.core.nth.call(null, a, 2)), "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled", "\ufdd0'radius"], {"\ufdd0'enabled":!0, "\ufdd0'radius":3}), "\ufdd0'shadow":!0, "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], {"\ufdd0'valueDecimals":2})}), 
   cljs.core.ObjMap.fromObject("\ufdd0'name \ufdd0'id \ufdd0'data \ufdd0'marker \ufdd0'shadow \ufdd0'tooltip".split(" "), {"\ufdd0'name":"Exponential Moving Average", "\ufdd0'id":"ema-list", "\ufdd0'data":cljs.core.reverse.call(null, cljs.core.nth.call(null, a, 3)), "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled", "\ufdd0'radius"], {"\ufdd0'enabled":!0, "\ufdd0'radius":3}), "\ufdd0'shadow":!0, "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], {"\ufdd0'valueDecimals":2})}), 
@@ -14285,49 +14331,17 @@ var edgar = {build_graph_series_data:function(a, b) {
   "\ufdd0'shadow":!0, "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], {"\ufdd0'valueDecimals":2})}), cljs.core.ObjMap.fromObject("\ufdd0'name \ufdd0'id \ufdd0'data \ufdd0'yAxis \ufdd0'marker \ufdd0'shadow \ufdd0'tooltip".split(" "), {"\ufdd0'name":"Stochastic D", "\ufdd0'id":"d-list", "\ufdd0'data":cljs.core.reverse.call(null, cljs.core.nth.call(null, a, 8)), "\ufdd0'yAxis":3, "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled", "\ufdd0'radius"], {"\ufdd0'enabled":!0, 
   "\ufdd0'radius":3}), "\ufdd0'shadow":!0, "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], {"\ufdd0'valueDecimals":2})}), cljs.core.ObjMap.fromObject("\ufdd0'name \ufdd0'id \ufdd0'data \ufdd0'yAxis \ufdd0'type \ufdd0'marker \ufdd0'shadow \ufdd0'tooltip".split(" "), {"\ufdd0'name":"On Balance Volume", "\ufdd0'id":"obv-list", "\ufdd0'data":cljs.core.reverse.call(null, cljs.core.nth.call(null, a, 9)), "\ufdd0'yAxis":4, "\ufdd0'type":"column", "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled", 
   "\ufdd0'radius"], {"\ufdd0'enabled":!0, "\ufdd0'radius":3}), "\ufdd0'shadow":!0, "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], {"\ufdd0'valueDecimals":2})})], !0);
-  return cljs.core.reduce.call(null, function(a, b) {
-    var c = function(a) {
-      return cljs.core.ObjMap.fromObject("\ufdd0'type \ufdd0'data \ufdd0'color \ufdd0'fillColor \ufdd0'width \ufdd0'style \ufdd0'states".split(" "), {"\ufdd0'type":"flags", "\ufdd0'data":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'x", "\ufdd0'title", "\ufdd0'text"], {"\ufdd0'x":(new cljs.core.Keyword("\ufdd0'x")).call(null, a), "\ufdd0'title":(new cljs.core.Keyword("\ufdd0'title")).call(null, a), "\ufdd0'text":(new cljs.core.Keyword("\ufdd0'text")).call(null, a)})], 
-      !0), "\ufdd0'color":"#5F86B3", "\ufdd0'fillColor":"#5F86B3", "\ufdd0'width":16, "\ufdd0'style":cljs.core.ObjMap.fromObject(["\ufdd0'color"], {"\ufdd0'color":"white"}), "\ufdd0'states":cljs.core.ObjMap.fromObject(["\ufdd0'hover"], {"\ufdd0'hover":cljs.core.ObjMap.fromObject(["\ufdd0'fillColor"], {"\ufdd0'fillColor":"#395C84"})})})
-    }, g = cljs.core.first.call(null, b);
-    if(cljs.core._EQ_.call(null, "default", g)) {
-      return a
-    }
-    if(cljs.core._EQ_.call(null, "\ufdd0'obv", g)) {
-      return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
-        return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, c.call(null, b), "\ufdd0'onSeries", "obv-list"))
-      }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
-    }
-    if(cljs.core._EQ_.call(null, "\ufdd0'stochastic-oscillator", g)) {
-      return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
-        return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, c.call(null, b), "\ufdd0'onSeries", "k-list"))
-      }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
-    }
-    if(cljs.core._EQ_.call(null, "\ufdd0'macd", g)) {
-      return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
-        return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, c.call(null, b), "\ufdd0'onSeries", "macd-price-list"))
-      }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
-    }
-    if(cljs.core._EQ_.call(null, "\ufdd0'bollinger-band", g)) {
-      return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
-        return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, c.call(null, b), "\ufdd0'onSeries", "bollinger-list"))
-      }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
-    }
-    if(cljs.core._EQ_.call(null, "\ufdd0'moving-average", g)) {
-      return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
-        return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, c.call(null, b), "\ufdd0'onSeries", "ema-list"))
-      }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
-    }
-    throw Error([cljs.core.str("No matching clause: "), cljs.core.str(cljs.core.first.call(null, b))].join(""));
-  }, c, cljs.core.seq.call(null, b))
-}, render_stock_graph:function(a, b, c, d, e) {
-  if(cljs.core.not.call(null, e)) {
-    return jayq.core.$.call(null, a).highcharts("StockChart", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject("\ufdd0'names \ufdd0'rangeSelector \ufdd0'title \ufdd0'chart \ufdd0'navigator \ufdd0'yAxis \ufdd0'series".split(" "), {"\ufdd0'names":cljs.core.PersistentVector.fromArray([d, "Bolling Band", "Simple Moving Average", "Exponential Moving Average"], !0), "\ufdd0'rangeSelector":cljs.core.ObjMap.fromObject(["\ufdd0'selected"], {"\ufdd0'selected":7}), "\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], 
-    {"\ufdd0'text":d}), "\ufdd0'chart":cljs.core.ObjMap.fromObject(["\ufdd0'zoomType"], {"\ufdd0'zoomType":"x"}), "\ufdd0'navigator":cljs.core.ObjMap.fromObject(["\ufdd0'adaptToUpdatedData"], {"\ufdd0'adaptToUpdatedData":!0}), "\ufdd0'yAxis":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'title", "\ufdd0'height"], {"\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"Technical Analysis"}), "\ufdd0'height":200}), cljs.core.ObjMap.fromObject(["\ufdd0'title", 
+  c = edgar.add_strategies.call(null, a, c);
+  console.log([cljs.core.str("... FINAL series array["), cljs.core.str(c), cljs.core.str("]")].join(""));
+  return edgar.with_signals
+}, render_stock_graph:function(a, b, c, d, e, f) {
+  if(cljs.core.not.call(null, f)) {
+    return jayq.core.$.call(null, a).highcharts("StockChart", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject("\ufdd0'names \ufdd0'rangeSelector \ufdd0'title \ufdd0'chart \ufdd0'navigator \ufdd0'yAxis \ufdd0'series".split(" "), {"\ufdd0'names":cljs.core.PersistentVector.fromArray([e, "Bolling Band", "Simple Moving Average", "Exponential Moving Average"], !0), "\ufdd0'rangeSelector":cljs.core.ObjMap.fromObject(["\ufdd0'selected"], {"\ufdd0'selected":7}), "\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], 
+    {"\ufdd0'text":e}), "\ufdd0'chart":cljs.core.ObjMap.fromObject(["\ufdd0'zoomType"], {"\ufdd0'zoomType":"x"}), "\ufdd0'navigator":cljs.core.ObjMap.fromObject(["\ufdd0'adaptToUpdatedData"], {"\ufdd0'adaptToUpdatedData":!0}), "\ufdd0'yAxis":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'title", "\ufdd0'height"], {"\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"Technical Analysis"}), "\ufdd0'height":200}), cljs.core.ObjMap.fromObject(["\ufdd0'title", 
     "\ufdd0'height", "\ufdd0'top", "\ufdd0'offset", "\ufdd0'lineWidth"], {"\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"MACD / Signal"}), "\ufdd0'height":100, "\ufdd0'top":300, "\ufdd0'offset":0, "\ufdd0'lineWidth":2}), cljs.core.ObjMap.fromObject(["\ufdd0'title", "\ufdd0'height", "\ufdd0'top", "\ufdd0'offset", "\ufdd0'lineWidth"], {"\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"MACD Histog"}), "\ufdd0'height":100, "\ufdd0'top":400, "\ufdd0'offset":0, 
     "\ufdd0'lineWidth":2}), cljs.core.ObjMap.fromObject("\ufdd0'title \ufdd0'height \ufdd0'top \ufdd0'offset \ufdd0'lineWidth \ufdd0'max \ufdd0'min \ufdd0'plotLines".split(" "), {"\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"Stochastic Osc"}), "\ufdd0'height":100, "\ufdd0'top":500, "\ufdd0'offset":0, "\ufdd0'lineWidth":2, "\ufdd0'max":1, "\ufdd0'min":0, "\ufdd0'plotLines":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'value", "\ufdd0'color", 
     "\ufdd0'width", "\ufdd0'dashStyle", "\ufdd0'label"], {"\ufdd0'value":0.75, "\ufdd0'color":"red", "\ufdd0'width":1, "\ufdd0'dashStyle":"longdash", "\ufdd0'label":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"Overbought"})}), cljs.core.ObjMap.fromObject(["\ufdd0'value", "\ufdd0'color", "\ufdd0'width", "\ufdd0'dashStyle", "\ufdd0'label"], {"\ufdd0'value":0.25, "\ufdd0'color":"green", "\ufdd0'width":1, "\ufdd0'dashStyle":"longdash", "\ufdd0'label":cljs.core.ObjMap.fromObject(["\ufdd0'text"], 
-    {"\ufdd0'text":"Oversold"})})], !0)}), cljs.core.ObjMap.fromObject(["\ufdd0'title", "\ufdd0'height", "\ufdd0'top", "\ufdd0'offset", "\ufdd0'lineWidth"], {"\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"OBV"}), "\ufdd0'height":100, "\ufdd0'top":600, "\ufdd0'offset":0, "\ufdd0'lineWidth":2})], !0), "\ufdd0'series":edgar.build_graph_series_data.call(null, b, c)})))
+    {"\ufdd0'text":"Oversold"})})], !0)}), cljs.core.ObjMap.fromObject(["\ufdd0'title", "\ufdd0'height", "\ufdd0'top", "\ufdd0'offset", "\ufdd0'lineWidth"], {"\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"OBV"}), "\ufdd0'height":100, "\ufdd0'top":600, "\ufdd0'offset":0, "\ufdd0'lineWidth":2})], !0), "\ufdd0'series":edgar.build_graph_series_data.call(null, b, c, d)})))
   }
   cljs.core.first.call(null, jayq.core.$.call(null, a).highcharts().series).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.first.call(null, b))), !0, !1);
   cljs.core.second.call(null, jayq.core.$.call(null, a).highcharts().series).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.second.call(null, b))), !0, !1);
@@ -14360,8 +14374,16 @@ var edgar = {build_graph_series_data:function(a, b) {
       return cljs.core.ObjMap.fromObject(["\ufdd0'x", "\ufdd0'title", "\ufdd0'text"], {"\ufdd0'x":window.parseInt((new cljs.core.Keyword("\ufdd0'last-trade-time")).call(null, b)), "\ufdd0'title":(new cljs.core.Keyword("\ufdd0'signal")).call(null, a), "\ufdd0'text":[cljs.core.str("Why: "), cljs.core.str((new cljs.core.Keyword("\ufdd0'why")).call(null, a))].join("")})
     }, (new cljs.core.Keyword("\ufdd0'signals")).call(null, b)))
   }, cljs.core.PersistentVector.EMPTY, cljs.core.remove.call(null, cljs.core.nil_QMARK_, b.call(null, (new cljs.core.Keyword("\ufdd0'signals")).call(null, a)))))))
+}, pull_out_strategies:function(a, b) {
+  return cljs.core.map.call(null, function(a) {
+    return cljs.core.first.call(null, a)
+  }, cljs.core.remove.call(null, cljs.core.empty_QMARK_, cljs.core.into_array.call(null, cljs.core.reduce.call(null, function(a, b) {
+    return cljs.core.conj.call(null, a, cljs.core.map.call(null, function(a) {
+      return cljs.core.ObjMap.fromObject(["\ufdd0'x", "\ufdd0'title", "\ufdd0'text"], {"\ufdd0'x":window.parseInt((new cljs.core.Keyword("\ufdd0'last-trade-time")).call(null, b)), "\ufdd0'title":(new cljs.core.Keyword("\ufdd0'signal")).call(null, a), "\ufdd0'text":[cljs.core.str("Why: "), cljs.core.str((new cljs.core.Keyword("\ufdd0'why")).call(null, a))].join("")})
+    }, (new cljs.core.Keyword("\ufdd0'strategies")).call(null, b)))
+  }, cljs.core.PersistentVector.EMPTY, cljs.core.remove.call(null, cljs.core.nil_QMARK_, b.call(null, (new cljs.core.Keyword("\ufdd0'strategies")).call(null, a)))))))
 }, parse_result_data:function(a) {
-  return cljs.core.ObjMap.fromObject("\ufdd0'local-list \ufdd0'macd-price-list \ufdd0'stock-name \ufdd0'sma-list \ufdd0'macd-histogram-list \ufdd0'ema-list \ufdd0'stochastic-d \ufdd0'bollinger-band \ufdd0'obv \ufdd0'stochastic-k \ufdd0'macd-signal-list \ufdd0'signals".split(" "), {"\ufdd0'local-list":cljs.core.into_array.call(null, cljs.core.reduce.call(null, function(a, c) {
+  return cljs.core.ObjMap.fromObject("\ufdd0'local-list \ufdd0'macd-price-list \ufdd0'stock-name \ufdd0'sma-list \ufdd0'macd-histogram-list \ufdd0'ema-list \ufdd0'stochastic-d \ufdd0'bollinger-band \ufdd0'obv \ufdd0'strategies \ufdd0'stochastic-k \ufdd0'macd-signal-list \ufdd0'signals".split(" "), {"\ufdd0'local-list":cljs.core.into_array.call(null, cljs.core.reduce.call(null, function(a, c) {
     return cljs.core.conj.call(null, a, cljs.core.into_array.call(null, cljs.core.PersistentVector.fromArray([window.parseInt(cljs.core.first.call(null, c)), window.parseFloat(cljs.core.second.call(null, c))], !0)))
   }, cljs.core.PersistentVector.EMPTY, cljs.core.into_array.call(null, (new cljs.core.Keyword("\ufdd0'stock-list")).call(null, a)))), "\ufdd0'macd-price-list":cljs.core.into_array.call(null, cljs.core.reduce.call(null, function(a, c) {
     return cljs.core.conj.call(null, a, cljs.core.into_array.call(null, cljs.core.PersistentVector.fromArray([window.parseInt((new cljs.core.Keyword("\ufdd0'last-trade-time")).call(null, c)), window.parseFloat((new cljs.core.Keyword("\ufdd0'last-trade-macd")).call(null, c))], !0)))
@@ -14381,7 +14403,8 @@ var edgar = {build_graph_series_data:function(a, b) {
     return cljs.core.conj.call(null, a, cljs.core.into_array.call(null, cljs.core.PersistentVector.fromArray([window.parseInt((new cljs.core.Keyword("\ufdd0'last-trade-time")).call(null, c)), window.parseFloat((new cljs.core.Keyword("\ufdd0'lower-band")).call(null, c)), window.parseFloat((new cljs.core.Keyword("\ufdd0'upper-band")).call(null, c))], !0)))
   }, cljs.core.PersistentVector.EMPTY, cljs.core.remove.call(null, cljs.core.nil_QMARK_, (new cljs.core.Keyword("\ufdd0'bollinger-band")).call(null, (new cljs.core.Keyword("\ufdd0'signals")).call(null, a))))), "\ufdd0'obv":cljs.core.into_array.call(null, cljs.core.reduce.call(null, function(a, c) {
     return cljs.core.conj.call(null, a, cljs.core.into_array.call(null, cljs.core.PersistentVector.fromArray([window.parseInt((new cljs.core.Keyword("\ufdd0'last-trade-time")).call(null, c)), window.parseInt((new cljs.core.Keyword("\ufdd0'obv")).call(null, c))], !0)))
-  }, cljs.core.PersistentVector.EMPTY, cljs.core.remove.call(null, cljs.core.nil_QMARK_, (new cljs.core.Keyword("\ufdd0'obv")).call(null, (new cljs.core.Keyword("\ufdd0'signals")).call(null, a))))), "\ufdd0'stochastic-k":cljs.core.into_array.call(null, cljs.core.reduce.call(null, function(a, c) {
+  }, cljs.core.PersistentVector.EMPTY, cljs.core.remove.call(null, cljs.core.nil_QMARK_, (new cljs.core.Keyword("\ufdd0'obv")).call(null, (new cljs.core.Keyword("\ufdd0'signals")).call(null, a))))), "\ufdd0'strategies":cljs.core.ObjMap.fromObject(["\ufdd0'strategy-A", "\ufdd0'strategy-B"], {"\ufdd0'strategy-A":edgar.pull_out_strategies.call(null, a, "\ufdd0'strategy-A"), "\ufdd0'strategy-B":edgar.pull_out_strategies.call(null, a, "\ufdd0'strategy-B")}), "\ufdd0'stochastic-k":cljs.core.into_array.call(null, 
+  cljs.core.reduce.call(null, function(a, c) {
     return cljs.core.conj.call(null, a, cljs.core.into_array.call(null, cljs.core.PersistentVector.fromArray([window.parseInt((new cljs.core.Keyword("\ufdd0'last-trade-time")).call(null, c)), window.parseFloat((new cljs.core.Keyword("\ufdd0'K")).call(null, c))], !0)))
   }, cljs.core.PersistentVector.EMPTY, cljs.core.remove.call(null, cljs.core.nil_QMARK_, (new cljs.core.Keyword("\ufdd0'stochastic-oscillator")).call(null, (new cljs.core.Keyword("\ufdd0'signals")).call(null, a))))), "\ufdd0'macd-signal-list":cljs.core.into_array.call(null, cljs.core.reduce.call(null, function(a, c) {
     return cljs.core.conj.call(null, a, cljs.core.into_array.call(null, cljs.core.PersistentVector.fromArray([window.parseInt((new cljs.core.Keyword("\ufdd0'last-trade-time")).call(null, c)), window.parseFloat((new cljs.core.Keyword("\ufdd0'ema-signal")).call(null, c))], !0)))
@@ -14405,7 +14428,7 @@ edgar.populate_multiselect.call(null, ".multiselect-historical", cljs.core.ObjMa
     console.log([cljs.core.str(".multiselect-historical > jqXHR["), cljs.core.str(a), cljs.core.str("] / status["), cljs.core.str(b), cljs.core.str("]")].join(""));
     var e = cljs.reader.read_string.call(null, a.responseText), e = edgar.parse_result_data.call(null, e);
     return edgar.render_stock_graph.call(null, "#historical-stock-graph", cljs.core.PersistentVector.fromArray([(new cljs.core.Keyword("\ufdd0'bollinger-band")).call(null, e), (new cljs.core.Keyword("\ufdd0'local-list")).call(null, e), (new cljs.core.Keyword("\ufdd0'sma-list")).call(null, e), (new cljs.core.Keyword("\ufdd0'ema-list")).call(null, e), (new cljs.core.Keyword("\ufdd0'macd-price-list")).call(null, e), (new cljs.core.Keyword("\ufdd0'macd-signal-list")).call(null, e), (new cljs.core.Keyword("\ufdd0'macd-histogram-list")).call(null, 
-    e), (new cljs.core.Keyword("\ufdd0'stochastic-k")).call(null, e), (new cljs.core.Keyword("\ufdd0'stochastic-d")).call(null, e), (new cljs.core.Keyword("\ufdd0'obv")).call(null, e)], !0), (new cljs.core.Keyword("\ufdd0'signals")).call(null, e), (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, e), !1)
+    e), (new cljs.core.Keyword("\ufdd0'stochastic-k")).call(null, e), (new cljs.core.Keyword("\ufdd0'stochastic-d")).call(null, e), (new cljs.core.Keyword("\ufdd0'obv")).call(null, e)], !0), (new cljs.core.Keyword("\ufdd0'signals")).call(null, e), (new cljs.core.Keyword("\ufdd0'strategies")).call(null, e), (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, e), !1)
   }}))) : null
 }}));
 edgar.livesource = new window.EventSource("/get-streaming-stock-data");
@@ -14413,7 +14436,7 @@ edgar.livesource.addEventListener("stream-live", function(a) {
   var a = cljs.reader.read_string.call(null, a.data), a = edgar.parse_result_data.call(null, a), b;
   b = (b = null != jayq.core.$.call(null, "#live-stock-graph").highcharts("StockChart")) ? cljs.core._EQ_.call(null, (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, a), jayq.core.$.call(null, "#live-stock-graph").highcharts("StockChart").title.text) : b;
   return edgar.render_stock_graph.call(null, "#live-stock-graph", cljs.core.PersistentVector.fromArray([(new cljs.core.Keyword("\ufdd0'bollinger-band")).call(null, a), (new cljs.core.Keyword("\ufdd0'local-list")).call(null, a), (new cljs.core.Keyword("\ufdd0'sma-list")).call(null, a), (new cljs.core.Keyword("\ufdd0'ema-list")).call(null, a), (new cljs.core.Keyword("\ufdd0'macd-price-list")).call(null, a), (new cljs.core.Keyword("\ufdd0'macd-signal-list")).call(null, a), (new cljs.core.Keyword("\ufdd0'macd-histogram-list")).call(null, 
-  a), (new cljs.core.Keyword("\ufdd0'stochastic-k")).call(null, a), (new cljs.core.Keyword("\ufdd0'stochastic-d")).call(null, a), (new cljs.core.Keyword("\ufdd0'obv")).call(null, a)], !0), (new cljs.core.Keyword("\ufdd0'signals")).call(null, a), (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, a), b)
+  a), (new cljs.core.Keyword("\ufdd0'stochastic-k")).call(null, a), (new cljs.core.Keyword("\ufdd0'stochastic-d")).call(null, a), (new cljs.core.Keyword("\ufdd0'obv")).call(null, a)], !0), (new cljs.core.Keyword("\ufdd0'signals")).call(null, a), (new cljs.core.Keyword("\ufdd0'strategies")).call(null, a), (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, a), b)
 });
 edgar.core = {};
 edgar.core.analysis = {};
