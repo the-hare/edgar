@@ -1,5 +1,4 @@
-(ns edgar.core.strategy.strategy
-  )
+(ns edgar.core.strategy.strategy)
 
 
 (defn price-increase? [tick-list]
@@ -15,6 +14,21 @@
         sma-tick (first signals-ma)]
 
     (< (:last-trade-price p-tick) (:last-trade-price-average sma-tick))))
+
+(defn price-cross-abouve-sma? [tick-list sma-list]
+
+  (let [ftick (first tick-list)
+        ntick (second tick-list)
+
+        fsma (first (filter (fn [inp] (= (:last-trade-time ftick)
+                                        (:last-trade-time inp)))
+                            sma-list))
+        nsma (first (filter (fn [inp] (= (:last-trade-time ntick)
+                                        (:last-trade-time inp)))
+                            sma-list))]
+
+    (and (< (:last-trade-price ntick) (:last-trade-price-average nsma))
+         (> (:last-trade-price ftick) (:last-trade-price-average fsma)))))
 
 (defn bollinger-price-below? [tick-list signals-bollinger]
 
@@ -43,6 +57,14 @@
                (:difference inp)))
           b-rest)))
 
+(defn macd-crossover? [signals-macd]
+
+  (let [fmacd (first signals-macd)
+        nmacd (second signals-macd)]
+
+    (and (< (:last-trade-macd nmacd) (:ema-signal nmacd))
+         (> (:last-trade-macd fmacd ) (:ema-signal fmacd)))))
+
 (defn macd-histogram-squeeze? [signals-macd]
 
   (let [h-first (first signals-macd)
@@ -59,6 +81,20 @@
         snd (second signals-obv)]
 
     (> (:obv fst) (:obv snd))))
+
+(defn stochastic-oversold? [signals-stochastic]
+
+  (some (fn [inp]
+          (<= 0.8 (:K inp)))
+        signals-stochastic))
+
+(defn stochastic-crossover? [signals-stochastic]
+
+  (let [fstochastic (first signals-stochastic)
+        nstochastic (second signals-stochastic)]
+
+    (and (< (:K nstochastic) (:D nstochastic))
+         (> (:K fstochastic ) (:D fstochastic)))))
 
 
 (defn strategy-A
@@ -94,7 +130,11 @@
         macd-histogram-squeezeV (macd-histogram-squeeze? signals-macd)
 
         ;; F.
-        obv-increasingV (obv-increasing? signals-obv)]
+        obv-increasingV (obv-increasing? signals-obv)
+
+        ;; G.
+        stochastic-oversoldV (stochastic-ovesold? signals-stochastic)
+        ]
 
     ))
 
@@ -114,4 +154,24 @@
    F. OBV increasing"
   [tick-list signals-ma signals-bollinger signals-macd signals-stochastic signals-obv]
 
-  nil)
+  (let [
+        ;; A.
+        price-cross-abouve-smaV (price-cross-abouve-sma? tick-list signals-ma)
+
+        ;; B.
+        bollinger-was-narrowerV (bollinger-was-narrower? signals-bollinger)
+
+        ;; C.
+        macd-crossoverV (macd-crossover? signals-macd)
+
+        ;; D.
+        stochastic-crossoverV (stochastic-crossover? signals-stochastic)
+
+        ;; E.
+        stochastic-oversoldV (stochastic-oversold? signals-stochastic)
+
+        ;; F.
+        obv-increasingV (obv-increasing? signals-obv)
+        ]
+
+    ))
