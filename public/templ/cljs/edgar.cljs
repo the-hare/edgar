@@ -13,6 +13,7 @@
 (defn build-graph-series-data [dataList signal-map]
 
   (let [initial-list [{:name "Bollinger Band"
+                       :id "bollinger-list"
                        :data (reverse (first dataList))
                        :type "arearange"
                        :color "#629DFF"
@@ -91,32 +92,50 @@
 
         with-signals (reduce (fn [rslt ech]
 
+                               (let [default-entry (fn [eF]
+                                                        {:type "flags"
+                                                         :data [{:x (-> eF :x)
+                                                                 :title (-> eF :title)
+                                                                 :text (-> eF :text)}]
+                                                         :color "#5F86B3"
+                                                         :fillColor "#5F86B3"
+                                                         :width 16
+                                                         :style {:color "white"}
+                                                         :states {:hover { :fillColor "#395C84" }}})]
 
-                               ;; SIGNAL Flags
-                               (if (= :moving-average (first ech))
+                                 ;; SIGNAL Flags
+                                 (case (first ech)
 
-                                 ;; second element is a list of signals
-                                 (concat rslt (reduce (fn [rF eF]
+                                   :moving-average (concat rslt (reduce (fn [rF eF]        ;; second element is a list of signals
+                                                                          (conj rF (assoc (default-entry eF) :onSeries "ema-list")))
+                                                                        []
+                                                                        (second ech)))
 
-                                                        (conj rF {:type "flags"
-                                                                  :data [{:x (-> eF :x)
-                                                                          :title (-> eF :title)
-                                                                          :text (-> eF :text)}]
-                                                                  :color "#5F86B3"
-                                                                  :fillColor "#5F86B3"
-                                                                  :onSeries "ema-list"
-                                                                  :width 16
-                                                                  :style {:color "white"}
-                                                                  :states {:hover { :fillColor "#395C84" }}}))
-                                                      []
-                                                      (second ech))))
+                                   :bollinger-band (concat rslt (reduce (fn [rF eF]
+                                                                          (conj rF (assoc (default-entry eF) :onSeries "bollinger-list")))
+                                                                        []
+                                                                        (second ech)))
 
-                               )
+                                   :macd (concat rslt (reduce (fn [rF eF]
+                                                                (conj rF (assoc (default-entry eF) :onSeries "macd-price-list")))
+                                                              []
+                                                              (second ech)))
+
+                                   :stochastic-oscillator (concat rslt (reduce (fn [rF eF]
+                                                                                 (conj rF (assoc (default-entry eF) :onSeries "k-list")))
+                                                                               []
+                                                                               (second ech)))
+
+                                   :obv (concat rslt (reduce (fn [rF eF]
+                                                               (conj rF (assoc (default-entry eF) :onSeries "obv-list")))
+                                                             []
+                                                             (second ech)))
+                                   "default" rslt)))
                              initial-list
                              (seq signal-map))  ;; iterate over map entries
         ]
 
-    #_(.log js/console (str "... FINAL series array[" with-signals "]"))
+    (.log js/console (str "... FINAL series array[" with-signals "]"))
     with-signals))
 
 ;; === RENDER the Live stock graph
@@ -256,6 +275,23 @@
                       (.multiselect (clj->js (merge {:enableFiltering true} options)))))))
 
 
+(defn- pull-out-signals [result-data tag]
+
+  (->> (reduce (fn [rslt ech]
+
+                 (conj rslt (map (fn [inp]   ;; iterate over the :signals list, for each tick entry
+                                   {:x (js/window.parseInt (:last-trade-time ech))
+                                    :title (:signal inp)
+                                    :text (str "Why: " (:why inp))
+                                    })
+                                 (:signals ech))))
+               []
+               (remove nil? (-> result-data :signals tag)))
+       into-array
+       (remove empty?)
+
+       ;; for some strange reason, each list entry is in another list
+       (map #(first %))))
 
 (defn parse-result-data [result-data]
 
@@ -328,21 +364,11 @@
                             []
                             (remove nil? (-> result-data :signals :obv))))
 
-   :signals {:moving-average (->> (reduce (fn [rslt ech]
-
-                                            (conj rslt (map (fn [inp]   ;; iterate over the :signals list, for each tick entry
-                                                              {:x (js/window.parseInt (:last-trade-time ech))
-                                                               :title (:signal inp)
-                                                               :text (str "Why: " (:why inp))
-                                                               })
-                                                            (:signals ech))))
-                                          []
-                                          (remove nil? (-> result-data :signals :moving-average)))
-                                  into-array
-                                  (remove empty?)
-
-                                  ;; for some strange reason, each list entry is in another list
-                                  (map #(first %)))}
+   :signals {:moving-average (pull-out-signals result-data :moving-average)
+             :bollinger-band (pull-out-signals result-data :bollinger-band)
+             :macd (pull-out-signals result-data :macd)
+             :stochastic-oscillator (pull-out-signals result-data :stochastic-oscillator)
+             :obv (pull-out-signals result-data :obv)}
 
    :stock-name (:stock-name result-data)})
 
@@ -379,6 +405,7 @@
                                                                                                    parsed-result-map (parse-result-data result-data)
                                                                                                    increment? false]
 
+                                                                                               #_(.log js/console (str "... generated signal-map[" (-> parsed-result-map :signals :stochastic-oscillator) "]"))
                                                                                                (render-stock-graph "#historical-stock-graph"
                                                                                                                    [(:bollinger-band parsed-result-map)
                                                                                                                     (:local-list parsed-result-map)
