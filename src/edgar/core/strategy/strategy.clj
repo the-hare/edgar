@@ -142,11 +142,51 @@
                                                      :why [:price-increase :price-below-sma :bollinger-price-below :bollinger-was-narrower :macd-histogram-squeeze :obv-increasing :stochastic-oversold]}])
               (rest tick-list)))))
 
+
+(defn list-subset [key-list input-list]
+
+  (->> (filter (fn [inp]
+                 (some #{(:last-trade-time inp)} key-list))
+               (remove (fn [inp]
+                         (nil? (:last-trade-time inp))) input-list))
+
+       (sort-by :last-trade-time)))
+
+
 (defn strategy-fill-A
   "Applies strategy-A filters, for the entire length of the tick-list"
   [tick-list signals-ma signals-bollinger signals-macd signals-stochastic signals-obv]
 
-  )
+  (reduce (fn [rslt ech-list]
+
+            (let [
+                  key-list (into [] (flatten (map (fn [inp]
+                                                    (vals (select-keys inp [:last-trade-time])))
+                                                  ech-list)))
+
+                  ;; SUBSET of lists
+                  ma-L (list-subset key-list signals-ma)
+                  bollinger-L (list-subset key-list signals-bollinger)
+                  macd-L (list-subset key-list signals-macd)
+                  stochastic-L (list-subset key-list signals-stochastic)
+                  obv-L (list-subset key-list signals-obv)]
+
+              #_(println "")
+              #_(println "... strategy-fill-A CALLED / tick-list[" (count ech-list) "] / signals-ma[" (count ma-L) "] / signals-bollinger[" (count bollinger-L) "] / signals-macd[" (count macd-L) "] / signals-stochastic[" (count stochastic-L) "] / signals-obv[" (count obv-L) "]")
+
+              ;; Make sure none of the lists are not empty
+              (if (or (empty? ma-L)
+                      (empty? bollinger-L)
+                      (empty? macd-L)
+                      (empty? stochastic-L)
+                      (empty? obv-L))
+
+                (conj rslt (first ech-list))
+
+                (conj rslt (first (strategy-A ech-list ma-L bollinger-L macd-L stochastic-L obv-L))))))
+          []
+          (partition 10 1 tick-list)))
+
 
 (defn strategy-B
   "This strategy is a composition of the below signals. It works only for the first tick.
@@ -192,4 +232,29 @@
   "Applies strategy-B filters, for the entire length of the tick-list"
   [tick-list signals-ma signals-bollinger signals-macd signals-stochastic signals-obv]
 
-  )
+  (reduce (fn [rslt ech-list]
+
+            (let [
+                  key-list (into [] (flatten (map (fn [inp]
+                                                    (vals (select-keys inp [:last-trade-time])))
+                                                  ech-list)))
+
+                  ;; SUBSET of lists
+                  ma-L (list-subset key-list signals-ma)
+                  bollinger-L (list-subset key-list signals-bollinger)
+                  macd-L (list-subset key-list signals-macd)
+                  stochastic-L (list-subset key-list signals-stochastic)
+                  obv-L (list-subset key-list signals-obv)]
+
+              ;; Make sure the lists are not empty
+              (if (or (< 2 (count ma-L))
+                      (< 2 (count bollinger-L))
+                      (< 2 (count macd-L))
+                      (empty? stochastic-L)
+                      (< 2 (count obv-L)))
+
+                (conj rslt (first ech-list))
+
+                (conj rslt (first (strategy-B ech-list ma-L bollinger-L macd-L stochastic-L obv-L))))))
+          []
+          (partition 10 1 tick-list)))
