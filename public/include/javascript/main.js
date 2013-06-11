@@ -14284,7 +14284,8 @@ var edgar = {build_graph_series_data:function(a, b) {
   "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], {"\ufdd0'valueDecimals":2})}), cljs.core.ObjMap.fromObject("\ufdd0'name \ufdd0'id \ufdd0'data \ufdd0'yAxis \ufdd0'marker \ufdd0'shadow \ufdd0'tooltip".split(" "), {"\ufdd0'name":"Stochastic K", "\ufdd0'id":"k-list", "\ufdd0'data":cljs.core.reverse.call(null, cljs.core.nth.call(null, a, 7)), "\ufdd0'yAxis":3, "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled", "\ufdd0'radius"], {"\ufdd0'enabled":!0, "\ufdd0'radius":3}), 
   "\ufdd0'shadow":!0, "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], {"\ufdd0'valueDecimals":2})}), cljs.core.ObjMap.fromObject("\ufdd0'name \ufdd0'id \ufdd0'data \ufdd0'yAxis \ufdd0'marker \ufdd0'shadow \ufdd0'tooltip".split(" "), {"\ufdd0'name":"Stochastic D", "\ufdd0'id":"d-list", "\ufdd0'data":cljs.core.reverse.call(null, cljs.core.nth.call(null, a, 8)), "\ufdd0'yAxis":3, "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled", "\ufdd0'radius"], {"\ufdd0'enabled":!0, 
   "\ufdd0'radius":3}), "\ufdd0'shadow":!0, "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], {"\ufdd0'valueDecimals":2})}), cljs.core.ObjMap.fromObject("\ufdd0'name \ufdd0'id \ufdd0'data \ufdd0'yAxis \ufdd0'type \ufdd0'marker \ufdd0'shadow \ufdd0'tooltip".split(" "), {"\ufdd0'name":"On Balance Volume", "\ufdd0'id":"obv-list", "\ufdd0'data":cljs.core.reverse.call(null, cljs.core.nth.call(null, a, 9)), "\ufdd0'yAxis":4, "\ufdd0'type":"column", "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled", 
-  "\ufdd0'radius"], {"\ufdd0'enabled":!0, "\ufdd0'radius":3}), "\ufdd0'shadow":!0, "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], {"\ufdd0'valueDecimals":2})})], !0), c = cljs.core.reduce.call(null, function(a, b) {
+  "\ufdd0'radius"], {"\ufdd0'enabled":!0, "\ufdd0'radius":3}), "\ufdd0'shadow":!0, "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], {"\ufdd0'valueDecimals":2})})], !0);
+  return cljs.core.reduce.call(null, function(a, b) {
     var c = function(a) {
       return cljs.core.ObjMap.fromObject("\ufdd0'type \ufdd0'data \ufdd0'color \ufdd0'fillColor \ufdd0'width \ufdd0'style \ufdd0'states".split(" "), {"\ufdd0'type":"flags", "\ufdd0'data":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'x", "\ufdd0'title", "\ufdd0'text"], {"\ufdd0'x":(new cljs.core.Keyword("\ufdd0'x")).call(null, a), "\ufdd0'title":(new cljs.core.Keyword("\ufdd0'title")).call(null, a), "\ufdd0'text":(new cljs.core.Keyword("\ufdd0'text")).call(null, a)})], 
       !0), "\ufdd0'color":"#5F86B3", "\ufdd0'fillColor":"#5F86B3", "\ufdd0'width":16, "\ufdd0'style":cljs.core.ObjMap.fromObject(["\ufdd0'color"], {"\ufdd0'color":"white"}), "\ufdd0'states":cljs.core.ObjMap.fromObject(["\ufdd0'hover"], {"\ufdd0'hover":cljs.core.ObjMap.fromObject(["\ufdd0'fillColor"], {"\ufdd0'fillColor":"#395C84"})})})
@@ -14318,9 +14319,7 @@ var edgar = {build_graph_series_data:function(a, b) {
       }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
     }
     throw Error([cljs.core.str("No matching clause: "), cljs.core.str(cljs.core.first.call(null, b))].join(""));
-  }, c, cljs.core.seq.call(null, b));
-  console.log([cljs.core.str("... FINAL series array["), cljs.core.str(c), cljs.core.str("]")].join(""));
-  return c
+  }, c, cljs.core.seq.call(null, b))
 }, render_stock_graph:function(a, b, c, d, e) {
   if(cljs.core.not.call(null, e)) {
     return jayq.core.$.call(null, a).highcharts("StockChart", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject("\ufdd0'names \ufdd0'rangeSelector \ufdd0'title \ufdd0'chart \ufdd0'navigator \ufdd0'yAxis \ufdd0'series".split(" "), {"\ufdd0'names":cljs.core.PersistentVector.fromArray([d, "Bolling Band", "Simple Moving Average", "Exponential Moving Average"], !0), "\ufdd0'rangeSelector":cljs.core.ObjMap.fromObject(["\ufdd0'selected"], {"\ufdd0'selected":7}), "\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], 

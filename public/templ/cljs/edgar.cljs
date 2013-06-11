@@ -135,8 +135,9 @@
                              (seq signal-map))  ;; iterate over map entries
         ]
 
-    (.log js/console (str "... FINAL series array[" with-signals "]"))
+    #_(.log js/console (str "... FINAL series array[" with-signals "]"))
     with-signals))
+
 
 ;; === RENDER the Live stock graph
 (defn render-stock-graph [selector dataList signal-map label increment]

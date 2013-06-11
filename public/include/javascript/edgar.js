@@ -10,31 +10,31 @@ var with_signals = cljs.core.reduce.call(null,(function (rslt,ech){
 var default_entry = (function (eF){
 return cljs.core.ObjMap.fromObject(["\uFDD0'type","\uFDD0'data","\uFDD0'color","\uFDD0'fillColor","\uFDD0'width","\uFDD0'style","\uFDD0'states"],{"\uFDD0'type":"flags","\uFDD0'data":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\uFDD0'x","\uFDD0'title","\uFDD0'text"],{"\uFDD0'x":(new cljs.core.Keyword("\uFDD0'x")).call(null,eF),"\uFDD0'title":(new cljs.core.Keyword("\uFDD0'title")).call(null,eF),"\uFDD0'text":(new cljs.core.Keyword("\uFDD0'text")).call(null,eF)})], true),"\uFDD0'color":"#5F86B3","\uFDD0'fillColor":"#5F86B3","\uFDD0'width":16,"\uFDD0'style":cljs.core.ObjMap.fromObject(["\uFDD0'color"],{"\uFDD0'color":"white"}),"\uFDD0'states":cljs.core.ObjMap.fromObject(["\uFDD0'hover"],{"\uFDD0'hover":cljs.core.ObjMap.fromObject(["\uFDD0'fillColor"],{"\uFDD0'fillColor":"#395C84"})})});
 });
-var G__70819 = cljs.core.first.call(null,ech);
-if(cljs.core._EQ_.call(null,"default",G__70819))
+var G__71347 = cljs.core.first.call(null,ech);
+if(cljs.core._EQ_.call(null,"default",G__71347))
 {return rslt;
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'obv",G__70819))
+{if(cljs.core._EQ_.call(null,"\uFDD0'obv",G__71347))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","obv-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'stochastic-oscillator",G__70819))
+{if(cljs.core._EQ_.call(null,"\uFDD0'stochastic-oscillator",G__71347))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","k-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'macd",G__70819))
+{if(cljs.core._EQ_.call(null,"\uFDD0'macd",G__71347))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","macd-price-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'bollinger-band",G__70819))
+{if(cljs.core._EQ_.call(null,"\uFDD0'bollinger-band",G__71347))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","bollinger-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'moving-average",G__70819))
+{if(cljs.core._EQ_.call(null,"\uFDD0'moving-average",G__71347))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","ema-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
@@ -51,7 +51,6 @@ return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(
 }
 }
 }),initial_list,cljs.core.seq.call(null,signal_map));
-console.log([cljs.core.str("... FINAL series array["),cljs.core.str(with_signals),cljs.core.str("]")].join(''));
 return with_signals;
 });
 edgar.render_stock_graph = (function render_stock_graph(selector,dataList,signal_map,label,increment){
@@ -71,11 +70,11 @@ return cljs.core.nth.call(null,jayq.core.$.call(null,selector).highcharts().seri
 }
 });
 edgar.populate_multiselect = (function populate_multiselect(selector,options){
-var G__70824 = (new cljs.core.Keyword("\uFDD0'bind")).call(null,jayq.core.deferred_m);
-var G__70825 = (new cljs.core.Keyword("\uFDD0'return")).call(null,jayq.core.deferred_m);
-var G__70826 = (new cljs.core.Keyword("\uFDD0'zero")).call(null,jayq.core.deferred_m);
-return G__70824.call(null,$.ajax.call(null,"/list-filtered-input"),(function (filtered_input){
-return G__70825.call(null,(function (){var multiselect = jayq.core.$.call(null,selector);
+var G__71352 = (new cljs.core.Keyword("\uFDD0'bind")).call(null,jayq.core.deferred_m);
+var G__71353 = (new cljs.core.Keyword("\uFDD0'return")).call(null,jayq.core.deferred_m);
+var G__71354 = (new cljs.core.Keyword("\uFDD0'zero")).call(null,jayq.core.deferred_m);
+return G__71352.call(null,$.ajax.call(null,"/list-filtered-input"),(function (filtered_input){
+return G__71353.call(null,(function (){var multiselect = jayq.core.$.call(null,selector);
 cljs.core.reduce.call(null,(function (rslt,inp){
 var option_value = cljs.core.second.call(null,inp);
 var option_label = cljs.core.nth.call(null,inp,2);
@@ -87,8 +86,8 @@ return jayq.core.$.call(null,selector).multiselect(cljs.core.clj__GT_js.call(nul
 }));
 });
 edgar.pull_out_signals = (function pull_out_signals(result_data,tag){
-return cljs.core.map.call(null,(function (p1__70820_SHARP_){
-return cljs.core.first.call(null,p1__70820_SHARP_);
+return cljs.core.map.call(null,(function (p1__71348_SHARP_){
+return cljs.core.first.call(null,p1__71348_SHARP_);
 }),cljs.core.remove.call(null,cljs.core.empty_QMARK_,cljs.core.into_array.call(null,cljs.core.reduce.call(null,(function (rslt,ech){
 return cljs.core.conj.call(null,rslt,cljs.core.map.call(null,(function (inp){
 return cljs.core.ObjMap.fromObject(["\uFDD0'x","\uFDD0'title","\uFDD0'text"],{"\uFDD0'x":window.parseInt((new cljs.core.Keyword("\uFDD0'last-trade-time")).call(null,ech)),"\uFDD0'title":(new cljs.core.Keyword("\uFDD0'signal")).call(null,inp),"\uFDD0'text":[cljs.core.str("Why: "),cljs.core.str((new cljs.core.Keyword("\uFDD0'why")).call(null,inp))].join('')});
@@ -102,14 +101,14 @@ return cljs.core.conj.call(null,rslt,cljs.core.into_array.call(null,cljs.core.Pe
 return cljs.core.conj.call(null,rslt,cljs.core.into_array.call(null,cljs.core.PersistentVector.fromArray([window.parseInt((new cljs.core.Keyword("\uFDD0'last-trade-time")).call(null,ech)),window.parseFloat((new cljs.core.Keyword("\uFDD0'last-trade-macd")).call(null,ech))], true)));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.remove.call(null,cljs.core.nil_QMARK_,(new cljs.core.Keyword("\uFDD0'macd")).call(null,(new cljs.core.Keyword("\uFDD0'signals")).call(null,result_data))))),"\uFDD0'stock-name":(new cljs.core.Keyword("\uFDD0'stock-name")).call(null,result_data),"\uFDD0'sma-list":cljs.core.into_array.call(null,cljs.core.reduce.call(null,(function (rslt,ech){
 return cljs.core.conj.call(null,rslt,cljs.core.into_array.call(null,cljs.core.PersistentVector.fromArray([window.parseInt(cljs.core.first.call(null,ech)),window.parseFloat(cljs.core.second.call(null,ech))], true)));
-}),cljs.core.PersistentVector.EMPTY,cljs.core.remove.call(null,(function (p1__70827_SHARP_){
-return (cljs.core.first.call(null,p1__70827_SHARP_) == null);
+}),cljs.core.PersistentVector.EMPTY,cljs.core.remove.call(null,(function (p1__71355_SHARP_){
+return (cljs.core.first.call(null,p1__71355_SHARP_) == null);
 }),cljs.core.into_array.call(null,(new cljs.core.Keyword("\uFDD0'sma-list")).call(null,result_data))))),"\uFDD0'macd-histogram-list":cljs.core.into_array.call(null,cljs.core.reduce.call(null,(function (rslt,ech){
 return cljs.core.conj.call(null,rslt,cljs.core.into_array.call(null,cljs.core.PersistentVector.fromArray([window.parseInt((new cljs.core.Keyword("\uFDD0'last-trade-time")).call(null,ech)),window.parseFloat((new cljs.core.Keyword("\uFDD0'histogram")).call(null,ech))], true)));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.remove.call(null,cljs.core.nil_QMARK_,(new cljs.core.Keyword("\uFDD0'macd")).call(null,(new cljs.core.Keyword("\uFDD0'signals")).call(null,result_data))))),"\uFDD0'ema-list":cljs.core.into_array.call(null,cljs.core.reduce.call(null,(function (rslt,ech){
 return cljs.core.conj.call(null,rslt,cljs.core.into_array.call(null,cljs.core.PersistentVector.fromArray([window.parseInt(cljs.core.first.call(null,ech)),window.parseFloat(cljs.core.second.call(null,ech))], true)));
-}),cljs.core.PersistentVector.EMPTY,cljs.core.remove.call(null,(function (p1__70828_SHARP_){
-return (cljs.core.first.call(null,p1__70828_SHARP_) == null);
+}),cljs.core.PersistentVector.EMPTY,cljs.core.remove.call(null,(function (p1__71356_SHARP_){
+return (cljs.core.first.call(null,p1__71356_SHARP_) == null);
 }),cljs.core.into_array.call(null,(new cljs.core.Keyword("\uFDD0'ema-list")).call(null,result_data))))),"\uFDD0'stochastic-d":cljs.core.into_array.call(null,cljs.core.reduce.call(null,(function (rslt,ech){
 return cljs.core.conj.call(null,rslt,cljs.core.into_array.call(null,cljs.core.PersistentVector.fromArray([window.parseInt((new cljs.core.Keyword("\uFDD0'last-trade-time")).call(null,ech)),window.parseFloat((new cljs.core.Keyword("\uFDD0'D")).call(null,ech))], true)));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.remove.call(null,cljs.core.nil_QMARK_,(new cljs.core.Keyword("\uFDD0'stochastic-oscillator")).call(null,(new cljs.core.Keyword("\uFDD0'signals")).call(null,result_data))))),"\uFDD0'bollinger-band":cljs.core.into_array.call(null,cljs.core.reduce.call(null,(function (rslt,ech){
