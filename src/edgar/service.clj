@@ -208,10 +208,24 @@
                                                      signals-bollinger (slagging/bollinger-band 20 tick-list-N sma-list)
                                                      signals-macd (sleading/macd nil 20 tick-list-N sma-list)
                                                      signals-stochastic (sleading/stochastic-oscillator 14 3 3 tick-list-N)
-                                                     signals-obv (sconfirming/on-balance-volume 10 tick-list-N)]
+                                                     signals-obv (sconfirming/on-balance-volume 10 tick-list-N)
 
-                                                 (println (str "... MACD[" (seq signals-macd) "]"))
-                                                 (println (str "... OBV[" signals-obv "]"))
+                                                     sA (strategy/strategy-A tick-list-N
+                                                                             signals-ma
+                                                                             signals-bollinger
+                                                                             signals-macd
+                                                                             signals-stochastic
+                                                                             signals-obv)
+                                                     sB (strategy/strategy-B tick-list-N
+                                                                             signals-ma
+                                                                             signals-bollinger
+                                                                             signals-macd
+                                                                             signals-stochastic
+                                                                             signals-obv)]
+
+                                                 (println (str "... strategy-A[" sA "]"))
+                                                 (println (str "... strategy-B[" sB "]"))
+
                                                  (stream-live "stream-live" {:stock-name stock-name
                                                                              :stock-list final-list
                                                                              :source-list tick-list-N
@@ -222,19 +236,8 @@
                                                                                        :macd signals-macd
                                                                                        :stochastic-oscillator signals-stochastic
                                                                                        :obv signals-obv}
-                                                                             :strategies {:strategy-A (strategy/strategy-A tick-list
-                                                                                                                           signals-ma
-                                                                                                                           signals-bollinger
-                                                                                                                           signals-macd
-                                                                                                                           signals-stochastic
-                                                                                                                           signals-obv)
-
-                                                                                          :strategy-B (strategy/strategy-B tick-list
-                                                                                                                           signals-ma
-                                                                                                                           signals-bollinger
-                                                                                                                           signals-macd
-                                                                                                                           signals-stochastic
-                                                                                                                           signals-obv)}})))])
+                                                                             :strategies {:strategy-A sA
+                                                                                          :strategy-B sB}})))])
     { :status 204 }))
 
 

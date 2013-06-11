@@ -14,6 +14,7 @@
 (require '[edgar.core.signal.lagging :as slagging])
 (require '[edgar.core.signal.leading :as sleading])
 (require '[edgar.core.signal.confirming :as sconfirming])
+(require '[edgar.core.strategy.strategy :as strategy])
 
 
 (def live-list

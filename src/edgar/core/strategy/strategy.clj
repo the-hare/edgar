@@ -133,7 +133,7 @@
         obv-increasingV (obv-increasing? signals-obv)
 
         ;; G.
-        stochastic-oversoldV (stochastic-ovesold? signals-stochastic)]
+        stochastic-oversoldV (stochastic-oversold? signals-stochastic)]
 
     (if (and price-increaseV price-below-smaV bollinger-price-belowV bollinger-was-narrowerV macd-histogram-squeezeV obv-increasingV stochastic-oversoldV)
 
