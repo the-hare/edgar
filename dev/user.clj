@@ -27,8 +27,7 @@
        (read-string (slurp "etc/test-live-list.edn"))))
 
 (def sma-list (alagging/simple-moving-average nil 20 live-list))
+(def bollinger-list (alagging/bollinger-band 20 live-list sma-list))
 (def macd-list (aleading/macd nil 20 live-list sma-list))
 (def k-list (aleading/stochastic-oscillator 14 3 3 live-list))
 (def obv-list (aconfirming/on-balance-volume (first live-list) live-list))
-
-
