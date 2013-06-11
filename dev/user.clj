@@ -27,7 +27,14 @@
        (read-string (slurp "etc/test-live-list.edn"))))
 
 (def sma-list (alagging/simple-moving-average nil 20 live-list))
+(def ema-list (alagging/exponential-moving-average nil 20 live-list sma-list))
 (def bollinger-list (alagging/bollinger-band 20 live-list sma-list))
 (def macd-list (aleading/macd nil 20 live-list sma-list))
 (def k-list (aleading/stochastic-oscillator 14 3 3 live-list))
 (def obv-list (aconfirming/on-balance-volume (first live-list) live-list))
+
+(def signals-ma (slagging/moving-averages 20 live-list sma-list ema-list))
+(def signals-bollinger (slagging/bollinger-band 20 live-list sma-list))
+(def signals-macd (sleading/macd nil 20 live-list sma-list))
+(def signals-stochastic (sleading/stochastic-oscillator 14 3 3 live-list))
+(def signals-obv (sconfirming/on-balance-volume 10 live-list))

@@ -133,10 +133,14 @@
         obv-increasingV (obv-increasing? signals-obv)
 
         ;; G.
-        stochastic-oversoldV (stochastic-ovesold? signals-stochastic)
-        ]
+        stochastic-oversoldV (stochastic-ovesold? signals-stochastic)]
 
-    ))
+    (if (and price-increaseV price-below-smaV bollinger-price-belowV bollinger-was-narrowerV macd-histogram-squeezeV obv-increasingV stochastic-oversoldV)
+
+      ;; if all conditions are met, put an :up signal, with the reasons
+      (concat (assoc (first tick-list) :strategies [{:signal :up
+                                                     :why [:price-increase :price-below-sma :bollinger-price-below :bollinger-was-narrower :macd-histogram-squeeze :obv-increasing :stochastic-oversold]}])
+              (rest tick-list)))))
 
 
 (defn strategy-B
@@ -171,7 +175,10 @@
         stochastic-oversoldV (stochastic-oversold? signals-stochastic)
 
         ;; F.
-        obv-increasingV (obv-increasing? signals-obv)
-        ]
+        obv-increasingV (obv-increasing? signals-obv)]
 
-    ))
+    (if (and price-cross-abouve-smaV bollinger-was-narrowerV macd-crossoverV stochastic-crossoverV stochastic-oversoldV obv-increasingV)
+
+      (concat (assoc (first tick-list) :strategies [{:signal :up
+                                                     :why [:price-cross-abouve-sma :bollinger-was-narrower :macd-crossover :stochastic-crossover :stochastic-oversold :obv-increasing]}])
+              (rest tick-list)))))

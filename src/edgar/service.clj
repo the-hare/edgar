@@ -9,6 +9,7 @@
             [edgar.core.signal.lagging :as slagging]
             [edgar.core.signal.leading :as sleading]
             [edgar.core.signal.confirming :as sconfirming]
+            [edgar.core.strategy.strategy :as strategy]
 
             [clojure.java.io :as io]
             [clojure.walk :as walk]
@@ -220,7 +221,20 @@
                                                                                        :bollinger-band signals-bollinger
                                                                                        :macd signals-macd
                                                                                        :stochastic-oscillator signals-stochastic
-                                                                                       :obv signals-obv}})))])
+                                                                                       :obv signals-obv}
+                                                                             :strategies {:strategy-A (strategy/strategy-A tick-list
+                                                                                                                           signals-ma
+                                                                                                                           signals-bollinger
+                                                                                                                           signals-macd
+                                                                                                                           signals-stochastic
+                                                                                                                           signals-obv)
+
+                                                                                          :strategy-B (strategy/strategy-B tick-list
+                                                                                                                           signals-ma
+                                                                                                                           signals-bollinger
+                                                                                                                           signals-macd
+                                                                                                                           signals-stochastic
+                                                                                                                           signals-obv)}})))])
     { :status 204 }))
 
 
