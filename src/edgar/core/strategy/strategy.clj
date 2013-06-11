@@ -43,6 +43,23 @@
                (:difference inp)))
           b-rest)))
 
+(defn macd-histogram-squeeze? [signals-macd]
+
+  (let [h-first (first signals-macd)
+        h-rest (take 2 (rest signals-macd))]
+
+    (some (fn [inp]
+            (> (:histogram h-first)
+               (:histogram inp)))
+          h-rest)))
+
+(defn obv-increasing? [signals-obv]
+
+  (let [fst (first signals-obv)
+        snd (second signals-obv)]
+
+    (> (:obv fst) (:obv snd))))
+
 
 (defn strategy-A
   "This strategy is a composition of the following signals:
@@ -73,10 +90,13 @@
         ;; D.
         bollinger-was-narrowerV (bollinger-was-narrower? signals-bollinger)
 
-        ]
-    )
+        ;; E.
+        macd-histogram-squeezeV (macd-histogram-squeeze? signals-macd)
 
-  )
+        ;; F.
+        obv-increasingV (obv-increasing? signals-obv)]
+
+    ))
 
 
 (defn strategy-B

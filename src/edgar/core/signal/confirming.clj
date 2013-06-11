@@ -15,7 +15,6 @@
        (on-balance-volume view-window tick-list obv-list)))
   ([view-window tick-list obv-list]
 
-     (println (str "... obv-list[" obv-list "]"))
      (let [divergence-obv (reduce (fn [rslt ech-list]
 
                                      (let [fst (first ech-list)

@@ -209,6 +209,8 @@
                                                      signals-stochastic (sleading/stochastic-oscillator 14 3 3 tick-list-N)
                                                      signals-obv (sconfirming/on-balance-volume 10 tick-list-N)]
 
+                                                 (println (str "... MACD[" (seq signals-macd) "]"))
+                                                 (println (str "... OBV[" signals-obv "]"))
                                                  (stream-live "stream-live" {:stock-name stock-name
                                                                              :stock-list final-list
                                                                              :source-list tick-list-N
