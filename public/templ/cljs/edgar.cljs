@@ -165,7 +165,7 @@
         ]
 
     (.log js/console (str "... FINAL series array[" with-strategies "]"))
-    with-signals))
+    with-strategies))
 
 
 ;; === RENDER the Live stock graph

@@ -14333,7 +14333,7 @@ var edgar = {add_signals:function(a, b) {
   "\ufdd0'radius"], {"\ufdd0'enabled":!0, "\ufdd0'radius":3}), "\ufdd0'shadow":!0, "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], {"\ufdd0'valueDecimals":2})})], !0);
   c = edgar.add_strategies.call(null, a, c);
   console.log([cljs.core.str("... FINAL series array["), cljs.core.str(c), cljs.core.str("]")].join(""));
-  return edgar.with_signals
+  return c
 }, render_stock_graph:function(a, b, c, d, e, f) {
   if(cljs.core.not.call(null, f)) {
     return jayq.core.$.call(null, a).highcharts("StockChart", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject("\ufdd0'names \ufdd0'rangeSelector \ufdd0'title \ufdd0'chart \ufdd0'navigator \ufdd0'yAxis \ufdd0'series".split(" "), {"\ufdd0'names":cljs.core.PersistentVector.fromArray([e, "Bolling Band", "Simple Moving Average", "Exponential Moving Average"], !0), "\ufdd0'rangeSelector":cljs.core.ObjMap.fromObject(["\ufdd0'selected"], {"\ufdd0'selected":7}), "\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], 

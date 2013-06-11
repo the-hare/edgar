@@ -121,7 +121,20 @@
                                                                                        signals-bollinger (slagging/bollinger-band 20 tick-list-formatted sma-list)
                                                                                        signals-macd (sleading/macd nil 20 tick-list-formatted sma-list)
                                                                                        signals-stochastic (sleading/stochastic-oscillator 14 3 3 tick-list-formatted)
-                                                                                       signals-obv (sconfirming/on-balance-volume 10 tick-list-formatted)]
+                                                                                       signals-obv (sconfirming/on-balance-volume 10 tick-list-formatted)
+
+                                                                                       sA (strategy/strategy-fill-A tick-list-formatted
+                                                                                                                    signals-ma
+                                                                                                                    signals-bollinger
+                                                                                                                    signals-macd
+                                                                                                                    signals-stochastic
+                                                                                                                    signals-obv)
+                                                                                       sB (strategy/strategy-fill-B tick-list-formatted
+                                                                                                                    signals-ma
+                                                                                                                    signals-bollinger
+                                                                                                                    signals-macd
+                                                                                                                    signals-stochastic
+                                                                                                                    signals-obv)]
 
 
                                                                                    ((:resume-fn paused-context) {:stock-name (-> tick-list first :company)
@@ -133,7 +146,9 @@
                                                                                                                            :bollinger-band signals-bollinger
                                                                                                                            :macd signals-macd
                                                                                                                            :stochastic-oscillator signals-stochastic
-                                                                                                                           :obv signals-obv}})))])))
+                                                                                                                           :obv signals-obv}
+                                                                                                                 :strategies {:strategy-A sA
+                                                                                                                              :strategy-B sB}})))])))
 (defbefore get-historical-data
   "Get historical data for a particular stock"
   [{request :request :as context}]

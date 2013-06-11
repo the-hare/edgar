@@ -98,7 +98,7 @@
 
 
 (defn strategy-A
-  "This strategy is a composition of the following signals:
+  "This strategy is a composition of the below signals. It works only for the first tick.
 
    A. Price increase
    B. Price below the SMA
@@ -142,9 +142,14 @@
                                                      :why [:price-increase :price-below-sma :bollinger-price-below :bollinger-was-narrower :macd-histogram-squeeze :obv-increasing :stochastic-oversold]}])
               (rest tick-list)))))
 
+(defn strategy-fill-A
+  "Applies strategy-A filters, for the entire length of the tick-list"
+  [tick-list signals-ma signals-bollinger signals-macd signals-stochastic signals-obv]
+
+  )
 
 (defn strategy-B
-  "This strategy is a composition of the following signals:
+  "This strategy is a composition of the below signals. It works only for the first tick.
 
    A. Price crosses abouve SMA
 
@@ -182,3 +187,9 @@
       (concat (assoc (first tick-list) :strategies [{:signal :up
                                                      :why [:price-cross-abouve-sma :bollinger-was-narrower :macd-crossover :stochastic-crossover :stochastic-oversold :obv-increasing]}])
               (rest tick-list)))))
+
+(defn strategy-fill-B
+  "Applies strategy-B filters, for the entire length of the tick-list"
+  [tick-list signals-ma signals-bollinger signals-macd signals-stochastic signals-obv]
+
+  )
