@@ -10,7 +10,6 @@
 
 (defn price-below-sma? [tick-list signals-ma]
 
-  (println (str "... price-below-sma? CALLED / tick-list[" (seq tick-list)"] / signals-ma[" (seq signals-ma) "]"))
   (let [p-tick (first tick-list)
         sma-tick (first signals-ma)]
 
@@ -128,51 +127,33 @@
         ;; A.
         price-increaseV (price-increase? tick-list)
 
-        zzz (println "")
-        yyy (println "")
-        xxx (println (str "0["price-increaseV "] ... price-increase? > tick-list[" (seq (take 2 tick-list)) "]"))
-
-
         ;; B.
         price-below-smaV (price-below-sma? tick-list signals-ma)
-
-        xxx (println (str "1["price-below-smaV "] ... price-below-sma? > tick-list[" (seq (take 2 tick-list)) "] / signals-ma[" (seq (take 2 signals-ma)) "]"))
 
         ;; C.
         bollinger-price-belowV (bollinger-price-below? tick-list signals-bollinger)
 
-        aaa (println (str "2[" bollinger-price-belowV "] ... bollinger-price-below? > tick-list[" (seq (take 3 tick-list)) "] / signals-bollinger[" (seq (take 3 signals-bollinger)) "]"))
-
         ;; D.
         bollinger-was-narrowerV (bollinger-was-narrower? signals-bollinger)
-
-        bbb (println (str "3["bollinger-was-narrowerV "] ... bollinger-was-narrower? > signals-bollinger[" (seq (take 3 signals-bollinger)) "]"))
 
         ;; E.
         macd-histogram-squeezeV (macd-histogram-squeeze? signals-macd)
 
-        ccc (println (str "4[" macd-histogram-squeezeV "] ... macd-histogram-squeeze? > signals-macd[" (seq (take 3 signals-macd)) "]"))
-
         ;; F.
         obv-increasingV (obv-increasing? signals-obv)
 
-        ddd (println (str "5[" obv-increasingV "] ... obv-increasing? > signals-obv[" (seq (take 3 signals-obv)) "]"))
-
         ;; G.
-        stochastic-oversoldV (stochastic-oversold? signals-stochastic)
+        stochastic-oversoldV (stochastic-oversold? signals-stochastic)]
 
-        eee (println (str "6[" stochastic-oversoldV "] ... stochastic-oversold? > signals-stochastic[" (seq (take 3 signals-stochastic)) "]"))
-
-        ]
 
     (if (and price-increaseV price-below-smaV bollinger-price-belowV bollinger-was-narrowerV macd-histogram-squeezeV obv-increasingV stochastic-oversoldV)
 
       ;; if all conditions are met, put an :up signal, with the reasons
-
-      (println "BINGO ---- We have a strategic :up signal")
-      (concat (assoc (first tick-list) :strategies [{:signal :up
-                                                     :why [:price-increase :price-below-sma :bollinger-price-below :bollinger-was-narrower :macd-histogram-squeeze :obv-increasing :stochastic-oversold]}])
-              (rest tick-list)))))
+      (do (println "BINGO ---- We have a strategy-A :up signal")
+          (cons (assoc (first tick-list) :strategies [{:signal :up
+                                                       :why [:price-increase :price-below-sma :bollinger-price-below :bollinger-was-narrower
+                                                             :macd-histogram-squeeze :obv-increasing :stochastic-oversold]}])
+                (rest tick-list))))))
 
 
 (defn list-subset [key-list input-list]
@@ -191,33 +172,35 @@
   "Applies strategy-A filters, for the entire length of the tick-list"
   [tick-list signals-ma signals-bollinger signals-macd signals-stochastic signals-obv]
 
-  (reduce (fn [rslt ech-list]
+  (->> (reduce (fn [rslt ech-list]
 
-            (let [
-                  key-list (into [] (flatten (map (fn [inp]
-                                                    (vals (select-keys inp [:last-trade-time])))
-                                                  ech-list)))
+                  (let [
+                        key-list (into [] (flatten (map (fn [inp]
+                                                          (vals (select-keys inp [:last-trade-time])))
+                                                        ech-list)))
 
-                  ;; SUBSET of lists
-                  ma-L (list-subset key-list signals-ma)
-                  bollinger-L (list-subset key-list signals-bollinger)
-                  macd-L (list-subset key-list signals-macd)
-                  stochastic-L (list-subset key-list signals-stochastic)
-                  obv-L (list-subset key-list signals-obv)]
+                        ;; SUBSET of lists
+                        ma-L (list-subset key-list signals-ma)
+                        bollinger-L (list-subset key-list signals-bollinger)
+                        macd-L (list-subset key-list signals-macd)
+                        stochastic-L (list-subset key-list signals-stochastic)
+                        obv-L (list-subset key-list signals-obv)]
 
 
-              ;; Make sure none of the lists are not empty
-              (if (or (< (count ma-L) 2)
-                      (< (count bollinger-L) 3)
-                      (< (count macd-L) 3)
-                      (< (count stochastic-L) 3)
-                      (< (count obv-L) 3))
+                    ;; Make sure none of the lists are not empty
+                    (if (or (< (count ma-L) 2)
+                            (< (count bollinger-L) 3)
+                            (< (count macd-L) 3)
+                            (< (count stochastic-L) 3)
+                            (< (count obv-L) 3))
 
-                (conj rslt (first ech-list))
+                      (conj rslt (first ech-list))
 
-                (conj rslt (first (strategy-A ech-list ma-L bollinger-L macd-L stochastic-L obv-L))))))
-          []
-          (partition 10 1 tick-list)))
+                      (conj rslt (first (strategy-A ech-list ma-L bollinger-L macd-L stochastic-L obv-L))))))
+                []
+                (partition 10 1 tick-list))
+
+       (remove nil?)))
 
 
 (defn strategy-B
@@ -256,37 +239,41 @@
 
     (if (and price-cross-abouve-smaV bollinger-was-narrowerV macd-crossoverV stochastic-crossoverV stochastic-oversoldV obv-increasingV)
 
-      (concat (assoc (first tick-list) :strategies [{:signal :up
-                                                     :why [:price-cross-abouve-sma :bollinger-was-narrower :macd-crossover :stochastic-crossover :stochastic-oversold :obv-increasing]}])
-              (rest tick-list)))))
+      (do (println "BINGO ---- We have a strategy-B :up signal")
+          (concat (assoc (first tick-list) :strategies [{:signal :up
+                                                         :why [:price-cross-abouve-sma :bollinger-was-narrower :macd-crossover
+                                                               :stochastic-crossover :stochastic-oversold :obv-increasing]}])
+                  (rest tick-list))))))
 
 (defn strategy-fill-B
   "Applies strategy-B filters, for the entire length of the tick-list"
   [tick-list signals-ma signals-bollinger signals-macd signals-stochastic signals-obv]
 
-  (reduce (fn [rslt ech-list]
+  (->> (reduce (fn [rslt ech-list]
 
-            (let [
-                  key-list (into [] (flatten (map (fn [inp]
-                                                    (vals (select-keys inp [:last-trade-time])))
-                                                  ech-list)))
+                  (let [
+                        key-list (into [] (flatten (map (fn [inp]
+                                                          (vals (select-keys inp [:last-trade-time])))
+                                                        ech-list)))
 
-                  ;; SUBSET of lists
-                  ma-L (list-subset key-list signals-ma)
-                  bollinger-L (list-subset key-list signals-bollinger)
-                  macd-L (list-subset key-list signals-macd)
-                  stochastic-L (list-subset key-list signals-stochastic)
-                  obv-L (list-subset key-list signals-obv)]
+                        ;; SUBSET of lists
+                        ma-L (list-subset key-list signals-ma)
+                        bollinger-L (list-subset key-list signals-bollinger)
+                        macd-L (list-subset key-list signals-macd)
+                        stochastic-L (list-subset key-list signals-stochastic)
+                        obv-L (list-subset key-list signals-obv)]
 
-              ;; Make sure the lists are not empty
-              (if (or (< 2 (count ma-L))
-                      (< 2 (count bollinger-L))
-                      (< 2 (count macd-L))
-                      (empty? stochastic-L)
-                      (< 2 (count obv-L)))
+                    ;; Make sure the lists are not empty
+                    (if (or (< (count ma-L) 2)
+                            (< (count bollinger-L) 2)
+                            (< (count macd-L) 2)
+                            (empty? stochastic-L)
+                            (< (count obv-L) 2))
 
-                (conj rslt (first ech-list))
+                      (conj rslt (first ech-list))
 
-                (conj rslt (first (strategy-B ech-list ma-L bollinger-L macd-L stochastic-L obv-L))))))
-          []
-          (partition 10 1 tick-list)))
+                      (conj rslt (first (strategy-B ech-list ma-L bollinger-L macd-L stochastic-L obv-L))))))
+                []
+                (partition 10 1 tick-list))
+
+       (remove nil?)))

@@ -164,7 +164,7 @@
         with-strategies (add-strategies initial-list strategy-map)
         ]
 
-    (.log js/console (str "... FINAL series array[" with-strategies "]"))
+    #_(.log js/console (str "... FINAL series array[" with-strategies "]"))
     with-strategies))
 
 
@@ -457,7 +457,7 @@
                                                                                                    parsed-result-map (parse-result-data result-data)
                                                                                                    increment? false]
 
-                                                                                               #_(.log js/console (str "... generated signal-map[" (-> parsed-result-map :signals :stochastic-oscillator) "]"))
+                                                                                               (.log js/console (str "... generated signal-map[" (-> result-data :strategies) "]"))
                                                                                                (render-stock-graph "#historical-stock-graph"
                                                                                                                    [(:bollinger-band parsed-result-map)
                                                                                                                     (:local-list parsed-result-map)
