@@ -36,8 +36,8 @@
         b-ticks (take 2 signals-bollinger)]
 
     (-> (some (fn [inp]
-                (<= (:last-trade-price p-tick)
-                    (:lower-band inp)))
+                (< (:last-trade-price p-tick)
+                   (:lower-band inp)))
               b-ticks)
         nil?
         not)))
@@ -240,9 +240,9 @@
     (if (and price-cross-abouve-smaV bollinger-was-narrowerV macd-crossoverV stochastic-crossoverV stochastic-oversoldV obv-increasingV)
 
       (do (println "BINGO ---- We have a strategy-B :up signal")
-          (concat (assoc (first tick-list) :strategies [{:signal :up
-                                                         :why [:price-cross-abouve-sma :bollinger-was-narrower :macd-crossover
-                                                               :stochastic-crossover :stochastic-oversold :obv-increasing]}])
+          (cons (assoc (first tick-list) :strategies [{:signal :up
+                                                       :why [:price-cross-abouve-sma :bollinger-was-narrower :macd-crossover
+                                                             :stochastic-crossover :stochastic-oversold :obv-increasing]}])
                   (rest tick-list))))))
 
 (defn strategy-fill-B

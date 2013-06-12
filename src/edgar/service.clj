@@ -225,12 +225,15 @@
                                                      signals-stochastic (sleading/stochastic-oscillator 14 3 3 tick-list-N)
                                                      signals-obv (sconfirming/on-balance-volume 10 tick-list-N)
 
-                                                     sA (strategy/strategy-A tick-list-N
+                                                     #_sA #_(strategy/strategy-A tick-list-N
                                                                              signals-ma
                                                                              signals-bollinger
                                                                              signals-macd
                                                                              signals-stochastic
                                                                              signals-obv)
+
+                                                     sA [(assoc (first tick-list-N) :strategies [{:signal :up
+                                                                                                  :why "test"}])]
                                                      sB (strategy/strategy-B tick-list-N
                                                                              signals-ma
                                                                              signals-bollinger
@@ -238,8 +241,8 @@
                                                                              signals-stochastic
                                                                              signals-obv)]
 
-                                                 (println (str "... strategy-A[" sA "]"))
-                                                 (println (str "... strategy-B[" sB "]"))
+                                                 #_(println (str "... strategy-A[" sA "]"))
+                                                 #_(println (str "... strategy-B[" sB "]"))
 
                                                  (stream-live "stream-live" {:stock-name stock-name
                                                                              :stock-list final-list

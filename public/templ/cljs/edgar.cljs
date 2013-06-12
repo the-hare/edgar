@@ -6,10 +6,6 @@
 
 
 
-;; === SCROLLING  with Lionbars
-#_(.lionbars ($ ".body-container"))
-
-
 (defn add-signals [initial-list signal-map]
 
   (reduce (fn [rslt ech]
@@ -158,19 +154,29 @@
                        :marker {:enabled true :radius 3}
                        :shadow true
                        :tooltip {:valueDecimals 2}}
+                      {:type "flags"
+                       :name "strategies"
+                       :data []
+                       :color "#5F86B3"
+                       :fillColor "#5F86B3"
+                       :width 16
+                       :style {:color "white"}
+                       :states {:hover { :fillColor "#395C84" }}}
                       ]
 
         #_with-signals #_(add-signals initial-list signal-map)  ;; iterate over map entries
-        with-strategies (add-strategies initial-list strategy-map)
+        #_with-strategies #_(add-strategies initial-list strategy-map)
         ]
 
     #_(.log js/console (str "... FINAL series array[" with-strategies "]"))
-    with-strategies))
+    initial-list))
 
 
 ;; === RENDER the Live stock graph
 (defn render-stock-graph [selector dataList signal-map strategy-map label increment]
 
+
+  #_(.log js/console (str "... render-stock-graph > strategy-map[" strategy-map "]"))
   (if-not increment
 
     (-> ($ selector)
@@ -279,7 +285,31 @@
           (.highcharts)
           (.-series)
           (nth 9)
-          (.addPoint (last (reverse (nth dataList 9))) true false)))))
+          (.addPoint (last (reverse (nth dataList 9))) true false))
+
+      (reduce (fn [rslt ech]
+
+                (let [default-entry (fn [eF]
+                                      {:x (-> eF :x)
+                                       :title (-> eF :title)
+                                       :text (-> eF :text)})]
+
+                  (concat rslt (reduce (fn [rF eF]
+
+                                         (.log js/console (str "... AND > eF[" eF "]"))
+                                         (let [strategy-entry (default-entry eF)]
+
+                                           (.log js/console (str "... AND AND > strategy-entry[" strategy-entry "] > fn["  "]"))
+                                           (-> ($ selector)
+                                               (.highcharts)
+                                               (.-series)
+                                               (nth 10)
+                                               (.addPoint strategy-entry true))
+                                           (conj rF strategy-entry)))
+                                       []
+                                       (second ech)))))
+              []
+              (seq strategy-map)))))
 
 
 
@@ -325,21 +355,25 @@
 
 (defn- pull-out-strategies [result-data tag]
 
-  (->> (reduce (fn [rslt ech]
+  (let [result-strategies (->> (reduce (fn [rslt ech]
 
-                 (conj rslt (map (fn [inp]
-                                   {:x (js/window.parseInt (:last-trade-time ech))
-                                    :title (:signal inp)
-                                    :text (str "Why: " (:why inp))
-                                    })
-                                 (:strategies ech))))
-               []
-               (remove nil? (-> result-data :strategies tag)))
-       into-array
-       (remove empty?)
+                                         #_(.log js/console (str "... pulling out strategies[" ech "]"))
+                                         (conj rslt (map (fn [inp]
+                                                           {:x (js/window.parseInt (:last-trade-time ech))
+                                                            :title (:signal inp)
+                                                            :text (str "Why: " (:why inp))
+                                                            })
+                                                         (:strategies ech))))
+                                       []
+                                       (remove nil? (-> result-data :strategies tag)))
+                               into-array
+                               (remove empty?)
 
-       ;; for some strange reason, each list entry is in another list
-       (map #(first %))))
+                               ;; for some strange reason, each list entry is in another list
+                               (map #(first %)))]
+
+    #_(.log js/console (str "... pulling out strategies > END[" result-strategies "]"))
+    result-strategies))
 
 
 (defn parse-result-data [result-data]

@@ -9,31 +9,31 @@ return cljs.core.reduce.call(null,(function (rslt,ech){
 var default_entry = (function (eF){
 return cljs.core.ObjMap.fromObject(["\uFDD0'type","\uFDD0'data","\uFDD0'color","\uFDD0'fillColor","\uFDD0'width","\uFDD0'style","\uFDD0'states"],{"\uFDD0'type":"flags","\uFDD0'data":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\uFDD0'x","\uFDD0'title","\uFDD0'text"],{"\uFDD0'x":(new cljs.core.Keyword("\uFDD0'x")).call(null,eF),"\uFDD0'title":(new cljs.core.Keyword("\uFDD0'title")).call(null,eF),"\uFDD0'text":(new cljs.core.Keyword("\uFDD0'text")).call(null,eF)})], true),"\uFDD0'color":"#5F86B3","\uFDD0'fillColor":"#5F86B3","\uFDD0'width":16,"\uFDD0'style":cljs.core.ObjMap.fromObject(["\uFDD0'color"],{"\uFDD0'color":"white"}),"\uFDD0'states":cljs.core.ObjMap.fromObject(["\uFDD0'hover"],{"\uFDD0'hover":cljs.core.ObjMap.fromObject(["\uFDD0'fillColor"],{"\uFDD0'fillColor":"#395C84"})})});
 });
-var G__77957 = cljs.core.first.call(null,ech);
-if(cljs.core._EQ_.call(null,"default",G__77957))
+var G__89054 = cljs.core.first.call(null,ech);
+if(cljs.core._EQ_.call(null,"default",G__89054))
 {return rslt;
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'obv",G__77957))
+{if(cljs.core._EQ_.call(null,"\uFDD0'obv",G__89054))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","obv-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'stochastic-oscillator",G__77957))
+{if(cljs.core._EQ_.call(null,"\uFDD0'stochastic-oscillator",G__89054))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","k-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'macd",G__77957))
+{if(cljs.core._EQ_.call(null,"\uFDD0'macd",G__89054))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","macd-price-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'bollinger-band",G__77957))
+{if(cljs.core._EQ_.call(null,"\uFDD0'bollinger-band",G__89054))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","bollinger-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'moving-average",G__77957))
+{if(cljs.core._EQ_.call(null,"\uFDD0'moving-average",G__89054))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","ema-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
@@ -62,9 +62,8 @@ return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(
 }),initial_list,cljs.core.seq.call(null,strategy_map));
 });
 edgar.build_graph_series_data = (function build_graph_series_data(dataList,signal_map,strategy_map){
-var initial_list = cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\uFDD0'name","\uFDD0'id","\uFDD0'data","\uFDD0'type","\uFDD0'color","\uFDD0'marker","\uFDD0'tooltip"],{"\uFDD0'name":"Bollinger Band","\uFDD0'id":"bollinger-list","\uFDD0'data":cljs.core.reverse.call(null,cljs.core.first.call(null,dataList)),"\uFDD0'type":"arearange","\uFDD0'color":"#629DFF","\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled","\uFDD0'radius"],{"\uFDD0'enabled":true,"\uFDD0'radius":3}),"\uFDD0'tooltip":cljs.core.ObjMap.fromObject(["\uFDD0'valueDecimals"],{"\uFDD0'valueDecimals":2})}),cljs.core.ObjMap.fromObject(["\uFDD0'name","\uFDD0'id","\uFDD0'data","\uFDD0'marker","\uFDD0'shadow","\uFDD0'tooltip"],{"\uFDD0'name":edgar.label,"\uFDD0'id":"tick-list","\uFDD0'data":cljs.core.reverse.call(null,cljs.core.second.call(null,dataList)),"\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled","\uFDD0'radius"],{"\uFDD0'enabled":true,"\uFDD0'radius":3}),"\uFDD0'shadow":true,"\uFDD0'tooltip":cljs.core.ObjMap.fromObject(["\uFDD0'valueDecimals"],{"\uFDD0'valueDecimals":2})}),cljs.core.ObjMap.fromObject(["\uFDD0'name","\uFDD0'id","\uFDD0'data","\uFDD0'marker","\uFDD0'shadow","\uFDD0'tooltip"],{"\uFDD0'name":"Simple Moving Average","\uFDD0'id":"sma-list","\uFDD0'data":cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,2)),"\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled","\uFDD0'radius"],{"\uFDD0'enabled":true,"\uFDD0'radius":3}),"\uFDD0'shadow":true,"\uFDD0'tooltip":cljs.core.ObjMap.fromObject(["\uFDD0'valueDecimals"],{"\uFDD0'valueDecimals":2})}),cljs.core.ObjMap.fromObject(["\uFDD0'name","\uFDD0'id","\uFDD0'data","\uFDD0'marker","\uFDD0'shadow","\uFDD0'tooltip"],{"\uFDD0'name":"Exponential Moving Average","\uFDD0'id":"ema-list","\uFDD0'data":cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,3)),"\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled","\uFDD0'radius"],{"\uFDD0'enabled":true,"\uFDD0'radius":3}),"\uFDD0'shadow":true,"\uFDD0'tooltip":cljs.core.ObjMap.fromObject(["\uFDD0'valueDecimals"],{"\uFDD0'valueDecimals":2})}),cljs.core.ObjMap.fromObject(["\uFDD0'name","\uFDD0'id","\uFDD0'data","\uFDD0'yAxis","\uFDD0'marker","\uFDD0'shadow","\uFDD0'tooltip"],{"\uFDD0'name":"MACD Price","\uFDD0'id":"macd-price-list","\uFDD0'data":cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,4)),"\uFDD0'yAxis":1,"\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled","\uFDD0'radius"],{"\uFDD0'enabled":true,"\uFDD0'radius":3}),"\uFDD0'shadow":true,"\uFDD0'tooltip":cljs.core.ObjMap.fromObject(["\uFDD0'valueDecimals"],{"\uFDD0'valueDecimals":2})}),cljs.core.ObjMap.fromObject(["\uFDD0'name","\uFDD0'id","\uFDD0'data","\uFDD0'yAxis","\uFDD0'marker","\uFDD0'shadow","\uFDD0'tooltip"],{"\uFDD0'name":"MACD Signal","\uFDD0'id":"macd-signal-list","\uFDD0'data":cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,5)),"\uFDD0'yAxis":1,"\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled","\uFDD0'radius"],{"\uFDD0'enabled":true,"\uFDD0'radius":3}),"\uFDD0'shadow":true,"\uFDD0'tooltip":cljs.core.ObjMap.fromObject(["\uFDD0'valueDecimals"],{"\uFDD0'valueDecimals":2})}),cljs.core.ObjMap.fromObject(["\uFDD0'name","\uFDD0'id","\uFDD0'data","\uFDD0'yAxis","\uFDD0'type","\uFDD0'marker","\uFDD0'shadow","\uFDD0'tooltip"],{"\uFDD0'name":"MACD Histogram","\uFDD0'id":"macd-histogram-list","\uFDD0'data":cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,6)),"\uFDD0'yAxis":2,"\uFDD0'type":"column","\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled","\uFDD0'radius"],{"\uFDD0'enabled":true,"\uFDD0'radius":3}),"\uFDD0'shadow":true,"\uFDD0'tooltip":cljs.core.ObjMap.fromObject(["\uFDD0'valueDecimals"],{"\uFDD0'valueDecimals":2})}),cljs.core.ObjMap.fromObject(["\uFDD0'name","\uFDD0'id","\uFDD0'data","\uFDD0'yAxis","\uFDD0'marker","\uFDD0'shadow","\uFDD0'tooltip"],{"\uFDD0'name":"Stochastic K","\uFDD0'id":"k-list","\uFDD0'data":cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,7)),"\uFDD0'yAxis":3,"\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled","\uFDD0'radius"],{"\uFDD0'enabled":true,"\uFDD0'radius":3}),"\uFDD0'shadow":true,"\uFDD0'tooltip":cljs.core.ObjMap.fromObject(["\uFDD0'valueDecimals"],{"\uFDD0'valueDecimals":2})}),cljs.core.ObjMap.fromObject(["\uFDD0'name","\uFDD0'id","\uFDD0'data","\uFDD0'yAxis","\uFDD0'marker","\uFDD0'shadow","\uFDD0'tooltip"],{"\uFDD0'name":"Stochastic D","\uFDD0'id":"d-list","\uFDD0'data":cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,8)),"\uFDD0'yAxis":3,"\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled","\uFDD0'radius"],{"\uFDD0'enabled":true,"\uFDD0'radius":3}),"\uFDD0'shadow":true,"\uFDD0'tooltip":cljs.core.ObjMap.fromObject(["\uFDD0'valueDecimals"],{"\uFDD0'valueDecimals":2})}),cljs.core.ObjMap.fromObject(["\uFDD0'name","\uFDD0'id","\uFDD0'data","\uFDD0'yAxis","\uFDD0'type","\uFDD0'marker","\uFDD0'shadow","\uFDD0'tooltip"],{"\uFDD0'name":"On Balance Volume","\uFDD0'id":"obv-list","\uFDD0'data":cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,9)),"\uFDD0'yAxis":4,"\uFDD0'type":"column","\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled","\uFDD0'radius"],{"\uFDD0'enabled":true,"\uFDD0'radius":3}),"\uFDD0'shadow":true,"\uFDD0'tooltip":cljs.core.ObjMap.fromObject(["\uFDD0'valueDecimals"],{"\uFDD0'valueDecimals":2})})], true);
-var with_strategies = edgar.add_strategies.call(null,initial_list,strategy_map);
-return with_strategies;
+var initial_list = cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\uFDD0'name","\uFDD0'id","\uFDD0'data","\uFDD0'type","\uFDD0'color","\uFDD0'marker","\uFDD0'tooltip"],{"\uFDD0'name":"Bollinger Band","\uFDD0'id":"bollinger-list","\uFDD0'data":cljs.core.reverse.call(null,cljs.core.first.call(null,dataList)),"\uFDD0'type":"arearange","\uFDD0'color":"#629DFF","\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled","\uFDD0'radius"],{"\uFDD0'enabled":true,"\uFDD0'radius":3}),"\uFDD0'tooltip":cljs.core.ObjMap.fromObject(["\uFDD0'valueDecimals"],{"\uFDD0'valueDecimals":2})}),cljs.core.ObjMap.fromObject(["\uFDD0'name","\uFDD0'id","\uFDD0'data","\uFDD0'marker","\uFDD0'shadow","\uFDD0'tooltip"],{"\uFDD0'name":edgar.label,"\uFDD0'id":"tick-list","\uFDD0'data":cljs.core.reverse.call(null,cljs.core.second.call(null,dataList)),"\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled","\uFDD0'radius"],{"\uFDD0'enabled":true,"\uFDD0'radius":3}),"\uFDD0'shadow":true,"\uFDD0'tooltip":cljs.core.ObjMap.fromObject(["\uFDD0'valueDecimals"],{"\uFDD0'valueDecimals":2})}),cljs.core.ObjMap.fromObject(["\uFDD0'name","\uFDD0'id","\uFDD0'data","\uFDD0'marker","\uFDD0'shadow","\uFDD0'tooltip"],{"\uFDD0'name":"Simple Moving Average","\uFDD0'id":"sma-list","\uFDD0'data":cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,2)),"\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled","\uFDD0'radius"],{"\uFDD0'enabled":true,"\uFDD0'radius":3}),"\uFDD0'shadow":true,"\uFDD0'tooltip":cljs.core.ObjMap.fromObject(["\uFDD0'valueDecimals"],{"\uFDD0'valueDecimals":2})}),cljs.core.ObjMap.fromObject(["\uFDD0'name","\uFDD0'id","\uFDD0'data","\uFDD0'marker","\uFDD0'shadow","\uFDD0'tooltip"],{"\uFDD0'name":"Exponential Moving Average","\uFDD0'id":"ema-list","\uFDD0'data":cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,3)),"\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled","\uFDD0'radius"],{"\uFDD0'enabled":true,"\uFDD0'radius":3}),"\uFDD0'shadow":true,"\uFDD0'tooltip":cljs.core.ObjMap.fromObject(["\uFDD0'valueDecimals"],{"\uFDD0'valueDecimals":2})}),cljs.core.ObjMap.fromObject(["\uFDD0'name","\uFDD0'id","\uFDD0'data","\uFDD0'yAxis","\uFDD0'marker","\uFDD0'shadow","\uFDD0'tooltip"],{"\uFDD0'name":"MACD Price","\uFDD0'id":"macd-price-list","\uFDD0'data":cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,4)),"\uFDD0'yAxis":1,"\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled","\uFDD0'radius"],{"\uFDD0'enabled":true,"\uFDD0'radius":3}),"\uFDD0'shadow":true,"\uFDD0'tooltip":cljs.core.ObjMap.fromObject(["\uFDD0'valueDecimals"],{"\uFDD0'valueDecimals":2})}),cljs.core.ObjMap.fromObject(["\uFDD0'name","\uFDD0'id","\uFDD0'data","\uFDD0'yAxis","\uFDD0'marker","\uFDD0'shadow","\uFDD0'tooltip"],{"\uFDD0'name":"MACD Signal","\uFDD0'id":"macd-signal-list","\uFDD0'data":cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,5)),"\uFDD0'yAxis":1,"\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled","\uFDD0'radius"],{"\uFDD0'enabled":true,"\uFDD0'radius":3}),"\uFDD0'shadow":true,"\uFDD0'tooltip":cljs.core.ObjMap.fromObject(["\uFDD0'valueDecimals"],{"\uFDD0'valueDecimals":2})}),cljs.core.ObjMap.fromObject(["\uFDD0'name","\uFDD0'id","\uFDD0'data","\uFDD0'yAxis","\uFDD0'type","\uFDD0'marker","\uFDD0'shadow","\uFDD0'tooltip"],{"\uFDD0'name":"MACD Histogram","\uFDD0'id":"macd-histogram-list","\uFDD0'data":cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,6)),"\uFDD0'yAxis":2,"\uFDD0'type":"column","\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled","\uFDD0'radius"],{"\uFDD0'enabled":true,"\uFDD0'radius":3}),"\uFDD0'shadow":true,"\uFDD0'tooltip":cljs.core.ObjMap.fromObject(["\uFDD0'valueDecimals"],{"\uFDD0'valueDecimals":2})}),cljs.core.ObjMap.fromObject(["\uFDD0'name","\uFDD0'id","\uFDD0'data","\uFDD0'yAxis","\uFDD0'marker","\uFDD0'shadow","\uFDD0'tooltip"],{"\uFDD0'name":"Stochastic K","\uFDD0'id":"k-list","\uFDD0'data":cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,7)),"\uFDD0'yAxis":3,"\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled","\uFDD0'radius"],{"\uFDD0'enabled":true,"\uFDD0'radius":3}),"\uFDD0'shadow":true,"\uFDD0'tooltip":cljs.core.ObjMap.fromObject(["\uFDD0'valueDecimals"],{"\uFDD0'valueDecimals":2})}),cljs.core.ObjMap.fromObject(["\uFDD0'name","\uFDD0'id","\uFDD0'data","\uFDD0'yAxis","\uFDD0'marker","\uFDD0'shadow","\uFDD0'tooltip"],{"\uFDD0'name":"Stochastic D","\uFDD0'id":"d-list","\uFDD0'data":cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,8)),"\uFDD0'yAxis":3,"\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled","\uFDD0'radius"],{"\uFDD0'enabled":true,"\uFDD0'radius":3}),"\uFDD0'shadow":true,"\uFDD0'tooltip":cljs.core.ObjMap.fromObject(["\uFDD0'valueDecimals"],{"\uFDD0'valueDecimals":2})}),cljs.core.ObjMap.fromObject(["\uFDD0'name","\uFDD0'id","\uFDD0'data","\uFDD0'yAxis","\uFDD0'type","\uFDD0'marker","\uFDD0'shadow","\uFDD0'tooltip"],{"\uFDD0'name":"On Balance Volume","\uFDD0'id":"obv-list","\uFDD0'data":cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,9)),"\uFDD0'yAxis":4,"\uFDD0'type":"column","\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled","\uFDD0'radius"],{"\uFDD0'enabled":true,"\uFDD0'radius":3}),"\uFDD0'shadow":true,"\uFDD0'tooltip":cljs.core.ObjMap.fromObject(["\uFDD0'valueDecimals"],{"\uFDD0'valueDecimals":2})}),cljs.core.ObjMap.fromObject(["\uFDD0'type","\uFDD0'name","\uFDD0'data","\uFDD0'color","\uFDD0'fillColor","\uFDD0'width","\uFDD0'style","\uFDD0'states"],{"\uFDD0'type":"flags","\uFDD0'name":"strategies","\uFDD0'data":cljs.core.PersistentVector.EMPTY,"\uFDD0'color":"#5F86B3","\uFDD0'fillColor":"#5F86B3","\uFDD0'width":16,"\uFDD0'style":cljs.core.ObjMap.fromObject(["\uFDD0'color"],{"\uFDD0'color":"white"}),"\uFDD0'states":cljs.core.ObjMap.fromObject(["\uFDD0'hover"],{"\uFDD0'hover":cljs.core.ObjMap.fromObject(["\uFDD0'fillColor"],{"\uFDD0'fillColor":"#395C84"})})})], true);
+return initial_list;
 });
 edgar.render_stock_graph = (function render_stock_graph(selector,dataList,signal_map,strategy_map,label,increment){
 if(cljs.core.not.call(null,increment))
@@ -79,15 +78,27 @@ cljs.core.nth.call(null,jayq.core.$.call(null,selector).highcharts().series,5).a
 cljs.core.nth.call(null,jayq.core.$.call(null,selector).highcharts().series,6).addPoint(cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,6))),true,false);
 cljs.core.nth.call(null,jayq.core.$.call(null,selector).highcharts().series,7).addPoint(cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,7))),true,false);
 cljs.core.nth.call(null,jayq.core.$.call(null,selector).highcharts().series,8).addPoint(cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,8))),true,false);
-return cljs.core.nth.call(null,jayq.core.$.call(null,selector).highcharts().series,9).addPoint(cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,9))),true,false);
+cljs.core.nth.call(null,jayq.core.$.call(null,selector).highcharts().series,9).addPoint(cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,9))),true,false);
+return cljs.core.reduce.call(null,(function (rslt,ech){
+var default_entry = (function (eF){
+return cljs.core.ObjMap.fromObject(["\uFDD0'x","\uFDD0'title","\uFDD0'text"],{"\uFDD0'x":(new cljs.core.Keyword("\uFDD0'x")).call(null,eF),"\uFDD0'title":(new cljs.core.Keyword("\uFDD0'title")).call(null,eF),"\uFDD0'text":(new cljs.core.Keyword("\uFDD0'text")).call(null,eF)});
+});
+return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
+console.log([cljs.core.str("... AND > eF["),cljs.core.str(eF),cljs.core.str("]")].join(''));
+var strategy_entry = default_entry.call(null,eF);
+console.log([cljs.core.str("... AND AND > strategy-entry["),cljs.core.str(strategy_entry),cljs.core.str("] > fn["),cljs.core.str("]")].join(''));
+cljs.core.nth.call(null,jayq.core.$.call(null,selector).highcharts().series,10).addPoint(strategy_entry,true);
+return cljs.core.conj.call(null,rF,strategy_entry);
+}),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
+}),cljs.core.PersistentVector.EMPTY,cljs.core.seq.call(null,strategy_map));
 }
 });
 edgar.populate_multiselect = (function populate_multiselect(selector,options){
-var G__77962 = (new cljs.core.Keyword("\uFDD0'bind")).call(null,jayq.core.deferred_m);
-var G__77963 = (new cljs.core.Keyword("\uFDD0'return")).call(null,jayq.core.deferred_m);
-var G__77964 = (new cljs.core.Keyword("\uFDD0'zero")).call(null,jayq.core.deferred_m);
-return G__77962.call(null,$.ajax.call(null,"/list-filtered-input"),(function (filtered_input){
-return G__77963.call(null,(function (){var multiselect = jayq.core.$.call(null,selector);
+var G__89059 = (new cljs.core.Keyword("\uFDD0'bind")).call(null,jayq.core.deferred_m);
+var G__89060 = (new cljs.core.Keyword("\uFDD0'return")).call(null,jayq.core.deferred_m);
+var G__89061 = (new cljs.core.Keyword("\uFDD0'zero")).call(null,jayq.core.deferred_m);
+return G__89059.call(null,$.ajax.call(null,"/list-filtered-input"),(function (filtered_input){
+return G__89060.call(null,(function (){var multiselect = jayq.core.$.call(null,selector);
 cljs.core.reduce.call(null,(function (rslt,inp){
 var option_value = cljs.core.second.call(null,inp);
 var option_label = cljs.core.nth.call(null,inp,2);
@@ -99,8 +110,8 @@ return jayq.core.$.call(null,selector).multiselect(cljs.core.clj__GT_js.call(nul
 }));
 });
 edgar.pull_out_signals = (function pull_out_signals(result_data,tag){
-return cljs.core.map.call(null,(function (p1__77958_SHARP_){
-return cljs.core.first.call(null,p1__77958_SHARP_);
+return cljs.core.map.call(null,(function (p1__89055_SHARP_){
+return cljs.core.first.call(null,p1__89055_SHARP_);
 }),cljs.core.remove.call(null,cljs.core.empty_QMARK_,cljs.core.into_array.call(null,cljs.core.reduce.call(null,(function (rslt,ech){
 return cljs.core.conj.call(null,rslt,cljs.core.map.call(null,(function (inp){
 return cljs.core.ObjMap.fromObject(["\uFDD0'x","\uFDD0'title","\uFDD0'text"],{"\uFDD0'x":window.parseInt((new cljs.core.Keyword("\uFDD0'last-trade-time")).call(null,ech)),"\uFDD0'title":(new cljs.core.Keyword("\uFDD0'signal")).call(null,inp),"\uFDD0'text":[cljs.core.str("Why: "),cljs.core.str((new cljs.core.Keyword("\uFDD0'why")).call(null,inp))].join('')});
@@ -108,13 +119,14 @@ return cljs.core.ObjMap.fromObject(["\uFDD0'x","\uFDD0'title","\uFDD0'text"],{"\
 }),cljs.core.PersistentVector.EMPTY,cljs.core.remove.call(null,cljs.core.nil_QMARK_,tag.call(null,(new cljs.core.Keyword("\uFDD0'signals")).call(null,result_data)))))));
 });
 edgar.pull_out_strategies = (function pull_out_strategies(result_data,tag){
-return cljs.core.map.call(null,(function (p1__77965_SHARP_){
-return cljs.core.first.call(null,p1__77965_SHARP_);
+var result_strategies = cljs.core.map.call(null,(function (p1__89062_SHARP_){
+return cljs.core.first.call(null,p1__89062_SHARP_);
 }),cljs.core.remove.call(null,cljs.core.empty_QMARK_,cljs.core.into_array.call(null,cljs.core.reduce.call(null,(function (rslt,ech){
 return cljs.core.conj.call(null,rslt,cljs.core.map.call(null,(function (inp){
 return cljs.core.ObjMap.fromObject(["\uFDD0'x","\uFDD0'title","\uFDD0'text"],{"\uFDD0'x":window.parseInt((new cljs.core.Keyword("\uFDD0'last-trade-time")).call(null,ech)),"\uFDD0'title":(new cljs.core.Keyword("\uFDD0'signal")).call(null,inp),"\uFDD0'text":[cljs.core.str("Why: "),cljs.core.str((new cljs.core.Keyword("\uFDD0'why")).call(null,inp))].join('')});
 }),(new cljs.core.Keyword("\uFDD0'strategies")).call(null,ech)));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.remove.call(null,cljs.core.nil_QMARK_,tag.call(null,(new cljs.core.Keyword("\uFDD0'strategies")).call(null,result_data)))))));
+return result_strategies;
 });
 edgar.parse_result_data = (function parse_result_data(result_data){
 return cljs.core.ObjMap.fromObject(["\uFDD0'local-list","\uFDD0'macd-price-list","\uFDD0'stock-name","\uFDD0'sma-list","\uFDD0'macd-histogram-list","\uFDD0'ema-list","\uFDD0'stochastic-d","\uFDD0'bollinger-band","\uFDD0'obv","\uFDD0'strategies","\uFDD0'stochastic-k","\uFDD0'macd-signal-list","\uFDD0'signals"],{"\uFDD0'local-list":cljs.core.into_array.call(null,cljs.core.reduce.call(null,(function (rslt,ech){
@@ -123,14 +135,14 @@ return cljs.core.conj.call(null,rslt,cljs.core.into_array.call(null,cljs.core.Pe
 return cljs.core.conj.call(null,rslt,cljs.core.into_array.call(null,cljs.core.PersistentVector.fromArray([window.parseInt((new cljs.core.Keyword("\uFDD0'last-trade-time")).call(null,ech)),window.parseFloat((new cljs.core.Keyword("\uFDD0'last-trade-macd")).call(null,ech))], true)));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.remove.call(null,cljs.core.nil_QMARK_,(new cljs.core.Keyword("\uFDD0'macd")).call(null,(new cljs.core.Keyword("\uFDD0'signals")).call(null,result_data))))),"\uFDD0'stock-name":(new cljs.core.Keyword("\uFDD0'stock-name")).call(null,result_data),"\uFDD0'sma-list":cljs.core.into_array.call(null,cljs.core.reduce.call(null,(function (rslt,ech){
 return cljs.core.conj.call(null,rslt,cljs.core.into_array.call(null,cljs.core.PersistentVector.fromArray([window.parseInt(cljs.core.first.call(null,ech)),window.parseFloat(cljs.core.second.call(null,ech))], true)));
-}),cljs.core.PersistentVector.EMPTY,cljs.core.remove.call(null,(function (p1__77966_SHARP_){
-return (cljs.core.first.call(null,p1__77966_SHARP_) == null);
+}),cljs.core.PersistentVector.EMPTY,cljs.core.remove.call(null,(function (p1__89063_SHARP_){
+return (cljs.core.first.call(null,p1__89063_SHARP_) == null);
 }),cljs.core.into_array.call(null,(new cljs.core.Keyword("\uFDD0'sma-list")).call(null,result_data))))),"\uFDD0'macd-histogram-list":cljs.core.into_array.call(null,cljs.core.reduce.call(null,(function (rslt,ech){
 return cljs.core.conj.call(null,rslt,cljs.core.into_array.call(null,cljs.core.PersistentVector.fromArray([window.parseInt((new cljs.core.Keyword("\uFDD0'last-trade-time")).call(null,ech)),window.parseFloat((new cljs.core.Keyword("\uFDD0'histogram")).call(null,ech))], true)));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.remove.call(null,cljs.core.nil_QMARK_,(new cljs.core.Keyword("\uFDD0'macd")).call(null,(new cljs.core.Keyword("\uFDD0'signals")).call(null,result_data))))),"\uFDD0'ema-list":cljs.core.into_array.call(null,cljs.core.reduce.call(null,(function (rslt,ech){
 return cljs.core.conj.call(null,rslt,cljs.core.into_array.call(null,cljs.core.PersistentVector.fromArray([window.parseInt(cljs.core.first.call(null,ech)),window.parseFloat(cljs.core.second.call(null,ech))], true)));
-}),cljs.core.PersistentVector.EMPTY,cljs.core.remove.call(null,(function (p1__77967_SHARP_){
-return (cljs.core.first.call(null,p1__77967_SHARP_) == null);
+}),cljs.core.PersistentVector.EMPTY,cljs.core.remove.call(null,(function (p1__89064_SHARP_){
+return (cljs.core.first.call(null,p1__89064_SHARP_) == null);
 }),cljs.core.into_array.call(null,(new cljs.core.Keyword("\uFDD0'ema-list")).call(null,result_data))))),"\uFDD0'stochastic-d":cljs.core.into_array.call(null,cljs.core.reduce.call(null,(function (rslt,ech){
 return cljs.core.conj.call(null,rslt,cljs.core.into_array.call(null,cljs.core.PersistentVector.fromArray([window.parseInt((new cljs.core.Keyword("\uFDD0'last-trade-time")).call(null,ech)),window.parseFloat((new cljs.core.Keyword("\uFDD0'D")).call(null,ech))], true)));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.remove.call(null,cljs.core.nil_QMARK_,(new cljs.core.Keyword("\uFDD0'stochastic-oscillator")).call(null,(new cljs.core.Keyword("\uFDD0'signals")).call(null,result_data))))),"\uFDD0'bollinger-band":cljs.core.into_array.call(null,cljs.core.reduce.call(null,(function (rslt,ech){

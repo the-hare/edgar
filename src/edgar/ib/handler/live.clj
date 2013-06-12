@@ -144,7 +144,7 @@
      :ticker-id-filter - a list of tickerIds about which this feed-handler cares"
   [options evt]
 
-  (log/info "feed-handler > tickerIDs[" (:ticker-id-filter options) "] > tick-list SIZE[" (count (deref (:tick-list options))) "] > SOME[" (some #{ (evt "tickerId") } (:ticker-id-filter options)) "]")
+  #_(log/info "feed-handler > tickerIDs[" (:ticker-id-filter options) "] > tick-list SIZE[" (count (deref (:tick-list options))) "] > SOME[" (some #{ (evt "tickerId") } (:ticker-id-filter options)) "]")
   (if (:ticker-id-filter options)
 
     ;; check if this event passes the filter
