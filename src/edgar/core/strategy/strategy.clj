@@ -10,6 +10,7 @@
 
 (defn price-below-sma? [tick-list signals-ma]
 
+  (println (str "... price-below-sma? CALLED / tick-list[" (seq tick-list)"] / signals-ma[" (seq signals-ma) "]"))
   (let [p-tick (first tick-list)
         sma-tick (first signals-ma)]
 
@@ -35,10 +36,12 @@
   (let [p-tick (first tick-list)
         b-ticks (take 2 signals-bollinger)]
 
-    (some (fn [inp]
-            (<= (:last-trade-price p-tick)
-                (:lower-band inp)))
-          b-ticks)))
+    (-> (some (fn [inp]
+                (<= (:last-trade-price p-tick)
+                    (:lower-band inp)))
+              b-ticks)
+        nil?
+        not)))
 
 (defn bollinger-was-narrower? [signals-bollinger]
 
@@ -52,10 +55,12 @@
                                                 (:lower-band inp))))
                     b2)]
 
-    (some (fn [inp]
-            (> (:difference b-first)
-               (:difference inp)))
-          b-rest)))
+    (-> (some (fn [inp]
+                 (> (:difference b-first)
+                    (:difference inp)))
+              b-rest)
+        nil?
+        not)))
 
 (defn macd-crossover? [signals-macd]
 
@@ -70,23 +75,29 @@
   (let [h-first (first signals-macd)
         h-rest (take 2 (rest signals-macd))]
 
-    (some (fn [inp]
-            (> (:histogram h-first)
-               (:histogram inp)))
-          h-rest)))
+    (-> (some (fn [inp]
+                (> (:histogram h-first)
+                   (:histogram inp)))
+              h-rest)
+        nil?
+        not)))
 
 (defn obv-increasing? [signals-obv]
 
   (let [fst (first signals-obv)
-        snd (second signals-obv)]
+        snd (second signals-obv)
+        thd (nth signals-obv 2)]
 
-    (> (:obv fst) (:obv snd))))
+    (or (> (:obv fst) (:obv snd))
+        (> (:obv fst) (:obv thd)))))
 
 (defn stochastic-oversold? [signals-stochastic]
 
-  (some (fn [inp]
-          (<= 0.8 (:K inp)))
-        signals-stochastic))
+  (-> (some (fn [inp]
+              (<= (:K inp) 0.25))
+            signals-stochastic)
+      nil?
+      not))
 
 (defn stochastic-crossover? [signals-stochastic]
 
@@ -117,27 +128,48 @@
         ;; A.
         price-increaseV (price-increase? tick-list)
 
+        zzz (println "")
+        yyy (println "")
+        xxx (println (str "0["price-increaseV "] ... price-increase? > tick-list[" (seq (take 2 tick-list)) "]"))
+
+
         ;; B.
         price-below-smaV (price-below-sma? tick-list signals-ma)
+
+        xxx (println (str "1["price-below-smaV "] ... price-below-sma? > tick-list[" (seq (take 2 tick-list)) "] / signals-ma[" (seq (take 2 signals-ma)) "]"))
 
         ;; C.
         bollinger-price-belowV (bollinger-price-below? tick-list signals-bollinger)
 
+        aaa (println (str "2[" bollinger-price-belowV "] ... bollinger-price-below? > tick-list[" (seq (take 3 tick-list)) "] / signals-bollinger[" (seq (take 3 signals-bollinger)) "]"))
+
         ;; D.
         bollinger-was-narrowerV (bollinger-was-narrower? signals-bollinger)
+
+        bbb (println (str "3["bollinger-was-narrowerV "] ... bollinger-was-narrower? > signals-bollinger[" (seq (take 3 signals-bollinger)) "]"))
 
         ;; E.
         macd-histogram-squeezeV (macd-histogram-squeeze? signals-macd)
 
+        ccc (println (str "4[" macd-histogram-squeezeV "] ... macd-histogram-squeeze? > signals-macd[" (seq (take 3 signals-macd)) "]"))
+
         ;; F.
         obv-increasingV (obv-increasing? signals-obv)
 
+        ddd (println (str "5[" obv-increasingV "] ... obv-increasing? > signals-obv[" (seq (take 3 signals-obv)) "]"))
+
         ;; G.
-        stochastic-oversoldV (stochastic-oversold? signals-stochastic)]
+        stochastic-oversoldV (stochastic-oversold? signals-stochastic)
+
+        eee (println (str "6[" stochastic-oversoldV "] ... stochastic-oversold? > signals-stochastic[" (seq (take 3 signals-stochastic)) "]"))
+
+        ]
 
     (if (and price-increaseV price-below-smaV bollinger-price-belowV bollinger-was-narrowerV macd-histogram-squeezeV obv-increasingV stochastic-oversoldV)
 
       ;; if all conditions are met, put an :up signal, with the reasons
+
+      (println "BINGO ---- We have a strategic :up signal")
       (concat (assoc (first tick-list) :strategies [{:signal :up
                                                      :why [:price-increase :price-below-sma :bollinger-price-below :bollinger-was-narrower :macd-histogram-squeeze :obv-increasing :stochastic-oversold]}])
               (rest tick-list)))))
@@ -147,7 +179,9 @@
 
   (->> (filter (fn [inp]
                  (some #{(:last-trade-time inp)} key-list))
-               (remove (fn [inp]
+
+               input-list
+               #_(remove (fn [inp]
                          (nil? (:last-trade-time inp))) input-list))
 
        (sort-by :last-trade-time)))
@@ -171,15 +205,13 @@
                   stochastic-L (list-subset key-list signals-stochastic)
                   obv-L (list-subset key-list signals-obv)]
 
-              #_(println "")
-              #_(println "... strategy-fill-A CALLED / tick-list[" (count ech-list) "] / signals-ma[" (count ma-L) "] / signals-bollinger[" (count bollinger-L) "] / signals-macd[" (count macd-L) "] / signals-stochastic[" (count stochastic-L) "] / signals-obv[" (count obv-L) "]")
 
               ;; Make sure none of the lists are not empty
-              (if (or (empty? ma-L)
-                      (empty? bollinger-L)
-                      (empty? macd-L)
-                      (empty? stochastic-L)
-                      (empty? obv-L))
+              (if (or (< (count ma-L) 2)
+                      (< (count bollinger-L) 3)
+                      (< (count macd-L) 3)
+                      (< (count stochastic-L) 3)
+                      (< (count obv-L) 3))
 
                 (conj rslt (first ech-list))
 
