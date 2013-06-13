@@ -85,8 +85,8 @@
                        :color "#629DFF"
                        :marker {:enabled true :radius 3}
                        :tooltip {:valueDecimals 2}}
-                      {:name label
-                       :id "tick-list"
+                      {:name "Closing Price"
+                       :id "ticklist"
                        :data (reverse (second dataList))
                        :marker {:enabled true :radius 3}
                        :shadow true
@@ -157,6 +157,14 @@
                       {:type "flags"
                        :name "strategies"
                        :data []
+                       :onSeries "ticklist"
+                       :shape "squarepin"
+                       }
+                      #_{:type "flags"
+                       :name "strategies"
+                       :shape "squarepin"
+                       :data []
+                       :onSeries "tick-list"
                        :color "#5F86B3"
                        :fillColor "#5F86B3"
                        :width 16
@@ -182,7 +190,7 @@
     (-> ($ selector)
         (.highcharts "StockChart" (clj->js
                                    {:names [label "Bolling Band" "Simple Moving Average" "Exponential Moving Average"]
-                                    :rangeSelector {:selected 7}
+                                    :rangeSelector {:selected 11}
                                     :title {:text label}
                                     :chart {:zoomType "x"}
                                     :navigator {:adaptToUpdatedData true}
@@ -243,51 +251,63 @@
           second
           (.addPoint (last (reverse (second dataList))) true false))
 
-      (-> ($ selector)
+      #_(-> ($ selector)
           (.highcharts)
           (.-series)
           (nth 2)
           (.addPoint (last (reverse (nth dataList 2))) true false))
 
-      (-> ($ selector)
+      #_(-> ($ selector)
           (.highcharts)
           (.-series)
           (nth 3)
           (.addPoint (last (reverse (nth dataList 3))) true false))
 
 
-      (-> ($ selector)
+      #_(-> ($ selector)
           (.highcharts)
           (.-series)
           (nth 4)
           (.addPoint (last (reverse (nth dataList 4))) true false))
-      (-> ($ selector)
+      #_(-> ($ selector)
           (.highcharts)
           (.-series)
           (nth 5)
           (.addPoint (last (reverse (nth dataList 5))) true false))
-      (-> ($ selector)
+      #_(-> ($ selector)
           (.highcharts)
           (.-series)
           (nth 6)
           (.addPoint (last (reverse (nth dataList 6))) true false))
-      (-> ($ selector)
+      #_(-> ($ selector)
           (.highcharts)
           (.-series)
           (nth 7)
           (.addPoint (last (reverse (nth dataList 7))) true false))
-      (-> ($ selector)
+      #_(-> ($ selector)
           (.highcharts)
           (.-series)
           (nth 8)
           (.addPoint (last (reverse (nth dataList 8))) true false))
-      (-> ($ selector)
+      #_(-> ($ selector)
           (.highcharts)
           (.-series)
           (nth 9)
           (.addPoint (last (reverse (nth dataList 9))) true false))
 
-      (reduce (fn [rslt ech]
+
+      (.log js/console "")
+      (.log js/console (str "Zzz 1[" (last (reverse (second dataList))) "]"))
+      (.log js/console (str "Zzz 2[" {:x (js/window.Date. (first (last (reverse (second dataList))))) :title "Testing 123"} "]"))
+
+
+      (-> ($ selector)
+          (.highcharts)
+          (.-series)
+          (nth 10)
+          (.addPoint {:x (js/window.Date. (first (last (reverse (second dataList))))) :title "Testing 123"} true false))
+
+      #_(reduce (fn [rslt ech]
 
                 (let [default-entry (fn [eF]
                                       {:x (-> eF :x)
@@ -296,15 +316,15 @@
 
                   (concat rslt (reduce (fn [rF eF]
 
-                                         (.log js/console (str "... AND > eF[" eF "]"))
+                                         #_(.log js/console (str "... AND > eF[" eF "]"))
                                          (let [strategy-entry (default-entry eF)]
 
-                                           (.log js/console (str "... AND AND > strategy-entry[" strategy-entry "] > fn["  "]"))
+                                           #_(.log js/console (str "... AND AND > strategy-entry[" strategy-entry "] > fn["  "]"))
                                            (-> ($ selector)
                                                (.highcharts)
                                                (.-series)
                                                (nth 10)
-                                               (.addPoint strategy-entry true))
+                                               (.addPoint strategy-entry true false))
                                            (conj rF strategy-entry)))
                                        []
                                        (second ech)))))
