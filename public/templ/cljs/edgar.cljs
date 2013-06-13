@@ -41,7 +41,7 @@
                                                                                                    parsed-result-map (shandler/parse-result-data result-data)
                                                                                                    increment? false]
 
-                                                                                               (.log js/console (str "... generated signal-map[" (-> result-data :strategies) "]"))
+                                                                                               #_(.log js/console (str "... generated signal-map[" (-> result-data :strategies) "]"))
                                                                                                (graph/render-stock-graph "#historical-stock-graph"
                                                                                                                    [(:bollinger-band parsed-result-map)
                                                                                                                     (:local-list parsed-result-map)

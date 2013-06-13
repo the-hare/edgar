@@ -51,25 +51,31 @@
 
 (defn add-strategies [initial-list strategy-map]
 
-  (reduce (fn [rslt ech]
 
-            (let [default-entry (fn [eF]
-                                  {:type "flags"
-                                   :data [{:x (-> eF :x)
-                                           :title (-> eF :title)
-                                           :text (-> eF :text)}]
-                                   :color "#5F86B3"
-                                   :fillColor "#5F86B3"
-                                   :width 16
-                                   :style {:color "white"}
-                                   :states {:hover { :fillColor "#395C84" }}})]
+  (.log js/console "... add-strategies > strategy-map[" strategy-map "]")
+  (let [default-entry {:type "flags"
+                       :name "strategies"
+                       :data []
+                       :onSeries "tick-list"
+                       :color "#5F86B3"
+                       :fillColor "#5F86B3"
+                       :width 16
+                       :style {:color "white"}
+                       :states {:hover { :fillColor "#395C84" }}}
 
-              (concat rslt (reduce (fn [rF eF]
-                                     (conj rF (assoc (default-entry eF) :onSeries "tick-list")))
-                                   []
-                                   (second ech)))))
-          initial-list
-          (seq strategy-map)))
+        data-list (->> (reduce (fn [rslt ech-list]
+
+                                 (concat rslt (reduce (fn [rF eF] (conj rF eF))
+                                                      []
+                                                      (second ech-list))))
+                               []
+                               (seq strategy-map))
+
+                       (remove #(or (nil? %) (empty? %))))]
+
+
+    (.log js/console "... RESULT data-list[" (clj->js data-list) "]")
+    (conj initial-list (assoc default-entry :data data-list))))
 
 
 
@@ -83,7 +89,7 @@
                        :marker {:enabled true :radius 3}
                        :tooltip {:valueDecimals 2}}
                       {:name "Closing Price"
-                       :id "ticklist"
+                       :id "tick-list"
                        :data (reverse (second dataList))
                        :marker {:enabled true :radius 3}
                        :shadow true
@@ -152,7 +158,7 @@
                        :shadow true
                        :tooltip {:valueDecimals 2}}
 
-                      {:type "flags"
+                      #_{:type "flags"
                        :name "strategies"
                        :shape "squarepin"
                        :data []
@@ -165,11 +171,11 @@
                       ]
 
         #_with-signals #_(add-signals initial-list signal-map)  ;; iterate over map entries
-        #_with-strategies #_(add-strategies initial-list strategy-map)
+        with-strategies (add-strategies initial-list strategy-map)
         ]
 
-    #_(.log js/console (str "... FINAL series array[" with-strategies "]"))
-    initial-list))
+    (.log js/console (str "... FINAL series array[" with-strategies "]"))
+    with-strategies))
 
 
 (defn chart-fill [selector dataList signal-map strategy-map]
@@ -223,95 +229,8 @@
                                            :offset 0
                                            :lineWidth 2}]
 
-                                  #_:series #_(build-graph-series-data dataList signal-map strategy-map)
-                                  :series [{:name "Bollinger Band"
-                                            :id "bollinger-list"
-                                            :data (reverse (first dataList))
-                                            :type "arearange"
-                                            :color "#629DFF"
-                                            :marker {:enabled true :radius 3}
-                                            :tooltip {:valueDecimals 2}}
-                                           {:name "Closing Price"
-                                            :id "ticklist"
-                                            :data (reverse (second dataList))
-                                            :marker {:enabled true :radius 3}
-                                            :shadow true
-                                            :tooltip {:valueDecimals 2}}
-                                           {:name "Simple Moving Average"
-                                            :id "sma-list"
-                                            :data (reverse (nth dataList 2))
-                                            :marker {:enabled true :radius 3}
-                                            :shadow true
-                                            :tooltip {:valueDecimals 2}}
-                                           {:name "Exponential Moving Average"
-                                            :id "ema-list"
-                                            :data (reverse (nth dataList 3))
-                                            :marker {:enabled true :radius 3}
-                                            :shadow true
-                                            :tooltip {:valueDecimals 2}}
-
-
-                                           ;; MACD Data
-                                           {:name "MACD Price"
-                                            :id "macd-price-list"
-                                            :data (reverse (nth dataList 4))
-                                            :yAxis 1
-                                            :marker {:enabled true :radius 3}
-                                            :shadow true
-                                            :tooltip {:valueDecimals 2}}
-                                           {:name "MACD Signal"
-                                            :id "macd-signal-list"
-                                            :data (reverse (nth dataList 5))
-                                            :yAxis 1
-                                            :marker {:enabled true :radius 3}
-                                            :shadow true
-                                            :tooltip {:valueDecimals 2}}
-
-                                           {:name "MACD Histogram"
-                                            :id "macd-histogram-list"
-                                            :data (reverse (nth dataList 6))
-                                            :yAxis 2
-                                            :type "column"
-                                            :marker {:enabled true :radius 3}
-                                            :shadow true
-                                            :tooltip {:valueDecimals 2}}
-
-                                           ;; Stochastic Data
-                                           {:name "Stochastic K"
-                                            :id "k-list"
-                                            :data (reverse (nth dataList 7))
-                                            :yAxis 3
-                                            :marker {:enabled true :radius 3}
-                                            :shadow true
-                                            :tooltip {:valueDecimals 2}}
-                                           {:name "Stochastic D"
-                                            :id "d-list"
-                                            :data (reverse (nth dataList 8))
-                                            :yAxis 3
-                                            :marker {:enabled true :radius 3}
-                                            :shadow true
-                                            :tooltip {:valueDecimals 2}}
-
-                                           {:name "On Balance Volume"
-                                            :id "obv-list"
-                                            :data (reverse (nth dataList 9))
-                                            :yAxis 4
-                                            :type "column"
-                                            :marker {:enabled true :radius 3}
-                                            :shadow true
-                                            :tooltip {:valueDecimals 2}}
-
-                                           {:type "flags"
-                                            :name "strategies"
-                                            :shape "squarepin"
-                                            :data []
-                                            :onSeries "tick-list"
-                                            :color "#5F86B3"
-                                            :fillColor "#5F86B3"
-                                            :width 16
-                                            :style {:color "white"}
-                                            :states {:hover { :fillColor "#395C84" }}}
-                                           ]}))))
+                                  :series (build-graph-series-data dataList signal-map strategy-map)
+                                  }))))
 
 
 (defn chart-increment [selector dataList strategy-map]
@@ -385,35 +304,12 @@
           (.-series)
           (nth 10)
           (.addPoint {:x (js/window.Date. (first (last (reverse (second dataList))))) :title "Testing 123"} true false))
-
-      #_(reduce (fn [rslt ech]
-
-                (let [default-entry (fn [eF]
-                                      {:x (-> eF :x)
-                                       :title (-> eF :title)
-                                       :text (-> eF :text)})]
-
-                  (concat rslt (reduce (fn [rF eF]
-
-                                         #_(.log js/console (str "... AND > eF[" eF "]"))
-                                         (let [strategy-entry (default-entry eF)]
-
-                                           #_(.log js/console (str "... AND AND > strategy-entry[" strategy-entry "] > fn["  "]"))
-                                           (-> ($ selector)
-                                               (.highcharts)
-                                               (.-series)
-                                               (nth 10)
-                                               (.addPoint strategy-entry true false))
-                                           (conj rF strategy-entry)))
-                                       []
-                                       (second ech)))))
-              []
-              (seq strategy-map))))
+))
 
 (defn render-stock-graph [selector dataList signal-map strategy-map label increment]
 
 
-  #_(.log js/console (str "... render-stock-graph > strategy-map[" strategy-map "]"))
+  (.log js/console (str "... render-stock-graph > strategy-map[" strategy-map "] > increment[" increment "]"))
   (if-not increment
 
     (chart-fill selector dataList signal-map strategy-map)
