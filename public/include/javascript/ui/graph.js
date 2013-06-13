@@ -7,31 +7,31 @@ return cljs.core.reduce.call(null,(function (rslt,ech){
 var default_entry = (function (eF){
 return cljs.core.ObjMap.fromObject(["\uFDD0'type","\uFDD0'data","\uFDD0'color","\uFDD0'fillColor","\uFDD0'width","\uFDD0'style","\uFDD0'states"],{"\uFDD0'type":"flags","\uFDD0'data":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\uFDD0'x","\uFDD0'title","\uFDD0'text"],{"\uFDD0'x":(new cljs.core.Keyword("\uFDD0'x")).call(null,eF),"\uFDD0'title":(new cljs.core.Keyword("\uFDD0'title")).call(null,eF),"\uFDD0'text":(new cljs.core.Keyword("\uFDD0'text")).call(null,eF)})], true),"\uFDD0'color":"#5F86B3","\uFDD0'fillColor":"#5F86B3","\uFDD0'width":16,"\uFDD0'style":cljs.core.ObjMap.fromObject(["\uFDD0'color"],{"\uFDD0'color":"white"}),"\uFDD0'states":cljs.core.ObjMap.fromObject(["\uFDD0'hover"],{"\uFDD0'hover":cljs.core.ObjMap.fromObject(["\uFDD0'fillColor"],{"\uFDD0'fillColor":"#395C84"})})});
 });
-var G__20582 = cljs.core.first.call(null,ech);
-if(cljs.core._EQ_.call(null,"default",G__20582))
+var G__22479 = cljs.core.first.call(null,ech);
+if(cljs.core._EQ_.call(null,"default",G__22479))
 {return rslt;
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'obv",G__20582))
+{if(cljs.core._EQ_.call(null,"\uFDD0'obv",G__22479))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","obv-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'stochastic-oscillator",G__20582))
+{if(cljs.core._EQ_.call(null,"\uFDD0'stochastic-oscillator",G__22479))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","k-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'macd",G__20582))
+{if(cljs.core._EQ_.call(null,"\uFDD0'macd",G__22479))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","macd-price-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'bollinger-band",G__20582))
+{if(cljs.core._EQ_.call(null,"\uFDD0'bollinger-band",G__22479))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","bollinger-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'moving-average",G__20582))
+{if(cljs.core._EQ_.call(null,"\uFDD0'moving-average",G__22479))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","ema-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
@@ -50,21 +50,19 @@ return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(
 }),initial_list,cljs.core.seq.call(null,signal_map));
 });
 ui.graph.add_strategies = (function add_strategies(initial_list,strategy_map){
-console.log("... add-strategies > strategy-map[",strategy_map,"]");
 var default_entry = cljs.core.ObjMap.fromObject(["\uFDD0'data","\uFDD0'width","\uFDD0'name","\uFDD0'onSeries","\uFDD0'color","\uFDD0'style","\uFDD0'states","\uFDD0'type","\uFDD0'fillColor"],{"\uFDD0'data":cljs.core.PersistentVector.EMPTY,"\uFDD0'width":16,"\uFDD0'name":"strategies","\uFDD0'onSeries":"tick-list","\uFDD0'color":"#5F86B3","\uFDD0'style":cljs.core.ObjMap.fromObject(["\uFDD0'color"],{"\uFDD0'color":"white"}),"\uFDD0'states":cljs.core.ObjMap.fromObject(["\uFDD0'hover"],{"\uFDD0'hover":cljs.core.ObjMap.fromObject(["\uFDD0'fillColor"],{"\uFDD0'fillColor":"#395C84"})}),"\uFDD0'type":"flags","\uFDD0'fillColor":"#5F86B3"});
-var data_list = cljs.core.remove.call(null,(function (p1__20580_SHARP_){
-var or__3951__auto__ = (p1__20580_SHARP_ == null);
+var data_list = cljs.core.remove.call(null,(function (p1__22477_SHARP_){
+var or__3951__auto__ = (p1__22477_SHARP_ == null);
 if(or__3951__auto__)
 {return or__3951__auto__;
 } else
-{return cljs.core.empty_QMARK_.call(null,p1__20580_SHARP_);
+{return cljs.core.empty_QMARK_.call(null,p1__22477_SHARP_);
 }
 }),cljs.core.reduce.call(null,(function (rslt,ech_list){
 return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,eF);
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech_list)));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.seq.call(null,strategy_map)));
-console.log("... RESULT data-list[",cljs.core.clj__GT_js.call(null,data_list),"]");
 return cljs.core.conj.call(null,initial_list,cljs.core.assoc.call(null,default_entry,"\uFDD0'data",data_list));
 });
 ui.graph.build_graph_series_data = (function build_graph_series_data(dataList,signal_map,strategy_map){
@@ -89,8 +87,8 @@ cljs.core.nth.call(null,jayq.core.$.call(null,selector).highcharts().series,8).a
 cljs.core.nth.call(null,jayq.core.$.call(null,selector).highcharts().series,9).addPoint(cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,9))),true,false);
 console.log("");
 console.log([cljs.core.str("Zzz 1["),cljs.core.str(cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.second.call(null,dataList)))),cljs.core.str("]")].join(''));
-console.log([cljs.core.str("Zzz 2["),cljs.core.str(cljs.core.ObjMap.fromObject(["\uFDD0'x","\uFDD0'title"],{"\uFDD0'x":(new window.Date(cljs.core.first.call(null,cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.second.call(null,dataList)))))),"\uFDD0'title":"Testing 123"})),cljs.core.str("]")].join(''));
-return cljs.core.nth.call(null,jayq.core.$.call(null,selector).highcharts().series,10).addPoint(cljs.core.ObjMap.fromObject(["\uFDD0'x","\uFDD0'title"],{"\uFDD0'x":(new window.Date(cljs.core.first.call(null,cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.second.call(null,dataList)))))),"\uFDD0'title":"Testing 123"}),true,false);
+console.log([cljs.core.str("Zzz 2["),cljs.core.str(cljs.core.ObjMap.fromObject(["\uFDD0'x","\uFDD0'title"],{"\uFDD0'x":(new window.Date(cljs.core.nth.call(null,cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.second.call(null,dataList))),10))),"\uFDD0'title":"Testing 123"})),cljs.core.str("]")].join(''));
+return cljs.core.nth.call(null,jayq.core.$.call(null,selector).highcharts().series,10).addPoint(cljs.core.ObjMap.fromObject(["\uFDD0'x","\uFDD0'title"],{"\uFDD0'x":(new window.Date(cljs.core.nth.call(null,cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.second.call(null,dataList))),10))),"\uFDD0'title":"Testing 123"}),true,false);
 });
 ui.graph.render_stock_graph = (function render_stock_graph(selector,dataList,signal_map,strategy_map,label,increment){
 console.log([cljs.core.str("... render-stock-graph > strategy-map["),cljs.core.str(strategy_map),cljs.core.str("] > increment["),cljs.core.str(increment),cljs.core.str("]")].join(''));

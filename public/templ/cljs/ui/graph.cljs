@@ -52,7 +52,7 @@
 (defn add-strategies [initial-list strategy-map]
 
 
-  (.log js/console "... add-strategies > strategy-map[" strategy-map "]")
+  #_(.log js/console "... add-strategies > strategy-map[" strategy-map "]")
   (let [default-entry {:type "flags"
                        :name "strategies"
                        :data []
@@ -74,7 +74,7 @@
                        (remove #(or (nil? %) (empty? %))))]
 
 
-    (.log js/console "... RESULT data-list[" (clj->js data-list) "]")
+    #_(.log js/console "... RESULT data-list[" (clj->js data-list) "]")
     (conj initial-list (assoc default-entry :data data-list))))
 
 
@@ -156,23 +156,10 @@
                        :type "column"
                        :marker {:enabled true :radius 3}
                        :shadow true
-                       :tooltip {:valueDecimals 2}}
-
-                      #_{:type "flags"
-                       :name "strategies"
-                       :shape "squarepin"
-                       :data []
-                       :onSeries "tick-list"
-                       :color "#5F86B3"
-                       :fillColor "#5F86B3"
-                       :width 16
-                       :style {:color "white"}
-                       :states {:hover { :fillColor "#395C84" }}}
-                      ]
+                       :tooltip {:valueDecimals 2}}]
 
         #_with-signals #_(add-signals initial-list signal-map)  ;; iterate over map entries
-        with-strategies (add-strategies initial-list strategy-map)
-        ]
+        with-strategies (add-strategies initial-list strategy-map)]
 
     (.log js/console (str "... FINAL series array[" with-strategies "]"))
     with-strategies))
@@ -229,8 +216,7 @@
                                            :offset 0
                                            :lineWidth 2}]
 
-                                  :series (build-graph-series-data dataList signal-map strategy-map)
-                                  }))))
+                                  :series (build-graph-series-data dataList signal-map strategy-map)}))))
 
 
 (defn chart-increment [selector dataList strategy-map]
@@ -296,15 +282,14 @@
 
       (.log js/console "")
       (.log js/console (str "Zzz 1[" (last (reverse (second dataList))) "]"))
-      (.log js/console (str "Zzz 2[" {:x (js/window.Date. (first (last (reverse (second dataList))))) :title "Testing 123"} "]"))
+      (.log js/console (str "Zzz 2[" {:x (js/window.Date. (nth (last (reverse (second dataList))) 10)) :title "Testing 123"} "]"))
 
 
       (-> ($ selector)
           (.highcharts)
           (.-series)
           (nth 10)
-          (.addPoint {:x (js/window.Date. (first (last (reverse (second dataList))))) :title "Testing 123"} true false))
-))
+          (.addPoint {:x (js/window.Date. (nth (last (reverse (second dataList))) 10)) :title "Testing 123"} true false))))
 
 (defn render-stock-graph [selector dataList signal-map strategy-map label increment]
 

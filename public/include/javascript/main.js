@@ -14312,7 +14312,6 @@ ui.graph.add_signals = function(a, b) {
   }, a, cljs.core.seq.call(null, b))
 };
 ui.graph.add_strategies = function(a, b) {
-  console.log("... add-strategies > strategy-map[", b, "]");
   var c = cljs.core.ObjMap.fromObject("\ufdd0'data \ufdd0'width \ufdd0'name \ufdd0'onSeries \ufdd0'color \ufdd0'style \ufdd0'states \ufdd0'type \ufdd0'fillColor".split(" "), {"\ufdd0'data":cljs.core.PersistentVector.EMPTY, "\ufdd0'width":16, "\ufdd0'name":"strategies", "\ufdd0'onSeries":"tick-list", "\ufdd0'color":"#5F86B3", "\ufdd0'style":cljs.core.ObjMap.fromObject(["\ufdd0'color"], {"\ufdd0'color":"white"}), "\ufdd0'states":cljs.core.ObjMap.fromObject(["\ufdd0'hover"], {"\ufdd0'hover":cljs.core.ObjMap.fromObject(["\ufdd0'fillColor"], 
   {"\ufdd0'fillColor":"#395C84"})}), "\ufdd0'type":"flags", "\ufdd0'fillColor":"#5F86B3"}), d = cljs.core.remove.call(null, function(a) {
     var b = null == a;
@@ -14322,7 +14321,6 @@ ui.graph.add_strategies = function(a, b) {
       return cljs.core.conj.call(null, a, b)
     }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
   }, cljs.core.PersistentVector.EMPTY, cljs.core.seq.call(null, b)));
-  console.log("... RESULT data-list[", cljs.core.clj__GT_js.call(null, d), "]");
   return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, c, "\ufdd0'data", d))
 };
 ui.graph.build_graph_series_data = function(a, b, c) {
@@ -14362,8 +14360,8 @@ ui.graph.chart_increment = function(a, b) {
   cljs.core.nth.call(null, jayq.core.$.call(null, a).highcharts().series, 9).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.nth.call(null, b, 9))), !0, !1);
   console.log("");
   console.log([cljs.core.str("Zzz 1["), cljs.core.str(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.second.call(null, b)))), cljs.core.str("]")].join(""));
-  console.log([cljs.core.str("Zzz 2["), cljs.core.str(cljs.core.ObjMap.fromObject(["\ufdd0'x", "\ufdd0'title"], {"\ufdd0'x":new window.Date(cljs.core.first.call(null, cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.second.call(null, b))))), "\ufdd0'title":"Testing 123"})), cljs.core.str("]")].join(""));
-  return cljs.core.nth.call(null, jayq.core.$.call(null, a).highcharts().series, 10).addPoint(cljs.core.ObjMap.fromObject(["\ufdd0'x", "\ufdd0'title"], {"\ufdd0'x":new window.Date(cljs.core.first.call(null, cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.second.call(null, b))))), "\ufdd0'title":"Testing 123"}), !0, !1)
+  console.log([cljs.core.str("Zzz 2["), cljs.core.str(cljs.core.ObjMap.fromObject(["\ufdd0'x", "\ufdd0'title"], {"\ufdd0'x":new window.Date(cljs.core.nth.call(null, cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.second.call(null, b))), 10)), "\ufdd0'title":"Testing 123"})), cljs.core.str("]")].join(""));
+  return cljs.core.nth.call(null, jayq.core.$.call(null, a).highcharts().series, 10).addPoint(cljs.core.ObjMap.fromObject(["\ufdd0'x", "\ufdd0'title"], {"\ufdd0'x":new window.Date(cljs.core.nth.call(null, cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.second.call(null, b))), 10)), "\ufdd0'title":"Testing 123"}), !0, !1)
 };
 ui.graph.render_stock_graph = function(a, b, c, d, e, f) {
   console.log([cljs.core.str("... render-stock-graph > strategy-map["), cljs.core.str(d), cljs.core.str("] > increment["), cljs.core.str(f), cljs.core.str("]")].join(""));

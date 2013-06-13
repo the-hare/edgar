@@ -236,8 +236,8 @@
                                                                              signals-stochastic
                                                                              signals-obv)
 
-                                                     sA [(assoc (first tick-list-N) :strategies [{:signal :up
-                                                                                                  :why "test"}])]
+                                                     sA [(assoc (nth tick-list-N 10) :strategies [{:signal :up
+                                                                                                   :why "test"}])]
                                                      sB (strategy/strategy-B tick-list-N
                                                                              signals-ma
                                                                              signals-bollinger
