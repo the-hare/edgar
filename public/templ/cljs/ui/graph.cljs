@@ -223,7 +223,95 @@
                                            :offset 0
                                            :lineWidth 2}]
 
-                                  :series (build-graph-series-data dataList signal-map strategy-map)}))))
+                                  #_:series #_(build-graph-series-data dataList signal-map strategy-map)
+                                  :series [{:name "Bollinger Band"
+                                            :id "bollinger-list"
+                                            :data (reverse (first dataList))
+                                            :type "arearange"
+                                            :color "#629DFF"
+                                            :marker {:enabled true :radius 3}
+                                            :tooltip {:valueDecimals 2}}
+                                           {:name "Closing Price"
+                                            :id "ticklist"
+                                            :data (reverse (second dataList))
+                                            :marker {:enabled true :radius 3}
+                                            :shadow true
+                                            :tooltip {:valueDecimals 2}}
+                                           {:name "Simple Moving Average"
+                                            :id "sma-list"
+                                            :data (reverse (nth dataList 2))
+                                            :marker {:enabled true :radius 3}
+                                            :shadow true
+                                            :tooltip {:valueDecimals 2}}
+                                           {:name "Exponential Moving Average"
+                                            :id "ema-list"
+                                            :data (reverse (nth dataList 3))
+                                            :marker {:enabled true :radius 3}
+                                            :shadow true
+                                            :tooltip {:valueDecimals 2}}
+
+
+                                           ;; MACD Data
+                                           {:name "MACD Price"
+                                            :id "macd-price-list"
+                                            :data (reverse (nth dataList 4))
+                                            :yAxis 1
+                                            :marker {:enabled true :radius 3}
+                                            :shadow true
+                                            :tooltip {:valueDecimals 2}}
+                                           {:name "MACD Signal"
+                                            :id "macd-signal-list"
+                                            :data (reverse (nth dataList 5))
+                                            :yAxis 1
+                                            :marker {:enabled true :radius 3}
+                                            :shadow true
+                                            :tooltip {:valueDecimals 2}}
+
+                                           {:name "MACD Histogram"
+                                            :id "macd-histogram-list"
+                                            :data (reverse (nth dataList 6))
+                                            :yAxis 2
+                                            :type "column"
+                                            :marker {:enabled true :radius 3}
+                                            :shadow true
+                                            :tooltip {:valueDecimals 2}}
+
+                                           ;; Stochastic Data
+                                           {:name "Stochastic K"
+                                            :id "k-list"
+                                            :data (reverse (nth dataList 7))
+                                            :yAxis 3
+                                            :marker {:enabled true :radius 3}
+                                            :shadow true
+                                            :tooltip {:valueDecimals 2}}
+                                           {:name "Stochastic D"
+                                            :id "d-list"
+                                            :data (reverse (nth dataList 8))
+                                            :yAxis 3
+                                            :marker {:enabled true :radius 3}
+                                            :shadow true
+                                            :tooltip {:valueDecimals 2}}
+
+                                           {:name "On Balance Volume"
+                                            :id "obv-list"
+                                            :data (reverse (nth dataList 9))
+                                            :yAxis 4
+                                            :type "column"
+                                            :marker {:enabled true :radius 3}
+                                            :shadow true
+                                            :tooltip {:valueDecimals 2}}
+
+                                           {:type "flags"
+                                            :name "strategies"
+                                            :shape "squarepin"
+                                            :data []
+                                            :onSeries "tick-list"
+                                            :color "#5F86B3"
+                                            :fillColor "#5F86B3"
+                                            :width 16
+                                            :style {:color "white"}
+                                            :states {:hover { :fillColor "#395C84" }}}
+                                           ]}))))
 
 
 (defn chart-increment [selector dataList strategy-map]
