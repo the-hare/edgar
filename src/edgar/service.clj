@@ -123,15 +123,15 @@
                                                                                        signals-stochastic (sleading/stochastic-oscillator 14 3 3 tick-list-formatted)
                                                                                        signals-obv (sconfirming/on-balance-volume 10 tick-list-formatted)
 
-                                                                                       #_sA #_(strategy/strategy-fill-A tick-list-formatted
+                                                                                       sA (strategy/strategy-fill-A tick-list-formatted
                                                                                                                     signals-ma
                                                                                                                     signals-bollinger
                                                                                                                     signals-macd
                                                                                                                     signals-stochastic
                                                                                                                     signals-obv)
 
-                                                                                       sA [(assoc (first tick-list-formatted) :strategies [{:signal :up
-                                                                                                                                            :why "test"}])]
+                                                                                       #_sA #_[(assoc (nth tick-list-formatted 10) :strategies [{:signal :up
+                                                                                                                                             :why "test"}])]
 
                                                                                        sB (strategy/strategy-fill-B tick-list-formatted
                                                                                                                     signals-ma
