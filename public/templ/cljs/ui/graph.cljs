@@ -151,13 +151,8 @@
                        :marker {:enabled true :radius 3}
                        :shadow true
                        :tooltip {:valueDecimals 2}}
+
                       {:type "flags"
-                       :name "strategies"
-                       :data []
-                       :onSeries "ticklist"
-                       :shape "squarepin"
-                       }
-                      #_{:type "flags"
                        :name "strategies"
                        :shape "squarepin"
                        :data []
