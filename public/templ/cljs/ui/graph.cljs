@@ -2,6 +2,77 @@
   (:use [jayq.core :only [$ css inner]]))
 
 
+
+(defn add-signals [initial-list signal-map]
+
+  (reduce (fn [rslt ech]
+
+            (let [default-entry (fn [eF]
+                                  {:type "flags"
+                                   :data [{:x (-> eF :x)
+                                           :title (-> eF :title)
+                                           :text (-> eF :text)}]
+                                   :color "#5F86B3"
+                                   :fillColor "#5F86B3"
+                                   :width 16
+                                   :style {:color "white"}
+                                   :states {:hover { :fillColor "#395C84" }}})]
+
+              ;; SIGNAL Flags
+              (case (first ech)
+
+                :moving-average (concat rslt (reduce (fn [rF eF]        ;; second element is a list of signals
+                                                       (conj rF (assoc (default-entry eF) :onSeries "ema-list")))
+                                                     []
+                                                     (second ech)))
+
+                :bollinger-band (concat rslt (reduce (fn [rF eF]
+                                                       (conj rF (assoc (default-entry eF) :onSeries "bollinger-list")))
+                                                     []
+                                                     (second ech)))
+
+                :macd (concat rslt (reduce (fn [rF eF]
+                                             (conj rF (assoc (default-entry eF) :onSeries "macd-price-list")))
+                                           []
+                                           (second ech)))
+
+                :stochastic-oscillator (concat rslt (reduce (fn [rF eF]
+                                                              (conj rF (assoc (default-entry eF) :onSeries "k-list")))
+                                                            []
+                                                            (second ech)))
+
+                :obv (concat rslt (reduce (fn [rF eF]
+                                            (conj rF (assoc (default-entry eF) :onSeries "obv-list")))
+                                          []
+                                          (second ech)))
+                "default" rslt)))
+          initial-list
+          (seq signal-map)))
+
+(defn add-strategies [initial-list strategy-map]
+
+  (reduce (fn [rslt ech]
+
+            (let [default-entry (fn [eF]
+                                  {:type "flags"
+                                   :data [{:x (-> eF :x)
+                                           :title (-> eF :title)
+                                           :text (-> eF :text)}]
+                                   :color "#5F86B3"
+                                   :fillColor "#5F86B3"
+                                   :width 16
+                                   :style {:color "white"}
+                                   :states {:hover { :fillColor "#395C84" }}})]
+
+              (concat rslt (reduce (fn [rF eF]
+                                     (conj rF (assoc (default-entry eF) :onSeries "tick-list")))
+                                   []
+                                   (second ech)))))
+          initial-list
+          (seq strategy-map)))
+
+
+
 (defn build-graph-series-data [dataList signal-map strategy-map]
 
   (let [initial-list [{:name "Bollinger Band"

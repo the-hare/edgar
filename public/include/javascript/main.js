@@ -14274,6 +14274,54 @@ jayq.core.ajax_m = cljs.core.ObjMap.fromObject(["\ufdd0'return", "\ufdd0'bind", 
   return jayq.core.done.call(null, jayq.core.ajax.call(null, a), b)
 }, "\ufdd0'zero":cljs.core.identity});
 var ui = {graph:{}};
+ui.graph.add_signals = function(a, b) {
+  return cljs.core.reduce.call(null, function(a, b) {
+    var e = function(a) {
+      return cljs.core.ObjMap.fromObject("\ufdd0'type \ufdd0'data \ufdd0'color \ufdd0'fillColor \ufdd0'width \ufdd0'style \ufdd0'states".split(" "), {"\ufdd0'type":"flags", "\ufdd0'data":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'x", "\ufdd0'title", "\ufdd0'text"], {"\ufdd0'x":(new cljs.core.Keyword("\ufdd0'x")).call(null, a), "\ufdd0'title":(new cljs.core.Keyword("\ufdd0'title")).call(null, a), "\ufdd0'text":(new cljs.core.Keyword("\ufdd0'text")).call(null, a)})], 
+      !0), "\ufdd0'color":"#5F86B3", "\ufdd0'fillColor":"#5F86B3", "\ufdd0'width":16, "\ufdd0'style":cljs.core.ObjMap.fromObject(["\ufdd0'color"], {"\ufdd0'color":"white"}), "\ufdd0'states":cljs.core.ObjMap.fromObject(["\ufdd0'hover"], {"\ufdd0'hover":cljs.core.ObjMap.fromObject(["\ufdd0'fillColor"], {"\ufdd0'fillColor":"#395C84"})})})
+    }, f = cljs.core.first.call(null, b);
+    if(cljs.core._EQ_.call(null, "default", f)) {
+      return a
+    }
+    if(cljs.core._EQ_.call(null, "\ufdd0'obv", f)) {
+      return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
+        return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, e.call(null, b), "\ufdd0'onSeries", "obv-list"))
+      }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
+    }
+    if(cljs.core._EQ_.call(null, "\ufdd0'stochastic-oscillator", f)) {
+      return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
+        return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, e.call(null, b), "\ufdd0'onSeries", "k-list"))
+      }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
+    }
+    if(cljs.core._EQ_.call(null, "\ufdd0'macd", f)) {
+      return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
+        return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, e.call(null, b), "\ufdd0'onSeries", "macd-price-list"))
+      }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
+    }
+    if(cljs.core._EQ_.call(null, "\ufdd0'bollinger-band", f)) {
+      return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
+        return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, e.call(null, b), "\ufdd0'onSeries", "bollinger-list"))
+      }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
+    }
+    if(cljs.core._EQ_.call(null, "\ufdd0'moving-average", f)) {
+      return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
+        return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, e.call(null, b), "\ufdd0'onSeries", "ema-list"))
+      }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
+    }
+    throw Error([cljs.core.str("No matching clause: "), cljs.core.str(cljs.core.first.call(null, b))].join(""));
+  }, a, cljs.core.seq.call(null, b))
+};
+ui.graph.add_strategies = function(a, b) {
+  return cljs.core.reduce.call(null, function(a, b) {
+    var e = function(a) {
+      return cljs.core.ObjMap.fromObject("\ufdd0'type \ufdd0'data \ufdd0'color \ufdd0'fillColor \ufdd0'width \ufdd0'style \ufdd0'states".split(" "), {"\ufdd0'type":"flags", "\ufdd0'data":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'x", "\ufdd0'title", "\ufdd0'text"], {"\ufdd0'x":(new cljs.core.Keyword("\ufdd0'x")).call(null, a), "\ufdd0'title":(new cljs.core.Keyword("\ufdd0'title")).call(null, a), "\ufdd0'text":(new cljs.core.Keyword("\ufdd0'text")).call(null, a)})], 
+      !0), "\ufdd0'color":"#5F86B3", "\ufdd0'fillColor":"#5F86B3", "\ufdd0'width":16, "\ufdd0'style":cljs.core.ObjMap.fromObject(["\ufdd0'color"], {"\ufdd0'color":"white"}), "\ufdd0'states":cljs.core.ObjMap.fromObject(["\ufdd0'hover"], {"\ufdd0'hover":cljs.core.ObjMap.fromObject(["\ufdd0'fillColor"], {"\ufdd0'fillColor":"#395C84"})})})
+    };
+    return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
+      return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, e.call(null, b), "\ufdd0'onSeries", "tick-list"))
+    }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
+  }, a, cljs.core.seq.call(null, b))
+};
 ui.graph.build_graph_series_data = function(a) {
   return cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject("\ufdd0'name \ufdd0'id \ufdd0'data \ufdd0'type \ufdd0'color \ufdd0'marker \ufdd0'tooltip".split(" "), {"\ufdd0'name":"Bollinger Band", "\ufdd0'id":"bollinger-list", "\ufdd0'data":cljs.core.reverse.call(null, cljs.core.first.call(null, a)), "\ufdd0'type":"arearange", "\ufdd0'color":"#629DFF", "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled", "\ufdd0'radius"], {"\ufdd0'enabled":!0, "\ufdd0'radius":3}), "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], 
   {"\ufdd0'valueDecimals":2})}), cljs.core.ObjMap.fromObject("\ufdd0'name \ufdd0'id \ufdd0'data \ufdd0'marker \ufdd0'shadow \ufdd0'tooltip".split(" "), {"\ufdd0'name":"Closing Price", "\ufdd0'id":"ticklist", "\ufdd0'data":cljs.core.reverse.call(null, cljs.core.second.call(null, a)), "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled", "\ufdd0'radius"], {"\ufdd0'enabled":!0, "\ufdd0'radius":3}), "\ufdd0'shadow":!0, "\ufdd0'tooltip":cljs.core.ObjMap.fromObject(["\ufdd0'valueDecimals"], {"\ufdd0'valueDecimals":2})}), 
@@ -14477,54 +14525,6 @@ server.handler.parse_result_data = function(a) {
     return cljs.core.conj.call(null, a, cljs.core.into_array.call(null, cljs.core.PersistentVector.fromArray([window.parseInt((new cljs.core.Keyword("\ufdd0'last-trade-time")).call(null, c)), window.parseFloat((new cljs.core.Keyword("\ufdd0'ema-signal")).call(null, c))], !0)))
   }, cljs.core.PersistentVector.EMPTY, cljs.core.remove.call(null, cljs.core.nil_QMARK_, (new cljs.core.Keyword("\ufdd0'macd")).call(null, (new cljs.core.Keyword("\ufdd0'signals")).call(null, a))))), "\ufdd0'signals":cljs.core.ObjMap.fromObject(["\ufdd0'moving-average", "\ufdd0'bollinger-band", "\ufdd0'macd", "\ufdd0'stochastic-oscillator", "\ufdd0'obv"], {"\ufdd0'moving-average":server.handler.pull_out_signals.call(null, a, "\ufdd0'moving-average"), "\ufdd0'bollinger-band":server.handler.pull_out_signals.call(null, 
   a, "\ufdd0'bollinger-band"), "\ufdd0'macd":server.handler.pull_out_signals.call(null, a, "\ufdd0'macd"), "\ufdd0'stochastic-oscillator":server.handler.pull_out_signals.call(null, a, "\ufdd0'stochastic-oscillator"), "\ufdd0'obv":server.handler.pull_out_signals.call(null, a, "\ufdd0'obv")})})
-};
-edgar.add_signals = function(a, b) {
-  return cljs.core.reduce.call(null, function(a, b) {
-    var e = function(a) {
-      return cljs.core.ObjMap.fromObject("\ufdd0'type \ufdd0'data \ufdd0'color \ufdd0'fillColor \ufdd0'width \ufdd0'style \ufdd0'states".split(" "), {"\ufdd0'type":"flags", "\ufdd0'data":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'x", "\ufdd0'title", "\ufdd0'text"], {"\ufdd0'x":(new cljs.core.Keyword("\ufdd0'x")).call(null, a), "\ufdd0'title":(new cljs.core.Keyword("\ufdd0'title")).call(null, a), "\ufdd0'text":(new cljs.core.Keyword("\ufdd0'text")).call(null, a)})], 
-      !0), "\ufdd0'color":"#5F86B3", "\ufdd0'fillColor":"#5F86B3", "\ufdd0'width":16, "\ufdd0'style":cljs.core.ObjMap.fromObject(["\ufdd0'color"], {"\ufdd0'color":"white"}), "\ufdd0'states":cljs.core.ObjMap.fromObject(["\ufdd0'hover"], {"\ufdd0'hover":cljs.core.ObjMap.fromObject(["\ufdd0'fillColor"], {"\ufdd0'fillColor":"#395C84"})})})
-    }, f = cljs.core.first.call(null, b);
-    if(cljs.core._EQ_.call(null, "default", f)) {
-      return a
-    }
-    if(cljs.core._EQ_.call(null, "\ufdd0'obv", f)) {
-      return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
-        return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, e.call(null, b), "\ufdd0'onSeries", "obv-list"))
-      }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
-    }
-    if(cljs.core._EQ_.call(null, "\ufdd0'stochastic-oscillator", f)) {
-      return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
-        return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, e.call(null, b), "\ufdd0'onSeries", "k-list"))
-      }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
-    }
-    if(cljs.core._EQ_.call(null, "\ufdd0'macd", f)) {
-      return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
-        return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, e.call(null, b), "\ufdd0'onSeries", "macd-price-list"))
-      }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
-    }
-    if(cljs.core._EQ_.call(null, "\ufdd0'bollinger-band", f)) {
-      return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
-        return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, e.call(null, b), "\ufdd0'onSeries", "bollinger-list"))
-      }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
-    }
-    if(cljs.core._EQ_.call(null, "\ufdd0'moving-average", f)) {
-      return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
-        return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, e.call(null, b), "\ufdd0'onSeries", "ema-list"))
-      }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
-    }
-    throw Error([cljs.core.str("No matching clause: "), cljs.core.str(cljs.core.first.call(null, b))].join(""));
-  }, a, cljs.core.seq.call(null, b))
-};
-edgar.add_strategies = function(a, b) {
-  return cljs.core.reduce.call(null, function(a, b) {
-    var e = function(a) {
-      return cljs.core.ObjMap.fromObject("\ufdd0'type \ufdd0'data \ufdd0'color \ufdd0'fillColor \ufdd0'width \ufdd0'style \ufdd0'states".split(" "), {"\ufdd0'type":"flags", "\ufdd0'data":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'x", "\ufdd0'title", "\ufdd0'text"], {"\ufdd0'x":(new cljs.core.Keyword("\ufdd0'x")).call(null, a), "\ufdd0'title":(new cljs.core.Keyword("\ufdd0'title")).call(null, a), "\ufdd0'text":(new cljs.core.Keyword("\ufdd0'text")).call(null, a)})], 
-      !0), "\ufdd0'color":"#5F86B3", "\ufdd0'fillColor":"#5F86B3", "\ufdd0'width":16, "\ufdd0'style":cljs.core.ObjMap.fromObject(["\ufdd0'color"], {"\ufdd0'color":"white"}), "\ufdd0'states":cljs.core.ObjMap.fromObject(["\ufdd0'hover"], {"\ufdd0'hover":cljs.core.ObjMap.fromObject(["\ufdd0'fillColor"], {"\ufdd0'fillColor":"#395C84"})})})
-    };
-    return cljs.core.concat.call(null, a, cljs.core.reduce.call(null, function(a, b) {
-      return cljs.core.conj.call(null, a, cljs.core.assoc.call(null, e.call(null, b), "\ufdd0'onSeries", "tick-list"))
-    }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, b)))
-  }, a, cljs.core.seq.call(null, b))
 };
 ui.components.populate_multiselect.call(null, ".multiselect-live", cljs.core.ObjMap.fromObject(["\ufdd0'onChange"], {"\ufdd0'onChange":function(a, b) {
   return cljs.core.truth_(b) ? $.post.call(null, [cljs.core.str("/get-streaming-stock-data?stock-selection="), cljs.core.str(a.val()), cljs.core.str("&stock-name="), cljs.core.str(a.text())].join(""), function(a) {

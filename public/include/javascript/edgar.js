@@ -7,63 +7,6 @@ goog.require('server.handler');
 goog.require('cljs.reader');
 goog.require('jayq.core');
 goog.require('jayq.core');
-edgar.add_signals = (function add_signals(initial_list,signal_map){
-return cljs.core.reduce.call(null,(function (rslt,ech){
-var default_entry = (function (eF){
-return cljs.core.ObjMap.fromObject(["\uFDD0'type","\uFDD0'data","\uFDD0'color","\uFDD0'fillColor","\uFDD0'width","\uFDD0'style","\uFDD0'states"],{"\uFDD0'type":"flags","\uFDD0'data":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\uFDD0'x","\uFDD0'title","\uFDD0'text"],{"\uFDD0'x":(new cljs.core.Keyword("\uFDD0'x")).call(null,eF),"\uFDD0'title":(new cljs.core.Keyword("\uFDD0'title")).call(null,eF),"\uFDD0'text":(new cljs.core.Keyword("\uFDD0'text")).call(null,eF)})], true),"\uFDD0'color":"#5F86B3","\uFDD0'fillColor":"#5F86B3","\uFDD0'width":16,"\uFDD0'style":cljs.core.ObjMap.fromObject(["\uFDD0'color"],{"\uFDD0'color":"white"}),"\uFDD0'states":cljs.core.ObjMap.fromObject(["\uFDD0'hover"],{"\uFDD0'hover":cljs.core.ObjMap.fromObject(["\uFDD0'fillColor"],{"\uFDD0'fillColor":"#395C84"})})});
-});
-var G__107811 = cljs.core.first.call(null,ech);
-if(cljs.core._EQ_.call(null,"default",G__107811))
-{return rslt;
-} else
-{if(cljs.core._EQ_.call(null,"\uFDD0'obv",G__107811))
-{return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
-return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","obv-list"));
-}),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
-} else
-{if(cljs.core._EQ_.call(null,"\uFDD0'stochastic-oscillator",G__107811))
-{return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
-return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","k-list"));
-}),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
-} else
-{if(cljs.core._EQ_.call(null,"\uFDD0'macd",G__107811))
-{return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
-return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","macd-price-list"));
-}),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
-} else
-{if(cljs.core._EQ_.call(null,"\uFDD0'bollinger-band",G__107811))
-{return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
-return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","bollinger-list"));
-}),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
-} else
-{if(cljs.core._EQ_.call(null,"\uFDD0'moving-average",G__107811))
-{return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
-return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","ema-list"));
-}),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
-} else
-{if("\uFDD0'else")
-{throw (new Error([cljs.core.str("No matching clause: "),cljs.core.str(cljs.core.first.call(null,ech))].join('')));
-} else
-{return null;
-}
-}
-}
-}
-}
-}
-}
-}),initial_list,cljs.core.seq.call(null,signal_map));
-});
-edgar.add_strategies = (function add_strategies(initial_list,strategy_map){
-return cljs.core.reduce.call(null,(function (rslt,ech){
-var default_entry = (function (eF){
-return cljs.core.ObjMap.fromObject(["\uFDD0'type","\uFDD0'data","\uFDD0'color","\uFDD0'fillColor","\uFDD0'width","\uFDD0'style","\uFDD0'states"],{"\uFDD0'type":"flags","\uFDD0'data":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\uFDD0'x","\uFDD0'title","\uFDD0'text"],{"\uFDD0'x":(new cljs.core.Keyword("\uFDD0'x")).call(null,eF),"\uFDD0'title":(new cljs.core.Keyword("\uFDD0'title")).call(null,eF),"\uFDD0'text":(new cljs.core.Keyword("\uFDD0'text")).call(null,eF)})], true),"\uFDD0'color":"#5F86B3","\uFDD0'fillColor":"#5F86B3","\uFDD0'width":16,"\uFDD0'style":cljs.core.ObjMap.fromObject(["\uFDD0'color"],{"\uFDD0'color":"white"}),"\uFDD0'states":cljs.core.ObjMap.fromObject(["\uFDD0'hover"],{"\uFDD0'hover":cljs.core.ObjMap.fromObject(["\uFDD0'fillColor"],{"\uFDD0'fillColor":"#395C84"})})});
-});
-return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
-return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","tick-list"));
-}),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
-}),initial_list,cljs.core.seq.call(null,strategy_map));
-});
 ui.components.populate_multiselect.call(null,".multiselect-live",cljs.core.ObjMap.fromObject(["\uFDD0'onChange"],{"\uFDD0'onChange":(function (element,checked){
 if(cljs.core.truth_(checked))
 {return $.post.call(null,[cljs.core.str("/get-streaming-stock-data?stock-selection="),cljs.core.str(element.val()),cljs.core.str("&stock-name="),cljs.core.str(element.text())].join(''),(function (data){
