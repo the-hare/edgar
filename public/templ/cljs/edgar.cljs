@@ -2,7 +2,10 @@
   (:use [jayq.core :only [$ css inner]])
   (:use-macros [jayq.macros :only [let-ajax let-deferred]])
   (:require [jayq.core :as jq]
-            [cljs.reader :as reader]))
+            [cljs.reader :as reader]
+
+            [server.handler :as shandler]
+            [ui.components :as components]))
 
 
 
@@ -333,153 +336,8 @@
 
 
 
-;; === POPULATE the live multi-select
-(defn populate-multiselect [selector options]
 
-  (let-deferred [filtered-input ($/ajax "/list-filtered-input")]
-
-                (let [multiselect ($ selector)]
-
-                  (reduce (fn [rslt inp]
-
-                            (let [option-value (second inp)
-                                  option-label (nth inp 2)
-                                  price-difference (.toFixed (first inp) 2)]
-
-                              (-> multiselect
-                                  (.append (str "<option value='" option-value "'>" option-label " (" price-difference ")</option>")))))
-                          nil
-                          (into-array (reader/read-string filtered-input)))
-
-                  (-> ($ selector)
-                      (.multiselect (clj->js (merge {:enableFiltering true} options)))))))
-
-
-(defn- pull-out-signals [result-data tag]
-
-  (->> (reduce (fn [rslt ech]
-
-                 (conj rslt (map (fn [inp]   ;; iterate over the :signals list, for each tick entry
-                                   {:x (js/window.parseInt (:last-trade-time ech))
-                                    :title (:signal inp)
-                                    :text (str "Why: " (:why inp))
-                                    })
-                                 (:signals ech))))
-               []
-               (remove nil? (-> result-data :signals tag)))
-       into-array
-       (remove empty?)
-
-       ;; for some strange reason, each list entry is in another list
-       (map #(first %))))
-
-(defn- pull-out-strategies [result-data tag]
-
-  (let [result-strategies (->> (reduce (fn [rslt ech]
-
-                                         #_(.log js/console (str "... pulling out strategies[" ech "]"))
-                                         (conj rslt (map (fn [inp]
-                                                           {:x (js/window.parseInt (:last-trade-time ech))
-                                                            :title (:signal inp)
-                                                            :text (str "Why: " (:why inp))
-                                                            })
-                                                         (:strategies ech))))
-                                       []
-                                       (remove nil? (-> result-data :strategies tag)))
-                               into-array
-                               (remove empty?)
-
-                               ;; for some strange reason, each list entry is in another list
-                               (map #(first %)))]
-
-    #_(.log js/console (str "... pulling out strategies > END[" result-strategies "]"))
-    result-strategies))
-
-
-(defn parse-result-data [result-data]
-
-  {:local-list (into-array (reduce (fn [rslt ech]
-                                     (conj rslt (into-array [(js/window.parseInt (first ech))
-                                                             (js/window.parseFloat (second ech))])))
-                                   []
-                                   (into-array (:stock-list result-data))))
-
-
-   ;; Basic Long and Short Moving Averages
-   :sma-list (into-array (reduce (fn [rslt ech]
-                                   (conj rslt (into-array [(js/window.parseInt (first ech))
-                                                           (js/window.parseFloat (second ech))])))
-                                 []
-                                 (remove #(nil? (first %))
-                                         (into-array (:sma-list result-data)))))
-
-   :ema-list (into-array (reduce (fn [rslt ech]
-                                   (conj rslt (into-array [(js/window.parseInt (first ech))
-                                                           (js/window.parseFloat (second ech))])))
-                                 []
-                                 (remove #(nil? (first %))
-                                         (into-array (:ema-list result-data)))))
-
-
-   ;; Bollinger-Band Data
-   :bollinger-band (into-array (reduce (fn [rslt ech]
-                                         (conj rslt (into-array [(js/window.parseInt (:last-trade-time ech))
-                                                                 (js/window.parseFloat (:lower-band ech))
-                                                                 (js/window.parseFloat (:upper-band ech))])))
-                                       []
-                                       (remove nil? (-> result-data :signals :bollinger-band))))
-
-   ;; MACD Data
-   :macd-price-list (into-array (reduce (fn [rslt ech]
-                                         (conj rslt (into-array [(js/window.parseInt (:last-trade-time ech))
-                                                                 (js/window.parseFloat (:last-trade-macd ech))])))
-                                       []
-                                       (remove nil? (-> result-data :signals :macd))))
-
-   :macd-signal-list (into-array (reduce (fn [rslt ech]
-                                           (conj rslt (into-array [(js/window.parseInt (:last-trade-time ech))
-                                                                   (js/window.parseFloat (:ema-signal ech))])))
-                                         []
-                                         (remove nil? (-> result-data :signals :macd))))
-
-   :macd-histogram-list (into-array (reduce (fn [rslt ech]
-                                              (conj rslt (into-array [(js/window.parseInt (:last-trade-time ech))
-                                                                      (js/window.parseFloat (:histogram ech))])))
-                                            []
-                                            (remove nil? (-> result-data :signals :macd))))
-
-   ;; Stochastic Oscillator
-   :stochastic-k (into-array (reduce (fn [rslt ech]
-                                       (conj rslt (into-array [(js/window.parseInt (:last-trade-time ech))
-                                                               (js/window.parseFloat (:K ech))])))
-                                     []
-                                     (remove nil? (-> result-data :signals :stochastic-oscillator))))
-
-   :stochastic-d (into-array (reduce (fn [rslt ech]
-                                       (conj rslt (into-array [(js/window.parseInt (:last-trade-time ech))
-                                                               (js/window.parseFloat (:D ech))])))
-                                     []
-                                     (remove nil? (-> result-data :signals :stochastic-oscillator))))
-
-   :obv (into-array (reduce (fn [rslt ech]
-                              (conj rslt (into-array [(js/window.parseInt (:last-trade-time ech))
-                                                      (js/window.parseInt (:obv ech))])))
-                            []
-                            (remove nil? (-> result-data :signals :obv))))
-
-   :signals {:moving-average (pull-out-signals result-data :moving-average)
-             :bollinger-band (pull-out-signals result-data :bollinger-band)
-             :macd (pull-out-signals result-data :macd)
-             :stochastic-oscillator (pull-out-signals result-data :stochastic-oscillator)
-             :obv (pull-out-signals result-data :obv)}
-
-   :strategies {:strategy-A (pull-out-strategies result-data :strategy-A)
-                :strategy-B (pull-out-strategies result-data :strategy-B)}
-
-   :stock-name (:stock-name result-data)})
-
-
-(populate-multiselect ".multiselect-live" {:onChange (fn [element checked]
+(components/populate-multiselect ".multiselect-live" {:onChange (fn [element checked]
 
                                                        (if checked
                                                          ($/post (str "/get-streaming-stock-data?stock-selection=" (.val element) "&stock-name=" (.text element))
@@ -497,7 +355,7 @@
                                              (.log js/console (str "POST:: get-streaming-stock-data > data[" data "]"))))))))
 
 
-(populate-multiselect ".multiselect-historical" {:onChange (fn [element checked]
+(components/populate-multiselect ".multiselect-historical" {:onChange (fn [element checked]
 
                                                              (if checked
                                                                ($/ajax "/get-historical-data"
@@ -508,7 +366,7 @@
 
                                                                                              (.log js/console (str ".multiselect-historical > jqXHR[" jqXHR "] / status[" status "]"))
                                                                                              (let [result-data (reader/read-string (.-responseText jqXHR))
-                                                                                                   parsed-result-map (parse-result-data result-data)
+                                                                                                   parsed-result-map (shandler/parse-result-data result-data)
                                                                                                    increment? false]
 
                                                                                                (.log js/console (str "... generated signal-map[" (-> result-data :strategies) "]"))
@@ -538,7 +396,7 @@
                    (fn [e]
 
                      (let [result-data (reader/read-string (.-data e))
-                           parsed-result-map (parse-result-data result-data)
+                           parsed-result-map (shandler/parse-result-data result-data)
                            increment?  (and (not (nil? (-> ($ "#live-stock-graph") (.highcharts "StockChart"))))
                                             (= (:stock-name parsed-result-map)
                                                (-> ($ "#live-stock-graph") (.highcharts "StockChart") (.-title) (.-text)))) ]
