@@ -47,7 +47,12 @@ var result_data = cljs.reader.read_string.call(null,e.data);
 var parsed_result_map = server.handler.parse_result_data.call(null,result_data);
 var increment_QMARK_ = (function (){var and__3949__auto__ = !((jayq.core.$.call(null,"#live-stock-graph").highcharts("StockChart") == null));
 if(and__3949__auto__)
+{var and__3949__auto____$1 = !((jayq.core.$.call(null,"#live-stock-graph").highcharts("StockChart").title == null));
+if(and__3949__auto____$1)
 {return cljs.core._EQ_.call(null,(new cljs.core.Keyword("\uFDD0'stock-name")).call(null,parsed_result_map),jayq.core.$.call(null,"#live-stock-graph").highcharts("StockChart").title.text);
+} else
+{return and__3949__auto____$1;
+}
 } else
 {return and__3949__auto__;
 }

@@ -70,6 +70,7 @@
                      (let [result-data (reader/read-string (.-data e))
                            parsed-result-map (shandler/parse-result-data result-data)
                            increment?  (and (not (nil? (-> ($ "#live-stock-graph") (.highcharts "StockChart"))))
+                                            (not (nil? (-> ($ "#live-stock-graph") (.highcharts "StockChart") (.-title))))
                                             (= (:stock-name parsed-result-map)
                                                (-> ($ "#live-stock-graph") (.highcharts "StockChart") (.-title) (.-text)))) ]
 

@@ -14346,6 +14346,14 @@ ui.graph.chart_fill = function(a, b, c, d) {
 ui.graph.chart_increment = function(a, b) {
   cljs.core.first.call(null, jayq.core.$.call(null, a).highcharts().series).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.first.call(null, b))), !0, !1);
   cljs.core.second.call(null, jayq.core.$.call(null, a).highcharts().series).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.second.call(null, b))), !0, !1);
+  cljs.core.nth.call(null, jayq.core.$.call(null, a).highcharts().series, 2).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.nth.call(null, b, 2))), !0, !1);
+  cljs.core.nth.call(null, jayq.core.$.call(null, a).highcharts().series, 3).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.nth.call(null, b, 3))), !0, !1);
+  cljs.core.nth.call(null, jayq.core.$.call(null, a).highcharts().series, 4).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.nth.call(null, b, 4))), !0, !1);
+  cljs.core.nth.call(null, jayq.core.$.call(null, a).highcharts().series, 5).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.nth.call(null, b, 5))), !0, !1);
+  cljs.core.nth.call(null, jayq.core.$.call(null, a).highcharts().series, 6).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.nth.call(null, b, 6))), !0, !1);
+  cljs.core.nth.call(null, jayq.core.$.call(null, a).highcharts().series, 7).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.nth.call(null, b, 7))), !0, !1);
+  cljs.core.nth.call(null, jayq.core.$.call(null, a).highcharts().series, 8).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.nth.call(null, b, 8))), !0, !1);
+  cljs.core.nth.call(null, jayq.core.$.call(null, a).highcharts().series, 9).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.nth.call(null, b, 9))), !0, !1);
   console.log("");
   console.log([cljs.core.str("Zzz 1["), cljs.core.str(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.second.call(null, b)))), cljs.core.str("]")].join(""));
   console.log([cljs.core.str("Zzz 2["), cljs.core.str(cljs.core.ObjMap.fromObject(["\ufdd0'x", "\ufdd0'title"], {"\ufdd0'x":new window.Date(cljs.core.first.call(null, cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.second.call(null, b))))), "\ufdd0'title":"Testing 123"})), cljs.core.str("]")].join(""));
@@ -14550,7 +14558,9 @@ ui.components.populate_multiselect.call(null, ".multiselect-historical", cljs.co
 edgar.livesource = new window.EventSource("/get-streaming-stock-data");
 edgar.livesource.addEventListener("stream-live", function(a) {
   var a = cljs.reader.read_string.call(null, a.data), a = server.handler.parse_result_data.call(null, a), b;
-  b = (b = null != jayq.core.$.call(null, "#live-stock-graph").highcharts("StockChart")) ? cljs.core._EQ_.call(null, (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, a), jayq.core.$.call(null, "#live-stock-graph").highcharts("StockChart").title.text) : b;
+  if(b = null != jayq.core.$.call(null, "#live-stock-graph").highcharts("StockChart")) {
+    b = (b = null != jayq.core.$.call(null, "#live-stock-graph").highcharts("StockChart").title) ? cljs.core._EQ_.call(null, (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, a), jayq.core.$.call(null, "#live-stock-graph").highcharts("StockChart").title.text) : b
+  }
   return ui.graph.render_stock_graph.call(null, "#live-stock-graph", cljs.core.PersistentVector.fromArray([(new cljs.core.Keyword("\ufdd0'bollinger-band")).call(null, a), (new cljs.core.Keyword("\ufdd0'local-list")).call(null, a), (new cljs.core.Keyword("\ufdd0'sma-list")).call(null, a), (new cljs.core.Keyword("\ufdd0'ema-list")).call(null, a), (new cljs.core.Keyword("\ufdd0'macd-price-list")).call(null, a), (new cljs.core.Keyword("\ufdd0'macd-signal-list")).call(null, a), (new cljs.core.Keyword("\ufdd0'macd-histogram-list")).call(null, 
   a), (new cljs.core.Keyword("\ufdd0'stochastic-k")).call(null, a), (new cljs.core.Keyword("\ufdd0'stochastic-d")).call(null, a), (new cljs.core.Keyword("\ufdd0'obv")).call(null, a)], !0), (new cljs.core.Keyword("\ufdd0'signals")).call(null, a), (new cljs.core.Keyword("\ufdd0'strategies")).call(null, a), (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, a), b)
 });

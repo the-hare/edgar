@@ -7,31 +7,31 @@ return cljs.core.reduce.call(null,(function (rslt,ech){
 var default_entry = (function (eF){
 return cljs.core.ObjMap.fromObject(["\uFDD0'type","\uFDD0'data","\uFDD0'color","\uFDD0'fillColor","\uFDD0'width","\uFDD0'style","\uFDD0'states"],{"\uFDD0'type":"flags","\uFDD0'data":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\uFDD0'x","\uFDD0'title","\uFDD0'text"],{"\uFDD0'x":(new cljs.core.Keyword("\uFDD0'x")).call(null,eF),"\uFDD0'title":(new cljs.core.Keyword("\uFDD0'title")).call(null,eF),"\uFDD0'text":(new cljs.core.Keyword("\uFDD0'text")).call(null,eF)})], true),"\uFDD0'color":"#5F86B3","\uFDD0'fillColor":"#5F86B3","\uFDD0'width":16,"\uFDD0'style":cljs.core.ObjMap.fromObject(["\uFDD0'color"],{"\uFDD0'color":"white"}),"\uFDD0'states":cljs.core.ObjMap.fromObject(["\uFDD0'hover"],{"\uFDD0'hover":cljs.core.ObjMap.fromObject(["\uFDD0'fillColor"],{"\uFDD0'fillColor":"#395C84"})})});
 });
-var G__108611 = cljs.core.first.call(null,ech);
-if(cljs.core._EQ_.call(null,"default",G__108611))
+var G__108880 = cljs.core.first.call(null,ech);
+if(cljs.core._EQ_.call(null,"default",G__108880))
 {return rslt;
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'obv",G__108611))
+{if(cljs.core._EQ_.call(null,"\uFDD0'obv",G__108880))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","obv-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'stochastic-oscillator",G__108611))
+{if(cljs.core._EQ_.call(null,"\uFDD0'stochastic-oscillator",G__108880))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","k-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'macd",G__108611))
+{if(cljs.core._EQ_.call(null,"\uFDD0'macd",G__108880))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","macd-price-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'bollinger-band",G__108611))
+{if(cljs.core._EQ_.call(null,"\uFDD0'bollinger-band",G__108880))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","bollinger-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'moving-average",G__108611))
+{if(cljs.core._EQ_.call(null,"\uFDD0'moving-average",G__108880))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","ema-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
@@ -69,6 +69,14 @@ return jayq.core.$.call(null,selector).highcharts("StockChart",cljs.core.clj__GT
 ui.graph.chart_increment = (function chart_increment(selector,dataList,strategy_map){
 cljs.core.first.call(null,jayq.core.$.call(null,selector).highcharts().series).addPoint(cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.first.call(null,dataList))),true,false);
 cljs.core.second.call(null,jayq.core.$.call(null,selector).highcharts().series).addPoint(cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.second.call(null,dataList))),true,false);
+cljs.core.nth.call(null,jayq.core.$.call(null,selector).highcharts().series,2).addPoint(cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,2))),true,false);
+cljs.core.nth.call(null,jayq.core.$.call(null,selector).highcharts().series,3).addPoint(cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,3))),true,false);
+cljs.core.nth.call(null,jayq.core.$.call(null,selector).highcharts().series,4).addPoint(cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,4))),true,false);
+cljs.core.nth.call(null,jayq.core.$.call(null,selector).highcharts().series,5).addPoint(cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,5))),true,false);
+cljs.core.nth.call(null,jayq.core.$.call(null,selector).highcharts().series,6).addPoint(cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,6))),true,false);
+cljs.core.nth.call(null,jayq.core.$.call(null,selector).highcharts().series,7).addPoint(cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,7))),true,false);
+cljs.core.nth.call(null,jayq.core.$.call(null,selector).highcharts().series,8).addPoint(cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,8))),true,false);
+cljs.core.nth.call(null,jayq.core.$.call(null,selector).highcharts().series,9).addPoint(cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.nth.call(null,dataList,9))),true,false);
 console.log("");
 console.log([cljs.core.str("Zzz 1["),cljs.core.str(cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.second.call(null,dataList)))),cljs.core.str("]")].join(''));
 console.log([cljs.core.str("Zzz 2["),cljs.core.str(cljs.core.ObjMap.fromObject(["\uFDD0'x","\uFDD0'title"],{"\uFDD0'x":(new window.Date(cljs.core.first.call(null,cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.second.call(null,dataList)))))),"\uFDD0'title":"Testing 123"})),cljs.core.str("]")].join(''));
