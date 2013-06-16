@@ -76,6 +76,7 @@
 
     (market/create-event-channel)
 
+    ;; ... TODO: output here will be a map with a key / value of { :stock-name tick-list }
     (edgar/play-historical client stock-selection time-duration time-interval [(fn [tick-list]
 
                                                                                  (market/close-market-channel)
@@ -229,14 +230,14 @@
                                                      signals-stochastic (sleading/stochastic-oscillator 14 3 3 tick-list-N)
                                                      signals-obv (sconfirming/on-balance-volume 10 tick-list-N)
 
-                                                     #_sA #_(strategy/strategy-A tick-list-N
+                                                     sA (strategy/strategy-A tick-list-N
                                                                              signals-ma
                                                                              signals-bollinger
                                                                              signals-macd
                                                                              signals-stochastic
                                                                              signals-obv)
 
-                                                     sA [(assoc (nth tick-list-N 10) :strategies [{:signal :up
+                                                     #_sA #_[(assoc (nth tick-list-N 10) :strategies [{:signal :up
                                                                                                    :why "test"}])]
                                                      sB (strategy/strategy-B tick-list-N
                                                                              signals-ma

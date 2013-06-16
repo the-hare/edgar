@@ -118,8 +118,8 @@
                               (into []
                                     (for [x inp
                                           :when #(= rid (:id %))]
-                                      (merge x {:processed? true}))
-                                    )) ))
+                                      (merge x {:processed? true}))))))
+
 
       (market/cancel-market-data client rid)
 
@@ -130,17 +130,15 @@
         (reduce (fn [rslt ech]
                   (ech @bucket))
                 nil
-                tee-list))))
-    )
+                tee-list)))))
+
 
 (defn- handle-snapshot-continue [options rst]
 
   ;; when getting stock data, when results arrive, decide if
   ;;
   ;; i. it's within the top 100 price ranges
-  ;; ii. if not, discard,
-
-
+  ;; ii. if not, discard
 
   (let [bucket (:bucket options)
         client (:client options)
@@ -149,8 +147,7 @@
         event-index (-> (filter (fn [inp] (= (:id (second inp))
                                             (rst "tickerId") ))
                                 (map-indexed vector @bucket) )
-                        ffirst)
-        ]
+                        ffirst)]
 
     ;;(log/debug "handle-snapshot-continue > event-index[" event-index "][" (-> event-index nil? not) "]  > rst[" rst "] > options[" (dissoc options :stock-lists) "]")
     (if (-> event-index nil? not)
@@ -160,8 +157,7 @@
         (insert-into-event-list bucket event-index rst)
         (insert-price-difference bucket event-index rst)
 
-        #_(order-by-price-difference bucket))))
-  )
+        #_(order-by-price-difference bucket)))))
 
 
 ;; subscribe to EWrapper mkt data events
@@ -230,6 +226,4 @@
                  current-tranche)
 
          ;; B. ensure that remaining list is decremented
-         (dosync (alter remaining-list nthrest tranche-size))))
-     ))
-  )
+         (dosync (alter remaining-list nthrest tranche-size)))))))
