@@ -81,79 +81,86 @@
 
                                                                                  (market/close-market-channel)
 
-                                                                                 (let [
+                                                                                 ;; tick-list format will be:
+                                                                                 ;; [{:id 0, :symbol DDD, :company 3D Systems Corporation, :price-difference 0.09000000000000341, :event-list []}]
+                                                                                 (reduce (fn [rslt ech-list]
 
-                                                                                       ;; from Historical feed, dates will be strings that look like: "20130606  15:33:00"
-                                                                                       date-format (SimpleDateFormat. "yyyyMMdd HH:mm:ss")
+                                                                                           (let [
 
-                                                                                       tick-list-formatted (map (fn [inp]
-                                                                                                                  {:last-trade-price (:close inp)
-                                                                                                                   :last-trade-time (->> (:date inp)
-                                                                                                                                         (.parse date-format)
-                                                                                                                                         .getTime)
-                                                                                                                   :total-volume (:volume inp)})
-                                                                                                                (reverse (walk/keywordize-keys
-                                                                                                                          (-> tick-list first :event-list))))
+                                                                                                 ;; from Historical feed, dates will be strings that look like: "20130606  15:33:00"
+                                                                                                 date-format (SimpleDateFormat. "yyyyMMdd HH:mm:ss")
 
-
-                                                                                       final-list (reduce (fn [rslt ech]
-                                                                                                            (conj rslt [(:last-trade-time ech) (:last-trade-price ech)]))
-                                                                                                          []
-                                                                                                          tick-list-formatted)
+                                                                                                 tick-list-formatted (map (fn [inp]
+                                                                                                                            {:last-trade-price (:close inp)
+                                                                                                                             :last-trade-time (->> (:date inp)
+                                                                                                                                                   (.parse date-format)
+                                                                                                                                                   .getTime)
+                                                                                                                             :total-volume (:volume inp)})
+                                                                                                                          (reverse (walk/keywordize-keys
+                                                                                                                                    (-> ech-list :event-list))))
 
 
-                                                                                       sma-list (alagging/simple-moving-average {:input :last-trade-price
-                                                                                                                                 :output :last-trade-price-average
-                                                                                                                                 :etal [:last-trade-price :last-trade-time]}
-                                                                                                                                20
-                                                                                                                                tick-list-formatted)
-                                                                                       smaF (reduce (fn [rslt ech]
-                                                                                                      (conj rslt [(:last-trade-time ech) (:last-trade-price-average ech)]))
-                                                                                                    []
-                                                                                                    sma-list)
-
-                                                                                       ema-list (alagging/exponential-moving-average nil 20 tick-list-formatted sma-list)
-                                                                                       emaF (reduce (fn [rslt ech]
-                                                                                                      (conj rslt [(:last-trade-time ech) (:last-trade-price-exponential ech)]))
-                                                                                                    []
-                                                                                                    ema-list)
-
-                                                                                       signals-ma (slagging/moving-averages 20 tick-list-formatted sma-list ema-list)
-                                                                                       signals-bollinger (slagging/bollinger-band 20 tick-list-formatted sma-list)
-                                                                                       signals-macd (sleading/macd nil 20 tick-list-formatted sma-list)
-                                                                                       signals-stochastic (sleading/stochastic-oscillator 14 3 3 tick-list-formatted)
-                                                                                       signals-obv (sconfirming/on-balance-volume 10 tick-list-formatted)
-
-                                                                                       sA (strategy/strategy-fill-A tick-list-formatted
-                                                                                                                    signals-ma
-                                                                                                                    signals-bollinger
-                                                                                                                    signals-macd
-                                                                                                                    signals-stochastic
-                                                                                                                    signals-obv)
-
-                                                                                       #_sA #_[(assoc (nth tick-list-formatted 10) :strategies [{:signal :up
-                                                                                                                                             :why "test"}])]
-
-                                                                                       sB (strategy/strategy-fill-B tick-list-formatted
-                                                                                                                    signals-ma
-                                                                                                                    signals-bollinger
-                                                                                                                    signals-macd
-                                                                                                                    signals-stochastic
-                                                                                                                    signals-obv)]
+                                                                                                 final-list (reduce (fn [rslt ech]
+                                                                                                                      (conj rslt [(:last-trade-time ech) (:last-trade-price ech)]))
+                                                                                                                    []
+                                                                                                                    tick-list-formatted)
 
 
-                                                                                   ((:resume-fn paused-context) {:stock-name (-> tick-list first :company)
-                                                                                                                 :stock-list final-list
-                                                                                                                 :source-list tick-list
-                                                                                                                 :sma-list smaF
-                                                                                                                 :ema-list emaF
-                                                                                                                 :signals {:moving-average signals-ma
-                                                                                                                           :bollinger-band signals-bollinger
-                                                                                                                           :macd signals-macd
-                                                                                                                           :stochastic-oscillator signals-stochastic
-                                                                                                                           :obv signals-obv}
-                                                                                                                 :strategies {:strategy-A sA
-                                                                                                                              :strategy-B sB}})))])))
+                                                                                                 sma-list (alagging/simple-moving-average {:input :last-trade-price
+                                                                                                                                           :output :last-trade-price-average
+                                                                                                                                           :etal [:last-trade-price :last-trade-time]}
+                                                                                                                                          20
+                                                                                                                                          tick-list-formatted)
+                                                                                                 smaF (reduce (fn [rslt ech]
+                                                                                                                (conj rslt [(:last-trade-time ech) (:last-trade-price-average ech)]))
+                                                                                                              []
+                                                                                                              sma-list)
+
+                                                                                                 ema-list (alagging/exponential-moving-average nil 20 tick-list-formatted sma-list)
+                                                                                                 emaF (reduce (fn [rslt ech]
+                                                                                                                (conj rslt [(:last-trade-time ech) (:last-trade-price-exponential ech)]))
+                                                                                                              []
+                                                                                                              ema-list)
+
+                                                                                                 signals-ma (slagging/moving-averages 20 tick-list-formatted sma-list ema-list)
+                                                                                                 signals-bollinger (slagging/bollinger-band 20 tick-list-formatted sma-list)
+                                                                                                 signals-macd (sleading/macd nil 20 tick-list-formatted sma-list)
+                                                                                                 signals-stochastic (sleading/stochastic-oscillator 14 3 3 tick-list-formatted)
+                                                                                                 signals-obv (sconfirming/on-balance-volume 10 tick-list-formatted)
+
+                                                                                                 sA (strategy/strategy-fill-A tick-list-formatted
+                                                                                                                              signals-ma
+                                                                                                                              signals-bollinger
+                                                                                                                              signals-macd
+                                                                                                                              signals-stochastic
+                                                                                                                              signals-obv)
+
+                                                                                                 #_sA #_[(assoc (nth tick-list-formatted 10) :strategies [{:signal :up
+                                                                                                                                                           :why "test"}])]
+
+                                                                                                 sB (strategy/strategy-fill-B tick-list-formatted
+                                                                                                                              signals-ma
+                                                                                                                              signals-bollinger
+                                                                                                                              signals-macd
+                                                                                                                              signals-stochastic
+                                                                                                                              signals-obv)]
+
+
+                                                                                             ((:resume-fn paused-context) {:stock-name (-> ech-list :company)
+                                                                                                                           :stock-list final-list
+                                                                                                                           :source-list ech-list
+                                                                                                                           :sma-list smaF
+                                                                                                                           :ema-list emaF
+                                                                                                                           :signals {:moving-average signals-ma
+                                                                                                                                     :bollinger-band signals-bollinger
+                                                                                                                                     :macd signals-macd
+                                                                                                                                     :stochastic-oscillator signals-stochastic
+                                                                                                                                     :obv signals-obv}
+                                                                                                                           :strategies {:strategy-A sA
+                                                                                                                                        :strategy-B sB}})))
+                                                                                         []
+                                                                                         tick-list))])))
+
 (defbefore get-historical-data
   "Get historical data for a particular stock"
   [{request :request :as context}]

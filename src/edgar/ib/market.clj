@@ -69,8 +69,8 @@
   ([client idx instrm genericTicklist snapshot]
      (let [contract (create-contract instrm)]
 
-       (.reqMktData client idx contract genericTicklist snapshot))
-     ))
+       (.reqMktData client idx contract genericTicklist snapshot))))
+
 (defn cancel-market-data
   "Cancel the request ID, used in 'request-market-data'"
   [client idx]
