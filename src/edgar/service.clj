@@ -161,6 +161,7 @@
                                                                                          []
                                                                                          tick-list))])))
 
+
 (defbefore get-historical-data
   "Get historical data for a particular stock"
   [{request :request :as context}]
@@ -168,7 +169,6 @@
   (iimpl/with-pause [paused-context context]
     (async-historical
         (assoc paused-context :resume-fn (partial resume-historical paused-context)))))
-
 
 
 

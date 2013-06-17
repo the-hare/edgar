@@ -9,24 +9,6 @@
             [ui.components :as components]))
 
 
-(components/populate-multiselect ".multiselect-live" {:onChange (fn [element checked]
-
-                                                       (if checked
-                                                         ($/post (str "/get-streaming-stock-data?stock-selection=" (.val element) "&stock-name=" (.text element))
-                                                                 (fn [data]
-                                                                   (.log js/console (str "POST:: get-streaming-stock-data > data[" data "]"))))))})
-(.click ($ "#freeform-live") (fn [eventObj]
-
-                               (let [input-val (.val ($ "#freeform-live-input"))]
-
-                                 (.log js/console "... here[" eventObj "] / input[" input-val "]")
-                                 (if (not (empty? input-val))
-
-                                   ($/post (str "/get-streaming-stock-data?stock-selection=" input-val "&stock-name=" input-val)
-                                           (fn [data]
-                                             (.log js/console (str "POST:: get-streaming-stock-data > data[" data "]"))))))))
-
-
 (components/populate-multiselect ".multiselect-historical" {:onChange (fn [element checked]
 
                                                              (if checked
@@ -62,6 +44,15 @@
                                                                                                                    (:stock-name parsed-result-map)
                                                                                                                    increment?)))}))))})
 
+(components/populate-multiselect ".multiselect-live" {:onChange (fn [element checked]
+
+                                                       (if checked
+                                                         ($/post (str "/get-streaming-stock-data?stock-selection=" (.val element) "&stock-name=" (.text element))
+                                                                 (fn [data]
+                                                                   (.log js/console (str "POST:: get-streaming-stock-data > data[" data "]"))))))})
+
+
+
 (def livesource (js/window.EventSource. "/get-streaming-stock-data"))
 (.addEventListener livesource
                    "stream-live"
@@ -93,3 +84,14 @@
                                            (:strategies parsed-result-map)
                                            (:stock-name parsed-result-map)
                                            increment?))))
+
+(.click ($ "#freeform-live") (fn [eventObj]
+
+                               (let [input-val (.val ($ "#freeform-live-input"))]
+
+                                 (.log js/console "... here[" eventObj "] / input[" input-val "]")
+                                 (if (not (empty? input-val))
+
+                                   ($/post (str "/get-streaming-stock-data?stock-selection=" input-val "&stock-name=" input-val)
+                                           (fn [data]
+                                             (.log js/console (str "POST:: get-streaming-stock-data > data[" data "]"))))))))

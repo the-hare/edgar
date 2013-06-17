@@ -111,28 +111,7 @@
           (if (>= (count trimmed-list) 200)
             (dosync (alter tick-list
                            (fn [inp] (into []
-                                          (remove #(= (:uuid tail-evt) (% :uuid)) inp)))))))))
-
-
-
-
-    ;; the recieving data structure, should allow me to apply a strategy to:
-    ;; 1. plot bid / ask data on an x / y graph
-    ;; 2. overlay SMA on the same graph
-    ;; 3. overlay an EMA on the same graph
-
-    ;; strategy should identify when trend lines cross-over
-
-    ;; i. 20 tick structure & ii. strategy should allow me to extrude this to a clojurescript front-end
-
-    (def sma
-      (lagging/simple-moving-average nil 5 @tick-list)) #_(log/debug "**** PRINTING our SMA [" sma "]")
-
-    (def ema
-      (lagging/exponential-moving-average nil 5 @tick-list)) #_(log/debug "*** PRINTING our EMA [" ema "]")
-
-    (def bollinger
-      (lagging/bollinger-band 5 @tick-list)) #_(log/debug "*** PRINTING our Bollinger Band [" bollinger "]")))
+                                          (remove #(= (:uuid tail-evt) (% :uuid)) inp)))))))))))
 
 
 (defn feed-handler
@@ -153,5 +132,4 @@
 
       (handle-event (assoc options :tick-window 40) evt)
       nil)
-    (handle-event (assoc options :tick-window 40) evt))
-  )
+    (handle-event (assoc options :tick-window 40) evt)))

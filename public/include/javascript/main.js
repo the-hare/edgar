@@ -14539,18 +14539,6 @@ server.handler.parse_result_data = function(a) {
   }, cljs.core.PersistentVector.EMPTY, cljs.core.remove.call(null, cljs.core.nil_QMARK_, (new cljs.core.Keyword("\ufdd0'macd")).call(null, (new cljs.core.Keyword("\ufdd0'signals")).call(null, a))))), "\ufdd0'signals":cljs.core.ObjMap.fromObject(["\ufdd0'moving-average", "\ufdd0'bollinger-band", "\ufdd0'macd", "\ufdd0'stochastic-oscillator", "\ufdd0'obv"], {"\ufdd0'moving-average":server.handler.pull_out_signals.call(null, a, "\ufdd0'moving-average"), "\ufdd0'bollinger-band":server.handler.pull_out_signals.call(null, 
   a, "\ufdd0'bollinger-band"), "\ufdd0'macd":server.handler.pull_out_signals.call(null, a, "\ufdd0'macd"), "\ufdd0'stochastic-oscillator":server.handler.pull_out_signals.call(null, a, "\ufdd0'stochastic-oscillator"), "\ufdd0'obv":server.handler.pull_out_signals.call(null, a, "\ufdd0'obv")})})
 };
-ui.components.populate_multiselect.call(null, ".multiselect-live", cljs.core.ObjMap.fromObject(["\ufdd0'onChange"], {"\ufdd0'onChange":function(a, b) {
-  return cljs.core.truth_(b) ? $.post.call(null, [cljs.core.str("/get-streaming-stock-data?stock-selection="), cljs.core.str(a.val()), cljs.core.str("&stock-name="), cljs.core.str(a.text())].join(""), function(a) {
-    return console.log([cljs.core.str("POST:: get-streaming-stock-data > data["), cljs.core.str(a), cljs.core.str("]")].join(""))
-  }) : null
-}}));
-jayq.core.$.call(null, "#freeform-live").click(function(a) {
-  var b = jayq.core.$.call(null, "#freeform-live-input").val();
-  console.log("... here[", a, "] / input[", b, "]");
-  return cljs.core.empty_QMARK_.call(null, b) ? null : $.post.call(null, [cljs.core.str("/get-streaming-stock-data?stock-selection="), cljs.core.str(b), cljs.core.str("&stock-name="), cljs.core.str(b)].join(""), function(a) {
-    return console.log([cljs.core.str("POST:: get-streaming-stock-data > data["), cljs.core.str(a), cljs.core.str("]")].join(""))
-  })
-});
 ui.components.populate_multiselect.call(null, ".multiselect-historical", cljs.core.ObjMap.fromObject(["\ufdd0'onChange"], {"\ufdd0'onChange":function(a, b) {
   return cljs.core.truth_(b) ? $.ajax.call(null, "/get-historical-data", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'data", "\ufdd0'complete"], {"\ufdd0'data":cljs.core.ObjMap.fromObject(["\ufdd0'stock-selection", "\ufdd0'time-duration", "\ufdd0'time-interval"], {"\ufdd0'stock-selection":a.val(), "\ufdd0'time-duration":"300 S", "\ufdd0'time-interval":"1 secs"}), "\ufdd0'complete":function(a, b) {
     console.log([cljs.core.str(".multiselect-historical > jqXHR["), cljs.core.str(a), cljs.core.str("] / status["), cljs.core.str(b), cljs.core.str("]")].join(""));
@@ -14558,6 +14546,11 @@ ui.components.populate_multiselect.call(null, ".multiselect-historical", cljs.co
     return ui.graph.render_stock_graph.call(null, "#historical-stock-graph", cljs.core.PersistentVector.fromArray([(new cljs.core.Keyword("\ufdd0'bollinger-band")).call(null, e), (new cljs.core.Keyword("\ufdd0'local-list")).call(null, e), (new cljs.core.Keyword("\ufdd0'sma-list")).call(null, e), (new cljs.core.Keyword("\ufdd0'ema-list")).call(null, e), (new cljs.core.Keyword("\ufdd0'macd-price-list")).call(null, e), (new cljs.core.Keyword("\ufdd0'macd-signal-list")).call(null, e), (new cljs.core.Keyword("\ufdd0'macd-histogram-list")).call(null, 
     e), (new cljs.core.Keyword("\ufdd0'stochastic-k")).call(null, e), (new cljs.core.Keyword("\ufdd0'stochastic-d")).call(null, e), (new cljs.core.Keyword("\ufdd0'obv")).call(null, e)], !0), (new cljs.core.Keyword("\ufdd0'signals")).call(null, e), (new cljs.core.Keyword("\ufdd0'strategies")).call(null, e), (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, e), !1)
   }}))) : null
+}}));
+ui.components.populate_multiselect.call(null, ".multiselect-live", cljs.core.ObjMap.fromObject(["\ufdd0'onChange"], {"\ufdd0'onChange":function(a, b) {
+  return cljs.core.truth_(b) ? $.post.call(null, [cljs.core.str("/get-streaming-stock-data?stock-selection="), cljs.core.str(a.val()), cljs.core.str("&stock-name="), cljs.core.str(a.text())].join(""), function(a) {
+    return console.log([cljs.core.str("POST:: get-streaming-stock-data > data["), cljs.core.str(a), cljs.core.str("]")].join(""))
+  }) : null
 }}));
 edgar.livesource = new window.EventSource("/get-streaming-stock-data");
 edgar.livesource.addEventListener("stream-live", function(a) {
@@ -14567,6 +14560,13 @@ edgar.livesource.addEventListener("stream-live", function(a) {
   }
   return ui.graph.render_stock_graph.call(null, "#live-stock-graph", cljs.core.PersistentVector.fromArray([(new cljs.core.Keyword("\ufdd0'bollinger-band")).call(null, a), (new cljs.core.Keyword("\ufdd0'local-list")).call(null, a), (new cljs.core.Keyword("\ufdd0'sma-list")).call(null, a), (new cljs.core.Keyword("\ufdd0'ema-list")).call(null, a), (new cljs.core.Keyword("\ufdd0'macd-price-list")).call(null, a), (new cljs.core.Keyword("\ufdd0'macd-signal-list")).call(null, a), (new cljs.core.Keyword("\ufdd0'macd-histogram-list")).call(null, 
   a), (new cljs.core.Keyword("\ufdd0'stochastic-k")).call(null, a), (new cljs.core.Keyword("\ufdd0'stochastic-d")).call(null, a), (new cljs.core.Keyword("\ufdd0'obv")).call(null, a)], !0), (new cljs.core.Keyword("\ufdd0'signals")).call(null, a), (new cljs.core.Keyword("\ufdd0'strategies")).call(null, a), (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, a), b)
+});
+jayq.core.$.call(null, "#freeform-live").click(function(a) {
+  var b = jayq.core.$.call(null, "#freeform-live-input").val();
+  console.log("... here[", a, "] / input[", b, "]");
+  return cljs.core.empty_QMARK_.call(null, b) ? null : $.post.call(null, [cljs.core.str("/get-streaming-stock-data?stock-selection="), cljs.core.str(b), cljs.core.str("&stock-name="), cljs.core.str(b)].join(""), function(a) {
+    return console.log([cljs.core.str("POST:: get-streaming-stock-data > data["), cljs.core.str(a), cljs.core.str("]")].join(""))
+  })
 });
 edgar.core.analysis.confirming = {};
 edgar.core.analysis.confirming.on_balance_volume = function(a, b) {
