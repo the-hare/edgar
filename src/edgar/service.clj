@@ -146,7 +146,8 @@
                                                                                                                               signals-obv)]
 
 
-                                                                                             ((:resume-fn paused-context) {:stock-name (-> ech-list :company)
+                                                                                             ((:resume-fn paused-context) {:stock-name (:company ech-list)
+                                                                                                                           :stock-symbol (:symbol ech-list)
                                                                                                                            :stock-list final-list
                                                                                                                            :source-list ech-list
                                                                                                                            :sma-list smaF
@@ -203,15 +204,16 @@
         stock-selection [ (-> request :query-params :stock-selection) ]
         stock-name (-> request :query-params :stock-name)]
 
-    (edgar/play-live client stock-selection [(fn [tick-list tick]
+    (edgar/play-live client stock-selection [(fn [tick-list]
 
+                                               (println (str "get-streaming-stock-data tick-list[" tick-list "]"))
                                                (let [tick-list-N (map (fn [inp]
                                                                         (assoc inp
                                                                           :total-volume (read-string (:total-volume inp))
                                                                           :last-trade-size (read-string (:last-trade-size inp))
                                                                           :vwap (read-string (:vwap inp))
                                                                           :last-trade-price (read-string (:last-trade-price inp))))
-                                                                      (reverse tick-list))
+                                                                      (reverse (:event-list tick-list)))
 
                                                      final-list (reduce (fn [rslt ech]
                                                                           (conj rslt [(:last-trade-time ech) (:last-trade-price ech)]))
@@ -245,7 +247,7 @@
                                                                              signals-obv)
 
                                                      #_sA #_[(assoc (nth tick-list-N 10) :strategies [{:signal :up
-                                                                                                   :why "test"}])]
+                                                                                                       :why "test"}])]
                                                      sB (strategy/strategy-B tick-list-N
                                                                              signals-ma
                                                                              signals-bollinger
@@ -257,6 +259,7 @@
                                                  #_(println (str "... strategy-B[" sB "]"))
 
                                                  (stream-live "stream-live" {:stock-name stock-name
+                                                                             :stock-symbol (:symbol tick-list)
                                                                              :stock-list final-list
                                                                              :source-list tick-list-N
                                                                              :sma-list smaF
@@ -267,7 +270,9 @@
                                                                                        :stochastic-oscillator signals-stochastic
                                                                                        :obv signals-obv}
                                                                              :strategies {:strategy-A sA
-                                                                                          :strategy-B sB}})))])
+                                                                                          :strategy-B sB}}))
+                                               []
+                                               tick-list)])
     { :status 204 }))
 
 

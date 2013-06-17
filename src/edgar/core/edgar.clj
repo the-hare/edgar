@@ -66,7 +66,7 @@
 
                                 (let [tick-list (ref [])
                                       tee-list (if tee-fn-list tee-fn-list [(partial tplay/tee-market @tick-list)])
-                                      options {:tick-list tick-list :tee-list tee-list :ticker-id-filter [req-id]}]
+                                      options {:tick-list tick-list :tee-list tee-list :stock-match {:symbol ech :ticker-id-filter [req-id]}}]
 
                                   (market/subscribe-to-market (partial live/feed-handler options))
                                   (market/request-market-data client req-id ech "233" false)

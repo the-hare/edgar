@@ -67,7 +67,7 @@
                       (:tick-window options)
                       40)]
 
-    (log/debug "edgar.core.edgar/handle-event [" evt "] FILTER[" (:ticker-id-filter options) "] > tick-list size[" (count @tick-list) "] > [" @tick-list "] > options[" #_options "]")
+    (log/info "edgar.core.edgar/handle-event [" evt "] FILTER[" (-> options :stock-match :ticker-id-filter) "] > tick-list size[" (count @tick-list) "] > [" #_@tick-list "] > options[" #_options "]")
 
 
     ;; handle tickPrice
@@ -102,7 +102,7 @@
 
 
           (reduce (fn [rslt efn]
-                    (efn trimmed-list (first trimmed-list)))
+                    (efn {:symbol (-> options :stock-match :symbol) :event-list trimmed-list}))
                   nil
                   tee-list)
 
@@ -120,15 +120,15 @@
    Options are:
      :tick-list - the list into which result tick events will be put
      :tee-list - list of pipes to which result events will be pushed
-     :ticker-id-filter - a list of tickerIds about which this feed-handler cares"
+     :stock-match :symbol , :ticker-id-filter - a list of tickerIds about which this feed-handler cares"
   [options evt]
 
   #_(log/info "feed-handler > tickerIDs[" (:ticker-id-filter options) "] > tick-list SIZE[" (count (deref (:tick-list options))) "] > SOME[" (some #{ (evt "tickerId") } (:ticker-id-filter options)) "]")
-  (if (:ticker-id-filter options)
+  (if (-> options :stock-match :ticker-id-filter)
 
     ;; check if this event passes the filter
     (if (some #{ (evt "tickerId") }
-              (:ticker-id-filter options))
+              (-> options :stock-match :ticker-id-filter))
 
       (handle-event (assoc options :tick-window 40) evt)
       nil)
