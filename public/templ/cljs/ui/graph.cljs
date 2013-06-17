@@ -280,12 +280,12 @@
           (.addPoint (last (reverse (nth dataList 9))) true false))
 
 
-      (.log js/console "")
-      (.log js/console (str "Zzz 1[" (last (reverse (second dataList))) "]"))
-      (.log js/console (str "Zzz 2[" {:x (js/window.Date. (nth (last (reverse (second dataList))) 10)) :title "Testing 123"} "]"))
+      #_(.log js/console "")
+      #_(.log js/console (str "Zzz 1[" (last (reverse (second dataList))) "]"))
+      #_(.log js/console (str "Zzz 2[" {:x (js/window.Date. (nth (last (reverse (second dataList))) 10)) :title "Testing 123"} "]"))
 
 
-      (-> ($ selector)
+      #_(-> ($ selector)
           (.highcharts)
           (.-series)
           (nth 10)

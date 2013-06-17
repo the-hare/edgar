@@ -14357,11 +14357,7 @@ ui.graph.chart_increment = function(a, b) {
   cljs.core.nth.call(null, jayq.core.$.call(null, a).highcharts().series, 6).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.nth.call(null, b, 6))), !0, !1);
   cljs.core.nth.call(null, jayq.core.$.call(null, a).highcharts().series, 7).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.nth.call(null, b, 7))), !0, !1);
   cljs.core.nth.call(null, jayq.core.$.call(null, a).highcharts().series, 8).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.nth.call(null, b, 8))), !0, !1);
-  cljs.core.nth.call(null, jayq.core.$.call(null, a).highcharts().series, 9).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.nth.call(null, b, 9))), !0, !1);
-  console.log("");
-  console.log([cljs.core.str("Zzz 1["), cljs.core.str(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.second.call(null, b)))), cljs.core.str("]")].join(""));
-  console.log([cljs.core.str("Zzz 2["), cljs.core.str(cljs.core.ObjMap.fromObject(["\ufdd0'x", "\ufdd0'title"], {"\ufdd0'x":new window.Date(cljs.core.nth.call(null, cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.second.call(null, b))), 10)), "\ufdd0'title":"Testing 123"})), cljs.core.str("]")].join(""));
-  return cljs.core.nth.call(null, jayq.core.$.call(null, a).highcharts().series, 10).addPoint(cljs.core.ObjMap.fromObject(["\ufdd0'x", "\ufdd0'title"], {"\ufdd0'x":new window.Date(cljs.core.nth.call(null, cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.second.call(null, b))), 10)), "\ufdd0'title":"Testing 123"}), !0, !1)
+  return cljs.core.nth.call(null, jayq.core.$.call(null, a).highcharts().series, 9).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.nth.call(null, b, 9))), !0, !1)
 };
 ui.graph.render_stock_graph = function(a, b, c, d, e, f) {
   console.log([cljs.core.str("... render-stock-graph > strategy-map["), cljs.core.str(d), cljs.core.str("] > increment["), cljs.core.str(f), cljs.core.str("]")].join(""));

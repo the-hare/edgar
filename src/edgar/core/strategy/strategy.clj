@@ -151,6 +151,7 @@
       ;; if all conditions are met, put an :up signal, with the reasons
       (do (println "BINGO ---- We have a strategy-A :up signal")
           (cons (assoc (first tick-list) :strategies [{:signal :up
+                                                       :name :strategy-A
                                                        :why [:price-increase :price-below-sma :bollinger-price-below :bollinger-was-narrower
                                                              :macd-histogram-squeeze :obv-increasing :stochastic-oversold]}])
                 (rest tick-list))))))
@@ -194,7 +195,7 @@
                             (< (count stochastic-L) 3)
                             (< (count obv-L) 3))
 
-                      (conj rslt (first ech-list))
+                      rslt
 
                       (conj rslt (first (strategy-A ech-list ma-L bollinger-L macd-L stochastic-L obv-L))))))
                 []
@@ -241,6 +242,7 @@
 
       (do (println "BINGO ---- We have a strategy-B :up signal")
           (cons (assoc (first tick-list) :strategies [{:signal :up
+                                                       :name :strategy-B
                                                        :why [:price-cross-abouve-sma :bollinger-was-narrower :macd-crossover
                                                              :stochastic-crossover :stochastic-oversold :obv-increasing]}])
                   (rest tick-list))))))
@@ -270,7 +272,7 @@
                             (empty? stochastic-L)
                             (< (count obv-L) 2))
 
-                      (conj rslt (first ech-list))
+                      rslt
 
                       (conj rslt (first (strategy-B ech-list ma-L bollinger-L macd-L stochastic-L obv-L))))))
                 []

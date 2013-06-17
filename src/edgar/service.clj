@@ -175,6 +175,8 @@
 
 ;; LIVE Data
 (def stored-streaming-context (atom nil))
+(def tracking-data (ref []))
+
 
 (defn init-streaming-stock-data [sse-context]
   (log/info (str "... init-streaming-stock-data CALLED > sse-context[" sse-context "]"))
@@ -239,15 +241,16 @@
                                                      signals-stochastic (sleading/stochastic-oscillator 14 3 3 tick-list-N)
                                                      signals-obv (sconfirming/on-balance-volume 10 tick-list-N)
 
-                                                     sA (strategy/strategy-A tick-list-N
+                                                     #_sA #_(strategy/strategy-A tick-list-N
                                                                              signals-ma
                                                                              signals-bollinger
                                                                              signals-macd
                                                                              signals-stochastic
                                                                              signals-obv)
 
-                                                     #_sA #_[(assoc (nth tick-list-N 10) :strategies [{:signal :up
-                                                                                                       :why "test"}])]
+                                                     sA [(assoc (nth tick-list-N 10) :strategies [{:signal :up
+                                                                                                   :name :strategy-test
+                                                                                                   :why "test"}])]
                                                      sB (strategy/strategy-B tick-list-N
                                                                              signals-ma
                                                                              signals-bollinger
@@ -255,8 +258,46 @@
                                                                              signals-stochastic
                                                                              signals-obv)]
 
-                                                 #_(println (str "... strategy-A[" sA "]"))
-                                                 #_(println (str "... strategy-B[" sB "]"))
+                                                 ;; are there any strategies ?
+                                                 (if-not (empty? sA)
+
+                                                   ;; iterate through list of strategies
+                                                   (reduce (fn [rA eA]
+
+                                                             ;; does tickerId of current entry = any tickerIds in existing list?
+                                                             (if (some #(= % (:tickerId eA))
+                                                                       (map :tickerId @tracking-data))
+
+                                                               ;; for tracking symbols, each new tick -> calculate:
+                                                               ;;     $ gain/loss
+                                                               ;;     % gain/loss
+                                                               (dosync (alter tracking-data (fn [inp]
+
+                                                                                              ;; update-in-place, the existing tracking-data
+                                                                                              ;; i. find index of relevent entry
+                                                                                              (update-in inp
+                                                                                                         [(first (map first (filter #(= (second %) (:uuid eA))
+                                                                                                                                     (map-indexed (fn [idx itm] [idx itm]) inp))))]
+                                                                                                         (fn [i1]
+                                                                                                           (let [price-diff (- (:last-trade-price i1) (:orig-trade-price i1))]
+                                                                                                             (merge i1 {:last-trade-price (:last-trade-price i1)
+                                                                                                                        :last-trade-time (:last-trade-time i1)
+                                                                                                                        :change-% (/ price-diff (:orig-trade-price))
+                                                                                                                        :change-$ price-diff})))))))
+
+                                                               ;; store them in a hacked-session
+                                                               (dosync (alter tracking-data conj {:uuid (:uuid eA)
+                                                                                                  :symbol (:symbol tick-list)
+                                                                                                  :tickerId (:tickerId eA)
+                                                                                                  :orig-trade-price (:last-trade-price eA)
+                                                                                                  :orig-trade-time (:last-trade-time eA)
+                                                                                                  :strategies (:strategies eA)
+                                                                                                  :source-entry eA})))
+                                                             []
+                                                             sA)))
+
+                                                 (println (str "... strategy-A[" sA "]"))
+                                                 (println (str "... strategy-B[" sB "]"))
 
                                                  (stream-live "stream-live" {:stock-name stock-name
                                                                              :stock-symbol (:symbol tick-list)

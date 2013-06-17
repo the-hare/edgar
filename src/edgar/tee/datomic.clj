@@ -61,4 +61,4 @@
   ""
   [tick-list]
 
-  (log/info "tee.datomic/tee-market > tick[" tick-list "]"))
+  (log/debug "tee.datomic/tee-market > tick[" tick-list "]"))
