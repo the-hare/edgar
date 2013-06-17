@@ -206,7 +206,7 @@
 
     (edgar/play-live client stock-selection [(fn [tick-list]
 
-                                               (println (str "get-streaming-stock-data tick-list[" tick-list "]"))
+                                               #_(println (str "get-streaming-stock-data tick-list[" tick-list "]"))
                                                (let [tick-list-N (map (fn [inp]
                                                                         (assoc inp
                                                                           :total-volume (read-string (:total-volume inp))

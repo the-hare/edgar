@@ -165,7 +165,7 @@
     with-strategies))
 
 
-(defn chart-fill [selector dataList signal-map strategy-map]
+(defn chart-fill [selector dataList signal-map strategy-map label]
 
   (-> ($ selector)
       (.highcharts "StockChart" (clj->js
@@ -219,7 +219,7 @@
                                   :series (build-graph-series-data dataList signal-map strategy-map)}))))
 
 
-(defn chart-increment [selector dataList strategy-map]
+(defn chart-increment [selector dataList strategy-map label]
 
   (do
 
@@ -297,5 +297,5 @@
   (.log js/console (str "... render-stock-graph > strategy-map[" strategy-map "] > increment[" increment "]"))
   (if-not increment
 
-    (chart-fill selector dataList signal-map strategy-map)
-    (chart-increment selector dataList strategy-map)))
+    (chart-fill selector dataList signal-map strategy-map label)
+    (chart-increment selector dataList strategy-map label)))
