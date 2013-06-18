@@ -261,7 +261,8 @@
                                                  (println (str "... 0 > tracking-data[" @tracking-data "]"))
 
                                                  ;; are there any strategies ?
-                                                 (if-not (empty? sA)
+                                                 (if-not (or (empty? sA)
+                                                             (empty? sB))
 
                                                    ;; iterate through list of strategies
                                                    (reduce (fn [rA eA]
@@ -307,7 +308,7 @@
                                                                                                   :strategies (:strategies eA)
                                                                                                   :source-entry eA}))))
                                                            []
-                                                           sA))
+                                                           (concat sA sB)))
 
                                                  (println (str "... strategy-A[" sA "]"))
                                                  (println (str "... strategy-B[" sB "]"))
