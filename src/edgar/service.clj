@@ -10,6 +10,8 @@
             [edgar.core.signal.leading :as sleading]
             [edgar.core.signal.confirming :as sconfirming]
             [edgar.core.strategy.strategy :as strategy]
+            [edgar.core.strategy.target :as target]
+            [edgar.core.signal.common :as common]
             [edgar.server.handler :as shandler]
 
             [clojure.java.io :as io]
@@ -77,7 +79,7 @@
 
     (market/create-event-channel)
 
-    ;; ... TODO: output here will be a map with a key / value of { :stock-name tick-list }
+    ;; Output here will be a map with a key / value of { :stock-name tick-list }
     (edgar/play-historical client stock-selection time-duration time-interval [(fn [tick-list]
 
                                                                                  (market/close-market-channel)
@@ -229,7 +231,45 @@
                                                           (fn [i1]
 
                                                             (println (str "... 3 > update-in inp[" i1 "]"))
-                                                            (let [price-diff (- (:last-trade-price eA) (:orig-trade-price i1))
+                                                            (let [
+
+                                                                  ;; find peaks-valleys
+                                                                  peaks-valleys (common/find-peaks-valleys nil tick-list)
+                                                                  peaks (:peak (group-by :signal peaks-valleys))
+
+                                                                  stoploss-threshold? (target/stoploss-threshhold? (:orig-trade-price i1) (:last-trade-price eA))
+                                                                  reached-target? (target/target-threshhold? (:orig-trade-price i1) (:last-trade-price eA))
+
+                                                                  ;; ensure we're not below stop-loss
+                                                                  ;; are we: at 'target'
+
+                                                                  ;; OR
+
+                                                                  ;; are we: abouve last 2 peaks - hold
+                                                                  ;; are we: below first peak, but abouve second peak - hold
+                                                                  ;; are we: below previous 2 peaks - sell
+
+                                                                  action (if stoploss-threshold?
+
+                                                                           :down
+
+                                                                           (if (every? #(> (:last-trade-price eA)
+                                                                                           (:last-trade-price %))
+                                                                                       (take 2 peaks))
+
+                                                                             :up
+
+                                                                             (if (and (> (:last-trade-price eA)
+                                                                                         (:last-trade-price (nth tick-list 2)))
+                                                                                      (< (:last-trade-price eA)
+                                                                                         (:last-trade-price (second tick-list))))
+
+                                                                               :up
+
+                                                                               :down)))
+
+
+                                                                  price-diff (- (:last-trade-price eA) (:orig-trade-price i1))
                                                                   merge-result (merge i1 {:last-trade-price (:last-trade-price eA)
                                                                                           :last-trade-time (:last-trade-time eA)
                                                                                           :change-pct (/ price-diff (:orig-trade-price i1))
