@@ -10,6 +10,7 @@
             [edgar.core.signal.leading :as sleading]
             [edgar.core.signal.confirming :as sconfirming]
             [edgar.core.strategy.strategy :as strategy]
+            [edgar.server.handler :as shandler]
 
             [clojure.java.io :as io]
             [clojure.walk :as walk]
@@ -256,7 +257,23 @@
                                                                              signals-bollinger
                                                                              signals-macd
                                                                              signals-stochastic
-                                                                             signals-obv)]
+                                                                             signals-obv)
+
+                                                     result-data {:stock-name stock-name
+                                                                  :stock-symbol (:symbol tick-list)
+                                                                  :stock-list final-list
+                                                                  :source-list tick-list-N
+                                                                  :sma-list smaF
+                                                                  :ema-list emaF
+                                                                  :signals {:moving-average signals-ma
+                                                                            :bollinger-band signals-bollinger
+                                                                            :macd signals-macd
+                                                                            :stochastic-oscillator signals-stochastic
+                                                                            :obv signals-obv}
+                                                                  :strategies {:strategy-A sA
+                                                                               :strategy-B sB}}
+
+                                                     parsed-result-map (shandler/parse-result-data result-data)]
 
                                                  (println (str "... 0 > tracking-data[" @tracking-data "]"))
 
@@ -313,19 +330,7 @@
                                                  (println (str "... strategy-A[" sA "]"))
                                                  (println (str "... strategy-B[" sB "]"))
 
-                                                 (stream-live "stream-live" {:stock-name stock-name
-                                                                             :stock-symbol (:symbol tick-list)
-                                                                             :stock-list final-list
-                                                                             :source-list tick-list-N
-                                                                             :sma-list smaF
-                                                                             :ema-list emaF
-                                                                             :signals {:moving-average signals-ma
-                                                                                       :bollinger-band signals-bollinger
-                                                                                       :macd signals-macd
-                                                                                       :stochastic-oscillator signals-stochastic
-                                                                                       :obv signals-obv}
-                                                                             :strategies {:strategy-A sA
-                                                                                          :strategy-B sB}}))
+                                                 (stream-live "stream-live" (assoc result-data :parsed-result-map parsed-result-map)))
                                                []
                                                tick-list)])
     { :status 204 }))
