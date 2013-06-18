@@ -241,14 +241,14 @@
                                                      signals-stochastic (sleading/stochastic-oscillator 14 3 3 tick-list-N)
                                                      signals-obv (sconfirming/on-balance-volume 10 tick-list-N)
 
-                                                     #_sA #_(strategy/strategy-A tick-list-N
+                                                     sA (strategy/strategy-A tick-list-N
                                                                              signals-ma
                                                                              signals-bollinger
                                                                              signals-macd
                                                                              signals-stochastic
                                                                              signals-obv)
 
-                                                     sA [(assoc (nth tick-list-N 10) :strategies [{:signal :up
+                                                     #_sA #_[(assoc (nth tick-list-N 10) :strategies [{:signal :up
                                                                                                    :name :strategy-test
                                                                                                    :why "test"}])]
                                                      sB (strategy/strategy-B tick-list-N
@@ -267,7 +267,7 @@
                                                    ;; iterate through list of strategies
                                                    (reduce (fn [rA eA]
 
-                                                             #_(println (str "... 1 > eA[" eA "]"))
+                                                             (println (str "... 1 > eA[" eA "]"))
                                                              ;; does tickerId of current entry = any tickerIds in existing list?
                                                              (if (some #(= % (:tickerId eA))
                                                                        (map :tickerId @tracking-data))
