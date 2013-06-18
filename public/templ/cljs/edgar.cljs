@@ -59,12 +59,13 @@
                    (fn [e]
 
                      (let [result-data (reader/read-string (.-data e))
-                           parsed-result-map (shandler/parse-result-data result-data)
+                           parsed-result-map #_(:parsed-result-map result-data) (shandler/parse-result-data result-data)
                            increment?  (and (not (nil? (-> ($ "#live-stock-graph") (.highcharts "StockChart"))))
                                             (not (nil? (-> ($ "#live-stock-graph") (.highcharts "StockChart") (.-title))))
                                             (= (:stock-name parsed-result-map)
                                                (-> ($ "#live-stock-graph") (.highcharts "StockChart") (.-title) (.-text)))) ]
 
+                       #_(.log js/console (str "parsed-result-map[" parsed-result-map "]"))
                        (graph/render-stock-graph "#live-stock-graph"
                                            [(:bollinger-band parsed-result-map)
                                             (:local-list parsed-result-map)

@@ -56,7 +56,7 @@
                         :compiler {
                                    :output-to "public/include/javascript/main.js"
                                    :output-dir "public/include/javascript/"
-                                   :optimizations :simple ;; :whitespace ;; :advanced ;; :simple
+                                   :optimizations :whitespace ;; :whitespace ;; :advanced ;; :simple
                                    :pretty-print true}}]}
 
   :profiles {:dev {:source-paths ["src", "dev"]

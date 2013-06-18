@@ -81,6 +81,8 @@
 
 (defn build-graph-series-data [dataList signal-map strategy-map]
 
+  #_(.log js/console (str "... build-graph-series-data > 1[" (into-array (reverse (map (fn [inp] [(js/window.parseInt (first inp)) (second inp) (nth inp 2)])
+                                                                                     (first dataList)))) "]"))
   (let [initial-list [{:name "Bollinger Band"
                        :id "bollinger-list"
                        :data (reverse (first dataList))
@@ -161,7 +163,7 @@
         #_with-signals #_(add-signals initial-list signal-map)  ;; iterate over map entries
         with-strategies (add-strategies initial-list strategy-map)]
 
-    (.log js/console (str "... FINAL series array[" with-strategies "]"))
+    #_(.log js/console (str "... FINAL series array[" with-strategies "]"))
     with-strategies))
 
 
@@ -294,7 +296,7 @@
 (defn render-stock-graph [selector dataList signal-map strategy-map label increment]
 
 
-  (.log js/console (str "... render-stock-graph > strategy-map[" strategy-map "] > increment[" increment "]"))
+  #_(.log js/console (str "... render-stock-graph > strategy-map[" strategy-map "] > increment[" increment "]"))
   (if-not increment
 
     (chart-fill selector dataList signal-map strategy-map label)
