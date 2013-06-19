@@ -55,8 +55,8 @@
                     b2)]
 
     (-> (some (fn [inp]
-                 (> (:difference b-first)
-                    (:difference inp)))
+                 (>= (:difference b-first)
+                     (:difference inp)))
               b-rest)
         nil?
         not)))

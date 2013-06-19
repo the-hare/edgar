@@ -328,10 +328,13 @@
 
 (defn trim-strategies [tracking-data tick-list]
 
+
   (dosync (alter tracking-data
                  remove
                  (fn [inp]
-                   (= :down (-> inp :action :action))))))
+                   (= :down (-> inp :action :action)))))
+
+  (println (str "FINISED > trim-strategies[" @tracking-data "]")))
 
 
 (defn get-streaming-stock-data [request]
@@ -436,6 +439,7 @@
 
                                                  ;; remove tracked stock if sell
                                                  (if (not (empty? @tracking-data))
+
                                                    (trim-strategies tracking-data tick-list-N))
 
 
