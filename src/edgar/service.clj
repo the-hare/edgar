@@ -203,7 +203,79 @@
       (stop-streaming-stock-data))))
 
 
-(defn track-strategies [tick-list strategy-list]
+(defn watch-strategies
+  "Tracks and instruments existing strategies in play"
+  [tracking-data tick-list]
+
+  ;; check if latest tick matches a stock being watched
+  (if (some #(= % (:tickerId (first tick-list)))
+            (map :tickerId @tracking-data))
+
+    (dosync (alter tracking-data (fn [inp]
+
+                                   (let [result-filter (filter #(= (-> % second :tickerId) (:tickerId (first tick-list)))
+                                                               (map-indexed (fn [idx itm] [idx itm]) inp))]
+
+                                     (println (str "... 2 > WATCH > result-filter[" (seq result-filter) "]"))
+
+                                     ;; update-in-place, the existing tracking-data
+                                     ;; i. find index of relevent entry
+                                     (update-in inp
+                                                [(first (map first result-filter))]
+                                                (fn [i1]
+
+                                                  (println (str "... 3 > WATCH > update-in inp[" i1 "]"))
+                                                  (let [
+
+                                                        ;; find peaks-valleys
+                                                        peaks-valleys (common/find-peaks-valleys nil tick-list)
+                                                        peaks (:peak (group-by :signal peaks-valleys))
+
+                                                        stoploss-threshold? (target/stoploss-threshhold? (:orig-trade-price i1) (:last-trade-price (first tick-list)))
+                                                        reached-target? (target/target-threshhold? (:orig-trade-price i1) (:last-trade-price (first tick-list)))
+
+                                                        ;; ensure we're not below stop-loss
+                                                        ;; are we: at 'target'
+
+                                                        ;; OR
+
+                                                        ;; are we: abouve last 2 peaks - hold
+                                                        ;; are we: below first peak, but abouve second peak - hold
+                                                        ;; are we: below previous 2 peaks - sell
+
+                                                        action (if stoploss-threshold?
+
+                                                                 {:action :down :why :stoploss-threshold}
+
+                                                                 (if (every? #(>= (:last-trade-price (first tick-list))
+                                                                                  (:last-trade-price %))
+                                                                             (take 2 peaks))
+
+                                                                   {:action :up :why :abouve-last-2-peaks}
+
+                                                                   (if (and (>= (:last-trade-price (first tick-list))
+                                                                                (:last-trade-price (nth tick-list 2)))
+                                                                            (<= (:last-trade-price (first tick-list))
+                                                                                (:last-trade-price (second tick-list))))
+
+                                                                     {:action :up :why :abouve-second-below-first-peak}
+
+                                                                     {:action :down :why :below-first-2-peaks})))
+
+
+                                                        price-diff (- (:last-trade-price (first tick-list)) (:orig-trade-price i1))
+                                                        merge-result (merge i1 {:last-trade-price (:last-trade-price (first tick-list))
+                                                                                :last-trade-time (:last-trade-time (first tick-list))
+                                                                                :change-pct (/ price-diff (:orig-trade-price i1))
+                                                                                :change-prc price-diff
+                                                                                :action action})]
+
+                                                    (println (str "... 4 > WATCH > result[" merge-result "]"))
+                                                    merge-result)))))))))
+
+(defn track-strategies
+  "Follows new strategy recommendations coming in"
+  [tick-list strategy-list]
 
   ;; iterate through list of strategies
   (reduce (fn [rA eA]
@@ -231,50 +303,11 @@
                                                           (fn [i1]
 
                                                             #_(println (str "... 3 > update-in inp[" i1 "]"))
-                                                            (let [
-
-                                                                  ;; find peaks-valleys
-                                                                  peaks-valleys (common/find-peaks-valleys nil tick-list)
-                                                                  peaks (:peak (group-by :signal peaks-valleys))
-
-                                                                  stoploss-threshold? (target/stoploss-threshhold? (:orig-trade-price i1) (:last-trade-price (first tick-list)))
-                                                                  reached-target? (target/target-threshhold? (:orig-trade-price i1) (:last-trade-price (first tick-list)))
-
-                                                                  ;; ensure we're not below stop-loss
-                                                                  ;; are we: at 'target'
-
-                                                                  ;; OR
-
-                                                                  ;; are we: abouve last 2 peaks - hold
-                                                                  ;; are we: below first peak, but abouve second peak - hold
-                                                                  ;; are we: below previous 2 peaks - sell
-
-                                                                  action (if stoploss-threshold?
-
-                                                                           {:action :down :why :stoploss-threshold}
-
-                                                                           (if (every? #(>= (:last-trade-price (first tick-list))
-                                                                                            (:last-trade-price %))
-                                                                                       (take 2 peaks))
-
-                                                                             {:action :up :why :abouve-last-2-peaks}
-
-                                                                             (if (and (>= (:last-trade-price (first tick-list))
-                                                                                          (:last-trade-price (nth tick-list 2)))
-                                                                                      (<= (:last-trade-price (first tick-list))
-                                                                                          (:last-trade-price (second tick-list))))
-
-                                                                               {:action :up :why :abouve-second-below-first-peak}
-
-                                                                               {:action :down :why :below-first-2-peaks})))
-
-
-                                                                  price-diff (- (:last-trade-price (first tick-list)) (:orig-trade-price i1))
+                                                            (let [price-diff (- (:last-trade-price (first tick-list)) (:orig-trade-price i1))
                                                                   merge-result (merge i1 {:last-trade-price (:last-trade-price (first tick-list))
                                                                                           :last-trade-time (:last-trade-time eA)
                                                                                           :change-pct (/ price-diff (:orig-trade-price i1))
-                                                                                          :change-prc price-diff
-                                                                                          :action action})]
+                                                                                          :change-prc price-diff})]
 
                                                               #_(println (str "... 4 > result[" merge-result "]"))
                                                               merge-result)))))))
@@ -373,11 +406,16 @@
                                                  (println (str "... strategy-B[" sB "]"))
 
                                                  ;; track any STRATEGIES
-                                                 (if (or (not (empty? @tracking-data))
-                                                         (not (empty? sA))
+                                                 (if (or (not (empty? sA))
                                                          (not (empty? sB)))
 
                                                    (track-strategies tick-list (remove nil? [(first sA) (first sB)])))
+
+                                                 ;; watch any STRATEGIES in play
+                                                 (if (not (empty? @tracking-data))
+
+                                                   (watch-strategies tracking-data tick-list))
+
 
                                                  (stream-live "stream-live" result-data))
                                                []
