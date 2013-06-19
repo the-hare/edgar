@@ -107,8 +107,8 @@
                   tee-list)
 
 
-          ;; trim down tick-list if it's greater than 100
-          (if (>= (count trimmed-list) 100)
+          ;; trim down tick-list if it's greater than the tick-window (defaults to 40)
+          (if (>= (count trimmed-list) tick-window)
             (dosync (alter tick-list
                            (fn [inp] (into []
                                           (remove #(= (:uuid tail-evt) (% :uuid)) inp)))))))))))

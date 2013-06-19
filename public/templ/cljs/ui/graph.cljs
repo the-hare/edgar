@@ -179,6 +179,8 @@
                                   :yAxis [{
                                            :title {:text "Technical Analysis"}
                                            :height 200
+                                           :shadow false
+                                           :turboThreshold 50
                                            :marker {:enabled false}}
                                           {
                                            :title {:text "MACD / Signal"}
@@ -186,6 +188,8 @@
                                            :top 300
                                            :offset 0
                                            :lineWidth 2
+                                           :turboThreshold 50
+                                           :shadow false
                                            :marker {:enabled false}
                                            :plotOptions{:series {:enableMouseTracking false}}}
                                           {
@@ -194,6 +198,8 @@
                                            :top 400
                                            :offset 0
                                            :lineWidth 2
+                                           :turboThreshold 50
+                                           :shadow false
                                            :marker {:enabled false}
                                            :plotOptions{:series {:enableMouseTracking false}}}
                                           {
@@ -204,6 +210,8 @@
                                            :lineWidth 2
                                            :max 1
                                            :min 0
+                                           :turboThreshold 50
+                                           :shadow false
                                            :marker {:enabled false}
                                            :plotOptions{:series {:enableMouseTracking false}}
                                            :plotLines [{
@@ -224,6 +232,8 @@
                                            :top 600
                                            :offset 0
                                            :lineWidth 2
+                                           :turboThreshold 50
+                                           :shadow false
                                            :marker {:enabled false}
                                            :plotOptions{:series {:enableMouseTracking false}}}]
 
