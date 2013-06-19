@@ -203,9 +203,62 @@
       (stop-streaming-stock-data))))
 
 
+(defn track-strategies
+  "Follows new strategy recommendations coming in"
+  [tick-list strategy-list]
+
+  ;; iterate through list of strategies
+  (reduce (fn [rA eA]
+
+            (println (str "... 1 > eA[" eA "] > some test if/else[" (some #(= % (:tickerId eA)) (map :tickerId @tracking-data)) "]"))
+            ;; does tickerId of current entry = any tickerIds in existing list?
+            (if (some #(= % (:tickerId eA))
+                      (map :tickerId @tracking-data))
+
+
+              ;; for tracking symbols, each new tick -> calculate:
+              ;;     $ gain/loss
+              ;;     % gain/loss
+              (dosync (alter tracking-data (fn [inp]
+
+                                             (let [result-filter (filter #(= (-> % second :tickerId) (:tickerId eA))
+                                                                         (map-indexed (fn [idx itm] [idx itm]) inp))]
+
+                                               #_(println (str "... 2 > result-filter[" (seq result-filter) "]"))
+
+                                               ;; update-in-place, the existing tracking-data
+                                               ;; i. find index of relevent entry
+                                               (update-in inp
+                                                          [(first (map first result-filter))]
+                                                          (fn [i1]
+
+                                                            #_(println (str "... 3 > update-in inp[" i1 "]"))
+                                                            (let [price-diff (- (:last-trade-price (first tick-list)) (:orig-trade-price i1))
+                                                                  merge-result (merge i1 {:last-trade-price (:last-trade-price (first tick-list))
+                                                                                          :last-trade-time (:last-trade-time eA)
+                                                                                          :change-pct (/ price-diff (:orig-trade-price i1))
+                                                                                          :change-prc price-diff})]
+
+                                                              #_(println (str "... 4 > result[" merge-result "]"))
+                                                              merge-result)))))))
+
+              ;; otherwise store them in a hacked-session
+              (dosync (alter tracking-data conj {:uuid (:uuid eA)
+                                                 :symbol (:symbol tick-list)
+                                                 :tickerId (:tickerId eA)
+                                                 :orig-trade-price (:last-trade-price eA)
+                                                 :orig-trade-time (:last-trade-time eA)
+                                                 :strategies (:strategies eA)
+                                                 :source-entry eA}))))
+          []
+          strategy-list))
+
 (defn watch-strategies
   "Tracks and instruments existing strategies in play"
   [tracking-data tick-list]
+
+  (println (str "watch-strategies > test[" (some #(= % (:tickerId (first tick-list)))
+                                                 (map :tickerId @tracking-data)) "]"))
 
   ;; check if latest tick matches a stock being watched
   (if (some #(= % (:tickerId (first tick-list)))
@@ -273,55 +326,13 @@
                                                     (println (str "... 4 > WATCH > result[" merge-result "]"))
                                                     merge-result)))))))))
 
-(defn track-strategies
-  "Follows new strategy recommendations coming in"
-  [tick-list strategy-list]
+(defn trim-strategies [tracking-data tick-list]
 
-  ;; iterate through list of strategies
-  (reduce (fn [rA eA]
+  (dosync (alter tracking-data
+                 remove
+                 (fn [inp]
+                   (= :down (-> inp :action :action))))))
 
-            (println (str "... 1 > eA[" eA "] > some test if/else[" (some #(= % (:tickerId eA)) (map :tickerId @tracking-data)) "]"))
-            ;; does tickerId of current entry = any tickerIds in existing list?
-            (if (some #(= % (:tickerId eA))
-                      (map :tickerId @tracking-data))
-
-
-              ;; for tracking symbols, each new tick -> calculate:
-              ;;     $ gain/loss
-              ;;     % gain/loss
-              (dosync (alter tracking-data (fn [inp]
-
-                                             (let [result-filter (filter #(= (-> % second :tickerId) (:tickerId eA))
-                                                                         (map-indexed (fn [idx itm] [idx itm]) inp))]
-
-                                               #_(println (str "... 2 > result-filter[" (seq result-filter) "]"))
-
-                                               ;; update-in-place, the existing tracking-data
-                                               ;; i. find index of relevent entry
-                                               (update-in inp
-                                                          [(first (map first result-filter))]
-                                                          (fn [i1]
-
-                                                            #_(println (str "... 3 > update-in inp[" i1 "]"))
-                                                            (let [price-diff (- (:last-trade-price (first tick-list)) (:orig-trade-price i1))
-                                                                  merge-result (merge i1 {:last-trade-price (:last-trade-price (first tick-list))
-                                                                                          :last-trade-time (:last-trade-time eA)
-                                                                                          :change-pct (/ price-diff (:orig-trade-price i1))
-                                                                                          :change-prc price-diff})]
-
-                                                              #_(println (str "... 4 > result[" merge-result "]"))
-                                                              merge-result)))))))
-
-              ;; otherwise store them in a hacked-session
-              (dosync (alter tracking-data conj {:uuid (:uuid eA)
-                                                 :symbol (:symbol tick-list)
-                                                 :tickerId (:tickerId eA)
-                                                 :orig-trade-price (:last-trade-price eA)
-                                                 :orig-trade-time (:last-trade-time eA)
-                                                 :strategies (:strategies eA)
-                                                 :source-entry eA}))))
-          []
-          strategy-list))
 
 (defn get-streaming-stock-data [request]
 
@@ -405,16 +416,27 @@
                                                  (println (str "... strategy-A[" sA "]"))
                                                  (println (str "... strategy-B[" sB "]"))
 
+
                                                  ;; track any STRATEGIES
                                                  (if (or (not (empty? sA))
                                                          (not (empty? sB)))
 
-                                                   (track-strategies tick-list (remove nil? [(first sA) (first sB)])))
+                                                   (track-strategies tick-list-N (remove nil? [(first sA) (first sB)])))
+
 
                                                  ;; watch any STRATEGIES in play
                                                  (if (not (empty? @tracking-data))
 
-                                                   (watch-strategies tracking-data tick-list))
+                                                   (watch-strategies tracking-data tick-list-N))
+
+
+                                                 ;; ORDER based on tracking data
+                                                 ;; ...
+
+
+                                                 ;; remove tracked stock if sell
+                                                 (if (not (empty? @tracking-data))
+                                                   (trim-strategies tracking-data tick-list-N))
 
 
                                                  (stream-live "stream-live" result-data))
