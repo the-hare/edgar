@@ -7,31 +7,31 @@ return cljs.core.reduce.call(null,(function (rslt,ech){
 var default_entry = (function (eF){
 return cljs.core.ObjMap.fromObject(["\uFDD0'type","\uFDD0'data","\uFDD0'color","\uFDD0'fillColor","\uFDD0'width","\uFDD0'style","\uFDD0'states"],{"\uFDD0'type":"flags","\uFDD0'data":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\uFDD0'x","\uFDD0'title","\uFDD0'text"],{"\uFDD0'x":(new cljs.core.Keyword("\uFDD0'x")).call(null,eF),"\uFDD0'title":(new cljs.core.Keyword("\uFDD0'title")).call(null,eF),"\uFDD0'text":(new cljs.core.Keyword("\uFDD0'text")).call(null,eF)})], true),"\uFDD0'color":"#5F86B3","\uFDD0'fillColor":"#5F86B3","\uFDD0'width":16,"\uFDD0'style":cljs.core.ObjMap.fromObject(["\uFDD0'color"],{"\uFDD0'color":"white"}),"\uFDD0'states":cljs.core.ObjMap.fromObject(["\uFDD0'hover"],{"\uFDD0'hover":cljs.core.ObjMap.fromObject(["\uFDD0'fillColor"],{"\uFDD0'fillColor":"#395C84"})})});
 });
-var G__16619 = cljs.core.first.call(null,ech);
-if(cljs.core._EQ_.call(null,"default",G__16619))
+var G__6568 = cljs.core.first.call(null,ech);
+if(cljs.core._EQ_.call(null,"default",G__6568))
 {return rslt;
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'obv",G__16619))
+{if(cljs.core._EQ_.call(null,"\uFDD0'obv",G__6568))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","obv-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'stochastic-oscillator",G__16619))
+{if(cljs.core._EQ_.call(null,"\uFDD0'stochastic-oscillator",G__6568))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","k-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'macd",G__16619))
+{if(cljs.core._EQ_.call(null,"\uFDD0'macd",G__6568))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","macd-price-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'bollinger-band",G__16619))
+{if(cljs.core._EQ_.call(null,"\uFDD0'bollinger-band",G__6568))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","bollinger-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
 } else
-{if(cljs.core._EQ_.call(null,"\uFDD0'moving-average",G__16619))
+{if(cljs.core._EQ_.call(null,"\uFDD0'moving-average",G__6568))
 {return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
 return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(null,eF),"\uFDD0'onSeries","ema-list"));
 }),cljs.core.PersistentVector.EMPTY,cljs.core.second.call(null,ech)));
@@ -51,12 +51,12 @@ return cljs.core.conj.call(null,rF,cljs.core.assoc.call(null,default_entry.call(
 });
 ui.graph.add_strategies = (function add_strategies(initial_list,strategy_map){
 var default_entry = cljs.core.ObjMap.fromObject(["\uFDD0'data","\uFDD0'width","\uFDD0'name","\uFDD0'onSeries","\uFDD0'color","\uFDD0'style","\uFDD0'states","\uFDD0'type","\uFDD0'fillColor"],{"\uFDD0'data":cljs.core.PersistentVector.EMPTY,"\uFDD0'width":16,"\uFDD0'name":"strategies","\uFDD0'onSeries":"tick-list","\uFDD0'color":"#5F86B3","\uFDD0'style":cljs.core.ObjMap.fromObject(["\uFDD0'color"],{"\uFDD0'color":"white"}),"\uFDD0'states":cljs.core.ObjMap.fromObject(["\uFDD0'hover"],{"\uFDD0'hover":cljs.core.ObjMap.fromObject(["\uFDD0'fillColor"],{"\uFDD0'fillColor":"#395C84"})}),"\uFDD0'type":"flags","\uFDD0'fillColor":"#5F86B3"});
-var data_list = cljs.core.remove.call(null,(function (p1__16617_SHARP_){
-var or__3951__auto__ = (p1__16617_SHARP_ == null);
+var data_list = cljs.core.remove.call(null,(function (p1__6566_SHARP_){
+var or__3951__auto__ = (p1__6566_SHARP_ == null);
 if(or__3951__auto__)
 {return or__3951__auto__;
 } else
-{return cljs.core.empty_QMARK_.call(null,p1__16617_SHARP_);
+{return cljs.core.empty_QMARK_.call(null,p1__6566_SHARP_);
 }
 }),cljs.core.reduce.call(null,(function (rslt,ech_list){
 return cljs.core.concat.call(null,rslt,cljs.core.reduce.call(null,(function (rF,eF){
@@ -71,7 +71,7 @@ var with_strategies = ui.graph.add_strategies.call(null,initial_list,strategy_ma
 return with_strategies;
 });
 ui.graph.chart_fill = (function chart_fill(selector,dataList,signal_map,strategy_map,label){
-return jayq.core.$.call(null,selector).highcharts("StockChart",cljs.core.clj__GT_js.call(null,cljs.core.ObjMap.fromObject(["\uFDD0'names","\uFDD0'rangeSelector","\uFDD0'title","\uFDD0'chart","\uFDD0'navigator","\uFDD0'yAxis","\uFDD0'series"],{"\uFDD0'names":cljs.core.PersistentVector.fromArray([label,"Bolling Band","Simple Moving Average","Exponential Moving Average"], true),"\uFDD0'rangeSelector":cljs.core.ObjMap.fromObject(["\uFDD0'selected"],{"\uFDD0'selected":11}),"\uFDD0'title":cljs.core.ObjMap.fromObject(["\uFDD0'text"],{"\uFDD0'text":label}),"\uFDD0'chart":cljs.core.ObjMap.fromObject(["\uFDD0'zoomType"],{"\uFDD0'zoomType":"x"}),"\uFDD0'navigator":cljs.core.ObjMap.fromObject(["\uFDD0'adaptToUpdatedData"],{"\uFDD0'adaptToUpdatedData":true}),"\uFDD0'yAxis":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\uFDD0'title","\uFDD0'height"],{"\uFDD0'title":cljs.core.ObjMap.fromObject(["\uFDD0'text"],{"\uFDD0'text":"Technical Analysis"}),"\uFDD0'height":200}),cljs.core.ObjMap.fromObject(["\uFDD0'title","\uFDD0'height","\uFDD0'top","\uFDD0'offset","\uFDD0'lineWidth"],{"\uFDD0'title":cljs.core.ObjMap.fromObject(["\uFDD0'text"],{"\uFDD0'text":"MACD / Signal"}),"\uFDD0'height":100,"\uFDD0'top":300,"\uFDD0'offset":0,"\uFDD0'lineWidth":2}),cljs.core.ObjMap.fromObject(["\uFDD0'title","\uFDD0'height","\uFDD0'top","\uFDD0'offset","\uFDD0'lineWidth"],{"\uFDD0'title":cljs.core.ObjMap.fromObject(["\uFDD0'text"],{"\uFDD0'text":"MACD Histog"}),"\uFDD0'height":100,"\uFDD0'top":400,"\uFDD0'offset":0,"\uFDD0'lineWidth":2}),cljs.core.ObjMap.fromObject(["\uFDD0'title","\uFDD0'height","\uFDD0'top","\uFDD0'offset","\uFDD0'lineWidth","\uFDD0'max","\uFDD0'min","\uFDD0'plotLines"],{"\uFDD0'title":cljs.core.ObjMap.fromObject(["\uFDD0'text"],{"\uFDD0'text":"Stochastic Osc"}),"\uFDD0'height":100,"\uFDD0'top":500,"\uFDD0'offset":0,"\uFDD0'lineWidth":2,"\uFDD0'max":1,"\uFDD0'min":0,"\uFDD0'plotLines":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\uFDD0'value","\uFDD0'color","\uFDD0'width","\uFDD0'dashStyle","\uFDD0'label"],{"\uFDD0'value":0.75,"\uFDD0'color":"red","\uFDD0'width":1,"\uFDD0'dashStyle":"longdash","\uFDD0'label":cljs.core.ObjMap.fromObject(["\uFDD0'text"],{"\uFDD0'text":"Overbought"})}),cljs.core.ObjMap.fromObject(["\uFDD0'value","\uFDD0'color","\uFDD0'width","\uFDD0'dashStyle","\uFDD0'label"],{"\uFDD0'value":0.25,"\uFDD0'color":"green","\uFDD0'width":1,"\uFDD0'dashStyle":"longdash","\uFDD0'label":cljs.core.ObjMap.fromObject(["\uFDD0'text"],{"\uFDD0'text":"Oversold"})})], true)}),cljs.core.ObjMap.fromObject(["\uFDD0'title","\uFDD0'height","\uFDD0'top","\uFDD0'offset","\uFDD0'lineWidth"],{"\uFDD0'title":cljs.core.ObjMap.fromObject(["\uFDD0'text"],{"\uFDD0'text":"OBV"}),"\uFDD0'height":100,"\uFDD0'top":600,"\uFDD0'offset":0,"\uFDD0'lineWidth":2})], true),"\uFDD0'series":ui.graph.build_graph_series_data.call(null,dataList,signal_map,strategy_map)})));
+return jayq.core.$.call(null,selector).highcharts("StockChart",cljs.core.clj__GT_js.call(null,cljs.core.ObjMap.fromObject(["\uFDD0'names","\uFDD0'rangeSelector","\uFDD0'title","\uFDD0'chart","\uFDD0'navigator","\uFDD0'yAxis","\uFDD0'series"],{"\uFDD0'names":cljs.core.PersistentVector.fromArray([label,"Bolling Band","Simple Moving Average","Exponential Moving Average"], true),"\uFDD0'rangeSelector":cljs.core.ObjMap.fromObject(["\uFDD0'selected"],{"\uFDD0'selected":11}),"\uFDD0'title":cljs.core.ObjMap.fromObject(["\uFDD0'text"],{"\uFDD0'text":label}),"\uFDD0'chart":cljs.core.ObjMap.fromObject(["\uFDD0'zoomType"],{"\uFDD0'zoomType":"x"}),"\uFDD0'navigator":cljs.core.ObjMap.fromObject(["\uFDD0'adaptToUpdatedData"],{"\uFDD0'adaptToUpdatedData":true}),"\uFDD0'yAxis":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\uFDD0'title","\uFDD0'height","\uFDD0'marker"],{"\uFDD0'title":cljs.core.ObjMap.fromObject(["\uFDD0'text"],{"\uFDD0'text":"Technical Analysis"}),"\uFDD0'height":200,"\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled"],{"\uFDD0'enabled":false})}),cljs.core.ObjMap.fromObject(["\uFDD0'title","\uFDD0'height","\uFDD0'top","\uFDD0'offset","\uFDD0'lineWidth","\uFDD0'marker","\uFDD0'plotOptions"],{"\uFDD0'title":cljs.core.ObjMap.fromObject(["\uFDD0'text"],{"\uFDD0'text":"MACD / Signal"}),"\uFDD0'height":100,"\uFDD0'top":300,"\uFDD0'offset":0,"\uFDD0'lineWidth":2,"\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled"],{"\uFDD0'enabled":false}),"\uFDD0'plotOptions":cljs.core.ObjMap.fromObject(["\uFDD0'series"],{"\uFDD0'series":cljs.core.ObjMap.fromObject(["\uFDD0'enableMouseTracking"],{"\uFDD0'enableMouseTracking":false})})}),cljs.core.ObjMap.fromObject(["\uFDD0'title","\uFDD0'height","\uFDD0'top","\uFDD0'offset","\uFDD0'lineWidth","\uFDD0'marker","\uFDD0'plotOptions"],{"\uFDD0'title":cljs.core.ObjMap.fromObject(["\uFDD0'text"],{"\uFDD0'text":"MACD Histog"}),"\uFDD0'height":100,"\uFDD0'top":400,"\uFDD0'offset":0,"\uFDD0'lineWidth":2,"\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled"],{"\uFDD0'enabled":false}),"\uFDD0'plotOptions":cljs.core.ObjMap.fromObject(["\uFDD0'series"],{"\uFDD0'series":cljs.core.ObjMap.fromObject(["\uFDD0'enableMouseTracking"],{"\uFDD0'enableMouseTracking":false})})}),cljs.core.ObjMap.fromObject(["\uFDD0'offset","\uFDD0'max","\uFDD0'lineWidth","\uFDD0'title","\uFDD0'top","\uFDD0'marker","\uFDD0'plotLines","\uFDD0'min","\uFDD0'height","\uFDD0'plotOptions"],{"\uFDD0'offset":0,"\uFDD0'max":1,"\uFDD0'lineWidth":2,"\uFDD0'title":cljs.core.ObjMap.fromObject(["\uFDD0'text"],{"\uFDD0'text":"Stochastic Osc"}),"\uFDD0'top":500,"\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled"],{"\uFDD0'enabled":false}),"\uFDD0'plotLines":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\uFDD0'value","\uFDD0'color","\uFDD0'width","\uFDD0'dashStyle","\uFDD0'label"],{"\uFDD0'value":0.75,"\uFDD0'color":"red","\uFDD0'width":1,"\uFDD0'dashStyle":"longdash","\uFDD0'label":cljs.core.ObjMap.fromObject(["\uFDD0'text"],{"\uFDD0'text":"Overbought"})}),cljs.core.ObjMap.fromObject(["\uFDD0'value","\uFDD0'color","\uFDD0'width","\uFDD0'dashStyle","\uFDD0'label"],{"\uFDD0'value":0.25,"\uFDD0'color":"green","\uFDD0'width":1,"\uFDD0'dashStyle":"longdash","\uFDD0'label":cljs.core.ObjMap.fromObject(["\uFDD0'text"],{"\uFDD0'text":"Oversold"})})], true),"\uFDD0'min":0,"\uFDD0'height":100,"\uFDD0'plotOptions":cljs.core.ObjMap.fromObject(["\uFDD0'series"],{"\uFDD0'series":cljs.core.ObjMap.fromObject(["\uFDD0'enableMouseTracking"],{"\uFDD0'enableMouseTracking":false})})}),cljs.core.ObjMap.fromObject(["\uFDD0'title","\uFDD0'height","\uFDD0'top","\uFDD0'offset","\uFDD0'lineWidth","\uFDD0'marker","\uFDD0'plotOptions"],{"\uFDD0'title":cljs.core.ObjMap.fromObject(["\uFDD0'text"],{"\uFDD0'text":"OBV"}),"\uFDD0'height":100,"\uFDD0'top":600,"\uFDD0'offset":0,"\uFDD0'lineWidth":2,"\uFDD0'marker":cljs.core.ObjMap.fromObject(["\uFDD0'enabled"],{"\uFDD0'enabled":false}),"\uFDD0'plotOptions":cljs.core.ObjMap.fromObject(["\uFDD0'series"],{"\uFDD0'series":cljs.core.ObjMap.fromObject(["\uFDD0'enableMouseTracking"],{"\uFDD0'enableMouseTracking":false})})})], true),"\uFDD0'series":ui.graph.build_graph_series_data.call(null,dataList,signal_map,strategy_map)})));
 });
 ui.graph.chart_increment = (function chart_increment(selector,dataList,strategy_map,label){
 cljs.core.first.call(null,jayq.core.$.call(null,selector).highcharts().series).addPoint(cljs.core.last.call(null,cljs.core.reverse.call(null,cljs.core.first.call(null,dataList))),true,false);

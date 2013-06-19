@@ -9,7 +9,7 @@
             [ui.components :as components]))
 
 
-(components/populate-multiselect ".multiselect-historical" {:onChange (fn [element checked]
+#_(components/populate-multiselect ".multiselect-historical" {:onChange (fn [element checked]
 
                                                              (if checked
                                                                ($/ajax "/get-historical-data"
@@ -44,7 +44,7 @@
                                                                                                                    (:stock-name parsed-result-map)
                                                                                                                    increment?)))}))))})
 
-(components/populate-multiselect ".multiselect-live" {:onChange (fn [element checked]
+#_(components/populate-multiselect ".multiselect-live" {:onChange (fn [element checked]
 
                                                        (if checked
                                                          ($/post (str "/get-streaming-stock-data?stock-selection=" (.val element) "&stock-name=" (.text element))

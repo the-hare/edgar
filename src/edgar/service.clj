@@ -222,7 +222,7 @@
                                              (let [result-filter (filter #(= (-> % second :tickerId) (:tickerId eA))
                                                                          (map-indexed (fn [idx itm] [idx itm]) inp))]
 
-                                               (println (str "... 2 > result-filter[" (seq result-filter) "]"))
+                                               #_(println (str "... 2 > result-filter[" (seq result-filter) "]"))
 
                                                ;; update-in-place, the existing tracking-data
                                                ;; i. find index of relevent entry
@@ -230,15 +230,15 @@
                                                           [(first (map first result-filter))]
                                                           (fn [i1]
 
-                                                            (println (str "... 3 > update-in inp[" i1 "]"))
+                                                            #_(println (str "... 3 > update-in inp[" i1 "]"))
                                                             (let [
 
                                                                   ;; find peaks-valleys
                                                                   peaks-valleys (common/find-peaks-valleys nil tick-list)
                                                                   peaks (:peak (group-by :signal peaks-valleys))
 
-                                                                  stoploss-threshold? (target/stoploss-threshhold? (:orig-trade-price i1) (:last-trade-price eA))
-                                                                  reached-target? (target/target-threshhold? (:orig-trade-price i1) (:last-trade-price eA))
+                                                                  stoploss-threshold? (target/stoploss-threshhold? (:orig-trade-price i1) (:last-trade-price (first tick-list)))
+                                                                  reached-target? (target/target-threshhold? (:orig-trade-price i1) (:last-trade-price (first tick-list)))
 
                                                                   ;; ensure we're not below stop-loss
                                                                   ;; are we: at 'target'
@@ -251,31 +251,32 @@
 
                                                                   action (if stoploss-threshold?
 
-                                                                           :down
+                                                                           {:action :down :why :stoploss-threshold}
 
-                                                                           (if (every? #(> (:last-trade-price eA)
-                                                                                           (:last-trade-price %))
+                                                                           (if (every? #(>= (:last-trade-price (first tick-list))
+                                                                                            (:last-trade-price %))
                                                                                        (take 2 peaks))
 
-                                                                             :up
+                                                                             {:action :up :why :abouve-last-2-peaks}
 
-                                                                             (if (and (> (:last-trade-price eA)
-                                                                                         (:last-trade-price (nth tick-list 2)))
-                                                                                      (< (:last-trade-price eA)
-                                                                                         (:last-trade-price (second tick-list))))
+                                                                             (if (and (>= (:last-trade-price (first tick-list))
+                                                                                          (:last-trade-price (nth tick-list 2)))
+                                                                                      (<= (:last-trade-price (first tick-list))
+                                                                                          (:last-trade-price (second tick-list))))
 
-                                                                               :up
+                                                                               {:action :up :why :abouve-second-below-first-peak}
 
-                                                                               :down)))
+                                                                               {:action :down :why :below-first-2-peaks})))
 
 
-                                                                  price-diff (- (:last-trade-price eA) (:orig-trade-price i1))
-                                                                  merge-result (merge i1 {:last-trade-price (:last-trade-price eA)
+                                                                  price-diff (- (:last-trade-price (first tick-list)) (:orig-trade-price i1))
+                                                                  merge-result (merge i1 {:last-trade-price (:last-trade-price (first tick-list))
                                                                                           :last-trade-time (:last-trade-time eA)
                                                                                           :change-pct (/ price-diff (:orig-trade-price i1))
-                                                                                          :change-prc price-diff})]
+                                                                                          :change-prc price-diff
+                                                                                          :action action})]
 
-                                                              (println (str "... 4 > result[" merge-result "]"))
+                                                              #_(println (str "... 4 > result[" merge-result "]"))
                                                               merge-result)))))))
 
               ;; otherwise store them in a hacked-session
@@ -330,23 +331,23 @@
                                                      signals-stochastic (sleading/stochastic-oscillator 14 3 3 tick-list-N)
                                                      signals-obv (sconfirming/on-balance-volume 10 tick-list-N)
 
-                                                     #_sA #_(strategy/strategy-A tick-list-N
+                                                     sA (strategy/strategy-A tick-list-N
                                                                              signals-ma
                                                                              signals-bollinger
                                                                              signals-macd
                                                                              signals-stochastic
                                                                              signals-obv)
 
-                                                     sA [(assoc (first tick-list-N) :strategies [{:signal :up
+                                                     #_sA #_[(assoc (first tick-list-N) :strategies [{:signal :up
                                                                                                   :name :strategy-test-A
                                                                                                   :why "test-a"}])]
-                                                     #_sB #_(strategy/strategy-B tick-list-N
+                                                     sB (strategy/strategy-B tick-list-N
                                                                              signals-ma
                                                                              signals-bollinger
                                                                              signals-macd
                                                                              signals-stochastic
                                                                              signals-obv)
-                                                     sB [(assoc (first tick-list-N) :strategies [{:signal :up
+                                                     #_sB #_[(assoc (first tick-list-N) :strategies [{:signal :up
                                                                                                   :name :strategy-test-B
                                                                                                   :why "test-b"}])]
 
@@ -366,17 +367,17 @@
 
                                                      #_parsed-result-map #_(shandler/parse-result-data result-data)]
 
+                                                 (println "")
                                                  (println (str "... 0 > tracking-data[" @tracking-data "]"))
-
+                                                 (println (str "... strategy-A[" sA "]"))
+                                                 (println (str "... strategy-B[" sB "]"))
 
                                                  ;; track any STRATEGIES
-                                                 (if (or (not (empty? sA))
+                                                 (if (or (not (empty? @tracking-data))
+                                                         (not (empty? sA))
                                                          (not (empty? sB)))
 
                                                    (track-strategies tick-list (remove nil? [(first sA) (first sB)])))
-
-                                                 (println (str "... strategy-A[" sA "]"))
-                                                 (println (str "... strategy-B[" sB "]"))
 
                                                  (stream-live "stream-live" result-data))
                                                []

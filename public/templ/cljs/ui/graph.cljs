@@ -178,19 +178,24 @@
                                   :navigator {:adaptToUpdatedData true}
                                   :yAxis [{
                                            :title {:text "Technical Analysis"}
-                                           :height 200}
+                                           :height 200
+                                           :marker {:enabled false}}
                                           {
                                            :title {:text "MACD / Signal"}
                                            :height 100
                                            :top 300
                                            :offset 0
-                                           :lineWidth 2}
+                                           :lineWidth 2
+                                           :marker {:enabled false}
+                                           :plotOptions{:series {:enableMouseTracking false}}}
                                           {
                                            :title {:text "MACD Histog"}
                                            :height 100
                                            :top 400
                                            :offset 0
-                                           :lineWidth 2}
+                                           :lineWidth 2
+                                           :marker {:enabled false}
+                                           :plotOptions{:series {:enableMouseTracking false}}}
                                           {
                                            :title {:text "Stochastic Osc"}
                                            :height 100
@@ -199,6 +204,8 @@
                                            :lineWidth 2
                                            :max 1
                                            :min 0
+                                           :marker {:enabled false}
+                                           :plotOptions{:series {:enableMouseTracking false}}
                                            :plotLines [{
                                                         :value 0.75
                                                         :color "red"
@@ -216,7 +223,9 @@
                                            :height 100
                                            :top 600
                                            :offset 0
-                                           :lineWidth 2}]
+                                           :lineWidth 2
+                                           :marker {:enabled false}
+                                           :plotOptions{:series {:enableMouseTracking false}}}]
 
                                   :series (build-graph-series-data dataList signal-map strategy-map)}))))
 

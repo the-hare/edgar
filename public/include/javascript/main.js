@@ -23596,31 +23596,31 @@ ui.graph.add_signals = function add_signals(initial_list, signal_map) {
       return cljs.core.ObjMap.fromObject(["\ufdd0'type", "\ufdd0'data", "\ufdd0'color", "\ufdd0'fillColor", "\ufdd0'width", "\ufdd0'style", "\ufdd0'states"], {"\ufdd0'type":"flags", "\ufdd0'data":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'x", "\ufdd0'title", "\ufdd0'text"], {"\ufdd0'x":(new cljs.core.Keyword("\ufdd0'x")).call(null, eF), "\ufdd0'title":(new cljs.core.Keyword("\ufdd0'title")).call(null, eF), "\ufdd0'text":(new cljs.core.Keyword("\ufdd0'text")).call(null, 
       eF)})], true), "\ufdd0'color":"#5F86B3", "\ufdd0'fillColor":"#5F86B3", "\ufdd0'width":16, "\ufdd0'style":cljs.core.ObjMap.fromObject(["\ufdd0'color"], {"\ufdd0'color":"white"}), "\ufdd0'states":cljs.core.ObjMap.fromObject(["\ufdd0'hover"], {"\ufdd0'hover":cljs.core.ObjMap.fromObject(["\ufdd0'fillColor"], {"\ufdd0'fillColor":"#395C84"})})})
     };
-    var G__16619 = cljs.core.first.call(null, ech);
-    if(cljs.core._EQ_.call(null, "default", G__16619)) {
+    var G__6568 = cljs.core.first.call(null, ech);
+    if(cljs.core._EQ_.call(null, "default", G__6568)) {
       return rslt
     }else {
-      if(cljs.core._EQ_.call(null, "\ufdd0'obv", G__16619)) {
+      if(cljs.core._EQ_.call(null, "\ufdd0'obv", G__6568)) {
         return cljs.core.concat.call(null, rslt, cljs.core.reduce.call(null, function(rF, eF) {
           return cljs.core.conj.call(null, rF, cljs.core.assoc.call(null, default_entry.call(null, eF), "\ufdd0'onSeries", "obv-list"))
         }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, ech)))
       }else {
-        if(cljs.core._EQ_.call(null, "\ufdd0'stochastic-oscillator", G__16619)) {
+        if(cljs.core._EQ_.call(null, "\ufdd0'stochastic-oscillator", G__6568)) {
           return cljs.core.concat.call(null, rslt, cljs.core.reduce.call(null, function(rF, eF) {
             return cljs.core.conj.call(null, rF, cljs.core.assoc.call(null, default_entry.call(null, eF), "\ufdd0'onSeries", "k-list"))
           }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, ech)))
         }else {
-          if(cljs.core._EQ_.call(null, "\ufdd0'macd", G__16619)) {
+          if(cljs.core._EQ_.call(null, "\ufdd0'macd", G__6568)) {
             return cljs.core.concat.call(null, rslt, cljs.core.reduce.call(null, function(rF, eF) {
               return cljs.core.conj.call(null, rF, cljs.core.assoc.call(null, default_entry.call(null, eF), "\ufdd0'onSeries", "macd-price-list"))
             }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, ech)))
           }else {
-            if(cljs.core._EQ_.call(null, "\ufdd0'bollinger-band", G__16619)) {
+            if(cljs.core._EQ_.call(null, "\ufdd0'bollinger-band", G__6568)) {
               return cljs.core.concat.call(null, rslt, cljs.core.reduce.call(null, function(rF, eF) {
                 return cljs.core.conj.call(null, rF, cljs.core.assoc.call(null, default_entry.call(null, eF), "\ufdd0'onSeries", "bollinger-list"))
               }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, ech)))
             }else {
-              if(cljs.core._EQ_.call(null, "\ufdd0'moving-average", G__16619)) {
+              if(cljs.core._EQ_.call(null, "\ufdd0'moving-average", G__6568)) {
                 return cljs.core.concat.call(null, rslt, cljs.core.reduce.call(null, function(rF, eF) {
                   return cljs.core.conj.call(null, rF, cljs.core.assoc.call(null, default_entry.call(null, eF), "\ufdd0'onSeries", "ema-list"))
                 }, cljs.core.PersistentVector.EMPTY, cljs.core.second.call(null, ech)))
@@ -23641,12 +23641,12 @@ ui.graph.add_signals = function add_signals(initial_list, signal_map) {
 ui.graph.add_strategies = function add_strategies(initial_list, strategy_map) {
   var default_entry = cljs.core.ObjMap.fromObject(["\ufdd0'data", "\ufdd0'width", "\ufdd0'name", "\ufdd0'onSeries", "\ufdd0'color", "\ufdd0'style", "\ufdd0'states", "\ufdd0'type", "\ufdd0'fillColor"], {"\ufdd0'data":cljs.core.PersistentVector.EMPTY, "\ufdd0'width":16, "\ufdd0'name":"strategies", "\ufdd0'onSeries":"tick-list", "\ufdd0'color":"#5F86B3", "\ufdd0'style":cljs.core.ObjMap.fromObject(["\ufdd0'color"], {"\ufdd0'color":"white"}), "\ufdd0'states":cljs.core.ObjMap.fromObject(["\ufdd0'hover"], 
   {"\ufdd0'hover":cljs.core.ObjMap.fromObject(["\ufdd0'fillColor"], {"\ufdd0'fillColor":"#395C84"})}), "\ufdd0'type":"flags", "\ufdd0'fillColor":"#5F86B3"});
-  var data_list = cljs.core.remove.call(null, function(p1__16617_SHARP_) {
-    var or__3951__auto__ = p1__16617_SHARP_ == null;
+  var data_list = cljs.core.remove.call(null, function(p1__6566_SHARP_) {
+    var or__3951__auto__ = p1__6566_SHARP_ == null;
     if(or__3951__auto__) {
       return or__3951__auto__
     }else {
-      return cljs.core.empty_QMARK_.call(null, p1__16617_SHARP_)
+      return cljs.core.empty_QMARK_.call(null, p1__6566_SHARP_)
     }
   }, cljs.core.reduce.call(null, function(rslt, ech_list) {
     return cljs.core.concat.call(null, rslt, cljs.core.reduce.call(null, function(rF, eF) {
@@ -23672,11 +23672,14 @@ ui.graph.build_graph_series_data = function build_graph_series_data(dataList, si
 };
 ui.graph.chart_fill = function chart_fill(selector, dataList, signal_map, strategy_map, label) {
   return jayq.core.$.call(null, selector).highcharts("StockChart", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'names", "\ufdd0'rangeSelector", "\ufdd0'title", "\ufdd0'chart", "\ufdd0'navigator", "\ufdd0'yAxis", "\ufdd0'series"], {"\ufdd0'names":cljs.core.PersistentVector.fromArray([label, "Bolling Band", "Simple Moving Average", "Exponential Moving Average"], true), "\ufdd0'rangeSelector":cljs.core.ObjMap.fromObject(["\ufdd0'selected"], {"\ufdd0'selected":11}), "\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], 
-  {"\ufdd0'text":label}), "\ufdd0'chart":cljs.core.ObjMap.fromObject(["\ufdd0'zoomType"], {"\ufdd0'zoomType":"x"}), "\ufdd0'navigator":cljs.core.ObjMap.fromObject(["\ufdd0'adaptToUpdatedData"], {"\ufdd0'adaptToUpdatedData":true}), "\ufdd0'yAxis":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'title", "\ufdd0'height"], {"\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"Technical Analysis"}), "\ufdd0'height":200}), cljs.core.ObjMap.fromObject(["\ufdd0'title", 
-  "\ufdd0'height", "\ufdd0'top", "\ufdd0'offset", "\ufdd0'lineWidth"], {"\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"MACD / Signal"}), "\ufdd0'height":100, "\ufdd0'top":300, "\ufdd0'offset":0, "\ufdd0'lineWidth":2}), cljs.core.ObjMap.fromObject(["\ufdd0'title", "\ufdd0'height", "\ufdd0'top", "\ufdd0'offset", "\ufdd0'lineWidth"], {"\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"MACD Histog"}), "\ufdd0'height":100, "\ufdd0'top":400, "\ufdd0'offset":0, 
-  "\ufdd0'lineWidth":2}), cljs.core.ObjMap.fromObject(["\ufdd0'title", "\ufdd0'height", "\ufdd0'top", "\ufdd0'offset", "\ufdd0'lineWidth", "\ufdd0'max", "\ufdd0'min", "\ufdd0'plotLines"], {"\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"Stochastic Osc"}), "\ufdd0'height":100, "\ufdd0'top":500, "\ufdd0'offset":0, "\ufdd0'lineWidth":2, "\ufdd0'max":1, "\ufdd0'min":0, "\ufdd0'plotLines":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'value", "\ufdd0'color", 
-  "\ufdd0'width", "\ufdd0'dashStyle", "\ufdd0'label"], {"\ufdd0'value":0.75, "\ufdd0'color":"red", "\ufdd0'width":1, "\ufdd0'dashStyle":"longdash", "\ufdd0'label":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"Overbought"})}), cljs.core.ObjMap.fromObject(["\ufdd0'value", "\ufdd0'color", "\ufdd0'width", "\ufdd0'dashStyle", "\ufdd0'label"], {"\ufdd0'value":0.25, "\ufdd0'color":"green", "\ufdd0'width":1, "\ufdd0'dashStyle":"longdash", "\ufdd0'label":cljs.core.ObjMap.fromObject(["\ufdd0'text"], 
-  {"\ufdd0'text":"Oversold"})})], true)}), cljs.core.ObjMap.fromObject(["\ufdd0'title", "\ufdd0'height", "\ufdd0'top", "\ufdd0'offset", "\ufdd0'lineWidth"], {"\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"OBV"}), "\ufdd0'height":100, "\ufdd0'top":600, "\ufdd0'offset":0, "\ufdd0'lineWidth":2})], true), "\ufdd0'series":ui.graph.build_graph_series_data.call(null, dataList, signal_map, strategy_map)})))
+  {"\ufdd0'text":label}), "\ufdd0'chart":cljs.core.ObjMap.fromObject(["\ufdd0'zoomType"], {"\ufdd0'zoomType":"x"}), "\ufdd0'navigator":cljs.core.ObjMap.fromObject(["\ufdd0'adaptToUpdatedData"], {"\ufdd0'adaptToUpdatedData":true}), "\ufdd0'yAxis":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'title", "\ufdd0'height", "\ufdd0'marker"], {"\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"Technical Analysis"}), "\ufdd0'height":200, "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled"], 
+  {"\ufdd0'enabled":false})}), cljs.core.ObjMap.fromObject(["\ufdd0'title", "\ufdd0'height", "\ufdd0'top", "\ufdd0'offset", "\ufdd0'lineWidth", "\ufdd0'marker", "\ufdd0'plotOptions"], {"\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"MACD / Signal"}), "\ufdd0'height":100, "\ufdd0'top":300, "\ufdd0'offset":0, "\ufdd0'lineWidth":2, "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled"], {"\ufdd0'enabled":false}), "\ufdd0'plotOptions":cljs.core.ObjMap.fromObject(["\ufdd0'series"], 
+  {"\ufdd0'series":cljs.core.ObjMap.fromObject(["\ufdd0'enableMouseTracking"], {"\ufdd0'enableMouseTracking":false})})}), cljs.core.ObjMap.fromObject(["\ufdd0'title", "\ufdd0'height", "\ufdd0'top", "\ufdd0'offset", "\ufdd0'lineWidth", "\ufdd0'marker", "\ufdd0'plotOptions"], {"\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"MACD Histog"}), "\ufdd0'height":100, "\ufdd0'top":400, "\ufdd0'offset":0, "\ufdd0'lineWidth":2, "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled"], 
+  {"\ufdd0'enabled":false}), "\ufdd0'plotOptions":cljs.core.ObjMap.fromObject(["\ufdd0'series"], {"\ufdd0'series":cljs.core.ObjMap.fromObject(["\ufdd0'enableMouseTracking"], {"\ufdd0'enableMouseTracking":false})})}), cljs.core.ObjMap.fromObject(["\ufdd0'offset", "\ufdd0'max", "\ufdd0'lineWidth", "\ufdd0'title", "\ufdd0'top", "\ufdd0'marker", "\ufdd0'plotLines", "\ufdd0'min", "\ufdd0'height", "\ufdd0'plotOptions"], {"\ufdd0'offset":0, "\ufdd0'max":1, "\ufdd0'lineWidth":2, "\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], 
+  {"\ufdd0'text":"Stochastic Osc"}), "\ufdd0'top":500, "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled"], {"\ufdd0'enabled":false}), "\ufdd0'plotLines":cljs.core.PersistentVector.fromArray([cljs.core.ObjMap.fromObject(["\ufdd0'value", "\ufdd0'color", "\ufdd0'width", "\ufdd0'dashStyle", "\ufdd0'label"], {"\ufdd0'value":0.75, "\ufdd0'color":"red", "\ufdd0'width":1, "\ufdd0'dashStyle":"longdash", "\ufdd0'label":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"Overbought"})}), 
+  cljs.core.ObjMap.fromObject(["\ufdd0'value", "\ufdd0'color", "\ufdd0'width", "\ufdd0'dashStyle", "\ufdd0'label"], {"\ufdd0'value":0.25, "\ufdd0'color":"green", "\ufdd0'width":1, "\ufdd0'dashStyle":"longdash", "\ufdd0'label":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"Oversold"})})], true), "\ufdd0'min":0, "\ufdd0'height":100, "\ufdd0'plotOptions":cljs.core.ObjMap.fromObject(["\ufdd0'series"], {"\ufdd0'series":cljs.core.ObjMap.fromObject(["\ufdd0'enableMouseTracking"], {"\ufdd0'enableMouseTracking":false})})}), 
+  cljs.core.ObjMap.fromObject(["\ufdd0'title", "\ufdd0'height", "\ufdd0'top", "\ufdd0'offset", "\ufdd0'lineWidth", "\ufdd0'marker", "\ufdd0'plotOptions"], {"\ufdd0'title":cljs.core.ObjMap.fromObject(["\ufdd0'text"], {"\ufdd0'text":"OBV"}), "\ufdd0'height":100, "\ufdd0'top":600, "\ufdd0'offset":0, "\ufdd0'lineWidth":2, "\ufdd0'marker":cljs.core.ObjMap.fromObject(["\ufdd0'enabled"], {"\ufdd0'enabled":false}), "\ufdd0'plotOptions":cljs.core.ObjMap.fromObject(["\ufdd0'series"], {"\ufdd0'series":cljs.core.ObjMap.fromObject(["\ufdd0'enableMouseTracking"], 
+  {"\ufdd0'enableMouseTracking":false})})})], true), "\ufdd0'series":ui.graph.build_graph_series_data.call(null, dataList, signal_map, strategy_map)})))
 };
 ui.graph.chart_increment = function chart_increment(selector, dataList, strategy_map, label) {
   cljs.core.first.call(null, jayq.core.$.call(null, selector).highcharts().series).addPoint(cljs.core.last.call(null, cljs.core.reverse.call(null, cljs.core.first.call(null, dataList))), true, false);
@@ -23966,30 +23969,6 @@ goog.require("server.handler");
 goog.require("cljs.reader");
 goog.require("jayq.core");
 goog.require("jayq.core");
-ui.components.populate_multiselect.call(null, ".multiselect-historical", cljs.core.ObjMap.fromObject(["\ufdd0'onChange"], {"\ufdd0'onChange":function(element, checked) {
-  if(cljs.core.truth_(checked)) {
-    return $.ajax.call(null, "/get-historical-data", cljs.core.clj__GT_js.call(null, cljs.core.ObjMap.fromObject(["\ufdd0'data", "\ufdd0'complete"], {"\ufdd0'data":cljs.core.ObjMap.fromObject(["\ufdd0'stock-selection", "\ufdd0'time-duration", "\ufdd0'time-interval"], {"\ufdd0'stock-selection":element.val(), "\ufdd0'time-duration":"300 S", "\ufdd0'time-interval":"1 secs"}), "\ufdd0'complete":function(jqXHR, status) {
-      console.log([cljs.core.str(".multiselect-historical > jqXHR["), cljs.core.str(jqXHR), cljs.core.str("] / status["), cljs.core.str(status), cljs.core.str("]")].join(""));
-      var result_data = cljs.reader.read_string.call(null, jqXHR.responseText);
-      var parsed_result_map = server.handler.parse_result_data.call(null, result_data);
-      var increment_QMARK_ = false;
-      return ui.graph.render_stock_graph.call(null, "#historical-stock-graph", cljs.core.PersistentVector.fromArray([(new cljs.core.Keyword("\ufdd0'bollinger-band")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'local-list")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'sma-list")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'ema-list")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'macd-price-list")).call(null, parsed_result_map), 
-      (new cljs.core.Keyword("\ufdd0'macd-signal-list")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'macd-histogram-list")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'stochastic-k")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'stochastic-d")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'obv")).call(null, parsed_result_map)], true), (new cljs.core.Keyword("\ufdd0'signals")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'strategies")).call(null, 
-      parsed_result_map), (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, parsed_result_map), increment_QMARK_)
-    }})))
-  }else {
-    return null
-  }
-}}));
-ui.components.populate_multiselect.call(null, ".multiselect-live", cljs.core.ObjMap.fromObject(["\ufdd0'onChange"], {"\ufdd0'onChange":function(element, checked) {
-  if(cljs.core.truth_(checked)) {
-    return $.post.call(null, [cljs.core.str("/get-streaming-stock-data?stock-selection="), cljs.core.str(element.val()), cljs.core.str("&stock-name="), cljs.core.str(element.text())].join(""), function(data) {
-      return console.log([cljs.core.str("POST:: get-streaming-stock-data > data["), cljs.core.str(data), cljs.core.str("]")].join(""))
-    })
-  }else {
-    return null
-  }
-}}));
 edgar.livesource = new window.EventSource("/get-streaming-stock-data");
 edgar.livesource.addEventListener("stream-live", function(e) {
   var result_data = cljs.reader.read_string.call(null, e.data);
