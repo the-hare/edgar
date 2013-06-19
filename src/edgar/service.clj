@@ -255,7 +255,7 @@
 
 (defn watch-strategies
   "Tracks and instruments existing strategies in play"
-  [tracking-data tick-list]
+  [tick-list]
 
   (println (str "watch-strategies > test[" (some #(= % (:tickerId (first tick-list)))
                                                  (map :tickerId @tracking-data)) "]"))
@@ -269,72 +269,69 @@
                                    (let [result-filter (filter #(= (-> % second :tickerId) (:tickerId (first tick-list)))
                                                                (map-indexed (fn [idx itm] [idx itm]) inp))]
 
-                                     (println (str "... 2 > WATCH > result-filter[" (seq result-filter) "]"))
+                                     (println (str "... 2 > WATCH > result-filter[" (seq result-filter) "] / integer key[" (first (map first result-filter)) "] / inp[" inp "]"))
 
                                      ;; update-in-place, the existing tracking-data
                                      ;; i. find index of relevent entry
                                      (update-in inp
                                                 [(first (map first result-filter))]
-                                                (fn [i1]
+                                            (fn [i1]
 
-                                                  (println (str "... 3 > WATCH > update-in inp[" i1 "]"))
-                                                  (let [
+                                              (println (str "... 3 > WATCH > update-in > inp[" i1 "]"))
+                                              (let [
 
-                                                        ;; find peaks-valleys
-                                                        peaks-valleys (common/find-peaks-valleys nil tick-list)
-                                                        peaks (:peak (group-by :signal peaks-valleys))
+                                                    ;; find peaks-valleys
+                                                    peaks-valleys (common/find-peaks-valleys nil tick-list)
+                                                    peaks (:peak (group-by :signal peaks-valleys))
 
-                                                        stoploss-threshold? (target/stoploss-threshhold? (:orig-trade-price i1) (:last-trade-price (first tick-list)))
-                                                        reached-target? (target/target-threshhold? (:orig-trade-price i1) (:last-trade-price (first tick-list)))
+                                                    stoploss-threshold? (target/stoploss-threshhold? (:orig-trade-price i1) (:last-trade-price (first tick-list)))
+                                                    reached-target? (target/target-threshhold? (:orig-trade-price i1) (:last-trade-price (first tick-list)))
 
-                                                        ;; ensure we're not below stop-loss
-                                                        ;; are we: at 'target'
+                                                    ;; ensure we're not below stop-loss
+                                                    ;; are we: at 'target'
 
-                                                        ;; OR
+                                                    ;; OR
 
-                                                        ;; are we: abouve last 2 peaks - hold
-                                                        ;; are we: below first peak, but abouve second peak - hold
-                                                        ;; are we: below previous 2 peaks - sell
+                                                    ;; are we: abouve last 2 peaks - hold
+                                                    ;; are we: below first peak, but abouve second peak - hold
+                                                    ;; are we: below previous 2 peaks - sell
 
-                                                        action (if stoploss-threshold?
+                                                    action (if stoploss-threshold?
 
-                                                                 {:action :down :why :stoploss-threshold}
+                                                             {:action :down :why :stoploss-threshold}
 
-                                                                 (if (every? #(>= (:last-trade-price (first tick-list))
-                                                                                  (:last-trade-price %))
-                                                                             (take 2 peaks))
+                                                             (if (every? #(>= (:last-trade-price (first tick-list))
+                                                                              (:last-trade-price %))
+                                                                         (take 2 peaks))
 
-                                                                   {:action :up :why :abouve-last-2-peaks}
+                                                               {:action :up :why :abouve-last-2-peaks}
 
-                                                                   (if (and (>= (:last-trade-price (first tick-list))
-                                                                                (:last-trade-price (nth tick-list 2)))
-                                                                            (<= (:last-trade-price (first tick-list))
-                                                                                (:last-trade-price (second tick-list))))
+                                                               (if (and (>= (:last-trade-price (first tick-list))
+                                                                            (:last-trade-price (nth tick-list 2)))
+                                                                        (<= (:last-trade-price (first tick-list))
+                                                                            (:last-trade-price (second tick-list))))
 
-                                                                     {:action :up :why :abouve-second-below-first-peak}
+                                                                 {:action :up :why :abouve-second-below-first-peak}
 
-                                                                     {:action :down :why :below-first-2-peaks})))
+                                                                 {:action :down :why :below-first-2-peaks})))
 
 
-                                                        price-diff (- (:last-trade-price (first tick-list)) (:orig-trade-price i1))
-                                                        merge-result (merge i1 {:last-trade-price (:last-trade-price (first tick-list))
-                                                                                :last-trade-time (:last-trade-time (first tick-list))
-                                                                                :change-pct (/ price-diff (:orig-trade-price i1))
-                                                                                :change-prc price-diff
-                                                                                :action action})]
+                                                    price-diff (- (:last-trade-price (first tick-list)) (:orig-trade-price i1))
+                                                    merge-result (merge i1 {:last-trade-price (:last-trade-price (first tick-list))
+                                                                            :last-trade-time (:last-trade-time (first tick-list))
+                                                                            :change-pct (/ price-diff (:orig-trade-price i1))
+                                                                            :change-prc price-diff
+                                                                            :action action})]
 
-                                                    (println (str "... 4 > WATCH > result[" merge-result "]"))
-                                                    merge-result)))))))))
+                                                (println (str "... 4 > WATCH > result[" merge-result "]"))
+                                                merge-result)))))))))
 
 (defn trim-strategies [tracking-data tick-list]
 
-
   (dosync (alter tracking-data
-                 remove
                  (fn [inp]
-                   (= :down (-> inp :action :action)))))
-
-  (println (str "FINISED > trim-strategies[" @tracking-data "]")))
+                   (remove #(= :down (-> % :action :action))
+                           inp)))))
 
 
 (defn get-streaming-stock-data [request]
@@ -394,9 +391,12 @@
                                                                              signals-macd
                                                                              signals-stochastic
                                                                              signals-obv)
-                                                     #_sB #_[(assoc (first tick-list-N) :strategies [{:signal :up
-                                                                                                  :name :strategy-test-B
-                                                                                                  :why "test-b"}])]
+                                                     #_sB #_(if (empty? @tracking-data)
+
+                                                          [(assoc (first tick-list-N) :strategies [{:signal :up
+                                                                                                    :name :strategy-test-B
+                                                                                                    :why "test-b"}])]
+                                                          [])
 
                                                      result-data {:stock-name stock-name
                                                                   :stock-symbol (:symbol tick-list)
@@ -415,7 +415,7 @@
                                                      #_parsed-result-map #_(shandler/parse-result-data result-data)]
 
                                                  (println "")
-                                                 (println (str "... 0 > tracking-data[" @tracking-data "]"))
+                                                 (println (str "... 0 > tracking-data[" (seq @tracking-data) "]"))
                                                  (println (str "... strategy-A[" sA "]"))
                                                  (println (str "... strategy-B[" sB "]"))
 
@@ -430,7 +430,7 @@
                                                  ;; watch any STRATEGIES in play
                                                  (if (not (empty? @tracking-data))
 
-                                                   (watch-strategies tracking-data tick-list-N))
+                                                   (watch-strategies tick-list-N))
 
 
                                                  ;; ORDER based on tracking data

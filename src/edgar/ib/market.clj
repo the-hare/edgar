@@ -29,6 +29,14 @@
 
     contract))
 
+(defn- create-order [action qty price]
+
+  (let [order (Order.)]
+    (set! (.m_totalQuantity order) qty)
+    (set! (.m_action order) action)
+    (set! (.m_orderType order) "LMT")
+    (set! (.m_lmtPrice order) price)))
+
 
 ;; ====
 ;; HISTORICAL Data
@@ -84,6 +92,25 @@
 (create-event-channel)
 
 
+
+;; ====
+;; BUY / SELL stock
+(defn buy-stock [client idx instrm qty price]
+
+  (let [contract (create-contract instrm)
+        order (create-order "BUY" qty price)]
+    (.placeOrder client idx contract order)))
+
+(defn sell-stock [client idx instrm qty price]
+
+  (let [contract (create-contract instrm)
+        order (create-order "SELL" qty price)]
+    (.placeOrder client idx contract order)))
+
+
+
+;; ====
+;; SUBSCRIPTION code
 (defn close-market-channel []
   (lamina/force-close @event-channel))
 
