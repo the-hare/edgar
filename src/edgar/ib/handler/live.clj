@@ -67,7 +67,7 @@
                       (:tick-window options)
                       40)]
 
-    (log/info "edgar.core.edgar/handle-event [" evt "] FILTER[" (-> options :stock-match :ticker-id-filter) "] > tick-list size[" (count @tick-list) "]")
+    (log/debug "edgar.core.edgar/handle-event [" evt "] FILTER[" (-> options :stock-match :ticker-id-filter) "] > tick-list size[" (count @tick-list) "]")
 
 
     ;; handle tickPrice

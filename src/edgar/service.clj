@@ -210,7 +210,7 @@
   ;; iterate through list of strategies
   (reduce (fn [rA eA]
 
-            (println (str "... 1 > eA[" eA "] > some test if/else[" (some #(= % (:tickerId eA)) (map :tickerId @tracking-data)) "]"))
+            #_(println (str "... 1 > eA[" eA "] > some test if/else[" (some #(= % (:tickerId eA)) (map :tickerId @tracking-data)) "]"))
             ;; does tickerId of current entry = any tickerIds in existing list?
             (if (some #(= % (:tickerId eA))
                       (map :tickerId @tracking-data))
@@ -224,7 +224,7 @@
                                              (let [result-filter (filter #(= (-> % second :tickerId) (:tickerId eA))
                                                                          (map-indexed (fn [idx itm] [idx itm]) inp))]
 
-                                               (println (str "... 2 > result-filter[" (seq result-filter) "]"))
+                                               #_(println (str "... 2 > result-filter[" (seq result-filter) "]"))
 
                                                ;; update-in-place, the existing tracking-data
                                                ;; i. find index of relevent entry
@@ -232,7 +232,7 @@
                                                           [(first (map first (seq result-filter)))]
                                                           (fn [i1]
 
-                                                            (println (str "... 3 > update-in inp[" i1 "]"))
+                                                            #_(println (str "... 3 > update-in inp[" i1 "]"))
                                                             (let [price-diff (- (:last-trade-price (first tick-list)) (:orig-trade-price i1))
                                                                   merge-result (merge i1 {:last-trade-price (:last-trade-price (first tick-list))
                                                                                           :last-trade-time (:last-trade-time eA)
@@ -257,7 +257,7 @@
   "Tracks and instruments existing strategies in play"
   [tick-list]
 
-  (println (str "... 1 > WATCH > watch-strategies > test[" (some #(= % (:tickerId (first tick-list)))
+  #_(println (str "... 1 > WATCH > watch-strategies > test[" (some #(= % (:tickerId (first tick-list)))
                                                  (map :tickerId @tracking-data)) "]"))
 
   ;; check if latest tick matches a stock being watched
@@ -269,7 +269,7 @@
                                    (let [result-filter (filter #(= (-> % second :tickerId) (:tickerId (first tick-list)))
                                                                (map-indexed (fn [idx itm] [idx itm]) inp))]
 
-                                     (println (str "... 2 > WATCH > result-filter[" (into [] result-filter) "] / integer key[" (first (map first result-filter)) "] / inp[" (into [] inp) "]"))
+                                     #_(println (str "... 2 > WATCH > result-filter[" (into [] result-filter) "] / integer key[" (first (map first result-filter)) "] / inp[" (into [] inp) "]"))
 
                                      ;; update-in-place, the existing tracking-data
                                      ;; i. find index of relevent entry
@@ -277,7 +277,7 @@
                                                 [(first (map first (into [] result-filter)))]
                                                 (fn [i1]
 
-                                                  (println (str "... 3 > WATCH > update-in > inp[" i1 "]"))
+                                                  #_(println (str "... 3 > WATCH > update-in > inp[" i1 "]"))
                                                   (let [
 
                                                         ;; find peaks-valleys
@@ -324,11 +324,12 @@
                                                                                 :change-prc price-diff
                                                                                 :action action})]
 
-                                                    (println (str "... 4 > WATCH > result[" merge-result "]"))
+                                                    #_(println (str "... 4 > WATCH > result[" merge-result "]"))
                                                     merge-result)))))))))
 
 (defn trim-strategies [tracking-data tick-list]
 
+  (println (str "... trim-strategies / SELL test[" (some #(= :down (-> % :action :action)) @tracking-data)  "] / ACTION[" (seq (filter #(= :down (-> % :action :action)) @tracking-data)) "] / WHY[" (:why (first (filter #(= :down (-> % :action ::action)) @tracking-data))) "]"))
   (dosync (alter tracking-data
                  (fn [inp]
                    (remove #(= :down (-> % :action :action))
@@ -376,14 +377,14 @@
                                                      signals-stochastic (sleading/stochastic-oscillator 14 3 3 tick-list-N)
                                                      signals-obv (sconfirming/on-balance-volume 10 tick-list-N)
 
-                                                     #_sA #_(strategy/strategy-A tick-list-N
+                                                     sA (strategy/strategy-A tick-list-N
                                                                              signals-ma
                                                                              signals-bollinger
                                                                              signals-macd
                                                                              signals-stochastic
                                                                              signals-obv)
 
-                                                     sA (if (empty? @tracking-data)
+                                                     #_sA #_(if (empty? @tracking-data)
 
                                                           [(assoc (first tick-list-N) :strategies [{:signal :up
                                                                                                     :name :strategy-test-A

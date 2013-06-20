@@ -1,4 +1,6 @@
-(ns edgar.core.strategy.strategy)
+(ns edgar.core.strategy.strategy
+
+  (:require [edgar.core.signal.common :as common]))
 
 
 (defn price-increase? [tick-list]
@@ -14,6 +16,26 @@
         sma-tick (first signals-ma)]
 
     (< (:last-trade-price p-tick) (:last-trade-price-average sma-tick))))
+
+(defn no-price-oscillation? [tick-list]
+
+  (let [
+        ;; find last 3 peaks and valleys
+        peaks-valleys (common/find-peaks-valleys nil (remove nil? tick-list))
+        peaks (take 2 (:peak (group-by :signal peaks-valleys)))
+        valleys (take 2 (:valley (group-by :signal peaks-valleys)))]
+
+    (and
+
+     ;; ensure price isn't oscillating between peaks and valleys
+     (not (and (every? #(= (-> peaks first :last-trade-price)
+                           (:last-trade-price %)) peaks)
+               (every? #(= (-> valleys first :last-trade-price)
+                           (:last-trade-price %)) valleys)))
+
+     ;; ensure latest price isn't equal to the previous peak
+     (not (= (:last-trade-price (first tick-list))
+             (:last-trade-price (first peaks)))))))
 
 (defn price-cross-abouve-sma? [tick-list sma-list]
 
@@ -124,6 +146,9 @@
   [tick-list signals-ma signals-bollinger signals-macd signals-stochastic signals-obv]
 
   (let [
+        ;; *
+        no-price-oscillationV (no-price-oscillation? tick-list)
+
         ;; A.
         price-increaseV (price-increase? tick-list)
 
@@ -152,8 +177,8 @@
       (do (println "BINGO ---- We have a strategy-A :up signal")
           (cons (assoc (first tick-list) :strategies [{:signal :up
                                                        :name :strategy-A
-                                                       :why [:price-increase :price-below-sma :bollinger-price-below :bollinger-was-narrower
-                                                             :macd-histogram-squeeze :obv-increasing :stochastic-oversold]}])
+                                                       :why [:no-price-oscillation :price-increase :price-below-sma :bollinger-price-below
+                                                             :bollinger-was-narrower :macd-histogram-squeeze :obv-increasing :stochastic-oversold]}])
                 (rest tick-list))))))
 
 
@@ -207,6 +232,8 @@
 (defn strategy-B
   "This strategy is a composition of the below signals. It works only for the first tick.
 
+   *. Price increase
+
    A. Price crosses abouve SMA
 
    B. Bollinger-Band was narrower (w/in last 2 ticks)
@@ -220,6 +247,10 @@
   [tick-list signals-ma signals-bollinger signals-macd signals-stochastic signals-obv]
 
   (let [
+
+        ;; *
+        no-price-oscillationV (no-price-oscillation? tick-list)
+
         ;; A.
         price-cross-abouve-smaV (price-cross-abouve-sma? tick-list signals-ma)
 
@@ -238,12 +269,12 @@
         ;; F.
         obv-increasingV (obv-increasing? signals-obv)]
 
-    (if (and price-cross-abouve-smaV bollinger-was-narrowerV macd-crossoverV stochastic-crossoverV stochastic-oversoldV obv-increasingV)
+    (if (and no-price-oscillationV price-cross-abouve-smaV bollinger-was-narrowerV macd-crossoverV stochastic-crossoverV stochastic-oversoldV obv-increasingV)
 
       (do (println "BINGO ---- We have a strategy-B :up signal")
           (cons (assoc (first tick-list) :strategies [{:signal :up
                                                        :name :strategy-B
-                                                       :why [:price-cross-abouve-sma :bollinger-was-narrower :macd-crossover
+                                                       :why [:price-increase :price-cross-abouve-sma :bollinger-was-narrower :macd-crossover
                                                              :stochastic-crossover :stochastic-oversold :obv-increasing]}])
                   (rest tick-list))))))
 
