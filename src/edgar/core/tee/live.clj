@@ -139,7 +139,7 @@
 
 (defn trim-strategies [tracking-data tick-list]
 
-  (println (str "... trim-strategies / SELL test[" (some #(= :down (-> % :action :action)) @tracking-data)  "] / ACTION[" (seq (filter #(= :down (-> % :action :action)) @tracking-data)) "] / WHY[" (:why (first (filter #(= :down (-> % :action :action)) @tracking-data))) "]"))
+  (println (str "... trim-strategies / SELL test[" (some #(= :down (-> % :action :action)) @tracking-data)  "] / ACTION[" (seq (filter #(= :down (-> % :action :action)) @tracking-data)) "] / WHY[" (:why (first (filter #(= :down (-> % :action)) @tracking-data))) "]"))
   (dosync (alter tracking-data
                  (fn [inp]
                    (remove #(= :down (-> % :action :action))
