@@ -1,6 +1,7 @@
 (ns edgar.core.tee.live
 
-  (:require [edgar.core.edgar :as edgar]
+  (:require [edgar.ib.market :as market]
+            [edgar.core.edgar :as edgar]
             [edgar.core.analysis.lagging :as alagging]
             [edgar.core.signal.common :as common]
             [edgar.core.signal.lagging :as slagging]
@@ -12,6 +13,8 @@
 
 
 (def tracking-data (ref []))
+(def ^:dynamic *position-data* (ref []))
+(def ^:dynamic *orderid-index* (ref 0))
 
 (defn track-strategies
   "Follows new strategy recommendations coming in"
@@ -242,6 +245,28 @@
       ;; watch any STRATEGIES in play
       (if (not (empty? @tracking-data))
         (watch-strategies tick-list-N)))
+
+
+    ;; ORDER based on tracking data
+    (let [client (:interactive-brokers-client edgar/*interactive-brokers-workbench*)
+            tick (first @tracking-data)]
+
+      (if (some #(= :up (-> % :action :action)) @tracking-data)
+
+        (do
+
+          ;; ... TODO: make sure we don't double-buy yet
+          ;; ... TODO: track orderId for sale
+          ;; ... TODO: stock-symbol has to be tied to the tickerId
+          ;; (market/buy-stock client *order-id* stock-symbol 100 (:last-trade-price tick))
+          (swap! @*orderid-index* inc))
+
+        (if (some #(= :down (-> % :action :action)) @tracking-data)
+
+          123
+          ;; (market/sell-stock client *order-id* stock-symbol 100 (:last-trade-price tick))
+          ))
+      )
 
 
 
