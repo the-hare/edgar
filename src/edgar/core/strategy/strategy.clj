@@ -1,6 +1,7 @@
 (ns edgar.core.strategy.strategy
 
-  (:require [edgar.core.signal.common :as common]))
+  (:require [edgar.core.signal.common :as common]
+            [edgar.core.signal.leading :as sleading]))
 
 
 (defn price-increase? [tick-list]
@@ -103,6 +104,17 @@
         nil?
         not)))
 
+(defn macd-up-signal? [tick-list]
+
+  (let [result (sleading/macd nil 20 tick-list)
+        fresult (first result)
+
+        some-ups? (some #(= :up (:signal %)) (:signals fresult))
+        no-downs? (not-any? #(= :down (:signal %)) (:signals fresult))]
+
+    (and some-ups? no-downs?)))
+
+
 (defn obv-increasing? [signals-obv]
 
   (let [fst (first signals-obv)
@@ -149,6 +161,9 @@
         ;; *
         no-price-oscillationV (no-price-oscillation? tick-list)
 
+        ;; * MACD Signal
+        macd-up-signalV (macd-up-signal? tick-list)
+
         ;; A.
         price-increaseV (price-increase? tick-list)
 
@@ -171,13 +186,13 @@
         stochastic-oversoldV (stochastic-oversold? signals-stochastic)]
 
 
-    (if (and price-increaseV price-below-smaV bollinger-price-belowV bollinger-was-narrowerV macd-histogram-squeezeV obv-increasingV stochastic-oversoldV)
+    (if (and price-increaseV macd-up-signalV price-below-smaV bollinger-price-belowV bollinger-was-narrowerV macd-histogram-squeezeV obv-increasingV stochastic-oversoldV)
 
       ;; if all conditions are met, put an :up signal, with the reasons
       (do (println "BINGO ---- We have a strategy-A :up signal")
           (cons (assoc (first tick-list) :strategies [{:signal :up
                                                        :name :strategy-A
-                                                       :why [:no-price-oscillation :price-increase :price-below-sma :bollinger-price-below
+                                                       :why [:no-price-oscillation :macd-up-signal :price-increase :price-below-sma :bollinger-price-below
                                                              :bollinger-was-narrower :macd-histogram-squeeze :obv-increasing :stochastic-oversold]}])
                 (rest tick-list))))))
 
@@ -251,6 +266,9 @@
         ;; *
         no-price-oscillationV (no-price-oscillation? tick-list)
 
+        ;; * MACD Signal
+        macd-up-signalV (macd-up-signal? tick-list)
+
         ;; A.
         price-cross-abouve-smaV (price-cross-abouve-sma? tick-list signals-ma)
 
@@ -269,12 +287,12 @@
         ;; F.
         obv-increasingV (obv-increasing? signals-obv)]
 
-    (if (and no-price-oscillationV price-cross-abouve-smaV bollinger-was-narrowerV macd-crossoverV stochastic-crossoverV stochastic-oversoldV obv-increasingV)
+    (if (and no-price-oscillationV macd-up-signalV price-cross-abouve-smaV bollinger-was-narrowerV macd-crossoverV stochastic-crossoverV stochastic-oversoldV obv-increasingV)
 
       (do (println "BINGO ---- We have a strategy-B :up signal")
           (cons (assoc (first tick-list) :strategies [{:signal :up
                                                        :name :strategy-B
-                                                       :why [:price-increase :price-cross-abouve-sma :bollinger-was-narrower :macd-crossover
+                                                       :why [:price-increase :macd-up-signal :price-cross-abouve-sma :bollinger-was-narrower :macd-crossover
                                                              :stochastic-crossover :stochastic-oversold :obv-increasing]}])
                   (rest tick-list))))))
 
