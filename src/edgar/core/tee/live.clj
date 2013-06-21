@@ -1,7 +1,12 @@
 (ns edgar.core.tee.live
 
   (:require [edgar.core.edgar :as edgar]
+            [edgar.core.analysis.lagging :as alagging]
             [edgar.core.signal.common :as common]
+            [edgar.core.signal.lagging :as slagging]
+            [edgar.core.signal.leading :as sleading]
+            [edgar.core.signal.confirming :as sconfirming]
+            [edgar.core.strategy.strategy :as strategy]
             [edgar.core.strategy.target :as target]
             ))
 
@@ -141,7 +146,7 @@
                            inp)))))
 
 
-(defn tee-fn [tick-list]
+(defn tee-fn [output-fn tick-list]
 
   #_(println (str "get-streaming-stock-data tick-list[" tick-list "]"))
   (let [tick-list-N (map (fn [inp]
@@ -203,7 +208,8 @@
                                                            :why "test-b"}])]
                  [])
 
-        result-data {:stock-name stock-name
+        ;; TODO... track the stock-name
+        result-data {:stock-name "TDB" #_stock-name
                      :stock-symbol (:symbol tick-list)
                      :stock-list final-list
                      :source-list tick-list-N
@@ -238,26 +244,11 @@
         (watch-strategies tick-list-N)))
 
 
-    ;; ORDER based on tracking data
-    (if (some #(= :up (-> % :action :action)) @tracking-data)
-
-      (let [tick (first @tracking-data)]
-
-        ;; ... TODO: make sure we don't double-buy yet
-        ;; ... TODO: track orderId for sale
-        ;; ... TODO: stock-symbol has to be tied to the tickerId
-        (market/buy-stock client *order-id* stock-symbol 100 (:last-trade-price tick))
-        (swap! edgar/@*ticker-id-index* inc))
-
-      (if (some ƒ (= :down (-> % :action :action)) @tracking-data)
-
-        (market/sell-stock client *order-id* stock-symbol 100 (:last-trade-price tick))))
-
 
     ;; remove tracked stock if sell
     (if (not (empty? @tracking-data))
       (trim-strategies tracking-data tick-list-N))
 
-    (stream-live "stream-live" result-data))
+    (output-fn "stream-live" result-data))
   []
   tick-list)
