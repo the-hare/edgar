@@ -151,6 +151,43 @@
                            inp)))))
 
 
+(defn manage-orders [sA sB result-map tick-list-N]
+
+  ;; track any STRATEGIES
+  (if (or (not (empty? sA))
+          (not (empty? sB)))
+    (track-strategies tick-list-N (remove nil? [(first sA) (first sB)])))
+
+
+  ;; watch any STRATEGIES in play
+  (if (not (empty? @tracking-data))
+    (watch-strategies tick-list-N))
+
+
+  ;; ORDER based on tracking data
+  (let [client (:interactive-brokers-client edgar/*interactive-brokers-workbench*)
+        tick (first @tracking-data)]
+
+    (if (some #(= :up (-> % :action :action)) @tracking-data)
+
+      (do
+
+        ;; ... TODO: make sure we don't double-buy yet
+        ;; ... TODO: track orderId for sale
+        ;; ... TODO: stock-symbol has to be tied to the tickerId
+        (market/buy-stock client *orderid-index* (:symbol result-map) 100 (:last-trade-price tick))
+        (dosync (alter *orderid-index* inc)))
+
+      (if (some #(= :down (-> % :action :action)) @tracking-data)
+
+        (market/sell-stock client *orderid-index* (:symbol result-map) 100 (:last-trade-price tick)))))
+
+
+  ;; remove tracked stock if sell
+  (if (not (empty? @tracking-data))
+    (trim-strategies tracking-data tick-list-N)))
+
+
 (defn tee-fn [output-fn result-map]
 
   #_(println (str "get-streaming-stock-data result-map[" result-map "]"))
@@ -213,7 +250,6 @@
                                                            :why "test-b"}])]
                  [])
 
-        ;; TODO... track the stock-name
         result-data {:stock-name "TDB" #_stock-name
                      :stock-symbol (:symbol result-map)
                      :stock-list final-list
@@ -235,47 +271,6 @@
     (println (str "... strategy-A[" sA "] / strategy-B[" sB "] / test[" (or (not (empty? sA))
                                                                             (not (empty? sB)))"]"))
 
+    (manage-orders sA sB result-map tick-list-N)
 
-    (if (or (not (empty? sA))
-            (not (empty? sB)))
-
-
-      ;; track any STRATEGIES
-      (track-strategies tick-list-N (remove nil? [(first sA) (first sB)]))
-
-
-      ;; watch any STRATEGIES in play
-      (if (not (empty? @tracking-data))
-        (watch-strategies tick-list-N)))
-
-
-    ;; ORDER based on tracking data
-    (let [client (:interactive-brokers-client edgar/*interactive-brokers-workbench*)
-            tick (first @tracking-data)]
-
-      (if (some #(= :up (-> % :action :action)) @tracking-data)
-
-        (do
-
-          ;; ... TODO: make sure we don't double-buy yet
-          ;; ... TODO: track orderId for sale
-          ;; ... TODO: stock-symbol has to be tied to the tickerId
-          ;; (market/buy-stock client *order-id* stock-symbol 100 (:last-trade-price tick))
-          (swap! @*orderid-index* inc))
-
-        (if (some #(= :down (-> % :action :action)) @tracking-data)
-
-          123
-          ;; (market/sell-stock client *order-id* stock-symbol 100 (:last-trade-price tick))
-          ))
-      )
-
-
-
-    ;; remove tracked stock if sell
-    (if (not (empty? @tracking-data))
-      (trim-strategies tracking-data tick-list-N))
-
-    (output-fn "stream-live" result-data))
-  #_[]
-  #_tick-list)
+    (output-fn "stream-live" result-data)))
