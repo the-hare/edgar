@@ -12,7 +12,7 @@
             ))
 
 
-(def tracking-data (ref []))
+(def ^:dynamic *tracking-data* (ref []))
 (def ^:dynamic *position-data* (ref []))
 (def ^:dynamic *orderid-index* (ref 0))
 
@@ -23,23 +23,23 @@
   ;; iterate through list of strategies
   (reduce (fn [rA eA]
 
-            #_(println (str "... 1 > eA[" eA "] > some test if/else[" (some #(= % (:tickerId eA)) (map :tickerId @tracking-data)) "]"))
+            #_(println (str "... 1 > eA[" eA "] > some test if/else[" (some #(= % (:tickerId eA)) (map :tickerId @*tracking-data*)) "]"))
             ;; does tickerId of current entry = any tickerIds in existing list?
             (if (some #(= % (:tickerId eA))
-                      (map :tickerId @tracking-data))
+                      (map :tickerId @*tracking-data*))
 
 
               ;; for tracking symbols, each new tick -> calculate:
               ;;     $ gain/loss
               ;;     % gain/loss
-              (dosync (alter tracking-data (fn [inp]
+              (dosync (alter *tracking-data* (fn [inp]
 
                                              (let [result-filter (filter #(= (-> % second :tickerId) (:tickerId eA))
                                                                          (map-indexed (fn [idx itm] [idx itm]) inp))]
 
                                                #_(println (str "... 2 > result-filter[" (seq result-filter) "]"))
 
-                                               ;; update-in-place, the existing tracking-data
+                                               ;; update-in-place, the existing *tracking-data*
                                                ;; i. find index of relevent entry
                                                (update-in inp
                                                           [(first (map first (seq result-filter)))]
@@ -56,7 +56,7 @@
                                                               merge-result)))))))
 
               ;; otherwise store them in a hacked-session
-              (dosync (alter tracking-data conj {:uuid (:uuid eA)
+              (dosync (alter *tracking-data* conj {:uuid (:uuid eA)
                                                  :symbol (:symbol tick-list)
                                                  :tickerId (:tickerId eA)
                                                  :orig-trade-price (:last-trade-price eA)
@@ -71,20 +71,20 @@
   [tick-list]
 
   #_(println (str "... 1 > WATCH > watch-strategies > test[" (some #(= % (:tickerId (first tick-list)))
-                                                 (map :tickerId @tracking-data)) "]"))
+                                                 (map :tickerId @*tracking-data*)) "]"))
 
   ;; check if latest tick matches a stock being watched
   (if (some #(= % (:tickerId (first tick-list)))
-            (map :tickerId @tracking-data))
+            (map :tickerId @*tracking-data*))
 
-    (dosync (alter tracking-data (fn [inp]
+    (dosync (alter *tracking-data* (fn [inp]
 
                                    (let [result-filter (filter #(= (-> % second :tickerId) (:tickerId (first tick-list)))
                                                                (map-indexed (fn [idx itm] [idx itm]) inp))]
 
                                      #_(println (str "... 2 > WATCH > result-filter[" (into [] result-filter) "] / integer key[" (first (map first result-filter)) "] / inp[" (into [] inp) "]"))
 
-                                     ;; update-in-place, the existing tracking-data
+                                     ;; update-in-place, the existing *tracking-data*
                                      ;; i. find index of relevent entry
                                      (update-in (into [] inp)
                                                 [(first (map first (into [] result-filter)))]
@@ -140,12 +140,12 @@
                                                     #_(println (str "... 4 > WATCH > result[" merge-result "]"))
                                                     merge-result)))))))))
 
-(defn trim-strategies [tracking-data tick-list]
+(defn trim-strategies [tick-list]
 
-  (println (str "... trim-strategies / SELL test[" (some #(= :down (-> % :action :action)) @tracking-data)
-                "] / ACTION[" (seq (filter #(= :down (-> % :action :action)) @tracking-data))
-                "] / WHY[" (:why (first (filter #(= :down (-> % :action)) @tracking-data))) "]"))
-  (dosync (alter tracking-data
+  (println (str "... trim-strategies / SELL test[" (some #(= :down (-> % :action :action)) @*tracking-data*)
+                "] / ACTION[" (seq (filter #(= :down (-> % :action :action)) @*tracking-data*))
+                "] / WHY[" (:why (first (filter #(= :down (-> % :action)) @*tracking-data*))) "]"))
+  (dosync (alter *tracking-data*
                  (fn [inp]
                    (remove #(= :down (-> % :action :action))
                            inp)))))
@@ -160,32 +160,72 @@
 
 
   ;; watch any STRATEGIES in play
-  (if (not (empty? @tracking-data))
+  (if (not (empty? @*tracking-data*))
     (watch-strategies tick-list-N))
 
 
   ;; ORDER based on tracking data
   (let [client (:interactive-brokers-client edgar/*interactive-brokers-workbench*)
-        tick (first @tracking-data)]
+        tick (first @*tracking-data*)]
 
-    (if (some #(= :up (-> % :action :action)) @tracking-data)
+    (if (some #(= :up (-> % :action :action))
+              (filter #(= (:tickerId %) (-> tick-list-N first :tickerId)) @*tracking-data*))
 
       (do
 
         ;; ... TODO: make sure we don't double-buy yet
         ;; ... TODO: track orderId for sale
         ;; ... TODO: stock-symbol has to be tied to the tickerId
-        (market/buy-stock client *orderid-index* (:symbol result-map) 100 (:last-trade-price tick))
+        (println "==> BUY now")
+        (dosync (alter *tracking-data* (fn [inp]
+
+                                         (let [result-filter (filter #(= (-> % second :tickerId) (:tickerId (first tick-list-N)))
+                                                                     (map-indexed (fn [idx itm] [idx itm]) inp))]
+
+                                           ;; i. find index of relevent entry
+                                           (update-in (into [] inp)
+                                                      [(first (map first (into [] result-filter)))]
+                                                      (fn [i1]
+
+                                                        #_(println (str "... 3 > BUY > update-in > inp[" i1 "]"))
+                                                        (let [merge-result (merge i1 {:order-id *orderid-index*
+                                                                                      :position :long
+                                                                                      :position-amount 100
+                                                                                      :position-price (:last-trade-price (first tick-list-N))})]
+
+                                                          #_(println (str "... 4 > BUY > result[" merge-result "]"))
+                                                          (market/buy-stock client *orderid-index* (:symbol result-map) 100 (:last-trade-price tick))
+
+                                                          merge-result)))))))
         (dosync (alter *orderid-index* inc)))
 
-      (if (some #(= :down (-> % :action :action)) @tracking-data)
+      (if (some #(= :down (-> % :action :action)) (filter #(= (:tickerId %) (-> tick-list-N first :tickerId)) @*tracking-data*))
 
-        (market/sell-stock client *orderid-index* (:symbol result-map) 100 (:last-trade-price tick)))))
+        (do
+          (println "==> SELL now")
+          (dosync (alter *tracking-data* (fn [inp]
+
+                                           (let [result-filter (filter #(= (-> % second :tickerId) (:tickerId (first tick-list-N)))
+                                                                       (map-indexed (fn [idx itm] [idx itm]) inp))]
+
+                                             ;; i. find index of relevent entry
+                                             (update-in (into [] inp)
+                                                        [(first (map first (into [] result-filter)))]
+                                                        (fn [i1]
+
+                                                          #_(println (str "... 3 > SELL > update-in > inp[" i1 "]"))
+                                                          (let [merge-result (merge i1 {:position :short
+                                                                                        :position-amount 100
+                                                                                        :position-price (:last-trade-price (first tick-list-N))})]
+
+                                                            (println (str "... 4 > SELL > result[" merge-result "]"))
+                                                            (market/sell-stock client (:order-id i1) (:symbol result-map) 100 (:last-trade-price tick))
+                                                            merge-result)))))))))))
 
 
   ;; remove tracked stock if sell
-  (if (not (empty? @tracking-data))
-    (trim-strategies tracking-data tick-list-N)))
+  (if (not (empty? @*tracking-data*))
+    (trim-strategies tick-list-N)))
 
 
 (defn tee-fn [output-fn result-map]
@@ -230,7 +270,7 @@
                                 signals-stochastic
                                 signals-obv)
 
-        #_sA #_(if (empty? @tracking-data)
+        #_sA #_(if (empty? @*tracking-data*)
 
                  [(assoc (first tick-list-N) :strategies [{:signal :up
                                                            :name :strategy-test-A
@@ -243,7 +283,7 @@
                                 signals-macd
                                 signals-stochastic
                                 signals-obv)
-        #_sB #_(if (empty? @tracking-data)
+        #_sB #_(if (empty? @*tracking-data*)
 
                  [(assoc (first tick-list-N) :strategies [{:signal :up
                                                            :name :strategy-test-B
@@ -267,7 +307,7 @@
         #_parsed-result-map #_(shandler/parse-result-data result-data)]
 
     (println "")
-    (println (str "... 0 > tracking-data[" (seq @tracking-data) "]"))
+    (println (str "... 0 > *tracking-data*[" (seq @*tracking-data*) "]"))
     (println (str "... strategy-A[" sA "] / strategy-B[" sB "] / test[" (or (not (empty? sA))
                                                                             (not (empty? sB)))"]"))
 
