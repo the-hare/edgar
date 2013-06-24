@@ -35,7 +35,9 @@
     (set! (.m_totalQuantity order) qty)
     (set! (.m_action order) action)
     (set! (.m_orderType order) "LMT")
-    (set! (.m_lmtPrice order) price)))
+    (set! (.m_lmtPrice order) price)
+
+    order))
 
 
 ;; ====
@@ -99,12 +101,16 @@
 
   (let [contract (create-contract instrm)
         order (create-order "BUY" qty price)]
+
+    (println (str "buy-stock >> client[" client "] / idx[" idx "] / instrm[" instrm "] / contract[" contract "] / order[" order "]"))
     (.placeOrder client idx contract order)))
 
 (defn sell-stock [client idx instrm qty price]
 
   (let [contract (create-contract instrm)
         order (create-order "SELL" qty price)]
+
+    (println (str "sell-stock >> client[" client "] / idx[" idx "] / instrm[" instrm "] / contract[" contract "] / order[" order "]"))
     (.placeOrder client idx contract order)))
 
 
