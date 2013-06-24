@@ -187,7 +187,7 @@
 (defn stop-streaming-stock-data
   "Stops streaming stock data for 1 or a list of stocks"
   []
-  (when-let [streaming-context @stored-streaming-context]
+  #_(when-let [streaming-context @stored-streaming-context]
     (reset! stored-streaming-context nil)
     (sse/end-event-stream streaming-context)))
 

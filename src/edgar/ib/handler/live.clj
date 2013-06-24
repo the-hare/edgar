@@ -102,7 +102,10 @@
 
 
           (reduce (fn [rslt efn]
-                    (efn {:symbol (-> options :stock-match :symbol) :event-list trimmed-list}))
+
+                    (efn {:symbol (-> options :stock-match :symbol)
+                          :tickerId (-> options :stock-match :ticker-id-filter)
+                          :event-list trimmed-list}))
                   nil
                   tee-list)
 
@@ -123,13 +126,12 @@
      :stock-match :symbol , :ticker-id-filter - a list of tickerIds about which this feed-handler cares"
   [options evt]
 
-  #_(log/info "feed-handler > tickerIDs[" (:ticker-id-filter options) "] > tick-list SIZE[" (count (deref (:tick-list options))) "] > SOME[" (some #{ (evt "tickerId") } (:ticker-id-filter options)) "]")
-  (if (-> options :stock-match :ticker-id-filter)
+  (let [stock-match (:stock-match options)]
 
-    ;; check if this event passes the filter
-    (if (some #{ (evt "tickerId") }
-              (-> options :stock-match :ticker-id-filter))
+    (log/info "feed-handler > tickerID[" (:ticker-id-filter stock-match) "] > stock-symbol[" (:symbol stock-match) "] > SOME[" (= (evt "tickerId") (:ticker-id-filter stock-match)) "]")
+    (if (-> options :stock-match :ticker-id-filter)
 
-      (handle-event (assoc options :tick-window 40) evt)
-      nil)
-    (handle-event (assoc options :tick-window 40) evt)))
+      ;; check if this event passes the filter
+      (if (= (evt "tickerId") (-> options :stock-match :ticker-id-filter))
+
+        (handle-event (assoc options :tick-window 40) evt)))))

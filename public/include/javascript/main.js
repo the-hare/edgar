@@ -23987,9 +23987,20 @@ edgar.livesource.addEventListener("stream-live", function(e) {
       return and__3949__auto__
     }
   }();
-  return ui.graph.render_stock_graph.call(null, "#live-stock-graph", cljs.core.PersistentVector.fromArray([(new cljs.core.Keyword("\ufdd0'bollinger-band")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'local-list")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'sma-list")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'ema-list")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'macd-price-list")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'macd-signal-list")).call(null, 
-  parsed_result_map), (new cljs.core.Keyword("\ufdd0'macd-histogram-list")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'stochastic-k")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'stochastic-d")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'obv")).call(null, parsed_result_map)], true), (new cljs.core.Keyword("\ufdd0'signals")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'strategies")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, 
-  parsed_result_map), increment_QMARK_)
+  if(function() {
+    var and__3949__auto__ = !(jayq.core.$.call(null, "#live-stock-graph").highcharts("StockChart").title.text == null);
+    if(and__3949__auto__) {
+      return cljs.core._EQ_.call(null, (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, parsed_result_map), jayq.core.$.call(null, "#live-stock-graph").highcharts("StockChart").title.text)
+    }else {
+      return and__3949__auto__
+    }
+  }()) {
+    return ui.graph.render_stock_graph.call(null, "#live-stock-graph", cljs.core.PersistentVector.fromArray([(new cljs.core.Keyword("\ufdd0'bollinger-band")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'local-list")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'sma-list")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'ema-list")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'macd-price-list")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'macd-signal-list")).call(null, 
+    parsed_result_map), (new cljs.core.Keyword("\ufdd0'macd-histogram-list")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'stochastic-k")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'stochastic-d")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'obv")).call(null, parsed_result_map)], true), (new cljs.core.Keyword("\ufdd0'signals")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'strategies")).call(null, parsed_result_map), (new cljs.core.Keyword("\ufdd0'stock-name")).call(null, 
+    parsed_result_map), increment_QMARK_)
+  }else {
+    return null
+  }
 });
 jayq.core.$.call(null, "#freeform-live").click(function(eventObj) {
   var input_val = jayq.core.$.call(null, "#freeform-live-input").val();

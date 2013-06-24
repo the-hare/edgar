@@ -142,23 +142,25 @@
 
 (defn trim-strategies [tracking-data tick-list]
 
-  (println (str "... trim-strategies / SELL test[" (some #(= :down (-> % :action :action)) @tracking-data)  "] / ACTION[" (seq (filter #(= :down (-> % :action :action)) @tracking-data)) "] / WHY[" (:why (first (filter #(= :down (-> % :action)) @tracking-data))) "]"))
+  (println (str "... trim-strategies / SELL test[" (some #(= :down (-> % :action :action)) @tracking-data)
+                "] / ACTION[" (seq (filter #(= :down (-> % :action :action)) @tracking-data))
+                "] / WHY[" (:why (first (filter #(= :down (-> % :action)) @tracking-data))) "]"))
   (dosync (alter tracking-data
                  (fn [inp]
                    (remove #(= :down (-> % :action :action))
                            inp)))))
 
 
-(defn tee-fn [output-fn tick-list]
+(defn tee-fn [output-fn result-map]
 
-  #_(println (str "get-streaming-stock-data tick-list[" tick-list "]"))
+  #_(println (str "get-streaming-stock-data result-map[" result-map "]"))
   (let [tick-list-N (map (fn [inp]
                            (assoc inp
                              :total-volume (read-string (:total-volume inp))
                              :last-trade-size (read-string (:last-trade-size inp))
                              :vwap (read-string (:vwap inp))
                              :last-trade-price (read-string (:last-trade-price inp))))
-                         (reverse (:event-list tick-list)))
+                         (reverse (:event-list result-map)))
 
         final-list (reduce (fn [rslt ech]
                              (conj rslt [(:last-trade-time ech) (:last-trade-price ech)]))
@@ -195,7 +197,7 @@
 
                  [(assoc (first tick-list-N) :strategies [{:signal :up
                                                            :name :strategy-test-A
-                                                                                                    :why "test-b"}])]
+                                                           :why "test-b"}])]
                  [])
 
         sB (strategy/strategy-B tick-list-N
@@ -213,7 +215,7 @@
 
         ;; TODO... track the stock-name
         result-data {:stock-name "TDB" #_stock-name
-                     :stock-symbol (:symbol tick-list)
+                     :stock-symbol (:symbol result-map)
                      :stock-list final-list
                      :source-list tick-list-N
                      :sma-list smaF
@@ -275,5 +277,5 @@
       (trim-strategies tracking-data tick-list-N))
 
     (output-fn "stream-live" result-data))
-  []
-  tick-list)
+  #_[]
+  #_tick-list)
