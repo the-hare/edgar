@@ -38,20 +38,26 @@
      (not (= (:last-trade-price (first tick-list))
              (:last-trade-price (first peaks)))))))
 
-(defn price-cross-abouve-sma? [tick-list sma-list]
+(defn price-cross-abouve-sma?
+  ([tick-list sma-list]
+     (price-cross-abouve-sma? tick-list sma-list nil))
+  ([tick-list sma-list options]
 
-  (let [ftick (first tick-list)
-        ntick (second tick-list)
+     (let [ftick (first tick-list)
+           ntick (second tick-list)
 
-        fsma (first (filter (fn [inp] (= (:last-trade-time ftick)
-                                        (:last-trade-time inp)))
-                            sma-list))
-        nsma (first (filter (fn [inp] (= (:last-trade-time ntick)
-                                        (:last-trade-time inp)))
-                            sma-list))]
+           fsma (first (filter (fn [inp] (= (:last-trade-time ftick)
+                                           (:last-trade-time inp)))
+                               sma-list))
+           nsma (first (filter (fn [inp] (= (:last-trade-time ntick)
+                                           (:last-trade-time inp)))
+                               sma-list))
 
-    (and (< (:last-trade-price ntick) (:last-trade-price-average nsma))
-         (> (:last-trade-price ftick) (:last-trade-price-average fsma)))))
+           {compare-key :compare-key
+            :or {compare-key :last-trade-price-average}} options]
+
+       (and (<= (:last-trade-price ntick) (compare-key nsma))
+            (> (:last-trade-price ftick) (compare-key fsma))))))
 
 (defn bollinger-price-below? [tick-list signals-bollinger]
 
@@ -330,18 +336,43 @@
        (remove nil?)))
 
 
-(defn price-rising? [tick-list])
+(defn price-rising? [tick-list]
 
-(defn price-rising-abouveMAs? [tick-list signals-ma])
+  (let [fst (first tick-list)
+        snd (second tick-list)
+        thd (nth tick-list 2)]
 
-(defn macd-histogram-rising? [signals-macd])
+    (and (> (:last-trade-price fst) (:last-trade-price snd))
+         (> (:last-trade-price snd) (:last-trade-price thd)))))
 
-(defn obv-rising? [signals-obv])
+(defn price-rising-abouveMAs? [tick-list signals-ma]
+
+  (let [simple-cross (price-cross-abouve-sma? tick-list signals-ma)
+        exponential-cross (price-cross-abouve-sma? tick-list signals-ma {:compare-key :last-trade-price-exponential})]
+
+    (and simple-cross exponential-cross)))
+
+(defn macd-histogram-rising? [signals-macd]
+
+  (let [fst (first signals-macd)
+        snd (second signals-macd)
+        thd (nth signals-macd 2)]
+
+    (and (> (:histogram fst) (:histogram snd))
+         (> (:histogram snd) (:histogram thd)))))
+
+(defn obv-rising? [signals-obv]
+
+  (let [fst (first signals-obv)
+        snd (second signals-obv)
+        thd (nth signals-obv)]
+
+    (and (> (:obv fst) (:obv snd))
+         (> (:obv snd) (:obv thd)))))
 
 
 (defn strategy-C
   "I want to be able to catch a run.
-
 
    A. price greater than previous ; previous greater than next previous
    B. price crossed abouve SMA and EMA w/ in last 3 ticks
