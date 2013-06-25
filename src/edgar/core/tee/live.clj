@@ -152,12 +152,14 @@
                                     inp))))))
 
 
-(defn manage-orders [sA sB result-map tick-list-N]
+(defn manage-orders [strategy-list result-map tick-list-N]
 
   ;; track any STRATEGIES
-  (if (or (not (empty? sA))
-          (not (empty? sB)))
-    (track-strategies tick-list-N (remove nil? [(first sA) (first sB)])))
+  (let [strategy-list-trimmed (remove nil? (map first strategy-list))]
+
+    (if (-> strategy-list-trimmed empty? not)
+
+      (track-strategies tick-list-N strategy-list-trimmed)))
 
 
   ;; watch any STRATEGIES in play
@@ -302,6 +304,13 @@
                                                            :why "test-b"}])]
                  [])
 
+        sC (strategy/strategy-C tick-list-N
+                                signals-ma
+                                signals-bollinger
+                                signals-macd
+                                signals-stochastic
+                                signals-obv)
+
         result-data {:stock-name "TDB" #_stock-name
                      :stock-symbol (:symbol result-map)
                      :stock-list final-list
@@ -320,9 +329,10 @@
 
     (println "")
     (println (str "... latest-tick[" (first tick-list-N) "] > *tracking-data*[" (seq @*tracking-data*) "]"))
-    (println (str "... strategy-A[" sA "] / strategy-B[" sB "] / test[" (or (not (empty? sA))
-                                                                            (not (empty? sB)))"]"))
+    (println (str "... strategy-A[" sA "] / strategy-B[" sB "] / strategy-C[" sC "] / test[" (or (not (empty? sA))
+                                                                                                 (not (empty? sB))
+                                                                                                 (not (empty? sC)))"]"))
 
-    (manage-orders sA sB result-map tick-list-N)
+    (manage-orders [sA sB sC] result-map tick-list-N)
 
     (output-fn "stream-live" result-data)))

@@ -365,7 +365,7 @@
 
   (let [fst (first signals-obv)
         snd (second signals-obv)
-        thd (nth signals-obv)]
+        thd (nth signals-obv 2)]
 
     (and (> (:obv fst) (:obv snd))
          (> (:obv snd) (:obv thd)))))
