@@ -328,3 +328,48 @@
                 (partition 10 1 tick-list))
 
        (remove nil?)))
+
+
+(defn price-rising? [tick-list])
+
+(defn price-rising-abouveMAs? [tick-list signals-ma])
+
+(defn macd-histogram-rising? [signals-macd])
+
+(defn obv-rising? [signals-obv])
+
+
+(defn strategy-C
+  "I want to be able to catch a run.
+
+
+   A. price greater than previous ; previous greater than next previous
+   B. price crossed abouve SMA and EMA w/ in last 3 ticks
+
+   C. MACD Histogram greater than previous ; previous greater than next previous
+
+   D. OBV greater than previous ; previous greater than next previous"
+  [tick-list signals-ma signals-bollinger signals-macd signals-stochastic signals-obv]
+
+  (let [
+        ;; A.
+        price-risingV (price-rising? tick-list)
+
+        ;; B.
+        price-rising-abouveMAsV (price-rising-abouveMAs? tick-list signals-ma)
+
+        ;; C.
+        macd-histogram-risingV (macd-histogram-rising? signals-macd)
+
+        ;; D.
+        obv-risingV (obv-rising? signals-obv)
+        ]
+
+    (if (and price-risingV price-rising-abouveMAsV macd-histogram-risingV obv-risingV)
+
+      (do (println "BINGO ---- We have a strategy-C :up signal")
+          (cons (assoc (first tick-list) :strategies [{:signal :up
+                                                       :name :strategy-C
+                                                       :why [:price-increase :macd-up-signal :price-cross-abouve-sma :bollinger-was-narrower :macd-crossover
+                                                             :stochastic-crossover :stochastic-oversold :obv-increasing]}])
+                  (rest tick-list))))))
