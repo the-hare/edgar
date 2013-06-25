@@ -68,9 +68,7 @@
                        #_(.log js/console (str "parsed-result-map[" parsed-result-map "]"))
 
                        ;; ensure we are only rendering one stock at a time
-                       (if (and (-> ($ "#live-stock-graph") (.highcharts "StockChart") (.-title) (.-text) nil? not)
-                                (= (:stock-name parsed-result-map)
-                                   (-> ($ "#live-stock-graph") (.highcharts "StockChart") (.-title) (.-text))))
+                       (if (not increment?)
 
                          (graph/render-stock-graph "#live-stock-graph"
                                                    [(:bollinger-band parsed-result-map)
@@ -90,7 +88,31 @@
                                                    (:signals parsed-result-map)
                                                    (:strategies parsed-result-map)
                                                    (:stock-name parsed-result-map)
-                                                   increment?)))))
+                                                   increment?)
+
+                         (if (and (-> ($ "#live-stock-graph") (.highcharts "StockChart") (.-title) (.-text) nil? not)
+                                  (= (:stock-name parsed-result-map)
+                                     (-> ($ "#live-stock-graph") (.highcharts "StockChart") (.-title) (.-text))))
+
+                           (graph/render-stock-graph "#live-stock-graph"
+                                                   [(:bollinger-band parsed-result-map)
+                                                    (:local-list parsed-result-map)
+                                                    (:sma-list parsed-result-map)
+                                                    (:ema-list parsed-result-map)
+
+
+                                                    (:macd-price-list parsed-result-map)
+                                                    (:macd-signal-list parsed-result-map)
+                                                    (:macd-histogram-list parsed-result-map)
+
+                                                    (:stochastic-k parsed-result-map)
+                                                    (:stochastic-d parsed-result-map)
+
+                                                    (:obv parsed-result-map)]
+                                                   (:signals parsed-result-map)
+                                                   (:strategies parsed-result-map)
+                                                   (:stock-name parsed-result-map)
+                                                   increment?))))))
 
 (.click ($ "#freeform-live") (fn [eventObj]
 
