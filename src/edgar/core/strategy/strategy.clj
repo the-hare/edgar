@@ -128,7 +128,7 @@
 
   (-> (some (fn [inp]
               (<= (:K inp) 0.25))
-            signals-stochastic)
+            (take 2 signals-stochastic))
       nil?
       not))
 
