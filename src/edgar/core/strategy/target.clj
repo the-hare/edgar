@@ -10,11 +10,11 @@
 
 
 
-;; Making a default stop / loss threshold of -2.5%
+;; Making a default stop / loss threshold of -5%
 (defn stoploss-threshhold? [orig-price current-price]
 
   (let [change-pct (percentage-change orig-price current-price)
-        change-test (> -0.025 change-pct)]
+        change-test (> -0.05 change-pct)]
 
     change-test))
 
@@ -22,7 +22,7 @@
 
   (let [balance-org (* orig-price no-shares)
         balance-crt (* current-price no-shares)
-        balance-trg (+ balance-org (* balance-org -0.025))
+        balance-trg (+ balance-org (* balance-org -0.05))
         change-test (< balance-crt balance-trg)]
 
     change-test))

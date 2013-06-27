@@ -208,7 +208,7 @@
         stock-selection [ (-> request :query-params :stock-selection) ]
         stock-name (-> request :query-params :stock-name)]
 
-    (edgar/play-live client stock-selection [(partial tlive/tee-fn stream-live)])
+    (edgar/play-live client stock-selection [(partial tlive/tee-fn stream-live stock-name)])
     { :status 204 }))
 
 

@@ -241,7 +241,7 @@
               (trim-strategies tick-list-N))))))))
 
 
-(defn tee-fn [output-fn result-map]
+(defn tee-fn [output-fn stock-name result-map]
 
   #_(println (str "get-streaming-stock-data result-map[" result-map "]"))
   (let [tick-list-N (map (fn [inp]
@@ -283,26 +283,12 @@
                                 signals-stochastic
                                 signals-obv)
 
-        #_sA #_(if (empty? @*tracking-data*)
-
-                 [(assoc (first tick-list-N) :strategies [{:signal :up
-                                                           :name :strategy-test-A
-                                                           :why "test-b"}])]
-                 [])
-
-        sB (strategy/strategy-B tick-list-N
+        #_sB #_(strategy/strategy-B tick-list-N
                                 signals-ma
                                 signals-bollinger
                                 signals-macd
                                 signals-stochastic
                                 signals-obv)
-
-        #_sB #_(if (empty? @*tracking-data*)
-
-                 [(assoc (first tick-list-N) :strategies [{:signal :up
-                                                           :name :strategy-test-B
-                                                           :why "test-b"}])]
-                 [])
 
         sC (strategy/strategy-C tick-list-N
                                 signals-ma
@@ -311,7 +297,7 @@
                                 signals-stochastic
                                 signals-obv)
 
-        result-data {:stock-name "TDB" #_stock-name
+        result-data {:stock-name stock-name
                      :stock-symbol (:symbol result-map)
                      :stock-list final-list
                      :source-list tick-list-N
@@ -323,16 +309,14 @@
                                :stochastic-oscillator signals-stochastic
                                :obv signals-obv}
                      :strategies {:strategy-A sA
-                                  :strategy-B sB}}
-
-        #_parsed-result-map #_(shandler/parse-result-data result-data)]
+                                  :strategy-B sB}}]
 
     (println "")
     (println (str "... latest-tick[" (first tick-list-N) "] > *tracking-data*[" (seq @*tracking-data*) "]"))
-    (println (str "... strategy-A[" sA "] / strategy-B[" sB "] / strategy-C[" sC "] / test[" (or (not (empty? sA))
+    (println (str "... strategy-A[" sA "] / strategy-B[" #_sB "] / strategy-C[" sC "] / test[" (or (not (empty? sA))
                                                                                                  (not (empty? sB))
                                                                                                  (not (empty? sC)))"]"))
 
-    (manage-orders [sA sB sC] result-map tick-list-N)
+    (manage-orders [sA sC] result-map tick-list-N)
 
     (output-fn "stream-live" result-data)))
