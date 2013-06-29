@@ -21,6 +21,13 @@ To start a web server for the application, run:
 
     lein ring server
 
+Or if you are at a repl, you can run: 
+
+    (start)
+
+    (require '[edgar.core.edgar :as edgar])
+    (edgar/initialize-workbench)
+
 ## License
 
 Copyright © 2013 FIXME
