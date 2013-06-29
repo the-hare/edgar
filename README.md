@@ -1,6 +1,6 @@
 # edgar
 
-A basic tool for performing technical Analysis on financial instruments. So far, the emphasis will be on
+A basic tool for performing Technical Analysis on financial instruments. So far, the emphasis is be on
 * stock market trading
 * algorthmic, automated trading
 * using the Interactive Brokers (www.interactivebrokers.com) trading platform

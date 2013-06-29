@@ -1,7 +1,8 @@
 (defproject edgar "0.1.0-SNAPSHOT"
-  :description "Edgar is a basic tool for performing technical Analysis on financial instruments"
-  :url "http://example.com/FIXME"
-  ;;:source-paths ["src"]
+  :description "Edgar is a basic tool for performing Technical Analysis on financial instruments"
+  :url "https://github.com/twashing/edgar"
+  :license {:name "Eclipse Public License"
+            :url "http://www.eclipse.org/legal/epl-v10.html"}
   :java-source-paths ["src"]
   :dependencies [
                  ;; Pedestal libraries
