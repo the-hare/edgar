@@ -309,12 +309,13 @@
                                :stochastic-oscillator signals-stochastic
                                :obv signals-obv}
                      :strategies {:strategy-A sA
-                                  :strategy-B sB}}]
+                                  #_:strategy-B #_sB
+                                  :strategy-C sC}}]
 
     (println "")
     (println (str "... latest-tick[" (first tick-list-N) "] > *tracking-data*[" (seq @*tracking-data*) "]"))
     (println (str "... strategy-A[" sA "] / strategy-B[" #_sB "] / strategy-C[" sC "] / test[" (or (not (empty? sA))
-                                                                                                 (not (empty? sB))
+                                                                                                 #_(not (empty? sB))
                                                                                                  (not (empty? sC)))"]"))
 
     (manage-orders [sA sC] result-map tick-list-N)
